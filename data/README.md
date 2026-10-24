@@ -1,0 +1,14 @@
+# Dane
+
+| Plik | Co to jest | Źródło i licencja |
+| --- | --- | --- |
+| raw/LoD1_2024_Warszawa_1465.zip | Modele 3D budynków LoD1 2024, cała Warszawa (CityGML, EPSG:2180, 127 arkuszy, 153 109 budynków) | GUGiK, geoportal.gov.pl, CC BY 4.0 |
+| bielany_lod1_2024.geojson | Wycinek MVP: 2296 budynków w bbox 52.274,20.915 do 52.300,20.960; WGS84; height_m, ground_z, source_year | jw. |
+| podglad_budynkow.png | Podgląd wycinka, kolor = wysokość | jw. |
+| extract_bielany_lod1.py | Skrypt wycinający bbox z paczki zip (wymaga pyproj) | kod projektu |
+
+Statystyki wycinka: wysokość min 2,2 m, mediana 8,8 m, max 49,2 m.
+Rozkład: 0-6 m: 543, 6-12 m: 1070, 12-20 m: 433, 20-35 m: 186, powyżej 35 m: 64.
+
+Link do paczki: https://opendata.geoportal.gov.pl/InneDane/Budynki3D/LOD1/2024/14/1465.zip
+Atrybucja w aplikacji: "Budynki: GUGiK, geoportal.gov.pl (CC BY 4.0)".
