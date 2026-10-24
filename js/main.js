@@ -89,6 +89,7 @@ async function initApp() {
     ...allColliders.filter((c) => !c.obb && (c.minY ?? 0) < 3.5)
   ]);
   markInit('traffic');
+  streetDetails.addSignals(trafficSystem.network); // the signal heads stand at the junctions the network signals
   const highwayTraffic = createHighwayTraffic(scene, cityGrid.highwayLanes);
   buildRoadPaint(scene, trafficSystem.network);
   markInit('roadPaint');

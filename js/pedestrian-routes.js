@@ -1,3 +1,5 @@
+import { CROSSWALK } from './road-network.js';
+
 // Small, lazily connected sidewalk tracks. Junctions only connect points on the same curb island;
 // crossing the roadway is a separate, signal-controlled track owned by traffic.js.
 function createPedestrianRoutes({ walkable, onSidewalk }, blockAt) {
@@ -45,15 +47,20 @@ function createPedestrianRoutes({ walkable, onSidewalk }, blockAt) {
     const result = [];
     crossings.set(n, result);
     if (!n.signal) return result;
-    for (let side = 0; side < 4; side++) {
+    // One crosswalk per side (arm), in the band between the stop line and the junction, across the road from curb to
+    // curb along its lateral axis (the axis traffic.js measures crosswalk positions on), two walking lines wide
+    for (let side = 0; side < n.sideCount; side++) {
       const road = n.road[side];
       if (!road) continue;
-      const avenue = side >= 2, sign = side % 2 === 0 ? 1 : -1;
-      for (const line of avenue ? [sign * 0.75] : [-0.75, 0.75]) {
-        const a = { x: avenue ? road.x0 - road.half - 2 : n.x + sign * (n.hx + 1.25) + line,
-          z: avenue ? n.z + sign * (n.hz + 1.25) + line : road.z0 - road.half - 2 };
-        const len = road.half * 2 + 4;
-        const b = { x: a.x + (avenue ? len : 0), z: a.z + (avenue ? 0 : len) };
+      const arriving = road.to === n;
+      const back = arriving ? -CROSSWALK / 2 : CROSSWALK / 2; // from the stop line towards the junction
+      const sx = arriving ? road.sx + road.dx * road.len : road.sx;
+      const sz = arriving ? road.sz + road.dz * road.len : road.sz;
+      const cx = sx - road.dx * back, cz = sz - road.dz * back;
+      const reach = road.half + 2;
+      for (const line of [-0.75, 0.75]) {
+        const a = { x: cx - road.clx * reach + road.dx * line, z: cz - road.clz * reach + road.dz * line };
+        const b = { x: cx + road.clx * reach + road.dx * line, z: cz + road.clz * reach + road.dz * line };
         if (!onSidewalk(a.x, a.z) || !onSidewalk(b.x, b.z) || !clear(a, b)) continue;
         result.push(segment(a, b, { node: n, side, line, from: n, to: n }));
       }

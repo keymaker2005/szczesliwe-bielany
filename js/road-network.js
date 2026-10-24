@@ -1,4 +1,4 @@
-import { getIslandBoundsAtZ, BLOCKS, blockAt } from './city-config.js';
+import { getIslandBoundsAtZ, BLOCKS, blockAt, buildingAt } from './city-config.js';
 import { GEO } from './bielany-geodata.js';
 
 // js/road-network.js
@@ -55,9 +55,20 @@ function buildRoadNetwork(sidewalks, obstacles) {
     return true;
   }
 
-  const walkable = (minX, maxX, minZ, maxZ) => onLand(minX, maxX, minZ, maxZ) && !query(minX, maxX, minZ, maxZ, (r) => !r.curb);
+  // walking room: on land, clear of obstacles and of the buildings (by their footprints, at the box's middle)
+  const walkable = (minX, maxX, minZ, maxZ) => onLand(minX, maxX, minZ, maxZ) && !query(minX, maxX, minZ, maxZ, (r) => !r.curb) &&
+    !buildingAt((minX + maxX) / 2, (minZ + maxZ) / 2);
   const onCurb = (x, z) => !!blockAt(x, z) || query(x, x, z, z, (r) => r.curb);
   const onSidewalk = onCurb;
+  // Well inside a block: the graph's straight runs between bend stations cut a little across curved curbs, turns cut
+  // the corners and the 1 m raster outlines lie up to a metre off, so lanes & turns only count as blocked where the
+  // same block lies all round them, CURB_SLACK deep
+  const CURB_SLACK = 2.5;
+  const RING = Array.from({ length: 8 }, (_, k) => [Math.cos(k * Math.PI / 4) * CURB_SLACK, Math.sin(k * Math.PI / 4) * CURB_SLACK]);
+  const pastCurb = (x, z) => {
+    const b = blockAt(x, z);
+    return !!b && RING.every(([dx, dz]) => blockAt(x + dx, z + dz) === b);
+  };
   // The same test along the streets, which run at any angle: the rectangles standing in for irregular sidewalks may
   // reach a little past their curbs, a whole park's bounds take in the streets around it and a median's bounds both
   // its roadways, so only a curb right at (x, z), medians by their real outline and other obstacles under 50 m across
@@ -93,7 +104,7 @@ function buildRoadNetwork(sidewalks, obstacles) {
     return false;
   }
   const blockedOnStreet = (x, z, clear) => !onLand(x - clear, x + clear, z - clear, z + clear) ||
-    onCurb(x, z) ||
+    pastCurb(x, z) ||
     nearMedian(x, z, clear) ||
     query(x - clear, x + clear, z - clear, z + clear, (r) => !r.curb && (r.maxX - r.minX < 50 || r.maxZ - r.minZ < 50) && !medianBox(r));
 
@@ -114,16 +125,18 @@ function buildRoadNetwork(sidewalks, obstacles) {
       return total;
     };
     const links = [];
-    for (const [a, b, ni, w, lanes, dir, inner, cls] of RG.links) {
+    for (const [a, b, ni, w, lanes, dir, inner, cls, ring] of RG.links) {
       const pts = [pos[a]];
       for (let k = 0; k < inner.length; k += 2) pts.push({ x: inner[k], z: inner[k + 1] });
       pts.push(pos[b]);
-      links.push({ a, b, name: RG.names[ni], w, lanes, dir, cls, pts, len: lengthOf(pts) });
+      links.push({ a, b, name: RG.names[ni], w, lanes, dir, cls, ring: !!ring, pts, len: lengthOf(pts) });
     }
-    // Junctions a few metres apart (divided roads, offset corners) are one: collapse links under 14 m
+    // Junctions a few metres apart (divided roads, offset corners) are one: collapse links under 10 m (a longer reach
+    // would move the merged junction off the streets, onto the blocks), but not round a roundabout (it would become one
+    // junction, its chords across the island)
     const parent = pos.map((_, i) => i);
     const find = (i) => (parent[i] === i ? i : (parent[i] = find(parent[i])));
-    for (const l of links) if (l.len < 14) parent[find(l.a)] = find(l.b);
+    for (const l of links) if (l.len < 10 && !l.ring) parent[find(l.a)] = find(l.b);
     const sum = new Map();
     const counted = new Set();
     for (const l of links) {
@@ -758,14 +771,24 @@ function buildRoadNetwork(sidewalks, obstacles) {
   nodes = nodes.filter((n) => n.in && n.out);
   nodes.forEach((n, i) => (n.id = i));
 
-  // 6. Signalized junctions: none yet (traffic signals from OpenStreetMap in step 1.5); every junction gives way to
-  //    its widest road
+  // 6. Signalized junctions: where three or more roads meet within 30 m of an OpenStreetMap traffic signal (mapped at
+  //    the junction itself or on its approaches); the others give way to their widest road
+  const SIG = GEO.signals || [];
+  for (const n of nodes) {
+    if (n.shape || (n.in.length + n.out.length) < 3) continue;
+    for (let i = 0; i < SIG.length && !n.signal; i += 2) {
+      if (Math.hypot(SIG[i] - n.x, SIG[i + 1] - n.z) < 30) n.signal = true;
+    }
+  }
 
   // 7. Sides & right of way at each node, for traffic.js. Its arms are its sides (one crosswalk and approach each). The
   //    arms of one road (on opposite sides) form a group: vehicles of different groups never share the junction, and
   //    group 0, the widest road, has the right of way.
   computeArms(edges);
-  for (const n of nodes) sidesAndGroups(n);
+  for (const n of nodes) {
+    sidesAndGroups(n);
+    n.sideGroups = n.arms.map((a) => a.group); // the right-of-way group of the road over each side
+  }
   for (const e of edges) {
     e.inSide = e.inArm.side; // the side of e.to it arrives over
     e.outSide = e.outArm.side; // the side of e.from it leaves over

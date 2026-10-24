@@ -23,7 +23,7 @@ import { PersonCrowd, PersonRig } from './pedestrians.js';
 
 // js/traffic.js
 // Manhattan traffic and pedestrians on the road graph road-network.js derives from the city as built:
-// - 200 cars (taxis, sedans, SUVs, NYPD cruisers) and 12 MTA buses keep to their lanes and follow the vehicle
+// - 200 cars (taxis, sedans, SUVs) and 12 city buses keep to their lanes and follow the vehicle
 //   ahead (Intelligent Driver Model), change lanes to overtake or to reach a turn lane, turn into other streets,
 //   stop for the signals street-details.js shows, give way to oncoming traffic when turning left, to the avenue at
 //   unsignalized corners and to pedestrians on crosswalks, and never enter an intersection they can't clear.
@@ -56,17 +56,15 @@ function createBusDestinationTexture() {
   const ctx = c.getContext('2d');
   ctx.fillStyle = '#0c0f14';
   ctx.fillRect(0, 0, 256, 64);
-  ctx.fillStyle = '#0058b8';
-  ctx.fillRect(6, 8, 62, 48);
-  ctx.fillStyle = '#ffffff';
-  ctx.font = '900 26px Inter, Arial, sans-serif';
+  // A made-up line number and a real destination, amber LED letters
+  ctx.fillStyle = '#ffb020';
+  ctx.font = '900 30px JetBrains Mono, monospace';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  ctx.fillText('M1', 37, 33);
-  ctx.fillStyle = '#ff9d1c';
+  ctx.fillText('B1', 38, 33);
   ctx.font = '800 22px JetBrains Mono, monospace';
   ctx.textAlign = 'left';
-  ctx.fillText('5 AV / HARLEM', 78, 33);
+  ctx.fillText('MŁOCINY', 84, 33);
   const tex = new THREE.CanvasTexture(c);
   tex.colorSpace = THREE.SRGBColorSpace;
   return tex;
@@ -76,7 +74,7 @@ const clamp = (x, lo, hi) => Math.max(lo, Math.min(hi, x));
 
 function createTrafficSystem(scene, sidewalks, obstacles) {
   const group = new THREE.Group();
-  group.name = 'ManhattanTrafficAndPedestrians';
+  group.name = 'BielanyTrafficAndPedestrians';
   let collisionListener = null;
   const collisionEvent = { a: null, b: null, kind: 'vehicle', x: 0, y: 0, z: 0, nx: 0, ny: 0, nz: 0, speed: 0 };
 
@@ -105,13 +103,12 @@ function createTrafficSystem(scene, sidewalks, obstacles) {
   const network = buildRoadNetwork(sidewalks, obstacles);
   const { nodes, edges, connector, curvePoint } = network;
 
-  // Sides of an intersection (road-network.js step 9): a grid intersection's are 0 east, 1 west, 2 south, 3 north;
-  // centreline junctions number their arms from 4. Where lane i of edge e meets a crosswalk, measured along the
-  // crosswalk: along its road's lateral axis (x across north-south roads, z across east-west ones)
+  // Sides of a junction (road-network.js step 7): one per arm, numbered from 0. Where lane i of edge e meets a
+  // crosswalk, measured along the crosswalk: along its road's lateral axis
   const laneCoord = (e, i) => (e.sx + e.rx * e.lanes[i]) * e.clx + (e.sz + e.rz * e.lanes[i]) * e.clz;
 
   for (const n of nodes) {
-    n.box = new Array(n.groupCount).fill(0); // vehicles crossing it from each road (group: on the grid avenue 0, street 1)
+    n.box = new Array(n.groupCount).fill(0); // vehicles crossing it from each road (group 0: the widest)
     n.crossing = new Array(n.sideCount).fill(0); // vehicles crossing (or about to cross) the crosswalk on each side
     n.approach = new Array(n.sideCount).fill(null); // the edge arriving over each side's crosswalk
     n.road = new Array(n.sideCount).fill(null); // an edge arriving or leaving over each side's crosswalk: the road it spans
@@ -134,7 +131,7 @@ function createTrafficSystem(scene, sidewalks, obstacles) {
   };
 
   // =========================================================================
-  // 1. 3D LOFTED NYC YELLOW TAXIS, SEDANS, SUVS & NYPD CRUISERS (200 VEHICLES)
+  // 1. 3D LOFTED TAXIS, SEDANS & SUVS (200 VEHICLES; the patrol cars stay parked until the services of Faza 3)
   // =========================================================================
   function createVehicle(bus, half, halfWidth, axle, driver, v0) {
     return {
@@ -161,7 +158,7 @@ function createTrafficSystem(scene, sidewalks, obstacles) {
   const suvMat = createLoftedCarMaterial(BODY_SPECS.suv);
   const carWheelMat = createLoftedCarMaterial(BODY_SPECS.sedan, 0xffbe14);
 
-  const taxiYellow = new THREE.Color(0xffbe14);
+  const taxiWhite = new THREE.Color(0xeeeeea); // fictional Warsaw taxis: white, no company names
   const policeWhite = new THREE.Color(0xf6f9fc);
   const sedanPalette = [
     new THREE.Color(0x1c2026), // Black Town Car / Uber
@@ -185,7 +182,7 @@ function createTrafficSystem(scene, sidewalks, obstacles) {
   let policeCount = 0;
 
   for (let i = 0; i < NUM_CARS; i++) {
-    const isPolice = (i % 40) === 6;
+    const isPolice = false; // no police markings (no official insignia); the code path stays for Faza 3
     const isTaxi = !isPolice && (i % 5) === 0;
     const isSUV = !isPolice && !isTaxi && (i % 2 === 0);
 
@@ -195,7 +192,7 @@ function createTrafficSystem(scene, sidewalks, obstacles) {
     if (isTaxi) {
       bodyType = 'taxi';
       taxiCount++;
-      col = taxiYellow;
+      col = taxiWhite;
     } else if (isSUV) {
       bodyType = 'suv';
       suvCount++;
@@ -282,7 +279,7 @@ function createTrafficSystem(scene, sidewalks, obstacles) {
   );
 
   // =========================================================================
-  // 2. LOFTED MTA SELECT BUS SERVICE BLUE & WHITE CITY BUSES (32 BUSES)
+  // 2. LOFTED CITY BUSES IN A FICTIONAL YELLOW & RED LIVERY
   // =========================================================================
   const busBodyGeo = buildLoftedBusBodyGeometry();
   // Per-instance lamp state the bus material reads: brake lights, left (+x) & right (-x) turn signals (renderBus)
@@ -1464,15 +1461,15 @@ function createTrafficSystem(scene, sidewalks, obstacles) {
     return false;
   }
 
-  // Do people on crosswalk `side` have the WALK? Across the avenue with the cross street's traffic, across the street
-  // with the avenue's.
-  const walkOn = (side) => (side >= 2 ? stWalk : aveWalk);
+  // Do people on crosswalk `side` of n have the WALK? Across the main road (right-of-way group 0) with the crossing
+  // roads' traffic, across any other road with the main road's.
+  const walkOn = (n, side) => (n.sideGroups[side] === 0 ? stWalk : aveWalk);
 
   // May p step off the curb onto its crosswalk? On the WALK (early in the parallel traffic's green, so red for the
   // traffic arriving over it), once no vehicle is crossing it or committed to, and none is too close to stop
   function mayCross(p) {
     const n = p.node;
-    if (!walkOn(p.side) || n.crossing[p.side] > 0) return false;
+    if (!walkOn(n, p.side) || n.crossing[p.side] > 0) return false;
     const e = n.approach[p.side];
     if (!e) return true;
     for (const list of e.occ) {
@@ -1588,8 +1585,9 @@ function createTrafficSystem(scene, sidewalks, obstacles) {
     p.t = t;
     p.x = p.ax + p.ux * t;
     p.z = p.az + p.uz * t;
-    if (p.node && ((t > KERB && t < p.len - KERB) || (p.waiting && walkOn(p.side)))) {
-      p.coord = p.side >= 2 ? p.x : p.z;
+    if (p.node && ((t > KERB && t < p.len - KERB) || (p.waiting && walkOn(p.node, p.side)))) {
+      const road = p.node.road[p.side]; // across its road's lateral axis, like laneCoord()
+      p.coord = p.x * road.clx + p.z * road.clz;
       if (!p.node.walkers.length) walkedNodes.push(p.node);
       p.node.walkers.push(p);
     }

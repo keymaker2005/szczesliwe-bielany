@@ -134,6 +134,28 @@ function blocksInRect(minX, maxX, minZ, maxZ) {
   return [...out];
 }
 
+// Buildings' footprints (js/bielany-geodata.js, buildings.js), indexed for point tests: sidewalks & crosswalks keep
+// out of them
+const BUILDINGS = GEO.buildings.map(([outer, holes, h], id) => bounded({ id, poly: toPts(outer), holes: holes.map(toPts), h }));
+const BUILDING_GRID = new Map();
+for (const b of BUILDINGS) {
+  for (let ix = Math.floor(b.minX / BLOCK_CELL); ix <= Math.floor(b.maxX / BLOCK_CELL); ix++) {
+    for (let iz = Math.floor(b.minZ / BLOCK_CELL); iz <= Math.floor(b.maxZ / BLOCK_CELL); iz++) {
+      const k = ix * 100000 + iz;
+      if (!BUILDING_GRID.has(k)) BUILDING_GRID.set(k, []);
+      BUILDING_GRID.get(k).push(b);
+    }
+  }
+}
+/** The building standing at (x, z), or null */
+function buildingAt(x, z) {
+  for (const b of BUILDING_GRID.get(Math.floor(x / BLOCK_CELL) * 100000 + Math.floor(z / BLOCK_CELL)) || []) {
+    if (x < b.minX || x > b.maxX || z < b.minZ || z > b.maxZ) continue;
+    if (pointInPoly(b.poly, x, z) && !b.holes.some((h) => pointInPoly(h, x, z))) return b;
+  }
+  return null;
+}
+
 // ---------------------------------------------------------------------------------------------------------------------
 // Places: the M1 stations (more in step 1.8a) and the teleport arrivals, on real roadways
 // ---------------------------------------------------------------------------------------------------------------------
@@ -196,11 +218,13 @@ export {
   TELEPORT_LOCATIONS,
   BLOCKS,
   SIDEWALKS,
+  BUILDINGS,
   SIGNAL_TIMING,
   getIslandBoundsAtZ,
   streetZ,
   blockAt,
   blocksInRect,
+  buildingAt,
   nearestRoads,
   getLocationLabel,
   isTypingInField,
