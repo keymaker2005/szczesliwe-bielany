@@ -1,13 +1,13 @@
 # Plan Fazy 1: "Bielany przy M1" (krok 0.3)
 
-Stan: propozycja do akceptacji. Nic z tego nie jest jeszcze zrobione.
+Stan: zaakceptowany 2026-10-24 z poprawkami (podział 1.2 na 1.2a i 1.2b; tag `nyc-original` przed usunięciem kodu NYC; uzupełnienie budynków z OSM jako ostatni podkrok 1.3; test na Windows w Edge jako 1.8b). Zgoda na zmiany danych w `controllers.js` i `cameras.js`: napisy, start gracza przy stacji Stare Bielany, ujęcia kamer, fikcyjne warszawskie malowanie taksówki bez prawdziwych korporacji.
 
 ## Główna strategia
 
 1. **Zachowujemy "kontrakt miasta", wymieniamy jego zawartość.** Moduły przenośne (controllers, cameras, pedestrians, scene-culling, audio-*) importują z miasta tylko kilka nazw. Nowe moduły Bielan eksportują te same nazwy, więc moduły przenośne zostają nietknięte:
    - z `city-config.js`: `ISLAND_BOUNDS`, `CENTRAL_PARK_BOUNDS`, `getIslandBoundsAtZ`, `blockAt`, `streetZ`, `isTypingInField`, `signalPhase`, `walkSignal`;
    - z `landmarks.js`: `bryantParkLawn` (zaślepka: pusty trawnik poza mapą).
-2. **Kod Nowego Jorku usuwamy, nie ukrywamy za przełącznikiem.** Zostaje w historii gita (gałąź main sprzed Fazy 1). Dzięki temu kod jest o ok. 40% krótszy i nie ma dwóch światów do utrzymania.
+2. **Kod Nowego Jorku usuwamy, nie ukrywamy za przełącznikiem.** Zostaje w historii gita pod tagiem `nyc-original`, praca toczy się na gałęzi `faza-1`. Dzięki temu kod jest o ok. 40% krótszy i nie ma dwóch światów do utrzymania.
 3. **Dane budujemy narzędziem, nie w przeglądarce.** `tools/geo-bielany.mjs` czyta `tools/data/osm_bielany_*.json` i `data/bielany_lod1_2024.geojson`, a zapisuje `js/bielany-geodata.js` (jak dziś `nyc-geodata.js`). Ramka współrzędnych jest już gotowa w `tools/report-bielany.mjs`.
 4. **Ruch zostaje.** `traffic.js` już działa na ogólnym grafie (krawędzie z dowolnym kierunkiem, zakręty jako krzywe Béziera). Wystarczy usunąć z `road-network.js` etapy siatki i zostawić gałąź `general`.
 
@@ -41,7 +41,7 @@ Dzięki strategii z punktu 1 logika tych modułów zostaje bez zmian. Kilka rzec
 - `cameras.js`: 8 ujęć z NYC (Central Park, Times Square, Chrysler...) o stałych współrzędnych.
 - `audio-sources.js`: dźwięk przejścia zależy od podziału "aleja/ulica". Wystarczy, że nowy graf poda `axisIndex` i `isAvenue`, a samego modułu nie trzeba ruszać.
 
-**Prośba o zgodę (w krokach 1.2 i 1.8):** zmienić w `controllers.js` napisy i miejsce startu oraz w `cameras.js` tabelę ujęć. To zmiany danych, nie logiki.
+**Zgoda udzielona 2026-10-24:** napisy i start gracza (stacja metra Stare Bielany) w `controllers.js`, tabela ujęć w `cameras.js`, taksówka z fikcyjnym warszawskim malowaniem. Tylko dane, nie logika.
 
 ## Kolejność kroków (zgodnie z docs/fazy.md)
 
@@ -50,14 +50,17 @@ Dzięki strategii z punktu 1 logika tych modułów zostaje bez zmian. Kilka rzec
 - Test: nowy `tests/geo-bielany.test.mjs` (stacja Stare Bielany w punkcie 0,0; Młociny ok. 1,7 km na pn.-zach.; nazwy z polskimi znakami).
 - Uwaga: w tym kroku świat 3D jest jeszcze Nowym Jorkiem, a minimapa pokazuje już Bielany. To normalne, do kroku 1.2.
 
-### 1.2 Jezdnie i chodniki, Manhattan wyłączony
-- Pliki: `city-config.js` (nowa zawartość, stare nazwy eksportów), `city-grid.js` (płaska płyta + chodniki z wielokątów), `road-network.js` (sam graf OSM), `main.js` (bez boroughs/landmarks NYC, nowe nazwy grup), zaślepka `landmarks.js`.
-- Kwartały (obszary między ulicami) liczymy w `geo-bielany.mjs` metodą rastrową z `geo-blocks.mjs`.
-- Testy: przepisać `teleports.test.cjs` i `geodata.test.mjs` na Bielany; poprawić `boot.test.cjs` (liczba modułów).
+### 1.2a Płyta i jezdnie, Manhattan wyłączony
+- Pliki: `city-config.js` (nowa zawartość, stare nazwy eksportów), `city-grid.js` (płaska płyta, bez NYC), `road-network.js` (sam graf OSM), `main.js` (bez boroughs/landmarks NYC, nowe nazwy grup), zaślepka `landmarks.js`, start gracza przy stacji Stare Bielany.
+- Testy: przepisać `teleports.test.cjs` i `geodata.test.mjs` na Bielany; poprawić `boot.test.cjs` (liczba modułów). Wszystkie zielone.
+
+### 1.2b Kwartały i chodniki
+- Kwartały (obszary między ulicami) liczymy w `geo-bielany.mjs` metodą rastrową z `geo-blocks.mjs`; `city-grid.js` buduje z nich chodniki i krawężniki, `blockAt` w `city-config.js` je zwraca.
 
 ### 1.3 Budynki z LoD1 jako bryły
 - Pliki: nowy generator w `buildings.js` (obrys → ściany + dach, scalone w paczki ok. 400 m), kolizje jako obrócone prostokąty (OBB) dopasowane do obrysu.
 - Koszt: ok. 2,3 tys. budynków, ok. 70 tys. trójkątów, czyli sto razy mniej niż Manhattan.
+- Ostatni podkrok: uzupełnienie ok. 82 nowszych budynków z OSM (wysokość z `building:levels` × 3 m). Jeśli blokuje, przenosimy do backlogu.
 
 ### 1.4 Typy fasad: blok, nowe osiedle, pawilon
 - Pliki: `tsl-materials.js` (wariant fasady z atrybutami ściany), `buildings.js` (wybór typu).
@@ -77,9 +80,12 @@ Dzięki strategii z punktu 1 logika tych modułów zostaje bez zmian. Kilka rzec
 - Dane: modele drzew GUGiK LoD1 2023 dla Warszawy. Nie są jeszcze pobrane; ich format i rozmiar ustalimy na początku kroku.
 - Pliki: `tools/geo-bielany.mjs` (wycinek drzew), `trees.js` (gatunki: lipa, kasztanowiec, klon, brzoza, sosna; jesienne korony), `street-details.js` (liście na ziemi).
 
-### 1.8 Minimapa, teleporty, atrybucja, wydajność
+### 1.8a Minimapa, teleporty, atrybucja, wydajność
 - Pliki: `nyc-map.js` (polskie etykiety osiedli, ulic, stacji), `city-config.js` (teleporty: Stare Bielany, Wawrzyszew, Młociny, AWF), `index.html` (stopka z atrybucją, teksty po polsku, km/h).
 - Pomiar: licznik fps w presecie "Złota jesień" na Twoim laptopie (M4), cel ≥ 30 fps.
+
+### 1.8b Test wydajności na Windows w Edge
+- Preset "Złota jesień", licznik fps, konsola bez błędów. Cel ≥ 30 fps. Wymaga laptopa z Windows (Twój lub pożyczony).
 
 ### 1.9 Deploy na Cloudflare Pages
 - Strona jest statyczna (bez budowania), więc wystarczy wgrać katalog z repo.
@@ -96,7 +102,7 @@ Dzięki strategii z punktu 1 logika tych modułów zostaje bez zmian. Kilka rzec
 | Długie pierwsze ładowanie (shadery) i komunikat Edge "strona nie odpowiada" | złe pierwsze wrażenie | mniejsze miasto (2,3 tys. zamiast 118 tys. budynków) powinno to rozwiązać; mierzymy w 1.3 |
 | Drzewa GUGiK: nieznany format i rozmiar | opóźnienie 1.7 | rozpoznanie danych na początku kroku; w razie problemów drzewa z OSM (`natural=tree`, `landuse=forest`) |
 | Budynki nowsze niż pomiar GUGiK z 2023 r. (82 duże obiekty w OSM) | brakujące bryły | w 1.3 uzupełniamy z OSM (wysokość z `building:levels` × 3 m) |
-| Testy zależne od danych NYC (`teleports`, `geodata`, `boot`) | czerwone testy w 1.1–1.2 | przepisujemy je w tym samym kroku, w którym zmienia się miasto |
+| Testy zależne od danych NYC (`teleports`, `geodata`, `boot`) | czerwone testy w 1.1–1.2a | przepisujemy je w tym samym kroku, w którym zmienia się miasto |
 
 ## Drobne błędy znalezione przy okazji (naprawa w Fazie 1)
 - `nyc-map.js:44`: kąt obrotu 0 jest traktowany jak brak wartości (`||`), więc mapa obróciłaby się o 29°. Naprawa w 1.1.
