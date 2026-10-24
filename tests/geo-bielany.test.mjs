@@ -53,6 +53,28 @@ test('Bielany geodata: frame at Stare Bielany, real streets with Polish names, a
       degree[c]++;
     }
     assert.ok(degree.filter((d) => d >= 3).length > n * 0.4, 'junctions are shared between streets');
+
+    // Blocks: curb islands between the roadways, never on a street's centreline; every sidewalk on one of them
+    const inRing = (flat, x, z) => {
+      let c = false;
+      for (let i = 0, j = flat.length - 2; i < flat.length; j = i, i += 2) {
+        if ((flat[i + 1] > z) !== (flat[j + 1] > z) && x < ((flat[j] - flat[i]) * (z - flat[i + 1])) / (flat[j + 1] - flat[i + 1]) + flat[i]) c = !c;
+      }
+      return c;
+    };
+    const onBlock = (x, z) => GEO.blocks.some(([outer, holes]) => inRing(outer, x, z) && !holes.some((h) => inRing(h, x, z)));
+    assert.ok(GEO.blocks.length > 200, `${GEO.blocks.length} blocks`);
+    let onCurb = 0;
+    for (const [a, c, , , , , inner] of links) {
+      // the middle of the link's first straight piece (the chord of a curved link may cut across a block)
+      const [bx, bz] = inner.length ? inner : [nodes[2 * c], nodes[2 * c + 1]];
+      if (onBlock((nodes[2 * a] + bx) / 2, (nodes[2 * a + 1] + bz) / 2)) onCurb++;
+    }
+    assert.ok(onCurb < links.length * 0.01, `${onCurb} of ${links.length} street centrelines fall on a block`);
+    assert.ok(!onBlock(station('Stare Bielany').x + 9.4, station('Stare Bielany').z - 12.4), 'the spawn on Kasprowicza is roadway');
+    for (const [block, outer] of GEO.sidewalks) {
+      assert.ok(block >= 0 && block < GEO.blocks.length && outer.length >= 6);
+    }
   } finally {
     fs.rmSync(dir, { recursive: true, force: true });
   }

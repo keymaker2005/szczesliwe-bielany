@@ -78,16 +78,60 @@ function nearestRoads(x, z, radius = 60) {
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
-// Blocks (curb islands between the streets, with sidewalks): from step 1.2b. Until then the whole plate is roadway.
+// Blocks: the curb islands between the roadways (tools/geo-bielany.mjs, from a 1 m raster of the streets at their
+// widths), raised to the curb height, with their sidewalks along the curbs
+//   poly: curb outline [{x, z}], holes: roadway islands inside it, park / median: kept for the portable modules (none)
 // ---------------------------------------------------------------------------------------------------------------------
-const BLOCKS = [];
+function pointInPoly(poly, x, z) {
+  let inside = false;
+  for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
+    const a = poly[i], b = poly[j];
+    if ((a.z > z) !== (b.z > z) && x < ((b.x - a.x) * (z - a.z)) / (b.z - a.z) + a.x) inside = !inside;
+  }
+  return inside;
+}
+const bounded = (o) => {
+  let minX = Infinity, maxX = -Infinity, minZ = Infinity, maxZ = -Infinity;
+  for (const p of o.poly) {
+    minX = Math.min(minX, p.x); maxX = Math.max(maxX, p.x); minZ = Math.min(minZ, p.z); maxZ = Math.max(maxZ, p.z);
+  }
+  return Object.assign(o, { minX, maxX, minZ, maxZ });
+};
+const BLOCKS = GEO.blocks.map(([outer, holes, area], id) =>
+  bounded({ id, poly: toPts(outer), holes: holes.map(toPts), area, park: 0, parkName: '', median: false }));
+const SIDEWALKS = GEO.sidewalks.map(([block, outer, holes]) => bounded({ block: BLOCKS[block], poly: toPts(outer), holes: holes.map(toPts) }));
+// Spatial index of the blocks (64 m cells)
+const BLOCK_CELL = 64;
+const BLOCK_GRID = new Map();
+for (const b of BLOCKS) {
+  for (let ix = Math.floor(b.minX / BLOCK_CELL); ix <= Math.floor(b.maxX / BLOCK_CELL); ix++) {
+    for (let iz = Math.floor(b.minZ / BLOCK_CELL); iz <= Math.floor(b.maxZ / BLOCK_CELL); iz++) {
+      const k = ix * 100000 + iz;
+      if (!BLOCK_GRID.has(k)) BLOCK_GRID.set(k, []);
+      BLOCK_GRID.get(k).push(b);
+    }
+  }
+}
 /** The block (curb island) under (x, z), or null on the roadway */
-function blockAt() {
+function blockAt(x, z) {
+  const list = BLOCK_GRID.get(Math.floor(x / BLOCK_CELL) * 100000 + Math.floor(z / BLOCK_CELL));
+  if (!list) return null;
+  for (const b of list) {
+    if (x < b.minX || x > b.maxX || z < b.minZ || z > b.maxZ) continue;
+    if (pointInPoly(b.poly, x, z) && !b.holes.some((h) => pointInPoly(h, x, z))) return b;
+  }
   return null;
 }
 /** Blocks whose bounds overlap a rectangle */
-function blocksInRect() {
-  return [];
+function blocksInRect(minX, maxX, minZ, maxZ) {
+  const out = new Set();
+  for (let ix = Math.floor(minX / BLOCK_CELL); ix <= Math.floor(maxX / BLOCK_CELL); ix++) {
+    for (let iz = Math.floor(minZ / BLOCK_CELL); iz <= Math.floor(maxZ / BLOCK_CELL); iz++) {
+      const list = BLOCK_GRID.get(ix * 100000 + iz);
+      if (list) for (const b of list) if (b.maxX > minX && b.minX < maxX && b.maxZ > minZ && b.minZ < maxZ) out.add(b);
+    }
+  }
+  return [...out];
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -151,6 +195,7 @@ export {
   LANDMARKS,
   TELEPORT_LOCATIONS,
   BLOCKS,
+  SIDEWALKS,
   SIGNAL_TIMING,
   getIslandBoundsAtZ,
   streetZ,

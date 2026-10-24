@@ -1,129 +1,109 @@
 import * as THREE from 'three/webgpu';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
-import { ISLAND_BOUNDS } from './city-config.js';
-import { createRoadSurfaceMaterial, createParkLawnMaterial } from './tsl-materials.js';
-import { GEO } from './bielany-geodata.js';
+import { ISLAND_BOUNDS, BLOCKS, SIDEWALKS } from './city-config.js';
+import { createRoadSurfaceMaterial, createParkLawnMaterial, createSidewalkMaterial, createCurbMaterial } from './tsl-materials.js';
 
 // js/city-grid.js
-// Builds the ground of Bielany: a flat plate (Faza 1: no terrain) reaching well past the MVP area, and the roadway of
-// every drivable street of the OpenStreetMap graph (js/bielany-geodata.js) at its curb-to-curb width, with round
-// joins at the junctions and bends. Blocks, curbs & sidewalks come in step 1.2b.
+// Builds the ground of Bielany (Faza 1: flat, no terrain): the roadway is everything between the blocks, so the MVP
+// area is one asphalt plate; on it stand the blocks (curb islands from tools/geo-bielany.mjs, city-config.js BLOCKS)
+// raised to the curb height, granite-grey curb faces, lawn on top and the sidewalks along their curbs. Beyond the area
+// lawn runs out to the horizon haze.
 
-const PLATE_MARGIN = 1500; // m of ground beyond the MVP area, out to the horizon haze
-const ROAD_Y = 0.0; // roadway top
-const PLATE_Y = -0.03; // the plate just below it, so the asphalt always wins
+const PLATE_MARGIN = 1500; // m of ground beyond the MVP area
+const CURB = ISLAND_BOUNDS.sidewalkHeight; // block top above the roadway
+const SIDEWALK_LIFT = 0.006; // sidewalk paving just above the lawn on the block top
 
-// Ribbon of half width h along a polyline [{x, z}] (mitred at the inner points, the mitre capped at 2h)
-function ribbon(pts, h, pos, idx) {
-  const n = pts.length;
-  const base = pos.length / 3;
-  for (let i = 0; i < n; i++) {
-    const p = pts[i];
-    const a = pts[Math.max(0, i - 1)];
-    const b = pts[Math.min(n - 1, i + 1)];
-    // unit directions of the segments before and after p
-    let ux = p.x - a.x, uz = p.z - a.z;
-    let vx = b.x - p.x, vz = b.z - p.z;
-    const lu = Math.hypot(ux, uz) || 1, lv = Math.hypot(vx, vz) || 1;
-    ux /= lu; uz /= lu; vx /= lv; vz /= lv;
-    if (i === 0) { ux = vx; uz = vz; }
-    if (i === n - 1) { vx = ux; vz = uz; }
-    // mitre: the mean of the two right normals, scaled to keep the half width
-    let mx = -(uz + vz), mz = ux + vx;
-    const lm = Math.hypot(mx, mz) || 1;
-    mx /= lm; mz /= lm;
-    const cos = Math.max(0.5, mx * -uz + mz * ux);
-    const s = h / cos;
-    pos.push(p.x + mx * s, ROAD_Y, p.z + mz * s, p.x - mx * s, ROAD_Y, p.z - mz * s);
-    if (i > 0) {
-      const k = base + 2 * (i - 1);
-      idx.push(k, k + 2, k + 1, k + 1, k + 2, k + 3); // facing up
+// THREE.Shape (with holes) of an outline [{x, z}] in the plane the extrusion turns upright: shape y = -z
+function shapeOf(poly, holes) {
+  const shape = new THREE.Shape(poly.map((p) => new THREE.Vector2(p.x, -p.z)));
+  for (const h of holes) shape.holes.push(new THREE.Path(h.map((p) => new THREE.Vector2(p.x, -p.z))));
+  return shape;
+}
+
+// Merged geometry of many pieces (one draw)
+function merge(geos) {
+  return geos.length ? mergeGeometries(geos, false) : null;
+}
+
+// The vertices of material group `index` of a non-indexed geometry (an ExtrudeGeometry: 0 the caps, 1 the sides)
+function groupPart(g, index) {
+  const part = new THREE.BufferGeometry();
+  const ranges = g.groups.filter((r) => r.materialIndex === index);
+  for (const [name, attr] of Object.entries(g.attributes)) {
+    const n = attr.itemSize;
+    const out = new Float32Array(ranges.reduce((s, r) => s + r.count, 0) * n);
+    let o = 0;
+    for (const r of ranges) {
+      out.set(attr.array.subarray(r.start * n, (r.start + r.count) * n), o);
+      o += r.count * n;
     }
+    part.setAttribute(name, new THREE.BufferAttribute(out, n));
   }
-}
-
-// Disc of radius r at (x, z): the round join where streets meet or bend
-function disc(x, z, r, pos, idx) {
-  const seg = Math.max(10, Math.min(28, Math.round(r * 2)));
-  const base = pos.length / 3;
-  pos.push(x, ROAD_Y, z);
-  for (let k = 0; k <= seg; k++) {
-    const t = (k / seg) * Math.PI * 2;
-    pos.push(x + Math.cos(t) * r, ROAD_Y, z - Math.sin(t) * r);
-    if (k > 0) idx.push(base, base + k, base + k + 1);
-  }
-}
-
-function roadwayGeometry() {
-  const RG = GEO.roadGraph;
-  const node = (i) => ({ x: RG.nodes[2 * i], z: RG.nodes[2 * i + 1] });
-  const joinR = new Map(); // node -> half width of the widest street meeting there
-  const geos = [];
-  let pos = [];
-  let idx = [];
-  const flush = () => {
-    if (!idx.length) return;
-    const g = new THREE.BufferGeometry();
-    g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
-    g.setIndex(idx);
-    geos.push(g);
-    pos = [];
-    idx = [];
-  };
-  for (const [a, b, , w, , , inner] of RG.links) {
-    const pts = [node(a)];
-    for (let k = 0; k < inner.length; k += 2) pts.push({ x: inner[k], z: inner[k + 1] });
-    pts.push(node(b));
-    const h = Math.max(2.5, w / 2);
-    ribbon(pts, h, pos, idx);
-    for (let k = 1; k < pts.length - 1; k++) disc(pts[k].x, pts[k].z, h, pos, idx);
-    for (const i of [a, b]) joinR.set(i, Math.max(joinR.get(i) || 0, h));
-    if (pos.length > 180000) flush();
-  }
-  for (const [i, r] of joinR) {
-    const p = node(i);
-    disc(p.x, p.z, r, pos, idx);
-  }
-  flush();
-  const merged = mergeGeometries(geos, false);
-  // Upward normals and world-space uv (the road material works in world space)
-  const n = merged.attributes.position.count;
-  const normals = new Float32Array(n * 3);
-  const uvs = new Float32Array(n * 2);
-  for (let i = 0; i < n; i++) {
-    normals[3 * i + 1] = 1;
-    uvs[2 * i] = merged.attributes.position.getX(i);
-    uvs[2 * i + 1] = merged.attributes.position.getZ(i);
-  }
-  merged.setAttribute('normal', new THREE.BufferAttribute(normals, 3));
-  merged.setAttribute('uv', new THREE.BufferAttribute(uvs, 2));
-  merged.computeBoundingSphere();
-  return merged;
+  return part;
 }
 
 function buildCityGrid(scene) {
   const group = new THREE.Group();
   group.name = 'BielanyCityGrid';
-
-  // 1. The ground plate: lawn and bare ground between the streets for now (blocks & sidewalks in step 1.2b)
   const b = ISLAND_BOUNDS;
-  const plateGeo = new THREE.PlaneGeometry(b.maxX - b.minX + 2 * PLATE_MARGIN, b.maxZ - b.minZ + 2 * PLATE_MARGIN, 1, 1);
-  plateGeo.rotateX(-Math.PI / 2);
-  const plate = new THREE.Mesh(plateGeo, createParkLawnMaterial(false));
-  plate.name = 'GroundPlate';
-  plate.position.set((b.minX + b.maxX) / 2, PLATE_Y, (b.minZ + b.maxZ) / 2);
-  plate.receiveShadow = true;
-  group.add(plate);
 
-  // 2. The roadway of every drivable street, merged into one mesh
-  const roads = new THREE.Mesh(roadwayGeometry(), createRoadSurfaceMaterial());
-  roads.name = 'Roadway';
-  roads.receiveShadow = true;
-  group.add(roads);
+  // 1. Lawn out to the horizon, just below the area's asphalt plate
+  const outerGeo = new THREE.PlaneGeometry(b.maxX - b.minX + 2 * PLATE_MARGIN, b.maxZ - b.minZ + 2 * PLATE_MARGIN, 1, 1);
+  outerGeo.rotateX(-Math.PI / 2);
+  const outer = new THREE.Mesh(outerGeo, createParkLawnMaterial(false));
+  outer.name = 'GroundBeyond';
+  outer.position.set((b.minX + b.maxX) / 2, -0.03, (b.minZ + b.maxZ) / 2);
+  outer.receiveShadow = true;
+  group.add(outer);
+
+  // 2. The roadway: the whole MVP area (the blocks stand on it)
+  const plateGeo = new THREE.PlaneGeometry(b.maxX - b.minX, b.maxZ - b.minZ, 1, 1);
+  plateGeo.rotateX(-Math.PI / 2);
+  const roadway = new THREE.Mesh(plateGeo, createRoadSurfaceMaterial());
+  roadway.name = 'Roadway';
+  roadway.position.set((b.minX + b.maxX) / 2, 0, (b.minZ + b.maxZ) / 2);
+  roadway.receiveShadow = true;
+  group.add(roadway);
+
+  // 3. Blocks: extruded outlines, lawn on the top (the extrusion's caps) and curb faces (its sides)
+  const tops = [];
+  const curbs = [];
+  for (const blk of BLOCKS) {
+    const g = new THREE.ExtrudeGeometry(shapeOf(blk.poly, blk.holes), { depth: CURB, bevelEnabled: false, curveSegments: 1 });
+    g.rotateX(-Math.PI / 2);
+    tops.push(groupPart(g, 0));
+    curbs.push(groupPart(g, 1));
+    g.dispose();
+  }
+  if (tops.length) {
+    const lawn = new THREE.Mesh(merge(tops), createParkLawnMaterial(false));
+    lawn.name = 'BlockTops';
+    lawn.receiveShadow = true;
+    const curb = new THREE.Mesh(merge(curbs), createCurbMaterial());
+    curb.name = 'Curbs';
+    curb.receiveShadow = true;
+    curb.castShadow = true;
+    group.add(lawn, curb);
+  }
+
+  // 4. Sidewalks: flat paving along the curbs on the block tops
+  const walkGeo = merge(SIDEWALKS.map((s) => {
+    const g = new THREE.ShapeGeometry(shapeOf(s.poly, s.holes), 1).toNonIndexed();
+    g.rotateX(-Math.PI / 2);
+    g.translate(0, CURB + SIDEWALK_LIFT, 0);
+    return g;
+  }));
+  if (walkGeo) {
+    const walks = new THREE.Mesh(walkGeo, createSidewalkMaterial());
+    walks.name = 'Sidewalks';
+    walks.receiveShadow = true;
+    group.add(walks);
+  }
 
   scene.add(group);
 
-  // Nothing raised yet: no curbs for the traffic to keep to (step 1.2b), no obstacles, no shore highways
+  // The blocks bound the roads by their outlines (city-config.js blockAt), so no curb rectangles; no obstacles yet,
+  // no shore highways
   return { group, sidewalks: [], footprints: [], highwayLanes: [], colliders: [] };
 }
 

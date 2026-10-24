@@ -1,7 +1,7 @@
 import * as THREE from 'three/webgpu';
 import { buildRoadNetwork } from './road-network.js';
 import { createPedestrianRoutes } from './pedestrian-routes.js';
-import { signalPhase, walkSignal, blockAt } from './city-config.js';
+import { signalPhase, walkSignal, blockAt, ISLAND_BOUNDS } from './city-config.js';
 import { cityUniforms, createContactShadowMaterial, createCarFlareMaterial } from './tsl-materials.js';
 import { HEADLIGHTS, createVehicleHeadlight, placeVehicleHeadlight } from './vehicle-lights.js';
 import {
@@ -1891,9 +1891,9 @@ function createTrafficSystem(scene, sidewalks, obstacles) {
     }
   }
 
-  // Walking surface around a pedestrian: sidewalks are 0.22 m above the road, and crosswalk tracks start and end
-  // with 2 m of sidewalk (the rig steps down and up the curbs)
-  const SIDEWALK_Y = 0.22;
+  // Walking surface around a pedestrian: sidewalks stand at the curb height above the road, and crosswalk tracks start
+  // and end with 2 m of sidewalk (the rig steps down and up the curbs)
+  const SIDEWALK_Y = ISLAND_BOUNDS.sidewalkHeight;
   const CROSSWALK_Y = 0.012;
   function pedGround(p, x, z) {
     if (!p.node) return SIDEWALK_Y;

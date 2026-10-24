@@ -1,4 +1,4 @@
-import { ISLAND_BOUNDS, getIslandBoundsAtZ, BLOCKS } from './city-config.js';
+import { getIslandBoundsAtZ, BLOCKS, blockAt } from './city-config.js';
 import { GEO } from './bielany-geodata.js';
 
 // js/road-network.js
@@ -16,7 +16,8 @@ const CROSSWALK = 2.5; // depth between an intersection box and its stop lines
 const SHORE_MARGIN = 6; // lanes stay this far inside the MVP area
 
 function buildRoadNetwork(sidewalks, obstacles) {
-  // 1. Spatial hash of ground footprints: curbs bound the roads, everything else also blocks pedestrians
+  // 1. Spatial hash of ground footprints: curb rectangles (if any) bound the roads like the blocks (city-config.js
+  //    blockAt, by their outlines) do, everything else also blocks pedestrians
   const hash = new Map();
   const cellKey = (ix, iz) => (ix + 512) * 1024 + iz + 512;
 
@@ -54,9 +55,9 @@ function buildRoadNetwork(sidewalks, obstacles) {
     return true;
   }
 
-  const blocked = (minX, maxX, minZ, maxZ) => !onLand(minX, maxX, minZ, maxZ) || query(minX, maxX, minZ, maxZ, () => true);
   const walkable = (minX, maxX, minZ, maxZ) => onLand(minX, maxX, minZ, maxZ) && !query(minX, maxX, minZ, maxZ, (r) => !r.curb);
-  const onSidewalk = (x, z) => query(x, x, z, z, (r) => r.curb);
+  const onCurb = (x, z) => !!blockAt(x, z) || query(x, x, z, z, (r) => r.curb);
+  const onSidewalk = onCurb;
   // The same test along the streets, which run at any angle: the rectangles standing in for irregular sidewalks may
   // reach a little past their curbs, a whole park's bounds take in the streets around it and a median's bounds both
   // its roadways, so only a curb right at (x, z), medians by their real outline and other obstacles under 50 m across
@@ -92,7 +93,7 @@ function buildRoadNetwork(sidewalks, obstacles) {
     return false;
   }
   const blockedOnStreet = (x, z, clear) => !onLand(x - clear, x + clear, z - clear, z + clear) ||
-    query(x - 0.3, x + 0.3, z - 0.3, z + 0.3, (r) => r.curb) ||
+    onCurb(x, z) ||
     nearMedian(x, z, clear) ||
     query(x - clear, x + clear, z - clear, z + clear, (r) => !r.curb && (r.maxX - r.minX < 50 || r.maxZ - r.minZ < 50) && !medianBox(r));
 
