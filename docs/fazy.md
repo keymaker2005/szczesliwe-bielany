@@ -24,7 +24,7 @@ Bramka: publiczny link na Cloudflare Pages + pakiet dla urzędu.
 - [x] 1.4 Typy fasad: blok, nowe osiedle, pawilon. Sprawdzam: bloki wyglądają jak bielańskie bloki.
 - [x] 1.5 Ruch aut na grafie dróg, jazda autem. Sprawdzam: przejazd od stacji Stare Bielany do pętli Młociny.
 - [x] 1.6 Preset oświetlenia "Złota jesień" jako domyślny: słońce ok. 26 do 29 stopni w południe, czyste niebo, cieplejszy grading. Sprawdzam: porównanie ze zdjęciem referencyjnym.
-- [ ] 1.7 Drzewa z modelu GUGiK, jesienne korony (żółć, pomarańcz, rdza z domieszką zieleni), liście na ziemi. Sprawdzam: zieleń tam, gdzie jest naprawdę.
+- [x] 1.7 Drzewa z modelu GUGiK, jesienne korony (żółć, pomarańcz, rdza z domieszką zieleni), liście na ziemi. Sprawdzam: zieleń tam, gdzie jest naprawdę.
 - [ ] 1.8a Minimapa z polskimi nazwami, teleporty do stref, atrybucja, wydajność. Sprawdzam: kryteria akceptacji niżej.
 - [ ] 1.8b Test wydajności na Windows w Edge (preset "Złota jesień", fps, błędy w konsoli). Sprawdzam: co najmniej 30 fps, brak błędów.
 - [ ] 1.9 Deploy na Cloudflare Pages pod bielany.zbigniew.ai. Sprawdzam: działający publiczny link.
