@@ -66,7 +66,7 @@ const TIME_PRESETS = {
   },
   golden: {
     id: 'golden',
-    name: 'Golden Hour · 15:30',
+    name: 'Popołudnie · 15:30',
     // Low afternoon sun from the south-west raking across the blocks, so buildings, cars, trees & pedestrians cast long
     // sharp shadows
     sunDir: sunFrom(225, 35.6),
@@ -94,7 +94,7 @@ const TIME_PRESETS = {
   },
   midday: {
     id: 'midday',
-    name: 'Sunny Midday · 13:30',
+    name: 'Słoneczne południe · 13:30',
     sunDir: sunFrom(200, 55),
     sunColor: 0xfff5e8,
     sunIntensity: 6.6,
@@ -120,7 +120,7 @@ const TIME_PRESETS = {
   },
   twilight: {
     id: 'twilight',
-    name: 'Blue Hour · 16:45',
+    name: 'Zmierzch · 16:45',
     sunDir: sunFrom(245, 21),
     sunColor: 0xff9466,
     sunIntensity: 3.1,
@@ -146,7 +146,7 @@ const TIME_PRESETS = {
   },
   midnight: {
     id: 'midnight',
-    name: 'Night · 23:00',
+    name: 'Noc · 23:00',
     sunDir: sunFrom(150, 43), // the moon, south-east
     sunColor: 0x8cb0e8,
     sunIntensity: 1.45,

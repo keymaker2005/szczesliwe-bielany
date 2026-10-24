@@ -598,6 +598,25 @@ const trees = fs.existsSync(TREES_FILE)
 const signals = osm('signals').filter((e) => e.type === 'node' && e.tags?.highway === 'traffic_signals')
   .map((e) => toWorld(e.lon, e.lat)).filter(inside).flatMap(([x, z]) => [q(x), q(z)]);
 
+// District names for the maps (OSM MSI areas): at the middle of each district's part inside the MVP area (the mean of
+// a 50 m grid of points in it); districts with under 0.15 km² inside are left out
+const districtLabels = districtRings().flatMap(({ name, rings }) => {
+  const inRing = (p, r) => {
+    let c = false;
+    for (let k = 0, m = r.length - 1; k < r.length; m = k++) {
+      if ((r[k][1] > p[1]) !== (r[m][1] > p[1]) && p[0] < ((r[m][0] - r[k][0]) * (p[1] - r[k][1])) / (r[m][1] - r[k][1]) + r[k][0]) c = !c;
+    }
+    return c;
+  };
+  let x = 0, z = 0, n = 0;
+  for (let px = X0 + 25; px < X1; px += 50) {
+    for (let pz = Z0 + 25; pz < Z1; pz += 50) {
+      if (rings.some((r) => inRing([px, pz], r))) { x += px; z += pz; n++; }
+    }
+  }
+  return n >= 60 ? [[name, q(x / n), q(z / n)]] : [];
+});
+
 const stations = osm('rail')
   .filter((e) => e.type === 'node' && e.tags?.station === 'subway' && e.tags?.name)
   .map((e) => { const [x, z] = toWorld(e.lon, e.lat); return { name: e.tags.name, x: q(x), z: q(z) }; })
@@ -626,6 +645,8 @@ const GEO = {
   sidewalks,
   // Traffic signals [x, z, ...]
   signals,
+  // District names for the maps: [name, x, z]
+  districts: districtLabels,
   // Trees (GUGiK LoD1 2023, CC BY 4.0): [x, z, height, crown base, crown radius, ...] flat, m
   trees,
   // Buildings: [outer ring [x, z, ...], holes, height above the ground m, source (0: GUGiK LoD1 2024, CC BY 4.0;

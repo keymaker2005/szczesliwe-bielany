@@ -159,13 +159,18 @@ function buildingAt(x, z) {
 // ---------------------------------------------------------------------------------------------------------------------
 // Places: the M1 stations (more in step 1.8a) and the teleport arrivals, on real roadways
 // ---------------------------------------------------------------------------------------------------------------------
-const LANDMARKS = GEO.stations.map((s) => ({ id: s.name, name: `Metro ${s.name}`, short: s.name, x: s.x, z: s.z, district: 'Bielany' }));
+const LANDMARKS = [
+  ...GEO.stations.map((s) => ({ id: s.name, name: `Metro ${s.name}`, short: s.name, x: s.x, z: s.z, district: 'Bielany' })),
+  { id: 'AWF', name: 'Akademia Wychowania Fizycznego', short: 'AWF', x: 330, z: -760, district: 'Las Bielański' }
+];
 // Street-level arrivals shared by every travel mode, in the direction of travel. Heading 0 faces south (+z), PI north.
 const TELEPORT_LOCATIONS = {
   stareBielany: { x: 9.4, z: -12.4, heading: -2.216 }, // Kasprowicza at the Stare Bielany station
   wawrzyszew: { x: -659.3, z: -518.8, heading: -2.215 }, // Kasprowicza at the Wawrzyszew station
   mlociny: { x: -1336.5, z: -1005.0, heading: -0.413 }, // al. gen. Marii Wittek at the Młociny station
-  awf: { x: 205.9, z: -638.1, heading: -2.583 } // Marymoncka at the AWF
+  awf: { x: 205.9, z: -638.1, heading: -2.583 }, // Marymoncka at the AWF
+  chomiczowka: { x: -1645.6, z: 502.2, heading: -0.584 }, // Pabla Nerudy, Chomiczówka
+  wrzeciono: { x: -690.4, z: -1224.9, heading: 2.115 } // Przy Agorze, Wrzeciono
 };
 
 /**

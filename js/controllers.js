@@ -452,7 +452,7 @@ class ThirdPersonControllerManager {
 
     return {
       type: 'person',
-      label: 'Pedestrian',
+      label: 'Pieszo',
       mesh: root,
       crowd,
       rig,
@@ -810,7 +810,7 @@ class ThirdPersonControllerManager {
 
     return {
       type: 'helicopter',
-      label: 'Sightseeing Helicopter',
+      label: 'Helikopter widokowy',
       mesh: root,
       tiltPivot,
       mainRotorPivot,

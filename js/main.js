@@ -35,7 +35,7 @@ async function initApp() {
   };
 
   if (loadingStatus) {
-    loadingStatus.textContent = `Initializing Three.js r${THREE.REVISION} WebGPURenderer & TSL Shaders...`;
+    loadingStatus.textContent = `Uruchamianie three.js r${THREE.REVISION}, WebGPU i shaderów TSL...`;
   }
 
   // 1. Initialize Three.js WebGPURenderer with 32-bit float reversedDepthBuffer
@@ -132,7 +132,7 @@ async function initApp() {
     soundButton.disabled = !audioSystem.supported;
     soundButton.setAttribute('aria-pressed', String(audioSystem.enabled));
     soundButton.setAttribute('aria-label', audioSystem.enabled ? 'Mute sound' : 'Enable sound');
-    soundButton.title = audioSystem.supported ? `${audioSystem.enabled ? 'Mute' : 'Enable'} sound [N]` : 'Web Audio is unavailable';
+    soundButton.title = audioSystem.supported ? `${audioSystem.enabled ? 'Wycisz' : 'Włącz'} dźwięk [N]` : 'Dźwięk niedostępny w tej przeglądarce';
     soundButton.querySelector('use').setAttribute('href', audioSystem.enabled ? '#i-sound' : '#i-sound-off');
   }
   soundButton?.addEventListener('click', () => audioSystem.setEnabled(!audioSystem.enabled));
@@ -237,13 +237,13 @@ async function initApp() {
 
   // Keyboard guide for each mode: [keys, action]
   const controlHints = {
-    person: [[['W', 'S'], 'Walk'], [['A', 'D'], 'Turn'], [['Shift'], 'Sprint'], [['Space'], 'Jump'], [['Drag'], 'Orbit']],
-    car: [[['W', 'S'], 'Drive / Reverse'], [['A', 'D'], 'Steer'], [['Shift'], 'Boost'], [['B'], 'Horn'], [['Drag'], 'Orbit']],
-    cyclist: [[['W', 'S'], 'Pedal / Brake'], [['A', 'D'], 'Lean & Turn'], [['Shift'], 'Sprint'], [['Drag'], 'Orbit']],
-    helicopter: [[['W', 'S'], 'Pitch'], [['A', 'D'], 'Yaw'], [['Space', 'E'], 'Ascend'], [['Q', 'C'], 'Descend'], [['Shift'], 'Boost']]
+    person: [[['W', 'S'], 'Idź'], [['A', 'D'], 'Skręt'], [['Shift'], 'Bieg'], [['Space'], 'Skok'], [['Drag'], 'Obrót kamery']],
+    car: [[['W', 'S'], 'Jazda / wstecz'], [['A', 'D'], 'Skręt'], [['Shift'], 'Szybciej'], [['B'], 'Klakson'], [['Drag'], 'Obrót kamery']],
+    cyclist: [[['W', 'S'], 'Pedałuj / hamuj'], [['A', 'D'], 'Przechył i skręt'], [['Shift'], 'Sprint'], [['Drag'], 'Obrót kamery']],
+    helicopter: [[['W', 'S'], 'Pochylenie'], [['A', 'D'], 'Obrót'], [['Space', 'E'], 'W górę'], [['Q', 'C'], 'W dół'], [['Shift'], 'Szybciej']]
   };
-  // Boosted top speeds in mph (controllers.js caps them at 8.2, 36, 19 & 52 m/s): full scale of the speed meter
-  const topSpeedMph = { person: 18, car: 81, cyclist: 43, helicopter: 116 };
+  // Boosted top speeds in km/h (controllers.js caps them at 8.2, 36, 19 & 52 m/s): full scale of the speed meter
+  const topSpeedKmh = { person: 30, car: 130, cyclist: 68, helicopter: 187 };
 
   function renderControlHints(mode) {
     if (!elControlsHint) return;
@@ -415,7 +415,7 @@ async function initApp() {
         streets = streets.slice(5);
         const near = document.createElement('span');
         near.className = 'location-near';
-        near.textContent = 'near';
+        near.textContent = 'w pobliżu';
         row.appendChild(near);
       }
       for (const name of streets.split(' & ')) {
@@ -454,7 +454,7 @@ async function initApp() {
       gamepadControls.setEnabled(!open);
       const mapHint = document.getElementById('fullmap-hover-info');
       if (open && touchControls.available && mapHint) {
-        mapHint.textContent = 'Tap to teleport · Drag to pan · Use + / − to zoom';
+        mapHint.textContent = 'Stuknij, by się teleportować · przeciągnij, by przesunąć · + / − przybliża';
       }
     },
     onTeleport: teleportTo
@@ -480,7 +480,7 @@ async function initApp() {
       const isMin = document.body.classList.contains('hud-minimized');
       hudToggleBtn.setAttribute('aria-pressed', String(isMin));
       hudToggleBtn.setAttribute('aria-label', isMin ? 'Show HUD' : 'Hide HUD');
-      hudToggleBtn.title = isMin ? 'Show the HUD [H]' : 'Clean view: hide the HUD [H]';
+      hudToggleBtn.title = isMin ? 'Pokaż interfejs [H]' : 'Czysty widok: ukryj interfejs [H]';
       if (isMin) closePopovers();
     });
   }
@@ -555,7 +555,7 @@ async function initApp() {
   // The loading screen stays up while the shaders compile (precompileShaders() & the warm-up frame, see the loop) and
   // until the first frame is on screen
   if (loadingStatus) {
-    loadingStatus.textContent = 'Compiling Shaders & Render Pipelines...';
+    loadingStatus.textContent = 'Kompilowanie shaderów...';
   }
 
   // 6b. Shader pre-compilation behind the loading screen. compileAsync() builds the node graphs in slices and has the GPU
@@ -625,7 +625,7 @@ async function initApp() {
         for (const object of job) await compile(object);
         done++;
         if (loadingStatus) {
-          loadingStatus.textContent = `Compiling Shaders & Render Pipelines... ${Math.round((done / jobs.length) * 100)}%`;
+          loadingStatus.textContent = `Kompilowanie shaderów... ${Math.round((done / jobs.length) * 100)}%`;
         }
         setLoadingProgress(done / jobs.length);
       }
@@ -727,17 +727,17 @@ async function initApp() {
 
       const activeEnt = controllerManager.getActiveEntity();
       const mode = controllerManager.activeMode;
-      const mph = Math.round(Math.abs(activeEnt.speed) * 2.237);
-      const altFt = Math.max(0, Math.round(activeEnt.position.y * 3.281));
+      const kmh = Math.round(Math.abs(activeEnt.speed) * 3.6);
+      const altM = Math.max(0, Math.round(activeEnt.position.y));
 
       if (elFps) {
         elFps.textContent = String(currentFps);
         elFps.className = currentFps >= 50 ? 'fps-ok' : currentFps >= 30 ? 'fps-warn' : 'fps-bad';
       }
-      if (elSpeed) elSpeed.textContent = String(mph);
-      if (elSpeedMeter) elSpeedMeter.style.transform = `scaleX(${Math.min(1, mph / (topSpeedMph[mode] || 80))})`;
-      document.body.classList.toggle('is-boosting', controllerManager.keys.boost && mph > 0);
-      if (elAltitude) elAltitude.textContent = altFt.toLocaleString('en-US');
+      if (elSpeed) elSpeed.textContent = String(kmh);
+      if (elSpeedMeter) elSpeedMeter.style.transform = `scaleX(${Math.min(1, kmh / (topSpeedKmh[mode] || 130))})`;
+      document.body.classList.toggle('is-boosting', controllerManager.keys.boost && kmh > 0);
+      if (elAltitude) elAltitude.textContent = altM.toLocaleString('pl-PL');
       // The street corner of the player on the follow cameras, of the camera itself on the scenic ones
       const where = cameraSystem.getActivePreset().category === 'follow' ? activeEnt.position : cameraSystem.currentPos;
       renderLocation(getLocationLabel(where.x, where.z));

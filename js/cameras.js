@@ -1,22 +1,22 @@
 import * as THREE from 'three/webgpu';
-import { bryantParkLawn } from './landmarks.js';
 
 // js/cameras.js
 // Multi-camera system supporting Third-Person Chase (with mouse/touch orbit + zoom),
-// Low-Angle Action Cam, POV/Cockpit Cam, 7 Iconic NYC Architectural Cameras, and Auto-Director Drone.
+// Low-Angle Action Cam, POV/Cockpit Cam, 7 scenic Bielany cameras, and Auto-Director Drone.
+// (The scenic ids are the original ones, kept for the shortcut keys; names & framings are Bielany's.)
 
 const CAMERA_PRESETS = [
-  { id: 'chase',       name: '3rd-Person Chase',         short: 'Chase',       category: 'follow', fov: 56 },
-  { id: 'action',      name: 'Low-Angle Action',         short: 'Action',      category: 'follow', fov: 60 },
-  { id: 'pov',         name: 'First-Person / Cockpit',   short: 'POV / Dash',  category: 'follow', fov: 68 },
-  { id: 'centralPark', name: 'Central Park Oasis',       short: 'Central Pk',  category: 'scenic', fov: 52 },
-  { id: 'fifthAve',    name: '5th Ave & Empire State',   short: '5th Ave',     category: 'scenic', fov: 48 },
-  { id: 'timesSquare', name: 'Times Square Crossroads',  short: 'Times Sq',    category: 'scenic', fov: 58 },
-  { id: 'chryslerGCT', name: '42nd St · Chrysler & GCT', short: 'Chrysler',    category: 'scenic', fov: 50 },
-  { id: 'observatory', name: 'Empire State 86th Deck',   short: '86th Deck',   category: 'scenic', fov: 52 },
-  { id: 'bryantPark',  name: 'Bryant Park & NYPL',       short: 'Bryant Pk',   category: 'scenic', fov: 52 },
-  { id: 'waterfront',  name: 'East River & Skyline',     short: 'Skyline',     category: 'scenic', fov: 46 },
-  { id: 'drone',       name: 'Auto-Director Aerial',     short: 'Director',    category: 'scenic', fov: 50 }
+  { id: 'chase',       name: 'Za graczem',                short: 'Za graczem',  category: 'follow', fov: 56 },
+  { id: 'action',      name: 'Nisko, dynamicznie',        short: 'Nisko',       category: 'follow', fov: 60 },
+  { id: 'pov',         name: 'Oczami gracza',             short: 'Oczami',      category: 'follow', fov: 68 },
+  { id: 'centralPark', name: 'Skraj Lasu Bielańskiego',   short: 'Las',         category: 'scenic', fov: 52 },
+  { id: 'fifthAve',    name: 'Kasprowicza · Stare Bielany', short: 'Kasprowicza', category: 'scenic', fov: 50 },
+  { id: 'timesSquare', name: 'Wawrzyszew · bloki',        short: 'Wawrzyszew',  category: 'scenic', fov: 56 },
+  { id: 'chryslerGCT', name: 'Młociny · pętla',           short: 'Młociny',     category: 'scenic', fov: 52 },
+  { id: 'observatory', name: 'Z dachu wieżowca na Chomiczówce', short: 'Z dachu', category: 'scenic', fov: 52 },
+  { id: 'bryantPark',  name: 'AWF · Marymoncka',          short: 'AWF',         category: 'scenic', fov: 52 },
+  { id: 'waterfront',  name: 'Nad Lasem Bielańskim',      short: 'Nad lasem',   category: 'scenic', fov: 48 },
+  { id: 'drone',       name: 'Przelot nad Bielanami',     short: 'Przelot',     category: 'scenic', fov: 50 }
 ];
 
 class CameraSystem {
@@ -256,73 +256,72 @@ class CameraSystem {
       }
 
       case 'centralPark': {
-        // Inside Central Park South looking across The Pond, Gapstow Bridge, The Mall, Sheep Meadow & UWS/UES Skylines
+        // At the edge of Las Bielański (the survey's densest woods), looking in under the autumn crowns
         const sway = Math.sin(elapsed * 0.22) * 3.5;
-        desiredPos.set(-70.0 + sway, 14.0, -1425.0);
-        desiredLook.set(-250.0, 6.5, -1690.0);
+        desiredPos.set(150.0 + sway, 4.5, -1450.0);
+        desiredLook.set(320.0, 8.0, -1700.0);
         break;
       }
 
       case 'fifthAve': {
-        // 5th Avenue & 42nd St looking South down the 5th Ave canyon toward the Empire State Building
+        // Kasprowicza at the Stare Bielany station, looking north-west along the one-way roadway
         const sway = Math.sin(elapsed * 0.25) * 1.8;
-        desiredPos.set(0.0 + sway, 6.5, -20.0);
-        desiredLook.set(-60.0, 150.0, 686.0);
+        desiredPos.set(14.0 + sway, 6.5, -8.0);
+        desiredLook.set(14.0 - 480.0, 18.0, -8.0 - 290.0);
         break;
       }
 
       case 'timesSquare': {
-        // Times Square & Broadway looking across Duffy Square red steps and One Times Square billboards
+        // Wawrzyszew: from the Kasprowicza junction by the station across the high prefab blocks
         const sway = Math.sin(elapsed * 0.3) * 3.0;
-        desiredPos.set(-603.0 + sway, 5.5, -290.0);
-        desiredLook.set(-566.0, 40.0, -40.0);
+        desiredPos.set(-640.0 + sway, 8.0, -500.0);
+        desiredLook.set(-800.0, 22.0, -280.0);
         break;
       }
 
       case 'chryslerGCT': {
-        // Park Ave & 42nd St intersection looking straight at Grand Central, MetLife, and Chrysler Building Crown
+        // The Młociny terminus: over the tram loop & the metro, looking north-west
         const sway = Math.cos(elapsed * 0.22) * 2.5;
-        desiredPos.set(300.0 + sway, 9.5, 95.0);
-        desiredLook.set(470.0, 120.0, -50.0);
+        desiredPos.set(-1290.0 + sway, 14.0, -960.0);
+        desiredLook.set(-1420.0, 6.0, -1120.0);
         break;
       }
 
       case 'observatory': {
-        // Empire State Building 86th Floor Deck looking North-East across Midtown skyline
-        const pan = Math.sin(elapsed * 0.18) * 80.0;
-        desiredPos.set(-58.0, 322.0, 660.0);
-        desiredLook.set(420.0 + pan, 150.0, -200.0);
+        // On the roof of a Chomiczówka tower (49 m), looking east across Bielany to Las Bielański
+        const pan = Math.sin(elapsed * 0.18) * 160.0;
+        desiredPos.set(-1961.0, 52.0, 15.0);
+        desiredLook.set(0.0, 15.0, -500.0 + pan);
         break;
       }
 
       case 'bryantPark': {
-        // Inside Bryant Park Great Lawn looking East toward NYPL portico, One Vanderbilt & Chrysler Building
+        // Marymoncka by the AWF, looking up the street
         const sway = Math.sin(elapsed * 0.25) * 1.5;
-        const lawn = bryantParkLawn || { minX: -260, maxX: -150, minZ: 40, maxZ: 120, top: 1.3 };
-        const lz = (lawn.minZ + lawn.maxZ) * 0.5;
-        desiredPos.set(lawn.minX + 18.0, lawn.top + 1.7, lz + sway);
-        desiredLook.set(lawn.maxX + 260.0, 70.0, lz - 60.0);
+        desiredPos.set(212.0 + sway, 5.0, -630.0);
+        desiredLook.set(212.0 - 330.0, 12.0, -630.0 - 470.0);
         break;
       }
 
       case 'waterfront': {
-        // Over the shimmering East River looking across the FDR Drive, Queensboro Bridge & Midtown Skyline
-        const drift = Math.sin(elapsed * 0.15) * 40.0;
-        desiredPos.set(1640.0, 60.0, 60.0 + drift);
-        desiredLook.set(150.0, 150.0, -150.0);
+        // Above Las Bielański, looking west over the blocks of Wawrzyszew & Młociny
+        const drift = Math.sin(elapsed * 0.15) * 60.0;
+        desiredPos.set(450.0, 70.0, -1500.0 + drift);
+        desiredLook.set(-900.0, 10.0, -700.0);
         break;
       }
 
       case 'drone': {
+        // Round the middle of the area (Wawrzyszew), Młociny to Stare Bielany
         const angle = elapsed * 0.07 + 0.65;
-        const radius = 720.0 + Math.sin(elapsed * 0.23) * 140.0;
-        const alt = 330.0 + Math.cos(elapsed * 0.19) * 90.0;
+        const radius = 900.0 + Math.sin(elapsed * 0.23) * 160.0;
+        const alt = 260.0 + Math.cos(elapsed * 0.19) * 70.0;
         desiredPos.set(
-          Math.cos(angle) * radius + 60.0,
+          Math.cos(angle) * radius - 700.0,
           alt,
-          Math.sin(angle) * radius + 250.0
+          Math.sin(angle) * radius - 550.0
         );
-        desiredLook.set(60.0, 160.0, 250.0);
+        desiredLook.set(-700.0, 20.0, -550.0);
         break;
       }
     }

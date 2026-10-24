@@ -1,5 +1,5 @@
 import { GEO } from './bielany-geodata.js';
-import { getLocationLabel, isTypingInField } from './city-config.js';
+import { LANDMARKS, getLocationLabel, isTypingInField } from './city-config.js';
 
 // js/nyc-map.js
 // GTA 6-Style Live Radar Minimap + Full-Screen Interactive Cartographic Atlas of Bielany (Warsaw).
@@ -21,8 +21,11 @@ const ROADS = (GEO.roads || []).map(([name, w, dir, lanes, hw, flat, cls]) => {
   return { name, w, dir, lanes, highway: !!hw, cls, major: cls === 'trunk' || cls === 'primary' || cls === 'secondary', pts };
 });
 
-// Map pins: the M1 stations (more places in step 1.8a)
-const MAP_LANDMARKS = (GEO.stations || []).map((s) => ({ id: s.name, name: `Metro ${s.name}`, short: s.name, x: s.x, z: s.z }));
+// Map pins: the M1 stations and the other places of city-config.js
+const MAP_LANDMARKS = LANDMARKS;
+
+// Search folds case and Polish letters ("zeromskiego" finds "Żeromskiego")
+const fold = (t) => String(t || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/ł/g, 'l');
 
 // Map palette, shared by the radar & the atlas (in step with css/style.css): graphite ground with the streets a shade
 // lighter than the blocks they run between, muted parks & water; a taxi-yellow GPS route, white landmarks & player,
@@ -59,8 +62,9 @@ const MAP = {
   halo: 'rgba(8, 11, 15, 0.9)'
 };
 
-// District (0), waterway (1) & neighbourhood (2) names at their real places (world metres): Bielany osiedla in step 1.8a
-const AREA_LABELS = [];
+// District (0), waterway (1) & neighbourhood (2) names at their real places (world metres): the Bielany areas (OSM MSI,
+// js/bielany-geodata.js) as neighbourhoods
+const AREA_LABELS = (GEO.districts || []).map(([name, x, z]) => [name.toUpperCase(), x, z, 2]);
 
 // Shorter map names for a few real street names
 const LABEL_ALIAS = {};
@@ -254,8 +258,8 @@ for (const r of ROADS) {
   if (!anchors.length) continue;
   ROAD_LABELS.push({
     text,
-    lower: text.toLowerCase(),
-    raw: r.name.toLowerCase(),
+    lower: fold(text),
+    raw: fold(r.name),
     road: r,
     major: r.highway || r.major,
     highway: r.highway,
@@ -370,7 +374,7 @@ class NYCMapSystem {
     this.miniScale = RADAR_SCALE;
     this.miniCache = null; // { canvas, cx, cz, s, version }: the radar's ground layers, twice the radar's size
     const elCounts = document.getElementById('fullmap-counts');
-    if (elCounts) elCounts.textContent = `${ROAD_NAME_COUNT} streets · ${MAP_LANDMARKS.length} M1 stations`;
+    if (elCounts) elCounts.textContent = `${ROAD_NAME_COUNT} ulic · ${MAP_LANDMARKS.length} stacje M1`;
 
     // The compass needle points to true north, GRID_BEARING to the left of map north (0°: straight up)
     const needle = document.getElementById('map-compass-needle');
@@ -386,7 +390,7 @@ class NYCMapSystem {
     this.elHoverInfo = document.getElementById('fullmap-hover-info');
     this.elPlayerInfo = document.getElementById('fullmap-player-info');
     this.elSearchInput = document.getElementById('fullmap-search');
-    if (this.elSearchInput) this.elSearchInput.placeholder = `Search ${ROAD_NAME_COUNT} streets & landmarks…`;
+    if (this.elSearchInput) this.elSearchInput.placeholder = `Szukaj wśród ${ROAD_NAME_COUNT} ulic i miejsc…`;
 
     this.isFullMapOpen = false;
     // Full map viewport state (world metres; zoom in CSS pixels per metre)
@@ -516,7 +520,7 @@ class NYCMapSystem {
           const wPos = this.screenToWorld(mx, my, rect.width, rect.height);
           this.hoverWorld = wPos;
           if (this.elHoverInfo) {
-            this.elHoverInfo.textContent = `${getLocationLabel(wPos.x, wPos.z)} · Click to teleport here`;
+            this.elHoverInfo.textContent = `${getLocationLabel(wPos.x, wPos.z)} · kliknij, by się tu teleportować`;
           }
         }
       });
@@ -574,11 +578,11 @@ class NYCMapSystem {
    * matching landmark)
    */
   search(text) {
-    const q = String(text || '').trim().toLowerCase();
+    const q = fold(String(text || '').trim());
     this.searchHighlight = q;
     this.searchPath = null;
     if (q.length > 0) {
-      const lmMatch = MAP_LANDMARKS.find((l) => l.name.toLowerCase().includes(q) || l.short.toLowerCase().includes(q));
+      const lmMatch = MAP_LANDMARKS.find((l) => fold(l.name).includes(q) || fold(l.short).includes(q));
       const roads = ROAD_LABELS.filter((l) => l.lower.includes(q) || l.raw.includes(q));
       if (roads.length) {
         this.searchPath = new Path2D();
@@ -966,7 +970,7 @@ class NYCMapSystem {
 
     const ent = this.controllerManager.getActiveEntity();
     if (this.elPlayerInfo) {
-      const text = `You are at ${getLocationLabel(ent.position.x, ent.position.z)}`;
+      const text = `Jesteś: ${getLocationLabel(ent.position.x, ent.position.z)}`;
       if (text !== this.playerInfoText) {
         this.playerInfoText = text;
         this.elPlayerInfo.textContent = text;

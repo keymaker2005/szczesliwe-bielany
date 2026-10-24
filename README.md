@@ -1,15 +1,32 @@
-# Slop New York
+# Szczęśliwe Bielany
 
-A New York City simulation built with [three.js](https://threejs.org/), WebGPURenderer, and TSL. Explore Manhattan on foot, by car, by bicycle, or by helicopter.
+Warszawskie Bielany wzdłuż linii M1 — Stare Bielany, Wawrzyszew, Młociny — w 3D w przeglądarce, w słoneczny dzień
+złotej polskiej jesieni. Pieszo, autem, rowerem albo helikopterem. Zbudowane na [three.js](https://threejs.org/)
+(WebGPURenderer, TSL).
 
-[Try it live](https://mrdoob.github.io/slop-newyork/)
+## Oryginał
 
-## Make it your own
+Projekt jest forkiem [Slop New York](https://github.com/mrdoob/slop-newyork) autorstwa Mr.doob
+([wersja na żywo](https://mrdoob.github.io/slop-newyork/)), symulacji Nowego Jorku na licencji MIT. Silnik (sterowanie,
+kamery, dźwięk, piesi, ruch drogowy, shadery) pochodzi z oryginału; miasto, dane i wygląd są przeniesione na Bielany.
+Stan oryginału zachowuje tag `nyc-original`.
 
-Fork it, remix it, improve it, break it. Make games, animations, films, experiments, or something completely different. Use it as a starting point and take it wherever you want. Have fun!
+## Uruchomienie lokalnie
 
-## License and data
+```bash
+node tools/serve.mjs 8080
+```
 
-The project code is available under the [MIT License](LICENSE).
+i w przeglądarce z WebGPU (Chrome, Edge) adres http://localhost:8080. Testy: `node --test tests/`.
 
-Geographic data: NYC Open Data and © [OpenStreetMap contributors](https://www.openstreetmap.org/copyright) (ODbL). Third-party data and dependencies retain their respective licenses.
+Dane miasta (`js/bielany-geodata.js`) generuje `node tools/geo-bielany.mjs` z plików w `tools/data/` i `data/`
+(zob. `data/README.md`).
+
+## Licencja i dane
+
+Kod jest dostępny na [licencji MIT](LICENSE).
+
+Dane: © [współtwórcy OpenStreetMap](https://www.openstreetmap.org/copyright) (ODbL); GUGiK,
+[geoportal.gov.pl](https://www.geoportal.gov.pl/) — modele 3D budynków LoD1 2024 i modele 3D drzew LoD1 2023
+(CC BY 4.0). Dane i zależności zewnętrzne zachowują swoje licencje. Nazwy szyldów, linii autobusowych i malowania
+pojazdów są fikcyjne.
