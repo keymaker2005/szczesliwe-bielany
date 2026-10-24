@@ -5,7 +5,7 @@ Status: FAZA 0 (rozpoznanie). Kolejna faza startuje dopiero po przejściu bramki
 ## Faza 0: Rozpoznanie
 Bramka: dane się wczytują, plan Fazy 1 zaakceptowany.
 
-- [ ] 0.1 Folder zawiera już CLAUDE.md, docs/ i data/. Podłącz do niego fork (git init, remote add origin, fetch, checkout main) bez nadpisywania tych plików; dodaj data/raw/ do .gitignore. Przeczytaj repo, uruchom oryginał lokalnie, przypnij three.js do konkretnego release w importmap.
+- [x] 0.1 Folder zawiera już CLAUDE.md, docs/ i data/. Podłącz do niego fork (git init, remote add origin, fetch, checkout main) bez nadpisywania tych plików; dodaj data/raw/ do .gitignore. Przeczytaj repo, uruchom oryginał lokalnie, przypnij three.js do konkretnego release w importmap.
       Sprawdzam: Nowy Jork działa w mojej przeglądarce.
 - [ ] 0.2 Pobierz z Overpass ulice, tory tramwajowe, nazwy i adresy dla bbox 52.274,20.915,52.300,20.960. Budynki są już wycięte w data/bielany_lod1_2024.geojson (2296 szt., patrz data/README.md); sprawdź je na tle OSM. Raport: liczba budynków, rozkład wysokości, długość ulic, pokrycie adresów.
       Sprawdzam: raport ma sensowne liczby.
