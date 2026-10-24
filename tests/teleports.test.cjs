@@ -5,32 +5,41 @@ const test = require('node:test');
 const vm = require('node:vm');
 
 const read = (path) => readFileSync(join(__dirname, '..', path), 'utf8');
-let TELEPORT_LOCATIONS, LANDMARK_SITES, blockAt, nearestRoads, getIslandBoundsAtZ;
+let TELEPORT_LOCATIONS, LANDMARKS, blockAt, nearestRoads, getIslandBoundsAtZ;
 test.before(async () => {
-  ({ TELEPORT_LOCATIONS, LANDMARK_SITES, blockAt, nearestRoads, getIslandBoundsAtZ } = await import('../js/city-config.js'));
+  ({ TELEPORT_LOCATIONS, LANDMARKS, blockAt, nearestRoads, getIslandBoundsAtZ } = await import('../js/city-config.js'));
 });
 
-test('every teleport button has a destination on a real roadway inside Manhattan', () => {
+test('every teleport button has a destination on a real roadway inside the Bielany area', () => {
   const buttons = [...read('index.html').matchAll(/data-teleport="([^"]+)"/g)].map((match) => match[1]);
   assert.deepEqual(Object.keys(TELEPORT_LOCATIONS).sort(), buttons.sort());
   for (const [name, point] of Object.entries(TELEPORT_LOCATIONS)) {
     assert.ok(Number.isFinite(point.heading), `${name} has a heading`);
     assert.equal(blockAt(point.x, point.z), null, `${name} lands outside building blocks`);
-    const shore = getIslandBoundsAtZ(point.z);
-    assert.ok(point.x > shore.westX + 8 && point.x < shore.eastX - 8, `${name} stays on the island`);
+    const edge = getIslandBoundsAtZ(point.z);
+    assert.ok(point.x > edge.westX + 8 && point.x < edge.eastX - 8, `${name} stays inside the area`);
     const nearby = nearestRoads(point.x, point.z, 20);
-    assert.ok(nearby.some(({ road, dist }) => dist < road.w / 2), `${name} lands within a street's width`);
+    assert.ok(nearby.some(({ road, dist }) => road.name && dist < road.w / 2), `${name} lands within a street's width`);
   }
 });
 
-test('One World Trade Center arrives on Vesey Street facing the tower', () => {
-  const point = TELEPORT_LOCATIONS.owtc;
-  const tower = LANDMARK_SITES['One World Trade Center'];
-  assert.ok(nearestRoads(point.x, point.z, 20).some(({ road, dist }) => road.name === 'Vesey St' && dist < 1));
-  const distance = Math.hypot(tower.x - point.x, tower.z - point.z);
-  assert.ok(distance > 100 && distance < 220, 'leave space for the tower view');
-  const alignment = ((tower.x - point.x) * Math.sin(point.heading) + (tower.z - point.z) * Math.cos(point.heading)) / distance;
-  assert.ok(alignment > 0.999, 'face the tower rather than the neighboring buildings');
+test('the metro teleports arrive at their stations, along the street', () => {
+  for (const [key, station] of [['stareBielany', 'Stare Bielany'], ['wawrzyszew', 'Wawrzyszew'], ['mlociny', 'Młociny']]) {
+    const point = TELEPORT_LOCATIONS[key];
+    const s = LANDMARKS.find((l) => l.short === station);
+    assert.ok(Math.hypot(s.x - point.x, s.z - point.z) < 30, `${key} lands next to the ${station} station`);
+    // facing along the nearest street, not across it
+    const { road } = nearestRoads(point.x, point.z, 20)[0];
+    let along = 0;
+    for (let i = 0; i + 1 < road.pts.length; i++) {
+      const a = road.pts[i], b = road.pts[i + 1];
+      const L = Math.hypot(b.x - a.x, b.z - a.z) || 1;
+      const t = ((point.x - a.x) * (b.x - a.x) + (point.z - a.z) * (b.z - a.z)) / (L * L);
+      if (t < 0 || t > 1) continue;
+      along = Math.max(along, Math.abs(((b.x - a.x) * Math.sin(point.heading) + (b.z - a.z) * Math.cos(point.heading)) / L));
+    }
+    assert.ok(along > 0.97, `${key} faces along ${road.name}`);
+  }
 });
 
 test('preset and map teleports share arrival resets and mark the resolved landing point', () => {

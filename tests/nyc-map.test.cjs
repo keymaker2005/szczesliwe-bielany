@@ -11,7 +11,7 @@ for (const [width, height, dpr] of [[500, 300, 1], [320, 180, 1.5], [1920, 1080,
     const window = { innerWidth: width, innerHeight: height, devicePixelRatio: dpr };
     const { NYCMapSystem } = loadModule(source, {
       globals: { window, performance: { now: () => 0 } },
-      imports: { './bielany-geodata.js': { GEO: {} }, './city-config.js': { isTypingInField: () => false } }
+      imports: { './bielany-geodata.js': { GEO: {} }, './city-config.js': { getLocationLabel: () => '', isTypingInField: () => false } }
     });
     const map = Object.create(NYCMapSystem.prototype);
     // Capture the production render viewport; drawing primitives are irrelevant to coordinate conversion.
@@ -101,7 +101,7 @@ function mapHarness() {
   };
   const { NYCMapSystem } = loadModule(source, {
     globals: { window, document },
-    imports: { './bielany-geodata.js': { GEO: geo }, './city-config.js': { isTypingInField: () => false } }
+    imports: { './bielany-geodata.js': { GEO: geo }, './city-config.js': { getLocationLabel: (x, z) => `${x}, ${z}`, isTypingInField: () => false } }
   });
   const teleports = [], toggles = [];
   const map = new NYCMapSystem({
@@ -150,7 +150,7 @@ test('a normal map tap teleports once and releases capture', () => {
   h.pointer(h.canvas, 'pointerdown', 1);
   h.pointer(h.canvas, 'pointerup', 1);
   assert.deepEqual(h.teleports, [[1000, 2000]]);
-  assert.equal(h.map.waypoint.name, 'Aleja Zjednoczenia');
+  assert.equal(h.map.waypoint.name, '1000, 2000');
   assert.equal(h.captured.size, 0);
   assert.equal(h.map.isPanning, false);
 });

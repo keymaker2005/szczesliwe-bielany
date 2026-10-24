@@ -1,12 +1,12 @@
 import { GEO } from './bielany-geodata.js';
-import { isTypingInField } from './city-config.js';
+import { getLocationLabel, isTypingInField } from './city-config.js';
 
 // js/nyc-map.js
 // GTA 6-Style Live Radar Minimap + Full-Screen Interactive Cartographic Atlas of Bielany (Warsaw).
 // Synchronized 1:1 with the 3D world (1 unit = 1 m; x = east, z = south, origin at the Stare Bielany metro station,
 // true north up). They draw the geography of js/bielany-geodata.js (OpenStreetMap): the MVP area, every street at its
-// curb-to-curb width (labelled along its course) and the M1 stations. Step 1.1: streets only; the 3D world is still
-// New York until step 1.2a, building footprints return with the LoD1 buildings in step 1.3.
+// curb-to-curb width (labelled along its course) and the M1 stations. Building footprints return with the LoD1
+// buildings in step 1.3.
 
 const FONT = 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
 const MIN_ZOOM = 0.08; // full map, pixels per metre: the whole MVP area and some margin
@@ -24,41 +24,6 @@ const ROADS = (GEO.roads || []).map(([name, w, dir, lanes, hw, flat, cls]) => {
 
 // Map pins: the M1 stations (more places in step 1.8a)
 const MAP_LANDMARKS = (GEO.stations || []).map((s) => ({ id: s.name, name: `Metro ${s.name}`, short: s.name, x: s.x, z: s.z }));
-
-// Nearest-road index for the location labels: uniform grid of named road segments
-const LABEL_CELL = 64;
-const LABEL_GRID = new Map();
-for (const r of ROADS) {
-  if (!r.name) continue;
-  for (let i = 0; i + 1 < r.pts.length; i++) {
-    const a = r.pts[i], b = r.pts[i + 1];
-    for (let gx = Math.floor(Math.min(a.x, b.x) / LABEL_CELL); gx <= Math.floor(Math.max(a.x, b.x) / LABEL_CELL); gx++) {
-      for (let gz = Math.floor(Math.min(a.z, b.z) / LABEL_CELL); gz <= Math.floor(Math.max(a.z, b.z) / LABEL_CELL); gz++) {
-        const k = `${gx},${gz}`;
-        if (!LABEL_GRID.has(k)) LABEL_GRID.set(k, []);
-        LABEL_GRID.get(k).push([r, a, b]);
-      }
-    }
-  }
-}
-
-/** "Street", "Street & Cross Street" (within ~25 m beyond the curb) or "Bielany" away from the named streets */
-function getLocationLabel(x, z) {
-  const best = new Map();
-  const gx = Math.floor(x / LABEL_CELL), gz = Math.floor(z / LABEL_CELL);
-  for (let dx = -1; dx <= 1; dx++) {
-    for (let dz = -1; dz <= 1; dz++) {
-      for (const [r, a, b] of LABEL_GRID.get(`${gx + dx},${gz + dz}`) || []) {
-        const vx = b.x - a.x, vz = b.z - a.z;
-        const t = Math.max(0, Math.min(1, ((x - a.x) * vx + (z - a.z) * vz) / (vx * vx + vz * vz || 1)));
-        const d = Math.hypot(a.x + vx * t - x, a.z + vz * t - z) - r.w * 0.5;
-        if (!best.has(r.name) || d < best.get(r.name)) best.set(r.name, d);
-      }
-    }
-  }
-  const near = [...best].filter(([, d]) => d < 25).sort((p, q) => p[1] - q[1]).map(([n]) => n);
-  return near.length ? near.slice(0, 2).join(' & ') : 'Bielany';
-}
 
 // Map palette, shared by the radar & the atlas (in step with css/style.css): graphite ground with the streets a shade
 // lighter than the blocks they run between, muted parks & water; a taxi-yellow GPS route, white landmarks & player,
@@ -395,8 +360,7 @@ class NYCMapSystem {
     this.controllerManager = controllerManager;
     this.cameraSystem = cameraSystem;
     this.trafficSystem = trafficSystem;
-    // New York's building footprints would sit on the Bielany streets: hidden until the LoD1 buildings (step 1.3)
-    this.allBlocks = [];
+    this.allBlocks = allBlocks;
     this.onTeleport = onTeleport;
     this.onToggle = onToggle;
 
