@@ -175,7 +175,8 @@ const canyonSkyAONode = Fn(() => {
 
   const heightOpenness = smoothstep(0.0, 68.0, wp.y);
   const streetCrevice = smoothstep(0.0, 7.5, wp.y).mul(0.22).add(0.78);
-  const canyonAO = mix(float(0.44), float(1.0), heightOpenness).mul(streetCrevice);
+  // (Bielany's estates are open, not street canyons: the floor is raised from Manhattan's 0.44)
+  const canyonAO = mix(float(0.74), float(1.0), heightOpenness).mul(streetCrevice);
   return mix(canyonAO, float(1.0), inPark);
 });
 

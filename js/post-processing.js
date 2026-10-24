@@ -23,6 +23,7 @@ import { bloom } from 'three/addons/tsl/display/BloomNode.js';
 // Exposure and white balance belong to the camera, independently of the physical lighting presets.
 // Keep exposure restrained for ACES; stronger bloom stays selective so midtones retain their contrast.
 const LOOKS = {
+  autumn:   { exposure: 1.03, contrast: 1.10, saturation: 1.10, balance: [1.05, 1.00, 0.94], bloom: 0.18, threshold: 1.30 },
   golden:   { exposure: 1.04, contrast: 1.12, saturation: 1.08, balance: [1.045, 1.00, 0.955], bloom: 0.24, threshold: 1.20 },
   midday:   { exposure: 1.00, contrast: 1.10, saturation: 1.06, balance: [1.015, 1.00, 0.985], bloom: 0.18, threshold: 1.35 },
   twilight: { exposure: 1.06, contrast: 1.10, saturation: 1.08, balance: [1.025, 0.995, 1.015], bloom: 0.28, threshold: 1.05 },

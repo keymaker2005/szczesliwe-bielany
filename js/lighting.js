@@ -27,12 +27,49 @@ import { cityUniforms } from './tsl-materials.js';
 // Live PMREMGenerator IBL Cubemap, Three.js r186 SunLight (2-Cascade CSM),
 // and Occlusion-Aware Urban Canyon Global Illumination for Three.js r186 WebGPURenderer
 
+// The sun (or moon) at a compass azimuth (degrees clockwise from north) and elevation above the horizon, in the Bielany
+// frame (x east, z south, north = -z): the unit vector towards it
+function sunFrom(azimuthDeg, elevationDeg) {
+  const az = THREE.MathUtils.degToRad(azimuthDeg), el = THREE.MathUtils.degToRad(elevationDeg);
+  return new THREE.Vector3(Math.sin(az) * Math.cos(el), Math.sin(el), -Math.cos(az) * Math.cos(el));
+}
+
+// Warsaw (52.3° N) in the second half of October. Złota jesień, the default: the sun 27.5° up at about 12:40, just west
+// of south, a clear sky and the warm light of a dry autumn day. The other presets keep their tuned light & sky, with
+// the sun where it stands on such a day (mid-afternoon south-west, the blue hour in the west-south-west).
 const TIME_PRESETS = {
+  autumn: {
+    id: 'autumn',
+    name: 'Złota jesień · 12:40',
+    sunDir: sunFrom(190, 27.5),
+    sunColor: 0xffe1b4,
+    sunIntensity: 6.2,
+    hemiSky: 0x9ec3ea,
+    hemiGround: 0xb7a068, // bounce off lawns & fallen leaves
+    hemiIntensity: 1.52,
+    skyTop: 0x2a64b0,
+    skyHorizon: 0xd8e2ea,
+    fogColor: 0xd3d6d4,
+    fogDensity: 0.00016,
+    interiorGlow: 0.22,
+    roadWetness: 0.05,
+    envIntensity: 0.56,
+    canyonBounce: 0.6,
+    turbidity: 4.2,
+    rayleigh: 2.2,
+    mieCoefficient: 0.005,
+    mieDirectionalG: 0.84,
+    cloudCoverage: 0.1,
+    cloudDensity: 0.22,
+    skyExposure: 0.15,
+    nightFactor: 0.0
+  },
   golden: {
     id: 'golden',
-    name: 'Golden Hour · 17:45',
-    // Crisp Manhattan canyon sun slicing across avenues & intersections so buildings, cars, trees & pedestrians cast sharp shadows
-    sunDir: new THREE.Vector3(-0.44, 0.58, -0.68).normalize(),
+    name: 'Golden Hour · 15:30',
+    // Low afternoon sun from the south-west raking across the blocks, so buildings, cars, trees & pedestrians cast long
+    // sharp shadows
+    sunDir: sunFrom(225, 35.6),
     sunColor: 0xffca92,
     sunIntensity: 5.8,
     hemiSky: 0x9abbe6,
@@ -58,7 +95,7 @@ const TIME_PRESETS = {
   midday: {
     id: 'midday',
     name: 'Sunny Midday · 13:30',
-    sunDir: new THREE.Vector3(-0.34, 0.82, -0.46).normalize(),
+    sunDir: sunFrom(200, 55),
     sunColor: 0xfff5e8,
     sunIntensity: 6.6,
     hemiSky: 0xaad2ff,
@@ -83,8 +120,8 @@ const TIME_PRESETS = {
   },
   twilight: {
     id: 'twilight',
-    name: 'Blue Hour · 19:15',
-    sunDir: new THREE.Vector3(-0.52, 0.36, -0.77).normalize(),
+    name: 'Blue Hour · 16:45',
+    sunDir: sunFrom(245, 21),
     sunColor: 0xff9466,
     sunIntensity: 3.1,
     hemiSky: 0x4c6ca8,
@@ -109,8 +146,8 @@ const TIME_PRESETS = {
   },
   midnight: {
     id: 'midnight',
-    name: 'Manhattan Night · 23:00',
-    sunDir: new THREE.Vector3(0.42, 0.68, -0.60).normalize(),
+    name: 'Night · 23:00',
+    sunDir: sunFrom(150, 43), // the moon, south-east
     sunColor: 0x8cb0e8,
     sunIntensity: 1.45,
     hemiSky: 0x263a62,
@@ -139,7 +176,7 @@ class LightingSystem {
   constructor(scene, renderer = null) {
     this.scene = scene;
     this.renderer = renderer;
-    this.activePresetId = 'golden';
+    this.activePresetId = 'autumn';
 
     // Assign SunLight its node implementation for WebGPURenderer (Light.registerNode since r187; r186 used the library)
     if (SunLight.registerNode) {
@@ -201,7 +238,7 @@ class LightingSystem {
     // Three.js r186 SunLight with automatic 2-Cascade Shadow Map (SunLightShadow + SunShadowNode)
     // Shines from its position vector toward the origin (no .target needed)
     this.sunLight = new SunLight(0xffca92, 5.8);
-    this.sunLight.position.copy(TIME_PRESETS.golden.sunDir);
+    this.sunLight.position.copy(TIME_PRESETS.autumn.sunDir);
     this.sunLight.castShadow = true;
     // 3072x3072 per cascade = 6144x3072 2-cascade shadow atlas (an 8192x4096 one cost ~20% fps and caused hitches),
     // 2048 where the device allows less. The near cascade spans ~0.35-80 m of the view at street level (see update)
@@ -221,12 +258,12 @@ class LightingSystem {
     this.hemiLight.position.set(0, 300, 0);
     this.scene.add(this.hemiLight);
 
-    this.applyPreset('golden');
+    this.applyPreset('autumn');
 
     // Sky-matched aerial perspective (replaces the flat FogExp2 colour): distant surfaces fade into the baked sky
     // radiance just above the horizon in their view direction (sun glow included), through an exponential haze layer
     // so helicopter / observatory views stay clearer than the horizon.
-    this.uFogDensity = uniform(TIME_PRESETS.golden.fogDensity);
+    this.uFogDensity = uniform(TIME_PRESETS.autumn.fogDensity);
     this.uFogHeight = uniform(900.0);
     if (this.envRenderTarget) this.scene.fogNode = this.createAerialFogNode();
   }
@@ -264,7 +301,7 @@ class LightingSystem {
   }
 
   applyPreset(presetId, force = false) {
-    const p = TIME_PRESETS[presetId] || TIME_PRESETS.golden;
+    const p = TIME_PRESETS[presetId] || TIME_PRESETS.autumn;
     if (!force && this.activePresetId === p.id && this.envRenderTarget !== null) {
       return;
     }
