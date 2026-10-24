@@ -77,6 +77,13 @@ test('Bielany geodata: frame at Stare Bielany, real streets with Polish names, a
     const osmCount = GEO.buildings.filter((bd) => bd[3] === 1).length;
     assert.ok(osmCount > 30 && osmCount < 150, `${osmCount} OpenStreetMap buildings`);
     for (const [outer, , h] of GEO.buildings) assert.ok(outer.length >= 6 && h >= 2 && h < 70);
+    // Trees: the GUGiK survey's crowns inside the area, at plausible sizes
+    const T = GEO.trees;
+    assert.ok(T.length / 5 > 20000, `${T.length / 5} trees`);
+    for (let i = 0; i < T.length; i += 5) {
+      assert.ok(T[i] >= b.minX && T[i] <= b.maxX && T[i + 1] >= b.minZ && T[i + 1] <= b.maxZ);
+      assert.ok(T[i + 2] >= 2 && T[i + 2] < 50 && T[i + 3] >= 0 && T[i + 3] < T[i + 2] && T[i + 4] > 0 && T[i + 4] < 25);
+    }
     for (const [block, outer] of GEO.sidewalks) {
       assert.ok(block >= 0 && block < GEO.blocks.length && outer.length >= 6);
     }

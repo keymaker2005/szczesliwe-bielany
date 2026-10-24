@@ -2,7 +2,7 @@ import * as THREE from 'three/webgpu';
 import { createTreeMaterial } from './tsl-materials.js';
 
 // js/trees.js
-// Procedural NYC street & park trees, planted by street-details.js (section 7):
+// Procedural street & park trees, planted by street-details.js:
 // - London plane, honey locust & American elm grown from seeded per-species rules: a flared trunk / leader carrying
 //   scaffold limbs, branches and twigs as tapered, curving bark tubes (uv in metres for the bark shader)
 // - Leaf sprays on alpha-tested cards hung from the twigs, cut from a generated leaf atlas (palmate plane leaves,
@@ -809,13 +809,15 @@ function buildTreeGeometries(speciesIndex, variant, tileMeters) {
 // 5. TREE FIELD: per-tree level of detail, with spatial cells culled separately in the view and shadow passes
 // =====================================================================================================================
 const TREE_CELL_SIZE = 200;
-const LOD_NEAR = 105; // full detail within (m)
-const LOD_MID = 420; // coarse cards & branches within; whole-crown cards beyond
+// Bielany has ~27 000 surveyed trees, thick woods among them (Las Bielański), several times Midtown's density: the
+// levels switch nearer than for Manhattan's street trees
+const LOD_NEAR = 60; // full detail within (m)
+const LOD_MID = 220; // coarse cards & branches within; whole-crown cards beyond
 const LOD_HYSTERESIS = 6;
 // Draw distance per tier (0 park & plaza, 1 avenue & esplanade, 2 cross-street); at street level everything beyond
 // LOW_CUTOFF is behind the buildings anyway
-const MAX_DIST = [3000, 1600, 950];
-const LOW_CUTOFF = 1150;
+const MAX_DIST = [1800, 1200, 900];
+const LOW_CUTOFF = 900;
 
 function hashPos(x, y, z) {
   const s = Math.sin(x * 127.1 + y * 311.7 + z * 74.7) * 43758.5453;
@@ -823,9 +825,10 @@ function hashPos(x, y, z) {
 }
 
 /**
- * Builds the instanced tree field for `sites` ({ x, y, z, scale, species, yaw?, sx?, sz?, tier? }) and keeps each
- * tree's level of detail up to date from the camera of every view pass (scene.onBeforeRender). Returns
- * { group, material, atlas, update(cameraPosition) }.
+ * Builds the instanced tree field for `sites` ({ x, y, z, scale, species, yaw?, sx?, sz?, tier?, tint? } or, sized
+ * from a survey, { x, y, z, species, height, crown, tint? }: total height & crown radius in metres) and keeps each
+ * tree's level of detail up to date from the camera of every view pass (scene.onBeforeRender). `tint` (sRGB hex)
+ * replaces the species' foliage tints. Returns { group, material, atlas, update(cameraPosition) }.
  */
 function createTreeField(scene, sites) {
   const group = new THREE.Group();
@@ -867,6 +870,12 @@ function createTreeField(scene, sites) {
   const meshes = [];
   const counts = [];
 
+  // Each species' grown size at scale 1 (its near model): height and crown radius, for trees sized from a survey
+  const grown = geos.map((v) => {
+    const b = v[0][0].boundingBox;
+    return { h: b.max.y, r: Math.max(-b.min.x, b.max.x, -b.min.z, b.max.z) };
+  });
+
   const dummy = new THREE.Object3D();
   const tint = new THREE.Color();
   sites.forEach((t, i) => {
@@ -875,13 +884,17 @@ function createTreeField(scene, sites) {
     const r2 = hashPos(t.z, 7.1, t.x);
     const r3 = hashPos(t.x + t.z, 3.3, 0.7);
     const variant = hashPos(t.x, 5.9, t.z) < 0.5 ? 0 : 1;
-    const s = t.scale * (0.9 + r1 * 0.2);
+    const surveyed = t.height > 0;
+    const s = surveyed ? t.height / grown[sp].h : t.scale * (0.9 + r1 * 0.2);
+    // a surveyed crown keeps its measured width (within reason for the model's shape)
+    const wide = surveyed ? Math.min(1.7, Math.max(0.6, (t.crown / grown[sp].r) / s)) : 1;
     dummy.position.set(t.x, t.y || 0, t.z);
     dummy.rotation.set(0, t.yaw ?? r2 * Math.PI * 2, 0);
-    dummy.scale.set(s * (0.9 + r3 * 0.2) * (t.sx || 1), s * (0.88 + r1 * 0.24), s * (0.9 + r2 * 0.2) * (t.sz || 1));
+    if (surveyed) dummy.scale.set(s * wide, s, s * wide * (0.92 + r2 * 0.16));
+    else dummy.scale.set(s * (0.9 + r3 * 0.2) * (t.sx || 1), s * (0.88 + r1 * 0.24), s * (0.9 + r2 * 0.2) * (t.sz || 1));
     dummy.updateMatrix();
     dummy.matrix.toArray(mats, i * 16);
-    tint.setHex(SPECIES[sp].tints[Math.floor(r3 * 2.999)]).multiplyScalar(0.82 + r1 * 0.36);
+    tint.setHex(t.tint ?? SPECIES[sp].tints[Math.floor(r3 * 2.999)]).multiplyScalar(0.82 + r1 * 0.36);
     data.set([tint.r, tint.g, tint.b, sp + r2 * 0.999], i * 4);
     px[i] = t.x;
     py[i] = (t.y || 0) + 6 * s;
@@ -1018,8 +1031,8 @@ function createTreeField(scene, sites) {
     update(viewPos.setFromMatrixPosition(camera.matrixWorld));
   };
 
-  // Levels for the start-up view (Midtown, 5th Ave), so the precompile pass sees the tree meshes
-  update(new V3(0, 10, 140));
+  // Levels for the start-up view (the Stare Bielany station), so the precompile pass sees the tree meshes
+  update(new V3(0, 10, 0));
 
   // Precompile one visible representative per geometry; the other cells use exactly the same pipeline.
   for (const type of types) {
