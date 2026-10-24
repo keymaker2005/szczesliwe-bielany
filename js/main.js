@@ -5,6 +5,7 @@ import { createPostProcessing } from './post-processing.js';
 import { ClusteredLighting } from 'three/addons/lighting/ClusteredLighting.js';
 import { getLocationLabel, isTypingInField, ROADS, LANDMARKS, TELEPORT_LOCATIONS } from './city-config.js';
 import { buildCityGrid } from './city-grid.js';
+import { buildCityBlocks } from './buildings.js';
 import { buildStreetDetails } from './street-details.js';
 import { createTrafficSystem, createHighwayTraffic } from './traffic.js';
 import { buildRoadPaint } from './road-paint.js';
@@ -70,10 +71,12 @@ async function initApp() {
     loadingStatus.textContent = 'Budowanie ulic Bielan...';
   }
 
-  // 3. Build the ground & streets of Bielany, street details & traffic (buildings from LoD1 in step 1.3)
+  // 3. Build the ground & streets of Bielany, the LoD1 buildings, street details & traffic
   const cityGrid = buildCityGrid(scene);
   markInit('cityGrid');
-  const allColliders = [...(cityGrid.colliders || [])];
+  const cityBlocks = buildCityBlocks(scene);
+  markInit('buildings');
+  const allColliders = [...cityBlocks.colliders, ...(cityGrid.colliders || [])];
 
   const streetDetails = buildStreetDetails(scene);
   markInit('streetDetails');
@@ -143,7 +146,7 @@ async function initApp() {
 
   // Area-wide static geometry: chunk & distance-cull the small props, shadow stand-ins for the big casters
   // (scene-culling.js)
-  const cullingRoots = ['BielanyCityGrid', 'BielanyStreetDetails']
+  const cullingRoots = ['BielanyCityGrid', 'BielanyBuildings', 'BielanyStreetDetails']
     .map((name) => scene.getObjectByName(name))
     .filter(Boolean);
   setupSceneCulling(scene, cullingRoots, lightingSystem.sunLight.shadow);
@@ -443,7 +446,7 @@ async function initApp() {
     controllerManager,
     cameraSystem,
     trafficSystem,
-    allBlocks: [],
+    allBlocks: cityBlocks.allBlocks,
     onToggle: (open) => {
       controllerManager.resetInput();
       touchControls.setEnabled(!open);

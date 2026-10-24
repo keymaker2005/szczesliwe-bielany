@@ -1,16 +1,16 @@
 // tools/geo-bielany.mjs
 // Builds js/bielany-geodata.js: the Bielany MVP area (Stare Bielany, Wawrzyszew, Młociny) in the simulation's world
 // frame (tools/bielany-frame.mjs: 1 unit = 1 m, x = east, z = south, origin at the Stare Bielany metro station, no
-// rotation): the streets (map lines and the drivable graph), the blocks between them with their sidewalks, the M1
-// stations.
+// rotation): the streets (map lines and the drivable graph), the blocks between them with their sidewalks, the
+// buildings, the M1 stations.
 //
 // Inputs: tools/data/osm_bielany_streets.json and osm_bielany_rail.json (OpenStreetMap via Overpass, see
-// tools/overpass.sh and tools/data/q_bielany_*.overpassql)
+// tools/overpass.sh and tools/data/q_bielany_*.overpassql); data/bielany_lod1_2024.geojson (GUGiK LoD1 buildings)
 //
 // usage: node tools/geo-bielany.mjs [outFile]
 
 import fs from 'node:fs';
-import { ROOT, osm, BBOX, BOUNDS, LAT0, LON0, toWorld } from './bielany-frame.mjs';
+import { ROOT, read, osm, BBOX, BOUNDS, LAT0, LON0, toWorld } from './bielany-frame.mjs';
 
 const OUT = process.argv[2] || ROOT + 'js/bielany-geodata.js';
 const log = (...a) => console.log('[geo-bielany]', ...a);
@@ -96,6 +96,16 @@ function rdp(pts, eps) {
   }
   if (best <= eps) return [pts[0], pts[pts.length - 1]];
   return [...rdp(pts.slice(0, bi + 1), eps).slice(0, -1), ...rdp(pts.slice(bi), eps)];
+}
+// Closed-ring Douglas-Peucker: split at the vertex farthest from the first, simplify both halves
+function rdpRing(pts, eps) {
+  let far = 0, fd = -1;
+  for (let k = 1; k < pts.length; k++) {
+    const d = Math.hypot(pts[k][0] - pts[0][0], pts[k][1] - pts[0][1]);
+    if (d > fd) { fd = d; far = k; }
+  }
+  const a = rdp(pts.slice(0, far + 1), eps), b = rdp([...pts.slice(far), pts[0]], eps);
+  return [...a.slice(0, -1), ...b.slice(0, -1)];
 }
 const flat = (pts) => pts.flatMap(([x, z]) => [q(x), q(z)]);
 
@@ -330,16 +340,6 @@ function buildBlocks(graph) {
     }
     return rings;
   }
-  // Closed-ring Douglas-Peucker: split at the vertex farthest from the first, simplify both halves
-  function rdpRing(pts, eps) {
-    let far = 0, fd = -1;
-    for (let k = 1; k < pts.length; k++) {
-      const d = Math.hypot(pts[k][0] - pts[0][0], pts[k][1] - pts[0][1]);
-      if (d > fd) { fd = d; far = k; }
-    }
-    const a = rdp(pts.slice(0, far + 1), eps), b = rdp([...pts.slice(far), pts[0]], eps);
-    return [...a.slice(0, -1), ...b.slice(0, -1)];
-  }
   const ringArea = (r) => {
     let s = 0;
     for (let k = 0, m = r.length - 1; k < r.length; m = k++) s += r[m][0] * r[k][1] - r[k][0] * r[m][1];
@@ -394,7 +394,31 @@ function buildBlocks(graph) {
 }
 
 // =====================================================================================================================
-// 7. POINTS: metro stations (spawn & teleports later)
+// 7. BUILDINGS: GUGiK LoD1 2024 footprints (data/bielany_lod1_2024.geojson, data/extract_bielany_lod1.py) with their
+//    heights above the ground; outer rings counter-clockwise in x/z, simplified to 0.2 m
+// =====================================================================================================================
+function buildBuildings() {
+  const ringArea = (r) => {
+    let s = 0;
+    for (let k = 0, m = r.length - 1; k < r.length; m = k++) s += r[m][0] * r[k][1] - r[k][0] * r[m][1];
+    return s / 2;
+  };
+  const out = [];
+  for (const f of read(ROOT + 'data/bielany_lod1_2024.geojson').features) {
+    const rings = f.geometry.coordinates.map((ring) => {
+      const pts = ring.map(([lon, lat]) => toWorld(lon, lat));
+      if (pts.length > 1 && pts[0][0] === pts[pts.length - 1][0] && pts[0][1] === pts[pts.length - 1][1]) pts.pop();
+      return rdpRing(pts, 0.2);
+    }).filter((r) => r.length >= 3);
+    if (!rings.length) continue;
+    const [outer, ...holes] = rings.map((r, k) => ((ringArea(r) > 0) === (k === 0) ? r : r.slice().reverse()));
+    out.push([flat(outer), holes.map(flat), q(f.properties.height_m)]);
+  }
+  return out;
+}
+
+// =====================================================================================================================
+// 8. POINTS: metro stations (spawn & teleports later)
 // =====================================================================================================================
 const stations = osm('rail')
   .filter((e) => e.type === 'node' && e.tags?.station === 'subway' && e.tags?.name)
@@ -402,7 +426,7 @@ const stations = osm('rail')
   .filter((s) => inside([s.x, s.z]));
 
 // =====================================================================================================================
-// 8. OUTPUT
+// 9. OUTPUT
 // =====================================================================================================================
 const roadGraph = buildRoadGraph();
 const { blocks, sidewalks } = buildBlocks(roadGraph);
@@ -422,6 +446,8 @@ const GEO = {
   blocks,
   // Sidewalks along the curbs: [block index, outer ring, holes]
   sidewalks,
+  // Buildings (GUGiK LoD1 2024, CC BY 4.0): [outer ring [x, z, ...], holes, height above the ground m]
+  buildings: buildBuildings(),
   stations,
 };
 
@@ -429,9 +455,9 @@ const json = JSON.stringify(GEO);
 const header = `// js/bielany-geodata.js — GENERATED by tools/geo-bielany.mjs, do not edit by hand.
 // Warsaw Bielany (Stare Bielany, Wawrzyszew, Młociny) in the simulation's world frame: 1 unit = 1 m, x = east,
 // z = south (north = -z), origin at the Stare Bielany metro station, no rotation. Polylines are flat [x0, z0, ...].
-// Source: © OpenStreetMap contributors (ODbL), via Overpass.
+// Sources: © OpenStreetMap contributors (ODbL), via Overpass; buildings GUGiK, geoportal.gov.pl (LoD1 2024, CC BY 4.0).
 `;
 fs.writeFileSync(OUT, `${header}export const GEO = ${json};\n`);
 log(`wrote ${OUT} (${(fs.statSync(OUT).size / 1024).toFixed(0)} KB): ${GEO.roads.length} roads, ` +
   `${GEO.roadGraph.nodes.length / 2} nodes, ${GEO.roadGraph.links.length} links, ${GEO.blocks.length} blocks, ` +
-  `${GEO.sidewalks.length} sidewalks, ${GEO.stations.length} stations`);
+  `${GEO.sidewalks.length} sidewalks, ${GEO.buildings.length} buildings, ${GEO.stations.length} stations`);
