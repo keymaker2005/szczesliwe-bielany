@@ -398,6 +398,32 @@ function buildBlocks(graph) {
 //    heights above the ground, and the newer buildings LoD1 misses from OpenStreetMap; outer rings counter-clockwise
 //    in x/z, simplified to 0.2 m
 // =====================================================================================================================
+// District outlines (OSM MSI areas): their outer member ways joined end to end into rings
+function districtRings() {
+  const key = (p) => `${p.lon.toFixed(7)},${p.lat.toFixed(7)}`;
+  return osm('districts').map((rel) => {
+    const pieces = (rel.members || []).filter((m) => m.role === 'outer' && m.geometry).map((m) => m.geometry.slice());
+    const rings = [];
+    while (pieces.length) {
+      const ring = pieces.pop();
+      for (let joined = true; joined && key(ring[0]) !== key(ring[ring.length - 1]);) {
+        joined = false;
+        for (let k = 0; k < pieces.length; k++) {
+          const p = pieces[k], end = key(ring[ring.length - 1]);
+          if (key(p[0]) === end) ring.push(...p.slice(1));
+          else if (key(p[p.length - 1]) === end) ring.push(...p.slice(0, -1).reverse());
+          else continue;
+          pieces.splice(k, 1);
+          joined = true;
+          break;
+        }
+      }
+      rings.push(ring.map((g) => toWorld(g.lon, g.lat)));
+    }
+    return { name: rel.tags.name, rings };
+  });
+}
+
 function buildBuildings() {
   const ringArea = (r) => {
     let s = 0;
@@ -475,11 +501,14 @@ function buildBuildings() {
 
   // Facade type of every building (step 1.4), from its OpenStreetMap `building` tag (the OSM footprint whose middle
   // lies inside it) and its shape, since OSM has almost no construction dates here:
-  //   1 blok: a prefab block (wielka płyta) from the original BDOT10k records — a plain, nearly rectangular slab or
-  //     point block up to 22 m deep, or any tower of 28 m and more (Wawrzyszew, Chomiczówka & Młociny, 1970s-80s)
+  //   1 niska płyta / 4 wysoka płyta: a prefab block (wielka płyta, 1960s-80s) from the original BDOT10k records — a
+  //     plain, nearly rectangular slab up to 22 m deep, under / over 20 m high (4-5 / 10-12 storeys; towers of 28 m
+  //     and more count as high slabs whatever their plan)
+  //   5 blok z lat 50.: the old residential blocks of the 1950s quarters (Stare Bielany, Marymont, Słodowiec) under 20 m
   //   2 nowe osiedle: apartment houses added to BDOT10k later (source 2) or newer than the LoD1 survey (source 1)
   //   3 pawilon: one-storey shops & services (or untagged low boxes of a shop's size)
-  //   0 the rest: houses, the pre-war & 1950s blocks of Stare Bielany, schools, halls, garages, the steelworks
+  //   0 the rest: houses, schools, halls, garages, the steelworks
+  // and a palette by district (OSM MSI areas, tools/data/osm_bielany_districts.json): 1 bold for Chomiczówka, else 0
   const tagOf = new Array(out.length).fill(null);
   const tagArea = new Array(out.length).fill(0);
   for (const e of osm('buildings')) {
@@ -515,7 +544,14 @@ function buildBuildings() {
   };
   const SHOPS = new Set(['retail', 'commercial', 'kiosk', 'supermarket', 'service', 'yes', 'office']);
   const HOMES = new Set(['house', 'detached', 'semidetached_house', 'terrace', 'villa', 'bungalow']);
-  const counts = [0, 0, 0, 0];
+  // The 1950s quarters (osiedla Bielany I-IV, Marymont): their old residential blocks are brick, not prefab
+  const FIFTIES = new Set(['Stare Bielany', 'Marymont-Kaskada', 'Słodowiec']);
+  // Palettes: 0 pastel (Wawrzyszew, Młociny, Wrzeciono...: a pastel per staircase after the insulation), 1 bold
+  // (Chomiczówka: blue, yellow, red & lime bands)
+  const BOLD = new Set(['Chomiczówka']);
+  const districts = districtRings();
+  const districtAt = (p) => (districts.find((d) => d.rings.some((r) => pointIn(p, r))) || {}).name;
+  const counts = [0, 0, 0, 0, 0, 0];
   out.forEach((bd, i) => {
     const r = [];
     for (let k = 0; k < bd[0].length; k += 2) r.push([bd[0][k], bd[0][k + 1]]);
@@ -523,17 +559,23 @@ function buildBuildings() {
     const kind = t.building;
     const [len, depth, fill] = box(r);
     const h = bd[2];
+    let cx = 0, cz = 0;
+    for (const [x, z] of r) { cx += x; cz += z; }
+    const district = districtAt([cx / r.length, cz / r.length]);
     let type = 0;
     if (h <= 7 && depth >= 6 && (SHOPS.has(kind) || (!kind && len * depth >= 80 && len * depth <= 3000))) type = 3;
-    else if (HOMES.has(kind) || h < 10) type = 0;
+    else if (HOMES.has(kind) || h < 9) type = 0;
     else if (kind === 'apartments' || kind === 'residential' || !kind || kind === 'yes') {
       const slab = (fill >= 0.85 && depth >= 9 && depth <= 22 && r.length <= 16) || h >= 28;
-      type = bd[3] !== 0 ? 2 : slab ? 1 : 0;
+      if (bd[3] !== 0) type = kind === 'apartments' || kind === 'residential' || len * depth < 2500 ? 2 : 0;
+      else if (FIFTIES.has(district) && h < 20) type = 5;
+      else if (slab) type = h >= 20 ? 4 : 1;
     }
-    bd.push(type);
+    bd.push(type, BOLD.has(district) ? 1 : 0);
     counts[type]++;
   });
-  console.log('[geo-bielany]', `facade types: ${counts[1]} bloki, ${counts[2]} nowe osiedla, ${counts[3]} pawilony, ${counts[0]} inne`);
+  console.log('[geo-bielany]', `facade types: ${counts[1]} niskie płyty, ${counts[4]} wysokie płyty, ${counts[5]} bloki z lat 50., ` +
+    `${counts[2]} nowe osiedla, ${counts[3]} pawilony, ${counts[0]} inne`);
   return out;
 }
 
@@ -567,8 +609,8 @@ const GEO = {
   // Sidewalks along the curbs: [block index, outer ring, holes]
   sidewalks,
   // Buildings: [outer ring [x, z, ...], holes, height above the ground m, source (0: GUGiK LoD1 2024, CC BY 4.0;
-  // 2: the same, a record added to BDOT10k later; 1: OpenStreetMap, ODbL), facade type (0: other, 1: blok,
-  // 2: nowe osiedle, 3: pawilon)]
+  // 2: the same, a record added to BDOT10k later; 1: OpenStreetMap, ODbL), facade type (0: other, 1: niska płyta,
+  // 2: nowe osiedle, 3: pawilon, 4: wysoka płyta, 5: blok z lat 50.), palette (0: pastel, 1: bold)]
   buildings: buildBuildings(),
   stations,
 };
