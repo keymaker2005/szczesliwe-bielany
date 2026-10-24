@@ -413,7 +413,10 @@ function buildBuildings() {
     }).filter((r) => r.length >= 3);
     if (!rings.length) continue;
     const [outer, ...holes] = rings.map((r, k) => ((ringArea(r) > 0) === (k === 0) ? r : r.slice().reverse()));
-    out.push([flat(outer), holes.map(flat), q(f.properties.height_m), 0]);
+    // BDOT10k records from the original database carry Oracle-style ids (...-E053-CA2BA8C0BE14); buildings added
+    // to it later get random UUIDs: newer buildings (source 2)
+    const recent = !/E053-CA2BA8C0BE14$/i.test(f.properties.id || '');
+    out.push([flat(outer), holes.map(flat), q(f.properties.height_m), recent ? 2 : 0]);
   }
 
   // Buildings newer than the LoD1 survey (2023): OpenStreetMap footprints of 100 m² or more with no LoD1 building
@@ -469,6 +472,68 @@ function buildBuildings() {
     }
   }
   console.log('[geo-bielany]', `${out.length - added} LoD1 buildings, ${added} newer ones from OpenStreetMap`);
+
+  // Facade type of every building (step 1.4), from its OpenStreetMap `building` tag (the OSM footprint whose middle
+  // lies inside it) and its shape, since OSM has almost no construction dates here:
+  //   1 blok: a prefab block (wielka płyta) from the original BDOT10k records — a plain, nearly rectangular slab or
+  //     point block up to 22 m deep, or any tower of 28 m and more (Wawrzyszew, Chomiczówka & Młociny, 1970s-80s)
+  //   2 nowe osiedle: apartment houses added to BDOT10k later (source 2) or newer than the LoD1 survey (source 1)
+  //   3 pawilon: one-storey shops & services (or untagged low boxes of a shop's size)
+  //   0 the rest: houses, the pre-war & 1950s blocks of Stare Bielany, schools, halls, garages, the steelworks
+  const tagOf = new Array(out.length).fill(null);
+  const tagArea = new Array(out.length).fill(0);
+  for (const e of osm('buildings')) {
+    const geom = e.type === 'way' ? e.geometry : (e.members || []).find((m) => m.role === 'outer')?.geometry;
+    if (!geom || geom.length < 4) continue;
+    const r = geom.map(({ lon, lat }) => toWorld(lon, lat));
+    const a = Math.abs(ringArea(r));
+    let cx = 0, cz = 0;
+    for (const [x, z] of r) { cx += x; cz += z; }
+    const c = [cx / r.length, cz / r.length];
+    for (const i of grid.get(`${Math.floor(c[0] / CELL)},${Math.floor(c[1] / CELL)}`) || []) {
+      if (pointIn(c, lod[i]) && a > tagArea[i]) { tagOf[i] = e.tags || {}; tagArea[i] = a; }
+    }
+  }
+  // The smallest box around a ring, over the directions of its edges: [length, depth, how much of it the ring fills]
+  const box = (r) => {
+    const area = Math.abs(ringArea(r));
+    let best = null;
+    for (let k = 0; k < r.length; k++) {
+      const [ax, az] = r[k], [bx, bz] = r[(k + 1) % r.length];
+      const L = Math.hypot(bx - ax, bz - az);
+      if (L < 1) continue;
+      const ux = (bx - ax) / L, uz = (bz - az) / L;
+      let u0 = Infinity, u1 = -Infinity, v0 = Infinity, v1 = -Infinity;
+      for (const [x, z] of r) {
+        const u = x * ux + z * uz, v = -x * uz + z * ux;
+        u0 = Math.min(u0, u); u1 = Math.max(u1, u); v0 = Math.min(v0, v); v1 = Math.max(v1, v);
+      }
+      const A = (u1 - u0) * (v1 - v0);
+      if (!best || A < best[3]) best = [Math.max(u1 - u0, v1 - v0), Math.min(u1 - u0, v1 - v0), area / A, A];
+    }
+    return best || [0, 0, 0, 1];
+  };
+  const SHOPS = new Set(['retail', 'commercial', 'kiosk', 'supermarket', 'service', 'yes', 'office']);
+  const HOMES = new Set(['house', 'detached', 'semidetached_house', 'terrace', 'villa', 'bungalow']);
+  const counts = [0, 0, 0, 0];
+  out.forEach((bd, i) => {
+    const r = [];
+    for (let k = 0; k < bd[0].length; k += 2) r.push([bd[0][k], bd[0][k + 1]]);
+    const t = tagOf[i] || {};
+    const kind = t.building;
+    const [len, depth, fill] = box(r);
+    const h = bd[2];
+    let type = 0;
+    if (h <= 7 && depth >= 6 && (SHOPS.has(kind) || (!kind && len * depth >= 80 && len * depth <= 3000))) type = 3;
+    else if (HOMES.has(kind) || h < 10) type = 0;
+    else if (kind === 'apartments' || kind === 'residential' || !kind || kind === 'yes') {
+      const slab = (fill >= 0.85 && depth >= 9 && depth <= 22 && r.length <= 16) || h >= 28;
+      type = bd[3] !== 0 ? 2 : slab ? 1 : 0;
+    }
+    bd.push(type);
+    counts[type]++;
+  });
+  console.log('[geo-bielany]', `facade types: ${counts[1]} bloki, ${counts[2]} nowe osiedla, ${counts[3]} pawilony, ${counts[0]} inne`);
   return out;
 }
 
@@ -502,7 +567,8 @@ const GEO = {
   // Sidewalks along the curbs: [block index, outer ring, holes]
   sidewalks,
   // Buildings: [outer ring [x, z, ...], holes, height above the ground m, source (0: GUGiK LoD1 2024, CC BY 4.0;
-  // 1: OpenStreetMap, ODbL)]
+  // 2: the same, a record added to BDOT10k later; 1: OpenStreetMap, ODbL), facade type (0: other, 1: blok,
+  // 2: nowe osiedle, 3: pawilon)]
   buildings: buildBuildings(),
   stations,
 };

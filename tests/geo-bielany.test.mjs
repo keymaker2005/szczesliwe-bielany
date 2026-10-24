@@ -73,7 +73,7 @@ test('Bielany geodata: frame at Stare Bielany, real streets with Polish names, a
     assert.ok(onCurb < links.length * 0.01, `${onCurb} of ${links.length} street centrelines fall on a block`);
     assert.ok(!onBlock(station('Stare Bielany').x + 9.4, station('Stare Bielany').z - 12.4), 'the spawn on Kasprowicza is roadway');
     // Buildings: every LoD1 footprint, plus a few newer ones from OpenStreetMap, at plausible heights
-    assert.equal(GEO.buildings.filter((bd) => bd[3] === 0).length, 2296);
+    assert.equal(GEO.buildings.filter((bd) => bd[3] !== 1).length, 2296);
     const osmCount = GEO.buildings.filter((bd) => bd[3] === 1).length;
     assert.ok(osmCount > 30 && osmCount < 150, `${osmCount} OpenStreetMap buildings`);
     for (const [outer, , h] of GEO.buildings) assert.ok(outer.length >= 6 && h >= 2 && h < 70);
