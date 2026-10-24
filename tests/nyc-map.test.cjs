@@ -11,7 +11,7 @@ for (const [width, height, dpr] of [[500, 300, 1], [320, 180, 1.5], [1920, 1080,
     const window = { innerWidth: width, innerHeight: height, devicePixelRatio: dpr };
     const { NYCMapSystem } = loadModule(source, {
       globals: { window, performance: { now: () => 0 } },
-      imports: { './nyc-geodata.js': { GEO: {} }, './city-config.js': { ROADS: [] } }
+      imports: { './bielany-geodata.js': { GEO: {} }, './city-config.js': { isTypingInField: () => false } }
     });
     const map = Object.create(NYCMapSystem.prototype);
     // Capture the production render viewport; drawing primitives are irrelevant to coordinate conversion.
@@ -94,16 +94,14 @@ function mapHarness() {
     captured.delete(id);
     canvas.dispatch('lostpointercapture', { pointerId: id });
   };
-  const config = {
-    ROADS: [], BLOCKS: [], NYC_LANDMARKS: [],
-    ISLAND_BOUNDS: { minX: -10000, maxX: 10000, minZ: -10000, maxZ: 10000 },
-    getIslandBoundsAtZ: () => ({ westX: -10000, eastX: 10000 }),
-    getLocationLabel: (x, z) => `${x}, ${z}`,
-    isTypingInField: () => false
+  const geo = {
+    frame: { bearingDeg: 0, bounds: { minX: -10000, maxX: 10000, minZ: -10000, maxZ: 10000 } },
+    roads: [['Aleja Zjednoczenia', 10, 0, 2, 0, [900, 2000, 1100, 2000], 'secondary']],
+    stations: []
   };
   const { NYCMapSystem } = loadModule(source, {
     globals: { window, document },
-    imports: { './nyc-geodata.js': { GEO: { frame: {} } }, './city-config.js': config }
+    imports: { './bielany-geodata.js': { GEO: geo }, './city-config.js': { isTypingInField: () => false } }
   });
   const teleports = [], toggles = [];
   const map = new NYCMapSystem({
@@ -152,7 +150,7 @@ test('a normal map tap teleports once and releases capture', () => {
   h.pointer(h.canvas, 'pointerdown', 1);
   h.pointer(h.canvas, 'pointerup', 1);
   assert.deepEqual(h.teleports, [[1000, 2000]]);
-  assert.equal(h.map.waypoint.name, '1000, 2000');
+  assert.equal(h.map.waypoint.name, 'Aleja Zjednoczenia');
   assert.equal(h.captured.size, 0);
   assert.equal(h.map.isPanning, false);
 });

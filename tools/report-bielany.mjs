@@ -10,31 +10,15 @@
 // usage: node tools/report-bielany.mjs
 
 import fs from 'node:fs';
-import { fileURLToPath } from 'node:url';
+import { ROOT, read as readAbs, osm, BBOX, BOUNDS, LAT0, LON0, toWorld } from './bielany-frame.mjs';
 
-const ROOT = fileURLToPath(new URL('../', import.meta.url));
-const read = (f) => JSON.parse(fs.readFileSync(ROOT + f, 'utf8'));
-const osm = (n) => read(`tools/data/osm_bielany_${n}.json`).elements;
-
-const BBOX = { s: 52.274, w: 20.915, n: 52.3, e: 20.96 };
+const read = (f) => readAbs(ROOT + f);
 
 // =====================================================================================================================
-// 1. FRAME
+// 1. FRAME (tools/bielany-frame.mjs)
 // =====================================================================================================================
 const rail = osm('rail');
-const station = rail.find((e) => e.type === 'node' && e.tags?.name === 'Stare Bielany' && e.tags?.station === 'subway');
-const LAT0 = station.lat;
-const LON0 = station.lon;
-const A = 6378137.0;
-const E2 = 6.69437999014e-3;
-const PHI0 = (LAT0 * Math.PI) / 180;
-const SIN0 = Math.sin(PHI0);
-const KX = (Math.PI / 180) * (A / Math.sqrt(1 - E2 * SIN0 * SIN0)) * Math.cos(PHI0);
-const KY = (Math.PI / 180) * ((A * (1 - E2)) / Math.pow(1 - E2 * SIN0 * SIN0, 1.5));
-const toWorld = (lon, lat) => [(lon - LON0) * KX, -(lat - LAT0) * KY];
-
-const [X0, Z1] = toWorld(BBOX.w, BBOX.s);
-const [X1, Z0] = toWorld(BBOX.e, BBOX.n);
+const { minX: X0, maxX: X1, minZ: Z0, maxZ: Z1 } = BOUNDS;
 
 // =====================================================================================================================
 // 2. GEOMETRY HELPERS

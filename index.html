@@ -20,6 +20,7 @@
   </script>
   <!-- Fetch the city modules in parallel before stylesheets; the module graph controls evaluation order. -->
   <link rel="modulepreload" href="./js/nyc-geodata.js" />
+  <link rel="modulepreload" href="./js/bielany-geodata.js" />
   <link rel="modulepreload" href="./js/city-config.js" />
   <link rel="modulepreload" href="./js/tsl-materials.js" />
   <link rel="modulepreload" href="./js/trees.js" />
@@ -267,7 +268,7 @@
       <div class="panel fullmap-title">
         <span class="mta-bullet" aria-hidden="true">NY</span>
         <div>
-          <h2>Manhattan Street Atlas</h2>
+          <h2>Atlas ulic Bielan</h2>
           <p id="fullmap-player-info" class="fullmap-subtitle">You are at 5th Ave &amp; 35th St</p>
         </div>
       </div>
@@ -281,7 +282,7 @@
     </div>
 
     <div class="map-controls">
-      <div class="panel map-compass" title="True north · Manhattan's street grid runs 29° east of it">
+      <div class="panel map-compass" title="Północ (mapa nie jest obrócona)">
         <svg viewBox="0 0 44 44" aria-hidden="true">
           <g id="map-compass-needle">
             <path d="M22 9.5 25.6 22h-7.2z" fill="#f05a4f"/>
@@ -296,7 +297,7 @@
       </div>
       <div class="panel map-zoom">
         <button id="map-center-player" class="icon-btn" type="button" title="Street view around you" aria-label="Center on player"><svg class="icon" aria-hidden="true"><use href="#i-locate"/></svg></button>
-        <button id="map-view-all" class="icon-btn" type="button" title="All of Manhattan (125th St to Battery Park)" aria-label="Fit all of Manhattan"><svg class="icon" aria-hidden="true"><use href="#i-fit"/></svg></button>
+        <button id="map-view-all" class="icon-btn" type="button" title="Cały obszar: Stare Bielany, Wawrzyszew, Młociny" aria-label="Pokaż cały obszar"><svg class="icon" aria-hidden="true"><use href="#i-fit"/></svg></button>
       </div>
     </div>
 
