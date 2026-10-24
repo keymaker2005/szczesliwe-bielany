@@ -19,7 +19,7 @@ Bramka: publiczny link na Cloudflare Pages + pakiet dla urzędu.
 
 - [x] 1.1 Nowa ramka współrzędnych i tools/geo-bielany.mjs generujący js/bielany-geodata.js (na razie tylko ulice). Sprawdzam: minimapa pokazuje ulice Bielan.
 - [x] 1.2a Płaska płyta i jezdnie z grafu OSM, Manhattan wyłączony, testy zielone. Sprawdzam: widać jezdnie Bielan, da się po nich chodzić.
-- [ ] 1.2b Kwartały i chodniki z grafu OSM. Sprawdzam: da się chodzić po chodnikach płaskich ulic Bielan.
+- [x] 1.2b Kwartały i chodniki z grafu OSM. Sprawdzam: da się chodzić po chodnikach płaskich ulic Bielan.
 - [ ] 1.3 Budynki z LoD1 jako bryły z prostą fasadą; jako ostatni podkrok uzupełnienie ok. 82 nowszych budynków z OSM (jeśli blokuje, do backlogu). Sprawdzam: bryły w dobrych miejscach i wysokościach.
 - [ ] 1.4 Typy fasad: blok, nowe osiedle, pawilon. Sprawdzam: bloki wyglądają jak bielańskie bloki.
 - [ ] 1.5 Ruch aut na grafie dróg, jazda autem. Sprawdzam: przejazd od stacji Stare Bielany do pętli Młociny.
