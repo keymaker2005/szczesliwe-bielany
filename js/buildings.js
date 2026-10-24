@@ -5,8 +5,9 @@ import { GEO } from './bielany-geodata.js';
 
 // js/buildings.js
 // The buildings of Bielany: every GUGiK LoD1 2024 footprint (js/bielany-geodata.js) extruded to its measured height,
-// flat-roofed, with a simple facade (step 1.3): plaster in a few light tones and a grid of windows, one bay every 3 m
-// along the wall and one storey every 2.8 m. The facade types (blok, nowe osiedle, pawilon) come in step 1.4.
+// and the newer buildings LoD1 misses (OpenStreetMap, 3 m per storey). Flat roofs and a simple facade (step 1.3):
+// plaster in a few light tones and a grid of windows, one bay every 3 m along the wall and one storey every 2.8 m.
+// The facade types (blok, nowe osiedle, pawilon) come in step 1.4.
 //
 // Walls carry uv = (metres along the building's perimeter, metres above the ground), so the windows keep their size on
 // walls at any angle. Geometry is merged per 500 m tile (two draws each: walls & roofs) for frustum culling. Players
@@ -101,7 +102,9 @@ function buildCityBlocks(scene) {
   const footprints = []; // for the maps: { h, pts }
   const tone = new THREE.Color();
 
-  GEO.buildings.forEach(([outerFlat, holesFlat, h], id) => {
+  let fromOsm = 0;
+  GEO.buildings.forEach(([outerFlat, holesFlat, h, source], id) => {
+    if (source === 1) fromOsm++;
     if (!(h > 0.5)) return;
     const outer = toPts(outerFlat);
     const holes = holesFlat.map(toPts);
@@ -151,7 +154,7 @@ function buildCityBlocks(scene) {
     walls += t.walls.pos.length / 18;
   }
   scene.add(group);
-  console.info(`[buildings] ${footprints.length} LoD1 buildings, ${walls} walls in ${tiles.size} tiles, ${colliders.length} wall colliders`);
+  console.info(`[buildings] ${footprints.length - fromOsm} LoD1 + ${fromOsm} OpenStreetMap buildings, ${walls} walls in ${tiles.size} tiles, ${colliders.length} wall colliders`);
 
   // allBlocks: what the maps draw (one group holding every footprint)
   return { group, colliders, allBlocks: [{ footprints }], update() {} };

@@ -395,7 +395,8 @@ function buildBlocks(graph) {
 
 // =====================================================================================================================
 // 7. BUILDINGS: GUGiK LoD1 2024 footprints (data/bielany_lod1_2024.geojson, data/extract_bielany_lod1.py) with their
-//    heights above the ground; outer rings counter-clockwise in x/z, simplified to 0.2 m
+//    heights above the ground, and the newer buildings LoD1 misses from OpenStreetMap; outer rings counter-clockwise
+//    in x/z, simplified to 0.2 m
 // =====================================================================================================================
 function buildBuildings() {
   const ringArea = (r) => {
@@ -412,8 +413,62 @@ function buildBuildings() {
     }).filter((r) => r.length >= 3);
     if (!rings.length) continue;
     const [outer, ...holes] = rings.map((r, k) => ((ringArea(r) > 0) === (k === 0) ? r : r.slice().reverse()));
-    out.push([flat(outer), holes.map(flat), q(f.properties.height_m)]);
+    out.push([flat(outer), holes.map(flat), q(f.properties.height_m), 0]);
   }
+
+  // Buildings newer than the LoD1 survey (2023): OpenStreetMap footprints of 100 m² or more with no LoD1 building
+  // under their middle or near any corner (L- and U-shaped blocks have their middle in the courtyard), heights from
+  // the `height` tag, else 3 m per storey, else 3 m for garages & sheds and 6 m for the rest
+  const CELL = 50;
+  const grid = new Map();
+  const lod = out.map(([o]) => { const r = []; for (let k = 0; k < o.length; k += 2) r.push([o[k], o[k + 1]]); return r; });
+  lod.forEach((r, i) => {
+    let x0 = Infinity, z0 = Infinity, x1 = -Infinity, z1 = -Infinity;
+    for (const [x, z] of r) { x0 = Math.min(x0, x); z0 = Math.min(z0, z); x1 = Math.max(x1, x); z1 = Math.max(z1, z); }
+    for (let gx = Math.floor(x0 / CELL); gx <= Math.floor(x1 / CELL); gx++) {
+      for (let gz = Math.floor(z0 / CELL); gz <= Math.floor(z1 / CELL); gz++) {
+        const k = `${gx},${gz}`;
+        if (!grid.has(k)) grid.set(k, []);
+        grid.get(k).push(i);
+      }
+    }
+  });
+  const pointIn = (p, r) => {
+    let c = false;
+    for (let k = 0, m = r.length - 1; k < r.length; m = k++) {
+      if ((r[k][1] > p[1]) !== (r[m][1] > p[1]) && p[0] < ((r[m][0] - r[k][0]) * (p[1] - r[k][1])) / (r[m][1] - r[k][1]) + r[k][0]) c = !c;
+    }
+    return c;
+  };
+  const onLod = (p) => (grid.get(`${Math.floor(p[0] / CELL)},${Math.floor(p[1] / CELL)}`) || []).some((i) => pointIn(p, lod[i]));
+  const SKIP = new Set(['construction', 'roof', 'carport', 'ruins', 'no']);
+  const LOW = new Set(['garage', 'garages', 'shed', 'service', 'outbuilding', 'kiosk', 'farm_auxiliary']);
+  let added = 0;
+  for (const e of osm('buildings')) {
+    const t = e.tags || {};
+    if (SKIP.has(t.building)) continue;
+    const geom = e.type === 'way' ? [e.geometry] : (e.members || []).filter((m) => m.role === 'outer').map((m) => m.geometry);
+    for (const g of geom) {
+      if (!g || g.length < 4) continue;
+      let r = g.map(({ lon, lat }) => toWorld(lon, lat));
+      if (r[0][0] === r[r.length - 1][0] && r[0][1] === r[r.length - 1][1]) r.pop();
+      r = rdpRing(r, 0.2);
+      if (r.length < 3) continue;
+      if (ringArea(r) < 0) r.reverse();
+      if (ringArea(r) < 100) continue;
+      let cx = 0, cz = 0;
+      for (const [x, z] of r) { cx += x; cz += z; }
+      const c = [cx / r.length, cz / r.length];
+      if (!inside(c)) continue;
+      const probes = [c, ...r.map(([x, z]) => [x + (c[0] - x) * 0.2, z + (c[1] - z) * 0.2])].filter((p) => pointIn(p, r));
+      if (probes.some(onLod)) continue;
+      const levels = parseFloat(t['building:levels']);
+      const h = parseFloat(t.height) > 0 ? parseFloat(t.height) : levels > 0 ? levels * 3 : LOW.has(t.building) ? 3 : 6;
+      out.push([flat(r), [], q(h), 1]);
+      added++;
+    }
+  }
+  console.log('[geo-bielany]', `${out.length - added} LoD1 buildings, ${added} newer ones from OpenStreetMap`);
   return out;
 }
 
@@ -446,7 +501,8 @@ const GEO = {
   blocks,
   // Sidewalks along the curbs: [block index, outer ring, holes]
   sidewalks,
-  // Buildings (GUGiK LoD1 2024, CC BY 4.0): [outer ring [x, z, ...], holes, height above the ground m]
+  // Buildings: [outer ring [x, z, ...], holes, height above the ground m, source (0: GUGiK LoD1 2024, CC BY 4.0;
+  // 1: OpenStreetMap, ODbL)]
   buildings: buildBuildings(),
   stations,
 };
