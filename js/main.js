@@ -21,7 +21,7 @@ import { setupSceneCulling, updateSceneCulling } from './scene-culling.js';
 import { CityAudioSystem } from './audio-system.js';
 
 // js/main.js
-// Main entry point for New York City (Midtown Manhattan) in Three.js WebGPURenderer & TSL (three.js r186.1, see index.html)
+// Main entry point for New York City (Midtown Manhattan) in Three.js WebGPURenderer & TSL (three.js dev @ fae8734, pinned in index.html)
 
 async function initApp() {
   const container = document.getElementById('canvas-container');
