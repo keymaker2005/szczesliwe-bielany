@@ -91,6 +91,8 @@ napisy słowne na pojazdach służb bez insygniów, najpierw teren). Gałąź fa
   Wisła, stawy i plaże z OSM (js/water.js, własny materiał wody), pomosty mostów i wiaduktów z OSM z ruchem, pieszymi,
   barierkami, filarami i tramwajem na Moście Północnym (js/bridges.js), teleport „Most Północny”. 60 fps w Chrome na M4.
   Sprawdzam: przejazd przez most, Wisła pod mostem, plaża.
+  Poprawki po teście całości (2026-10-25, zaakceptowane w Edge): Wisłostrada z ruchem (S8 i zjazdy w danych, portale na
+  krawędzi mapy) i gładka, wiadukty z prześwitem nad drogami, bez zderzeń z autami na innym poziomie.
 - [x] 3.4 Wspólna dyspozytornia służb (2026-10-25): js/dispatch.js (rejestr służb, tryb, oznakowanie pojazdu, syrena
   i ustępowanie aut, SMS-y dyspozytora, okno wyboru choose()), zakładka „Służby” w telefonie, ratownik przeniesiony.
   Sprawdzam: ratownik bez zmian, nowa zakładka „Służby”.
