@@ -10,13 +10,14 @@ const ARRIVE_RADIUS = 8; // m from the start or the target that counts as there
 const STOP_SPEED = 1.5; // m/s: slower than this counts as stopped
 const STOP_HOLD = 0.8; // s stopped inside the radius to pick up or deliver
 const STAR_SLACK = [1, 1.35]; // 3 stars within par time, 2 within par × 1.35, 1 within the time limit
+const SHORTCUT = 0.8; // delivered within par × 0.8: faster than the GPS route, a shortcut bonus
 
 const ENDED = new Set(['delivered', 'late', 'abandoned']);
 
 /**
  * A mission: { id, role, title, start: { x, z, name } | null (picked up at once), target: { x, z, name },
  * vehicles: modes allowed (person, cyclist, car, helicopter), par: s for 3 stars, limit: s before it is late,
- * reward: zł at 3 stars }
+ * reward: zł at 3 stars, bonus: share of the pay added for a shortcut (0: none) }
  */
 function createMission(spec) {
   const m = {
@@ -29,12 +30,14 @@ function createMission(spec) {
     par: spec.par,
     limit: spec.limit ?? spec.par * 1.8,
     reward: spec.reward ?? 0,
+    bonus: spec.bonus ?? 0,
     radius: spec.radius ?? ARRIVE_RADIUS,
     state: 'offered',
     time: 0, // s since the pick-up
     hold: 0, // s stopped in the radius
     stars: 0,
     paid: 0,
+    shortcut: 0, // zł of shortcut bonus paid
   };
   if (!(m.par > 0) || !m.target) throw new Error(`mission ${m.id}: needs a target and a par time`);
   return m;
@@ -121,6 +124,8 @@ class MissionEngine {
     } else {
       m.stars = starsFor(m, m.time);
       m.paid = Math.round((m.reward * Math.max(m.stars, 0.5)) / 3);
+      if (m.bonus && m.time <= m.par * SHORTCUT) m.shortcut = Math.round(m.paid * m.bonus);
+      m.paid += m.shortcut;
       this.active = null;
       this.setState(m, m.stars ? 'delivered' : 'late');
     }
@@ -133,4 +138,4 @@ class MissionEngine {
   }
 }
 
-export { MissionEngine, createMission, starsFor, ARRIVE_RADIUS, STOP_HOLD };
+export { MissionEngine, createMission, starsFor, ARRIVE_RADIUS, STOP_HOLD, SHORTCUT };

@@ -22,6 +22,7 @@ import { MissionEngine, ARRIVE_RADIUS } from './missions.js';
 import { createMissionMarker } from './mission-marker.js';
 import { findRoute } from './gps-route.js';
 import { Phone } from './phone.js';
+import { Courier, COMPANY } from './courier.js';
 
 // js/main.js
 // Main entry point for Szczęśliwe Bielany (Warsaw, along the M1 metro line) in Three.js WebGPURenderer & TSL (three.js dev @ fae8734, pinned in index.html)
@@ -581,7 +582,7 @@ async function initApp() {
       const stars = '★'.repeat(m.stars) + '☆'.repeat(3 - m.stars);
       elMissionResult.innerHTML = m.state === 'abandoned'
         ? `Zlecenie przerwane: ${m.title}`
-        : `${m.state === 'late' ? 'Spóźnione' : 'Dostarczone'} w ${clock(m.time)} · <span class="stars">${stars}</span> · ${m.paid} zł`;
+        : `${m.state === 'late' ? 'Spóźnione' : 'Dostarczone'} w ${clock(m.time)} · <span class="stars">${stars}</span> · ${m.paid} zł${m.shortcut ? ` · skrót +${m.shortcut} zł` : ''}`;
       elMissionResult.classList.remove('hidden');
       clearTimeout(resultTimer);
       resultTimer = setTimeout(() => elMissionResult.classList.add('hidden'), 6000);
@@ -628,21 +629,35 @@ async function initApp() {
     }
     return null;
   }
-  // 5d. The phone (js/phone.js): errands, the map, text messages. Until the courier (1.5.5), one test parcel on offer.
+  // 5d. The courier (js/courier.js) and the phone (js/phone.js): errands, the map, text messages
+  const courier = new Courier(missions);
+  courier.near = () => controllerManager.getActiveEntity().position;
   const phone = new Phone({
     root: document.getElementById('phone'),
     button: document.getElementById('btn-phone'),
     missions,
-    jobs: () => [{
-      id: 'test', title: 'Paczka (test)', from: 'Tu, gdzie stoisz', to: 'losowy adres w okolicy', distance: 600, par: 120,
-      reward: 30, vehicles: 'pieszo, rowerem, autem', accept: () => testDelivery(),
-    }],
+    jobs: () => courier.jobs(),
     onOpenMap: () => mapSystem.toggleFullMap(true),
-    status: () => (missions.active ? `W drodze: ${missions.goal().name}` : 'Złota jesień na Bielanach'),
+    status: () => (missions.active ? `W drodze: ${missions.goal().name}` : courier.statusLine()),
   });
-  phone.addSms({ id: 'hello', from: 'Szczęśliwe Bielany', text: 'Witaj na Bielanach! Zlecenia znajdziesz w telefonie (P). Jedź do żółtego słupka i zatrzymaj się w kręgu.' });
+  phone.addSms({
+    id: 'hello', from: COMPANY,
+    text: 'Dzień dobry! Mamy paczki do rozwiezienia po Bielanach. Zlecenia w telefonie (P): odbierz paczkę przy stacji metra i dowieź rowerem lub autem. Szybciej niż GPS = premia za skrót.',
+  });
+  missions.on('state', (m) => {
+    if (m.role !== 'courier' || !m.id.startsWith('poczt-')) return;
+    if (m.state === 'enRoute') phone.addSms({ id: `${m.id}-picked`, from: COMPANY, text: `Paczka odebrana. Adres: ${m.target.name}. Na trzy gwiazdki masz ${clock(m.par)}.` });
+    if (m.state === 'delivered' || m.state === 'late') {
+      phone.addSms({
+        id: `${m.id}-done`, from: COMPANY,
+        text: m.state === 'late'
+          ? `Spóźnione o ${clock(m.time - m.limit)}, ale doręczone. Wypłata ${m.paid} zł. Następne zlecenia czekają w telefonie.`
+          : `Doręczone w ${clock(m.time)}, ${'★'.repeat(m.stars)}. Wypłata ${m.paid} zł${m.shortcut ? ` (w tym ${m.shortcut} zł za skrót)` : ''}. Razem: ${courier.stats.earned} zł.`,
+      });
+    }
+  });
 
-  globalThis.bielany = { missions, testDelivery, abandon: () => missions.abandon(), teleport: (x, z, heading) => teleportTo(x, z, heading), marker: missionMarker, phone };
+  globalThis.bielany = { missions, testDelivery, abandon: () => missions.abandon(), teleport: (x, z, heading) => teleportTo(x, z, heading), marker: missionMarker, phone, courier };
 
   // Initialize the UI and chase camera around the restored player, or the default taxi on a first visit.
   selectMode(controllerManager.activeMode);

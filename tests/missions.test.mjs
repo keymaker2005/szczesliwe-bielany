@@ -66,3 +66,13 @@ test('missions: star thresholds and a mission needs a target and par', () => {
   assert.deepEqual([90, 100, 130, 170, 181].map((t) => starsFor(m, t)), [3, 3, 2, 1, 0]);
   assert.throws(() => createMission({ id: 'x', target: { x: 0, z: 0 } }));
 });
+
+test('missions: a shortcut (well under par) pays a bonus', () => {
+  const eng = new MissionEngine();
+  eng.offer(spec({ start: null, bonus: 0.25 }));
+  eng.accept('d1');
+  travel(eng, 0, 400, 6); // ~67 s < 100 × 0.8
+  const m = eng.missions.get('d1');
+  assert.equal(m.shortcut, 8);
+  assert.equal(m.paid, 38);
+});
