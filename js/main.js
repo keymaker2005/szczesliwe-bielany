@@ -36,11 +36,11 @@ import { Medic, DISPATCH, SERVICE as MEDIC_SERVICE } from './medic.js';
 import { Dispatch } from './dispatch.js';
 import { createAmbulance } from './ambulance.js';
 import { Guard, DISPATCH as GUARD_DISPATCH, SERVICE as GUARD_SERVICE, MESSAGES as GUARD_MESSAGES } from './guard.js';
-import { createPatrolCar } from './guard-car.js';
+import { createPatrolCar as createGuardCar } from './guard-car.js';
 import { Firefighter, DISPATCH as FIRE_DISPATCH, SERVICE as FIRE_SERVICE, NAMES as FIRE_NAMES } from './firefighter.js';
 import { createFireEngine, createFireEffects, createFireHud } from './fire-engine.js';
 import { Police, DISPATCH as POLICE_DISPATCH, SERVICE as POLICE_SERVICE } from './police.js';
-import { createPatrolCar } from './patrol-car.js';
+import { createPatrolCar as createPoliceCar } from './patrol-car.js';
 import { PhotoMode } from './photo-mode.js';
 import { Postcards } from './postcards.js';
 import { createFallingLeaves } from './falling-leaves.js';
@@ -770,7 +770,7 @@ async function initApp() {
   });
   const guard = new Guard(missions, { choose: (q) => dispatch.choose(q) });
   guard.near = () => controllerManager.getActiveEntity().position;
-  dispatch.register({ role: 'guard', name: GUARD_SERVICE, dispatcher: GUARD_DISPATCH, glyph: '🛡️', mode: 'car', livery: createPatrolCar(), siren: true, provider: guard, messages: GUARD_MESSAGES });
+  dispatch.register({ role: 'guard', name: GUARD_SERVICE, dispatcher: GUARD_DISPATCH, glyph: '🛡️', mode: 'car', livery: createGuardCar(), siren: true, provider: guard, messages: GUARD_MESSAGES });
   // The firefighter (js/firefighter.js): fire, flooded basement, cat up a tree; the fire engine and the effects
   // (js/fire-engine.js); G held on the spot: the water cannon, the pump, the ladder
   {
@@ -798,6 +798,7 @@ async function initApp() {
       },
     });
     globalThis.bielanyFire = { firefighter, fireEngine, fireFx };
+  }
   // The police officer (js/police.js): speed checks with the radar and chases, in the patrol car (js/patrol-car.js)
   const police = new Police(missions, trafficSystem);
   {
@@ -818,7 +819,7 @@ async function initApp() {
     const CHOICES = { none: 'bez uwag', warning: 'pouczenie', fine: 'mandat', court: 'wniosek do sądu' };
     const knocks = (m) => (m.hits ? ` Uderzenia: ${m.hits} (każde to gwiazdka mniej).` : '');
     dispatch.register({
-      role: 'police', name: POLICE_SERVICE, dispatcher: POLICE_DISPATCH, glyph: '🚓', mode: 'car', livery: createPatrolCar(), siren: false, provider: police,
+      role: 'police', name: POLICE_SERVICE, dispatcher: POLICE_DISPATCH, glyph: '🚓', mode: 'car', livery: createPoliceCar(), siren: false, provider: police,
       messages: {
         call: (m) => (m.kind === 'chase'
           ? 'Kierowca nie zatrzymał się do kontroli i ucieka ulicami w twojej okolicy (słup światła nad autem). Włącz sygnał (K), dojedź tuż za niego i trzymaj się kilka sekund albo stań mu na drodze, a sam zjedzie. Bez taranowania: każde uderzenie to gwiazdka mniej.'
