@@ -4,12 +4,7 @@
 Przeniesiona do docs/fazy.md (bieżąca faza).
 
 ## Faza 2: Osiedla, taksówkarz, ratownik
-Bramka: 60 fps na laptopie.
-- Strefy: Słodowiec, Marymont-Ruda, Marymont-Kaskada, Chomiczówka, Piaski.
-- Tramwaj na torach z OSM, ronda w grafie dróg, fasady z wielkiej płyty.
-- Taksówkarz: kurs z pasażerem, ocena za czas i płynność jazdy.
-- Ratownik medyczny: karetka, wezwanie, transport do Szpitala Bielańskiego, ruch ustępuje pojazdom uprzywilejowanym.
-- Aplikacja Aparat: tryb foto, eksport do X. Animowane spadające liście.
+Przeniesiona do docs/fazy.md (bieżąca faza).
 
 ## Faza 3: Służby i teren
 Bramka: cała dzielnica grywalna.

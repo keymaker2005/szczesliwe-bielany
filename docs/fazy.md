@@ -1,6 +1,6 @@
 # Fazy: bieżący zakres
 
-Status: FAZA 1.5 (smartfon i kurier), gałąź faza-1.5. Faza 0 zamknięta 2026-10-24. Faza 1 zrobiona poza bramką: test 1.8b i pakiet dla urzędu odłożone decyzją z 2026-10-25 (wracamy później); do tego czasu main zostaje bez zmian, a faza-1.5 wychodzi z faza-1. Kolejna faza startuje dopiero po przejściu bramki poprzedniej, chyba że zdecyduję inaczej.
+Status: FAZA 2 (osiedla, taksówkarz, ratownik), gałąź faza-2. Faza 1.5 zaliczona 2026-10-26. Faza 0 zamknięta 2026-10-24. Faza 1 zrobiona poza bramką: test 1.8b i pakiet dla urzędu odłożone decyzją z 2026-10-25 (wracamy później); do tego czasu main zostaje bez zmian, a faza-1.5 wychodzi z faza-1. Kolejna faza startuje dopiero po przejściu bramki poprzedniej, chyba że zdecyduję inaczej.
 
 ## Faza 0: Rozpoznanie
 Bramka: dane się wczytują, plan Fazy 1 zaakceptowany.
@@ -43,7 +43,7 @@ Bramka: publiczny link na Cloudflare Pages + pakiet dla urzędu.
 Poza zakresem Fazy 1: tramwaje, teren, Wisła, noc, landmarki poza AWF, gameplay, smartfon. Wszystko to jest w docs/backlog.md.
 
 ## Faza 1.5: Smartfon i kurier
-Bramka: pierwsza grywalna pętla. Plan: docs/plan-fazy-1.5.md (zaakceptowany 2026-10-25). Kroki 1.5.4–1.5.8 zrobione w nocy 2026-10-25/26 bez sprawdzania po każdym kroku (decyzja z 2026-10-25); pętla kuriera działa na bielany.zbigniew.ai, do Twojego sprawdzenia.
+Bramka: pierwsza grywalna pętla. Zaliczona 2026-10-26. Plan: docs/plan-fazy-1.5.md (zaakceptowany 2026-10-25). Kroki 1.5.4–1.5.8 zrobione w nocy 2026-10-25/26 bez sprawdzania po każdym kroku (decyzja z 2026-10-25); pętla kuriera działa na bielany.zbigniew.ai, do Twojego sprawdzenia.
 
 - [x] 1.5.0 Plan Fazy 1.5 (pliki, kolejność, ryzyka). Sprawdzam: akceptuję plan.
 - [x] 1.5.1 Adresy z OSM jako punkty dostawy przy chodniku, w wyszukiwarce mapy. Sprawdzam: mapa znajduje „Żeromskiego 29” i pokazuje pinezkę.
@@ -55,3 +55,9 @@ Bramka: pierwsza grywalna pętla. Plan: docs/plan-fazy-1.5.md (zaakceptowany 202
 - [x] 1.5.6b Landmarki dokładniej po uwagach (2026-10-26): Galeria (bębny, wejście, litery), metro z oficjalnym „M”, Młociny jako otwarty daszek, AWF z rotundą i wschodnimi skrzydłami, UKSW i eremy z LoD1 za granicą obszaru, św. Zygmunt z dachem-gwiazdą, Kameduły z brązowymi hełmami. Sprawdzam: landmarki rozpoznawalne.
 - [x] 1.5.7 Przewodnik i burmistrz w SMS-ach (burmistrz publicznie od 2026-10-26). Sprawdzam: SMS-y przy landmarkach, poprawne teksty.
 - [x] 1.5.8 Deploy i test pętli. Sprawdzam: pełna pętla na publicznym linku.
+
+## Faza 2: Osiedla, taksówkarz, ratownik
+Bramka: 60 fps na laptopie. Plan: docs/plan-fazy-2.md (do akceptacji).
+
+- [ ] 2.0 Plan Fazy 2 (pliki, kolejność, ryzyka). Sprawdzam: akceptuję plan.
+
