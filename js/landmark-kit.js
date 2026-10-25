@@ -69,7 +69,7 @@ const texCache = new Map();
  * A facade tile `w` × `h` metres: wall colour, a window (ww × wh m, sill at sill m) in its middle with a frame, an
  * optional band (plinth stripe at the bottom) — repeated along walls.
  */
-function facadeTexture({ wall = '#e8e1d0', win = '#3d4a57', frame = '#f4f1ea', w = 3, h = 3.2, ww = 1.4, wh = 1.6, sill = 0.9, band = null, glass = false, mullion = 0 }) {
+function facadeTexture({ wall = '#e8e1d0', win = '#3d4a57', frame = '#f4f1ea', w = 3, h = 3.2, ww = 1.4, wh = 1.6, sill = 0.9, band = null, glass = false, mullion = 0, round = false, louvres = 0, ledge = null, arch = false }) {
   const key = JSON.stringify(arguments[0]);
   if (texCache.has(key)) return texCache.get(key);
   const px = 64; // per metre
@@ -88,8 +88,26 @@ function facadeTexture({ wall = '#e8e1d0', win = '#3d4a57', frame = '#f4f1ea', w
     g.fillStyle = frame;
     for (let x = 0; x <= c.width; x += (mullion || 1.5) * px) g.fillRect(x - 2, 0, 4, c.height);
     g.fillRect(0, c.height - 4, c.width, 4);
+  } else if (round) { // portholes
+    const r = ww / 2 * px, cx = w / 2 * px, cy = (h - sill - ww / 2) * px;
+    g.fillStyle = frame;
+    g.beginPath(); g.arc(cx, cy, r + 5, 0, Math.PI * 2); g.fill();
+    g.fillStyle = win;
+    g.beginPath(); g.arc(cx, cy, r, 0, Math.PI * 2); g.fill();
   } else if (ww > 0) {
     const x0 = (w - ww) / 2 * px, y0 = (h - sill - wh) * px;
+    if (arch) { // a round-headed window
+      g.fillStyle = frame;
+      g.beginPath(); g.arc(x0 + ww * px / 2, y0 + ww * px / 2, ww * px / 2 + 5, Math.PI, 0); g.fill();
+      g.fillStyle = win;
+      g.beginPath(); g.arc(x0 + ww * px / 2, y0 + ww * px / 2, ww * px / 2, Math.PI, 0); g.fill();
+    }
+    if (ledge) { // a sill ledge with its shadow under the window
+      g.fillStyle = ledge;
+      g.fillRect(x0 - 10, y0 + wh * px + 4, ww * px + 20, 7);
+      g.fillStyle = 'rgba(0,0,0,0.18)';
+      g.fillRect(x0 - 10, y0 + wh * px + 11, ww * px + 20, 10);
+    }
     g.fillStyle = frame;
     g.fillRect(x0 - 5, y0 - 5, ww * px + 10, wh * px + 10);
     g.fillStyle = win;
@@ -99,6 +117,10 @@ function facadeTexture({ wall = '#e8e1d0', win = '#3d4a57', frame = '#f4f1ea', w
       g.fillRect(x0 + ww * px / 2 - 2, y0, 4, wh * px);
       g.fillRect(x0, y0 + wh * px * 0.35, ww * px, 3);
     }
+  }
+  if (louvres) { // horizontal louvres over glass
+    g.fillStyle = frame;
+    for (let y = 0; y < c.height; y += louvres * px) g.fillRect(0, y, c.width, Math.max(3, louvres * px * 0.28));
   }
   if (band) {
     g.fillStyle = band;
@@ -153,6 +175,31 @@ function signGeometryMaterial(text, { w, h, bg = '#ffffff', fg = '#1b2a4a', font
   t.anisotropy = 4;
   const m = new THREE.MeshStandardNodeMaterial({ map: t, roughness: 0.6, transparent: !bg, side: THREE.DoubleSide, alphaTest: bg ? 0 : 0.4 });
   return { geometry: new THREE.PlaneGeometry(w, h), material: m };
+}
+
+// The Warsaw Metro sign (official): a red "M" whose middle runs down into an arrow, on a yellow disc in a red ring
+function metroSignMaterial() {
+  if (texCache.has('metro')) return texCache.get('metro');
+  const c = document.createElement('canvas');
+  c.width = c.height = 256;
+  const g = c.getContext('2d');
+  const red = '#d0202e', yellow = '#f6d64a';
+  g.fillStyle = red;
+  g.beginPath(); g.arc(128, 128, 124, 0, Math.PI * 2); g.fill();
+  g.fillStyle = yellow;
+  g.beginPath(); g.arc(128, 128, 106, 0, Math.PI * 2); g.fill();
+  g.fillStyle = red;
+  // the M: two slanted legs, the middle a V that runs down into an arrowhead
+  g.beginPath();
+  g.moveTo(58, 192); g.lineTo(82, 62); g.lineTo(112, 62); g.lineTo(128, 120); g.lineTo(144, 62); g.lineTo(174, 62);
+  g.lineTo(198, 192); g.lineTo(170, 192); g.lineTo(156, 112); g.lineTo(142, 160); g.lineTo(160, 160); g.lineTo(128, 214);
+  g.lineTo(96, 160); g.lineTo(114, 160); g.lineTo(100, 112); g.lineTo(86, 192); g.closePath();
+  g.fill();
+  const t = new THREE.CanvasTexture(c);
+  t.colorSpace = THREE.SRGBColorSpace;
+  const m = new THREE.MeshStandardNodeMaterial({ map: t, roughness: 0.5, transparent: true, alphaTest: 0.5, side: THREE.DoubleSide });
+  texCache.set('metro', m);
+  return m;
 }
 
 // ------------------------------------------------------------------------------------------------------------------
@@ -246,6 +293,19 @@ class Builder {
     return this.add(g, material);
   }
 
+  // The metro sign on a post at local (u, v): disc d metres across at height y, facing along u and v (two discs)
+  metro(f, u, v, { y = 4.2, d = 1.1 } = {}) {
+    this.cylinder(f, u, v, 0.07, y - d / 2, 0, mat({ color: 0x9a9da1, rough: 0.4, metal: 0.7 }), { seg: 8 });
+    const disc = new THREE.CircleGeometry(d / 2, 32);
+    const w = f.at(u, v);
+    for (const yaw of [0, Math.PI / 2]) {
+      const m = this.mesh(disc, metroSignMaterial());
+      m.position.set(w.x, y, w.z);
+      m.rotation.y = f.yaw + yaw;
+      m.castShadow = false;
+    }
+  }
+
   // Moves a geometry built round the origin (x along u, z along v) to local (u, v) of frame f
   place(g, f, u, v, yaw = 0) {
     g.rotateY(f.yaw + yaw);
@@ -288,8 +348,14 @@ class Builder {
     return this.add(g, material);
   }
 
-  cylinder(f, u, v, r, h, y0, material, { r1 = r, seg = 20, open = false } = {}) {
+  cylinder(f, u, v, r, h, y0, material, { r1 = r, seg = 20, open = false, su = 1, uvScale = 0 } = {}) {
     const g = new THREE.CylinderGeometry(r1, r, h, seg, 1, open);
+    if (uvScale) { // uv in metres round the side (facade textures)
+      const t = g.attributes.uv, p = g.attributes.position;
+      const per = 2 * Math.PI * r;
+      for (let i = 0; i < t.count; i++) if (Math.abs(g.attributes.normal.getY(i)) < 0.5) t.setXY(i, t.getX(i) * per, p.getY(i) + h / 2 + y0);
+    }
+    g.scale(su, 1, 1);
     g.translate(0, y0 + h / 2, 0);
     this.place(g, f, u, v);
     return this.add(g, material);
@@ -326,6 +392,30 @@ class Builder {
     m.rotation.y = f.yaw + yaw;
     m.castShadow = false;
     return m;
+  }
+
+  // Free triangles in local (u, y, v) of frame f: [[u, y, v], [u, y, v], [u, y, v]], ...; both sides
+  tris(f, list, material) {
+    const pos = [];
+    for (const t of list) for (const [u, y, v] of t) { const w = f.at(u, v); pos.push(w.x, y, w.z); }
+    const g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+    g.computeVertexNormals();
+    return this.add(g, material);
+  }
+
+  // A board (a sign plane) standing at local (u, v), height y, turned by yaw from facing +v; thick: planes stacked
+  // a few centimetres apart (3D letters)
+  letters(f, text, u, v, y, opts, yaw = 0, thick = 0) {
+    const layers = thick ? 4 : 1;
+    for (let k = 0; k < layers; k++) {
+      const { geometry, material } = signGeometryMaterial(text, opts);
+      const m = this.mesh(geometry, material);
+      const w = f.at(u, v);
+      m.rotation.y = f.yaw + yaw;
+      const off = (k / Math.max(1, layers - 1) - 0.5) * thick;
+      m.position.set(w.x + Math.sin(f.yaw + yaw) * off, y, w.z + Math.cos(f.yaw + yaw) * off);
+    }
   }
 
   // Merges everything per material into meshes

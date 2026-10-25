@@ -52,5 +52,6 @@ Bramka: pierwsza grywalna pętla. Plan: docs/plan-fazy-1.5.md (zaakceptowany 202
 - [x] 1.5.4 Smartfon (P): Zlecenia, Mapa, SMS, Pocztówki. Sprawdzam: telefon otwiera się, zamyka i nie blokuje sterowania.
 - [x] 1.5.5 Rola kuriera (rower, auto, gwiazdki, bonus za skrót). Sprawdzam: 3 dostawy pod rząd, ocena ma sens.
 - [x] 1.5.6 Landmarki ze zdjęć, każdy osobno. Sprawdzam: każdy landmark porównany ze zdjęciem.
-- [x] 1.5.7 Przewodnik i burmistrz w SMS-ach (burmistrz publicznie po akceptacji). Sprawdzam: SMS-y przy landmarkach, poprawne teksty.
+- [x] 1.5.6b Landmarki dokładniej po uwagach (2026-10-26): Galeria (bębny, wejście, litery), metro z oficjalnym „M”, Młociny jako otwarty daszek, AWF z rotundą i wschodnimi skrzydłami, UKSW i eremy z LoD1 za granicą obszaru, św. Zygmunt z dachem-gwiazdą, Kameduły z brązowymi hełmami. Sprawdzam: landmarki rozpoznawalne.
+- [x] 1.5.7 Przewodnik i burmistrz w SMS-ach (burmistrz publicznie od 2026-10-26). Sprawdzam: SMS-y przy landmarkach, poprawne teksty.
 - [x] 1.5.8 Deploy i test pętli. Sprawdzam: pełna pętla na publicznym linku.

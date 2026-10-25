@@ -733,6 +733,19 @@ function buildAddresses(graph, isWalk, sidewalks) {
 const roadGraph = buildRoadGraph();
 const { blocks, sidewalks, isWalk } = buildBlocks(roadGraph);
 const addresses = buildAddresses(roadGraph, isWalk, sidewalks);
+
+// Landmark annex: the LoD1 buildings of AWF, UKSW and the Camaldolese complex just east of the area's edge
+// (data/extract_bielany_lod1_annex.py), for js/landmarks.js: [area, outer ring, height]
+const ANNEX_FILE = ROOT + 'data/bielany_lod1_annex.geojson';
+const annex = fs.existsSync(ANNEX_FILE) ? read(ANNEX_FILE).features.map((f) => {
+  const pts = f.geometry.coordinates[0].map(([lon, lat]) => toWorld(lon, lat));
+  if (pts.length > 1 && pts[0][0] === pts[pts.length - 1][0] && pts[0][1] === pts[pts.length - 1][1]) pts.pop();
+  let r = rdpRing(pts, 0.2);
+  let a = 0;
+  for (let k = 0, m = r.length - 1; k < r.length; m = k++) a += r[m][0] * r[k][1] - r[k][0] * r[m][1];
+  if (a < 0) r = r.slice().reverse();
+  return [f.properties.area, flat(r), q(f.properties.height_m)];
+}).filter((b) => b[1].length >= 6) : [];
 const GEO = {
   version: 1,
   frame: {
@@ -760,6 +773,8 @@ const GEO = {
   // 2: nowe osiedle, 3: pawilon, 4: wysoka płyta, 5: blok z lat 50.), palette (0: pastel, 1: bold)]
   buildings: buildBuildings(),
   stations,
+  // Landmark annex east of the area (GUGiK LoD1 2024): [area (awf, uksw-kameduly), outer ring [x, z, ...], height]
+  annex,
   // Addresses (OpenStreetMap): streets [name, ...] and list [street index, number, building x, z, sidewalk spot x, z]
   addresses,
 };

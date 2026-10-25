@@ -648,7 +648,7 @@ async function initApp() {
     id: 'hello', from: COMPANY,
     text: 'Dzień dobry! Mamy paczki do rozwiezienia po Bielanach. Zlecenia w telefonie (P): odbierz paczkę przy stacji metra i dowieź rowerem lub autem. Szybciej niż GPS = premia za skrót.',
   });
-  // 5e. The guide's messages at the landmarks, the mayor's (localhost only) at the start and after deliveries
+  // 5e. The guide's messages at the landmarks, the mayor's at the start and after deliveries
   const guide = new Guide(phone);
   guide.start();
   missions.on('state', (m) => {

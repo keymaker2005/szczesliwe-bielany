@@ -125,53 +125,78 @@ function noiseTexture(base, spots, mesh, w, h, seed = 1) {
   return t;
 }
 
-// A simplified metro sign: a white "M" on a blue square on a post, and the station name board
-function metroSign(b, f, u, v, name) {
-  b.cylinder(f, u, v, 0.08, 3.2, 0, LOOK.steel, { seg: 8 });
-  b.sign(f, 'M', u, v, 3.6, { w: 0.9, h: 0.9, bg: '#1f3a8a', fg: '#ffffff', font: '800' });
-  b.sign(f, name, u, v, 2.75, { w: 2.4, h: 0.42, bg: '#1f3a8a', fg: '#ffffff', font: '700' });
+// The station name board under a metro sign
+function stationBoard(b, f, u, v, name) {
+  b.sign(f, name, u, v, 2.6, { w: 3, h: 0.45, bg: '#1f3a8a', fg: '#ffffff', font: '700' });
 }
 
 // ----------------------------------------------------------------------------------------------------------------
 // The landmarks
 // ----------------------------------------------------------------------------------------------------------------
+// Galeria Młociny (photo: Commons "2019 Warszawa Galeria Młociny, 2"): a long body of vertical metal panel stripes on
+// a glazed ground floor, a dark glass band with louvres under the roof, at the entrance corner two stacked oval drums
+// (the lower one dark glass, the upper one striped and overhanging), the name over the glazed entrance and the big
+// rust letters "Młociny" spread over the plaza; tenant boards with fictional names
 function galeria(b) {
   const id = IDS.galeria[0], ring = ringOf(id), h = heightOf(id);
   const f = frameOf(ring);
   const panels = mat({ map: galeriaTexture(), rough: 0.45, metal: 0.4 });
   const shopfront = mat({ map: facadeTexture({ glass: true, win: '#2b3036', frame: '#9a9c9e', w: 6, h: 8, mullion: 3 }), rough: 0.15, metal: 0.4 });
+  const louvred = mat({ map: facadeTexture({ glass: true, win: '#22262b', frame: '#5d6166', w: 4, h: 4, mullion: 4, louvres: 0.6 }), rough: 0.25, metal: 0.5 });
+  const dark = mat({ color: 0x2a2c30, rough: 0.5, metal: 0.3 });
   b.prism(ring, 0, 8, shopfront);
-  b.prism(ring, 8, h, panels, LOOK.roofGrey);
-  // rounded corner drums at both ends, a dark glass band and an overhang
-  for (const s of [-1, 1]) {
-    const u = s * (f.hu - f.hv * 0.55), r = f.hv * 0.62;
-    b.cylinder(f, u, 0, r, h + 2.5, 0, panels, { seg: 28 });
-    b.cylinder(f, u, 0, r + 1.2, 4.5, h + 2.5, LOOK.darkGlass, { seg: 28 });
-    b.cylinder(f, u, 0, r + 1.6, 0.5, h + 7, LOOK.roofGrey, { seg: 28 });
-  }
-  // roof garden: lawns and shrubs on the middle of the roof
-  for (let k = -3; k <= 3; k++) {
-    b.box(f, k * f.hu * 0.18, 0, f.hu * 0.13, f.hv * 0.9, 0.5, h, LOOK.green);
-    for (const dv of [-0.25, 0.25]) b.cone(f, k * f.hu * 0.18, dv * f.hv, 1.6, 3.2, h + 0.5, mat({ color: 0x6d8a3e, rough: 1 }), 7);
-  }
-  // the name over the main entrance (the north-east end, towards the Młociny hub), the rust letters on the plaza
+  b.prism(ring, 8, h - 5, panels);
+  b.prism(ring, h - 5, h - 0.6, louvred);
+  b.prism(ring, h - 0.6, h + 0.4, dark, LOOK.roofGrey);
+  // the entrance corner (towards the Młociny hub, north-east) and the far end
   const ne = f.at(f.hu, 0).z < f.at(-f.hu, 0).z ? 1 : -1;
-  const eu = ne * (f.hu - f.hv * 1.4);
-  b.box(f, eu, f.hv + 0.1, 26, 0.6, 3.2, 10.5, LOOK.darkGlass);
-  b.sign(f, 'Galeria Młociny', eu, f.hv + 0.45, 12.1, { w: 24, h: 2.6, bg: null, fg: '#ffffff', font: '700' });
-  b.sign(f, 'Młociny', eu - ne * 6, f.hv + 14, 1.0, { w: 9, h: 2, bg: null, fg: '#8a3b22', font: '800' });
-  // fictional tenant boards on the long front
-  const shops = ['Księgarnia Kartka', 'Sport Bielany', 'Kawiarnia Pod Kasztanem', 'Dom Mody Wisła'];
-  shops.forEach((name, i) => b.sign(f, name, (-0.5 + i * 0.3) * f.hu, f.hv + 0.1, 9.2, { w: 12, h: 1.4, bg: '#2a2c30', fg: '#f2f2f0' }));
+  const rA = Math.min(26, f.hv * 0.5), rB = rA + 3.5, dv = f.hv - rA * 0.75; // the drums stand out of the front
+  const cu = ne * (f.hu - rA * 1.25);
+  b.cylinder(f, cu, dv, rA, 4.5, 8, louvred, { seg: 40, su: 1.3, uvScale: 1 });
+  b.cylinder(f, cu, dv + 1.5, rB, 1.6, 12.5, mat({ color: 0x1f2226, rough: 0.2, metal: 0.6 }), { seg: 40, su: 1.25, uvScale: 1 });
+  b.cylinder(f, cu, dv + 1.5, rB, h + 4 - 14.1, 14.1, panels, { seg: 40, su: 1.25, uvScale: 1 });
+  b.cylinder(f, cu, dv + 1.5, rB + 0.3, 0.5, h + 4, dark, { seg: 40, su: 1.25 });
+  b.cylinder(f, cu, dv + 1.5, rB - 4, 3, h + 4.5, LOOK.roofGrey, { seg: 24, su: 1.2 }); // the plant room on top
+  b.cylinder(f, -ne * (f.hu - f.hv * 0.5), 0, f.hv * 0.6, h + 1.5, 0, panels, { seg: 32, su: 1.2, uvScale: 1 });
+  // roof garden: lawns and shrubs, plant rooms
+  for (let k = -3; k <= 2; k++) {
+    b.box(f, k * f.hu * 0.16, 0, f.hu * 0.11, f.hv * 0.9, 0.5, h + 0.4, LOOK.green);
+    for (const dv of [-0.25, 0.25]) b.cone(f, k * f.hu * 0.16, dv * f.hv, 1.6, 3.2, h + 0.9, mat({ color: 0x6d8a3e, rough: 1 }), 7);
+  }
+  b.box(f, -ne * f.hu * 0.55, 0, 22, 14, 4, h + 0.4, mat({ color: 0x9a9c9e, rough: 0.6, metal: 0.4 }));
+  // the glazed double-height entrance on the front with the name on a dark fascia
+  const eu = cu - ne * (rA * 1.3 + 16);
+  b.box(f, eu, f.hv + 1.5, 26, 3, 9, 0, mat({ map: facadeTexture({ glass: true, win: '#263038', frame: '#b5b8bb', w: 2.6, h: 9, mullion: 1.3 }), rough: 0.1, metal: 0.5 }));
+  b.box(f, eu, f.hv + 1.6, 27, 3.4, 2.6, 9, dark);
+  b.sign(f, 'Galeria Młociny', eu, f.hv + 3.35, 10.3, { w: 18, h: 1.9, bg: null, fg: '#ffffff', font: '600' });
+  // the rust letters on the plaza, each its own block, spread out
+  const word = 'Młociny';
+  [...word].forEach((ch, i) => {
+    const lu = eu + ne * (i - 3) * 6.5;
+    b.letters(f, ch, lu, f.hv + 16 + (i % 2) * 1.5, 1.5, { w: 2.6, h: 3, bg: null, fg: '#8a3b22', font: '800' }, (i % 3 - 1) * 0.12, 0.4);
+  });
+  b.box(f, eu, f.hv + 14, 70, 26, 0.06, 0, mat({ color: 0xb5b3ad, rough: 0.95 })); // the paved plaza
+  // tenant boards (fictional names) on the upper drum and the long front
+  const tenants = ['DOM MODY WISŁA', 'Księgarnia Kartka', 'Sport Bielany', 'Kawiarnia Pod Kasztanem', 'Apteka Na Rogu', 'Obuwie Krok'];
+  tenants.forEach((name, i) => b.sign(f, name, cu - ne * 3, dv + 1.5 + rB + 0.25, 22 - i * 1.6, { w: 11, h: 1.3, bg: null, fg: '#f2f2f0', font: '700' }));
+  b.box(f, cu - ne * 3, dv + 1.5 + rB - 0.4, 13, 0.6, 10.5, 12.6, dark);
+  ['Market Wawrzyszew', 'Moda Młociny', 'Elektro Bielany'].forEach((name, i) => b.sign(f, name, (-0.45 + i * 0.25) * f.hu * ne, f.hv + 0.1, 9.6, { w: 12, h: 1.4, bg: '#2a2c30', fg: '#f2f2f0' }));
 }
 
+// Stare Bielany (photo: Commons, ul. Kasprowicza 2010): low glass pavilions with steel mullions under a thick dark
+// roof slab overhanging by ~2 m, the metro sign on a post by the entrance
 function stareBielany(b) {
-  const glass = mat({ map: facadeTexture({ glass: true, win: '#4a5560', frame: '#8c8f92', w: 3, h: 3.6, mullion: 1.5 }), rough: 0.1, metal: 0.5 });
+  const glass = mat({ map: facadeTexture({ glass: true, win: '#4a5560', frame: '#5f6468', w: 3, h: 3.6, mullion: 1.2 }), rough: 0.1, metal: 0.5 });
+  const slab = mat({ color: 0x55595e, rough: 0.6, metal: 0.3 });
   for (const id of IDS.stareBielany) {
     const ring = ringOf(id), h = heightOf(id), f = frameOf(ring);
-    b.prism(ring, 0, h - 1, glass);
-    b.prism(ring, h - 1, h, LOOK.white, LOOK.roofGrey);
-    metroSign(b, f, f.hu - 2, f.hv + 2.5, 'Stare Bielany');
+    b.prism(ring, 0, h - 0.9, glass);
+    b.box(f, 0, 0, f.hu * 2 + 4.5, f.hv * 2 + 4.5, 0.9, h - 0.9, slab);
+    b.box(f, 0, 0, f.hu * 2 + 4.7, f.hv * 2 + 4.7, 0.25, h - 0.15, mat({ color: 0x3d4146, rough: 0.6 }));
+    for (const s of [-1, 1]) b.cylinder(f, s * (f.hu + 1.7), f.hv + 1.7, 0.14, h - 0.9, 0, LOOK.steel, { seg: 10 });
+    b.box(f, f.hu * 0.35, f.hv + 0.05, 4, 0.2, 2.6, 0, mat({ color: 0x1c2024, rough: 0.2, metal: 0.4 })); // the doors
+    b.metro(f, f.hu * 0.35 + 4, f.hv + 3);
+    stationBoard(b, f, f.hu * 0.35, f.hv + 2.4, 'Stare Bielany');
   }
 }
 
@@ -180,57 +205,117 @@ function wawrzyszew(b) {
   for (const id of IDS.wawrzyszew) {
     const ring = ringOf(id), h = heightOf(id), f = frameOf(ring);
     b.prism(ring, 0, h - 0.4, creeper);
-    // the steel pergola roof, overhanging, with cross slats
+    // the steel pergola roof, overhanging, with cross slats on slender columns
     b.box(f, 0, 0, f.hu * 2 + 3, f.hv * 2 + 3, 0.25, h - 0.4, LOOK.steel);
     const n = Math.round((f.hu * 2 + 3) / 1.2);
     for (let k = 0; k <= n; k++) b.box(f, -f.hu - 1.5 + k * 1.2, 0, 0.12, f.hv * 2 + 3, 0.5, h - 0.15, mat({ color: 0x6e7276, rough: 0.6, metal: 0.5 }));
-    metroSign(b, f, f.hu, f.hv + 3, 'Wawrzyszew');
+    for (const s of [-1, 1]) for (const t of [-1, 1]) b.cylinder(f, s * (f.hu + 1.2), t * (f.hv + 1.2), 0.12, h - 0.4, 0, LOOK.steel, { seg: 8 });
+    b.box(f, 0, f.hv + 0.05, 5, 0.2, 2.6, 0, mat({ color: 0x1c2024, rough: 0.2, metal: 0.4 }));
+    b.metro(f, 5, f.hv + 3);
+    stationBoard(b, f, 0, f.hv + 2.6, 'Wawrzyszew');
   }
 }
 
+// Młociny (photo: Commons MeroA23_7): an open canopy — a flat roof on slender columns with a band of milky glass
+// round its edge and a mesh railing on top — over free-standing gabion walls; the stairs go down in the open middle
 function mlociny(b) {
   const gabion = mat({ map: noiseTexture('#8f8572', ['#a39883', '#b8ae99', '#7d7563', '#c7bfae'], '#8d8f90', 1, 1, 3), rough: 0.95 });
   for (const id of IDS.mlociny) {
     const ring = ringOf(id), h = heightOf(id), f = frameOf(ring);
-    b.prism(ring, 0, h - 1.6, gabion);
-    b.prism(ring, h - 1.6, h - 0.2, LOOK.milky, LOOK.roofGrey);
-    b.prism(ring, h - 0.2, h + 0.9, mat({ color: 0x8d8f90, rough: 0.5, metal: 0.6, opacity: 0.55, double: true }));
-    metroSign(b, f, f.hu + 1.5, f.hv + 2.5, 'Młociny');
+    const W = f.hu * 2, D = f.hv * 2;
+    b.box(f, 0, 0, W + 1, D + 1, 0.4, h - 1.6, mat({ color: 0xd9dcdf, rough: 0.6 }));
+    b.box(f, 0, 0, W + 1.2, D + 1.2, 1.3, h - 1.3, LOOK.milky);
+    b.box(f, 0, 0, W + 1.2, D + 1.2, 0.08, h - 0.02, mat({ color: 0xbfc3c7, rough: 0.6 }));
+    b.prism(toRect(f, W / 2 + 0.6, D / 2 + 0.6), h, h + 1.1, mat({ color: 0x8d8f90, rough: 0.5, metal: 0.6, opacity: 0.55, double: true }));
+    const cols = Math.max(2, Math.round(W / 7));
+    for (let k = 0; k <= cols; k++) for (const t of [-1, 1]) b.cylinder(f, -W / 2 + (k * W) / cols, t * (D / 2 - 0.4), 0.13, h - 1.6, 0, LOOK.steel, { seg: 8 });
+    // gabion walls: blocks along the back and the ends, open at the front
+    for (let k = 0; k < cols; k++) {
+      if (k % 3 === 1) continue;
+      b.box(f, -W / 2 + ((k + 0.5) * W) / cols, -(D / 2 - 0.9), W / cols - 1.2, 1.2, h - 2.2, 0, gabion);
+    }
+    for (const s of [-1, 1]) b.box(f, s * (W / 2 - 0.9), 0, 1.2, D * 0.6, h - 2.2, 0, gabion);
+    b.box(f, 0, 0.5, W * 0.35, D * 0.35, 0.1, 0.01, mat({ color: 0x15171a, rough: 1 })); // the stairwell
+    b.metro(f, W / 2 + 1.5, D / 2 + 2.5);
+    stationBoard(b, f, W / 2 + 1.5, D / 2 + 1.8, 'Młociny');
   }
 }
 
-function awf(b) {
+// Axis-aligned rectangle in frame f as world points (for prisms round boxes)
+function toRect(f, hu, hv) {
+  return [f.at(-hu, -hv), f.at(hu, -hv), f.at(hu, hv), f.at(-hu, hv)].map((p) => ({ x: p.x, z: p.z }));
+}
+
+// AWF (photo: Commons "Budynek główny AWF Warszawa", 2015): white modernist blocks with a porthole row on the ground
+// floor and railings on the flat roofs; the slender tower with single windows on little ledges, a narrower shaft beside
+// it, a kiosk, a railing and masts on top; the rotunda ringed by touching white cylinders with portholes above them and
+// a low blue-grey dome; the eastern wings from the full LoD1 package
+function awf(b, colliders) {
   const main = IDS.awf[0], tower = IDS.awf[1];
-  const plaster = mat({ map: facadeTexture({ wall: '#f1f0ea', win: '#3a3d40', frame: '#3a3d40', w: 3.2, h: 3.8, ww: 1.8, wh: 1.9, sill: 1, band: '#d9d7cf' }), rough: 0.85 });
-  const ring = ringOf(main), h = heightOf(main);
-  b.prism(ring, 0, h, plaster, mat({ color: 0x4a4a4a, rough: 0.95 }));
-  b.prism(ring, h, h + 0.9, LOOK.white); // attic
-  // the white tower: paired windows in a vertical strip, a kiosk and masts on top, a terrace railing
-  const tr = ringOf(tower), th = heightOf(tower), tf = frameOf(tr);
-  const towerWall = mat({ map: facadeTexture({ wall: '#f1f0ea', win: '#3a3d40', frame: '#e4e2da', w: 2.4, h: 2.9, ww: 0.9, wh: 1.5, sill: 0.8 }), rough: 0.85 });
-  b.prism(tr, 0, th, towerWall, LOOK.white);
-  b.box(tf, 0, 0, tf.hu * 1.1, tf.hv * 1.1, 3, th, LOOK.white);
-  for (const s of [-1, 1]) b.cylinder(tf, s * tf.hu * 0.4, 0, 0.08, 7, th + 3, LOOK.steel, { seg: 6 });
-  b.prism(tr, th, th + 1.1, mat({ color: 0x8c8f92, rough: 0.5, metal: 0.6, opacity: 0.5, double: true }));
-  // the rotunda at the tower's foot: a drum ringed by white cylinders, round windows above
-  const rf = frameOf(tr);
-  const rv = rf.hv + 14;
-  b.cylinder(rf, 0, rv, 11, 8, 0, LOOK.white, { seg: 32 });
-  for (let k = 0; k < 14; k++) {
-    const a = (k / 14) * Math.PI * 2;
-    b.cylinder(rf, Math.cos(a) * 11.6, rv + Math.sin(a) * 11.6, 1.1, 6.5, 0, LOOK.white, { seg: 12 });
+  const upper = mat({ map: facadeTexture({ wall: '#f3f2ec', win: '#34383c', frame: '#3a3d40', w: 3.2, h: 3.8, ww: 1.8, wh: 1.9, sill: 1 }), rough: 0.85 });
+  const portholes = mat({ map: facadeTexture({ wall: '#f3f2ec', win: '#34383c', frame: '#d9d7cf', w: 2.6, h: 3.8, ww: 1.1, sill: 1.2, round: true }), rough: 0.85 });
+  const railing = mat({ color: 0x8c8f92, rough: 0.5, metal: 0.6, opacity: 0.5, double: true });
+  const roof = mat({ color: 0x4a4a4a, rough: 0.95 });
+  const block = (ring, h) => {
+    b.prism(ring, 0, Math.min(3.8, h), portholes);
+    if (h > 3.8) b.prism(ring, 3.8, h, upper);
+    b.prism(ring, h, h + 0.8, LOOK.white, roof);
+    b.prism(ring, h + 0.8, h + 1.8, railing);
+  };
+  block(ringOf(main), heightOf(main));
+  for (const [area, flatRing, h] of GEO.annex || []) {
+    if (area !== 'awf') continue;
+    const ring = toPts(flatRing);
+    if (h > 2.5) block(ring, h);
+    pushColliders(ring, h, colliders);
   }
-  b.cylinder(rf, 0, rv, 11.4, 0.5, 8, mat({ color: 0x4a4a4a, rough: 0.95 }), { seg: 32 });
+  // the tower
+  const tr = ringOf(tower), th = heightOf(tower), tf = frameOf(tr);
+  const towerWall = mat({ map: facadeTexture({ wall: '#f3f2ec', win: '#2f3236', frame: '#2f3236', w: tf.hu * 2, h: 3.3, ww: 1.2, wh: 1.3, sill: 1.1, ledge: '#e2e0d8' }), rough: 0.85 });
+  b.prism(tr, 0, th, towerWall, LOOK.white);
+  b.box(tf, tf.hu + 1.4, 0, 2.8, tf.hv * 1.4, th - 2.5, 0, mat({ map: facadeTexture({ wall: '#f3f2ec', win: '#2f3236', frame: '#2f3236', w: 2.8, h: 3.3, ww: 0.7, wh: 1.1, sill: 1.2 }), rough: 0.85 }));
+  b.box(tf, 0, 0, tf.hu * 1.15, tf.hv * 1.15, 0.5, th, LOOK.white);
+  b.box(tf, -tf.hu * 0.2, 0, tf.hu * 0.9, tf.hv * 0.9, 3.2, th + 0.5, LOOK.white);
+  b.box(tf, -tf.hu * 0.2, 0, tf.hu * 1.0, tf.hv * 1.0, 0.4, th + 3.7, LOOK.white);
+  b.prism(toRect(tf, tf.hu, tf.hv), th + 0.5, th + 1.6, railing);
+  for (const s of [-1, 1]) b.cylinder(tf, -tf.hu * 0.2 + s * 1.2, 0, 0.07, 6, th + 4.1, LOOK.steel, { seg: 6 });
+  b.box(tf, -tf.hu * 0.2, 0, 2.6, 0.08, 0.08, th + 8.5, LOOK.steel);
+  // the rotunda beside the tower
+  const rv = tf.hv + 16, R = 13;
+  const drumWall = mat({ map: facadeTexture({ wall: '#f3f2ec', win: '#34383c', frame: '#d9d7cf', w: 5.1, h: 3, ww: 1.3, sill: 0.8, round: true }), rough: 0.85 });
+  b.cylinder(tf, 0, rv, R, 7, 0, LOOK.white, { seg: 40 });
+  b.cylinder(tf, 0, rv, R, 3, 7, drumWall, { seg: 40, uvScale: 1 });
+  b.dome(tf, 0, rv, R + 0.3, 10, mat({ color: 0x5b6a7a, rough: 0.6, metal: 0.3 }), { squash: 0.22 });
+  const n = Math.round((2 * Math.PI * (R + 1.5)) / 3.1);
+  for (let k = 0; k < n; k++) {
+    const a = (k / n) * Math.PI * 2;
+    b.cylinder(tf, Math.cos(a) * (R + 1.4), rv + Math.sin(a) * (R + 1.4), 1.55, 7, 0, LOOK.white, { seg: 14 });
+  }
 }
 
-function uksw(b) {
-  const id = IDS.uksw[0], ring = ringOf(id), h = heightOf(id);
+// UKSW Dewajtis: cream plaster, white windows in deep reveals, steep dark metal roofs (hip roofs on the simple
+// blocks, a mansard band on the long ones); the campus buildings east of the area from the full LoD1 package
+function uksw(b, colliders) {
   const plaster = mat({ map: facadeTexture({ wall: '#ece6d6', win: '#3f4650', frame: '#ffffff', w: 2.8, h: 3.5, ww: 1.2, wh: 1.7, sill: 0.95, band: '#cfcac0' }), rough: 0.9 });
-  b.prism(ring, 0, h, plaster);
-  // a steep dark metal roof: a mansard band, then the flat top
-  b.prism(ring, h, h + 2.6, LOOK.graphite, LOOK.graphite, { inset: 1.6 });
-  const f = frameOf(ring);
+  const building = (ring, h) => {
+    b.prism(ring, 0, h, plaster);
+    if (ring.length <= 6) {
+      const f = frameOf(ring);
+      b.hip(f, 0, 0, f.hu * 2, f.hv * 2, h, Math.min(6, f.hv * 0.8), LOOK.graphite, { o: 0.5 });
+    } else {
+      b.prism(ring, h, h + 2.6, LOOK.graphite, LOOK.graphite, { inset: 1.6 });
+    }
+  };
+  const id = IDS.uksw[0];
+  building(ringOf(id), heightOf(id));
+  const f = frameOf(ringOf(id));
   b.sign(f, 'Uniwersytet Kardynała Stefana Wyszyńskiego', 0, f.hv + 0.4, 3.6, { w: 16, h: 0.9, bg: null, fg: '#7a1f2b', serif: true });
+  for (const [area, flatRing, h] of GEO.annex || []) {
+    if (area !== 'uksw-kameduly' || h < 9) continue; // the low ones are the hermitages (js: kameduly)
+    const ring = toPts(flatRing);
+    building(ring, h);
+    pushColliders(ring, h, colliders);
+  }
 }
 
 function szpital(b) {
@@ -248,28 +333,57 @@ function szpital(b) {
   });
 }
 
+// St Sigismund (photo: Commons, 2013): a low white concrete base with a relief medallion over the wooden doors, the
+// roof a star of six folded triangular planes whose tips stick out as sharp beaks, grey-green metal, a spiky star
+// crown with a big cross on top; the tall concrete bell tower with vertical slots and the bells in its open top
+// stands at the east corner; a tall wooden cross in front
 function zygmunt(b) {
   const id = IDS.zygmunt[0], ring = ringOf(id), h = heightOf(id), f = frameOf(ring);
-  const base = mat({ map: facadeTexture({ wall: '#d8d4c8', win: '#3c4248', frame: '#d8d4c8', w: 3, h: h, ww: 2.4, wh: 2.2, sill: h - 3 }), rough: 0.9 });
+  const base = mat({ map: facadeTexture({ wall: '#dedad0', win: '#3c4248', frame: '#dedad0', w: 3, h: h, ww: 2.4, wh: 2.2, sill: h - 3 }), rough: 0.9 });
   b.prism(ring, 0, h - 0.3, base, LOOK.roofGrey);
-  // the hexagonal tent roof with sharp "beaks", a star crown and a cross
-  const r = Math.max(f.hu, f.hv) * 1.05, tentH = 15;
-  const tent = new THREE.ConeGeometry(r, tentH, 6, 1, true);
-  tent.translate(0, h - 0.3 + tentH / 2, 0);
-  b.place(tent, f, 0, 0, Math.PI / 6);
-  b.add(tent, mat({ color: 0x6f7d74, rough: 0.6, metal: 0.35, double: true }));
-  const top = h - 0.3 + tentH;
-  for (let k = 0; k < 6; k++) b.box(f, 0, 0, 0.3, 4.5, 0.3, top - 0.4, LOOK.gold, (k / 6) * Math.PI);
-  b.cross(f, 0, 0, 4, top, LOOK.gold);
-  b.box(f, 0, f.hv + 0.1, 3.2, 0.3, 3.2, 6, mat({ color: 0xe9e5d8, rough: 0.8 })); // the relief medallion over the door
-  b.box(f, 0, f.hv + 0.2, 3.6, 0.3, 3, 0, mat({ color: 0x8a6a45, rough: 0.8 })); // wooden doors
-  // the free-standing concrete bell tower on the east side: two slabs, the bells in the open chamber, a cross
+  // the folded star roof
+  const R = Math.max(f.hu, f.hv) * 1.02, top = h + 15, roof = mat({ color: 0x6f7d74, rough: 0.55, metal: 0.4, double: true });
+  const edge = mat({ color: 0x3f4844, rough: 0.6, metal: 0.3, double: true });
+  const at = (ang, r, y) => [Math.cos(ang) * r, y, Math.sin(ang) * r];
+  const facets = [], rims = [];
+  for (let k = 0; k < 6; k++) {
+    const a = (k / 6) * Math.PI * 2, l = a - Math.PI / 6, r = a + Math.PI / 6;
+    const beak = at(a, R * 1.22, h + 5.5), apex = at(a, R * 0.12, top);
+    facets.push([apex, at(l, R * 0.86, h - 0.2), beak], [apex, beak, at(r, R * 0.86, h - 0.2)]);
+    // the beak's underside back to the wall
+    rims.push([beak, at(l, R * 0.86, h - 0.2), at(a, R * 0.8, h - 0.2)], [beak, at(a, R * 0.8, h - 0.2), at(r, R * 0.86, h - 0.2)]);
+  }
+  const apexes = Array.from({ length: 6 }, (_, k) => at((k / 6) * Math.PI * 2, R * 0.12, top));
+  for (let k = 0; k < 6; k++) facets.push([[0, top + 0.6, 0], apexes[k], apexes[(k + 1) % 6]]);
+  b.tris(f, facets, roof);
+  b.tris(f, rims, edge);
+  // the star crown: six spikes leaning out, the cross
+  for (let k = 0; k < 6; k++) {
+    const a = (k / 6) * Math.PI * 2 + Math.PI / 6;
+    b.tris(f, [[[0, top + 0.4, 0], at(a - 0.18, 1.2, top + 0.8), at(a, 3.8, top + 3.6)], [[0, top + 0.4, 0], at(a, 3.8, top + 3.6), at(a + 0.18, 1.2, top + 0.8)]], edge);
+  }
+  b.cross(f, 0, 0, 6, top + 1, mat({ color: 0x2f3433, rough: 0.5, metal: 0.5 }));
+  // the front: relief medallion, wooden doors, the tall cross
+  b.box(f, 0, f.hv + 0.1, 12, 0.3, 4.2, 4.8, mat({ color: 0xe9e5d8, rough: 0.8 }));
+  b.cylinder(f, 0, f.hv + 0.35, 1.6, 0.25, 5.4, mat({ color: 0xd2cdbf, rough: 0.8 }), { seg: 24 });
+  b.box(f, 0, f.hv + 0.2, 6, 0.3, 3.4, 0, mat({ color: 0x8a6a45, rough: 0.8 }));
+  b.box(f, -5, f.hv + 7, 0.5, 0.5, 11, 0, mat({ color: 0x6b4a2e, rough: 0.9 }));
+  b.box(f, -5, f.hv + 7, 4.2, 0.5, 0.5, 8, mat({ color: 0x6b4a2e, rough: 0.9 }));
+  // the bell tower at the east corner
   const east = f.at(1, 0).x > f.at(-1, 0).x ? 1 : -1;
-  const tu = east * (f.hu + 9), tv = f.hv * 0.3;
-  for (const s of [-1, 1]) b.box(f, tu + s * 1.6, tv, 1.2, 4.4, 36, 0, LOOK.concrete);
-  b.box(f, tu, tv, 4.4, 4.4, 1.2, 36, LOOK.concrete);
-  for (let k = 0; k < 3; k++) b.cone(f, tu, tv, 0.7 - k * 0.15, 1.1, 34.4 - k * 2.6, mat({ color: 0x7b5a2a, rough: 0.4, metal: 0.8 }), 12);
-  b.cross(f, tu, tv, 4, 37.2, LOOK.gold);
+  const tu = east * (f.hu + 2.5), tv = f.hv * 0.55, TH = 40;
+  const concrete = LOOK.concrete, slot = mat({ color: 0x55534d, rough: 1 });
+  b.box(f, tu, tv, 4.6, 4.6, TH - 9, 0, concrete);
+  for (const s of [-1, 1]) {
+    b.box(f, tu + s * 1.0, tv + 2.31, 0.35, 0.05, 14, 6 + (s > 0 ? 4 : 0), slot);
+    b.box(f, tu - 2.31, tv + s * 1.0, 0.05, 0.35, 10, 16, slot);
+    b.box(f, tu + s * 1.95, tv, 0.7, 4.6, 7, TH - 9, concrete); // the open bell chamber's sides
+  }
+  b.box(f, tu, tv, 4.6, 4.6, 2, TH - 2, concrete);
+  for (let k = 0; k < 2; k++) {
+    b.cone(f, tu, tv + (k - 0.5) * 1.6, 0.75, 1.2, TH - 6.5 + k * 1.6, mat({ color: 0x7b5a2a, rough: 0.35, metal: 0.85 }), 14);
+  }
+  b.cross(f, tu, tv, 4, TH, mat({ color: 0x2f3433, rough: 0.5, metal: 0.5 }));
 }
 
 function magdalena(b) {
@@ -303,45 +417,69 @@ function magdalena(b) {
   b.cross(f, tu, 0, 1.6, ridge + 3.9, LOOK.gold);
 }
 
+// The Camaldolese church (photos: Commons "Camaldolese Church in Warsaw", 2019): white plaster, a green copper roof,
+// a three-bay front with pilasters, round-headed windows and a pediment between volutes; two square white towers at
+// the east end with arched belfry openings (brown louvres) and double onion helmets of brown copper with lanterns and
+// crosses; in front the wooden gate to the hermitages under steep crossed shingle gables and a picket fence; the
+// hermitages themselves (low white houses, red tiled hip roofs) on their LoD1 footprints
 function kameduly(b, colliders) {
   const ring = toPts(KAMEDULY_RING), h = 18.2, f = frameOf(ring);
-  const wall = mat({ map: facadeTexture({ wall: '#f0ede4', win: '#4a4a4a', frame: '#e3dfd3', w: 5, h: 9, ww: 1.8, wh: 4.2, sill: 3 }), rough: 0.85 });
+  const wall = mat({ map: facadeTexture({ wall: '#f0ede4', win: '#3e4246', frame: '#e3dfd3', w: 5, h: 9, ww: 1.9, wh: 3.4, sill: 3, arch: true }), rough: 0.85 });
+  const white = LOOK.white, trim = mat({ color: 0xe2ded2, rough: 0.8 });
+  const bronze = mat({ color: 0x7a4f32, rough: 0.45, metal: 0.6 }), louvre = mat({ color: 0x5a3b26, rough: 0.8 });
   const eaves = h - 3;
   b.prism(ring, 0, eaves, wall);
-  b.gable(f, 0, 0, f.hu * 1.7, f.hv * 1.55, eaves, 7.5, LOOK.copper, { o: 0.6 });
+  b.prism(ring, eaves - 0.6, eaves, trim);
+  b.gable(f, 0, 0, f.hu * 1.7, f.hv * 1.5, eaves, 8, LOOK.copper, { o: 0.7 });
   pushColliders(ring, h, colliders);
-  // west front: three bays, paired pilasters, a triangular pediment
+  // the west front
   const west = f.at(1, 0).x < f.at(-1, 0).x ? 1 : -1;
-  const fu = west * f.hu;
-  b.box(f, fu, 0, 1.2, f.hv * 1.55, eaves + 2, 0, LOOK.white);
-  for (const s of [-1, -0.33, 0.33, 1]) b.box(f, fu + west * 0.8, s * f.hv * 0.45, 0.6, 0.9, eaves + 1, 0, mat({ color: 0xe6e2d6, rough: 0.8 }));
-  b.gable(f, fu + west * 0.4, 0, 1.6, f.hv * 1.4, eaves + 2, 5, LOOK.white, { yaw: Math.PI / 2, o: 0.2 });
-  b.box(f, fu + west * 0.65, 0, 0.1, 2.6, 4.6, 0, mat({ color: 0x5a3d26, rough: 0.8 }));
-  // two towers at the east end, either side of the chancel: white shafts, belfry openings, onion helmets, crosses
-  const eu = -west * (f.hu - 4);
+  const fu = west * f.hu, fw = f.hv * 1.5;
+  b.box(f, fu, 0, 1.4, fw, eaves + 2.5, 0, white);
+  for (const s of [-0.45, -0.18, 0.18, 0.45]) b.box(f, fu + west * 0.9, s * fw, 0.5, 0.9, eaves + 1.5, 0, trim);
+  b.box(f, fu + west * 0.9, 0, 0.6, fw + 0.6, 0.7, eaves + 1.5, trim); // the entablature
+  b.gable(f, fu + west * 0.5, 0, 1.8, fw * 0.62, eaves + 2.2, 4.6, white, { yaw: Math.PI / 2, o: 0.3 });
+  for (const s of [-1, 1]) b.cone(f, fu + west * 0.6, s * fw * 0.38, 1.4, 2.6, eaves + 2.2, white, 4); // volutes, stylised
+  b.box(f, fu + west * 0.75, 0, 0.12, 2.6, 4.4, 0, mat({ color: 0x5a3d26, rough: 0.8 }));
+  const win = mat({ color: 0x3e4246, rough: 0.3, metal: 0.3 });
+  for (const s of [-0.3, 0, 0.3]) b.box(f, fu + west * 0.75, s * fw, 0.08, 1.6, 3, eaves - 7 + (s === 0 ? 1 : 0), win);
+  // the two east towers
+  const eu = -west * (f.hu - 4.5), TOP = 25;
   for (const s of [-1, 1]) {
-    const tv = s * (f.hv - 3.5);
-    b.box(f, eu, tv, 6, 6, 26, 0, LOOK.white);
-    b.box(f, eu, tv, 6.6, 6.6, 0.6, 26, mat({ color: 0xe6e2d6, rough: 0.8 }));
-    for (const d of [-1, 1]) b.box(f, eu + d * 3.02, tv, 0.06, 1.6, 3, 21.5, mat({ color: 0x4a4a4a }));
-    for (const d of [-1, 1]) b.box(f, eu, tv + d * 3.02, 1.6, 0.06, 3, 21.5, mat({ color: 0x4a4a4a }));
-    b.dome(f, eu, tv, 3.4, 26.6, LOOK.domeCopper, { squash: 1.35 });
-    b.cylinder(f, eu, tv, 0.9, 2.2, 31, LOOK.white, { seg: 8 });
-    b.dome(f, eu, tv, 1.2, 33.2, LOOK.domeCopper, { squash: 1.6 });
-    b.cone(f, eu, tv, 0.35, 1.4, 35, LOOK.domeCopper, 8);
-    b.cross(f, eu, tv, 2.2, 36.3, LOOK.gold);
+    const tv = s * (f.hv - 3.2);
+    b.box(f, eu, tv, 5.6, 5.6, TOP, 0, white);
+    for (const y of [eaves - 0.6, TOP - 5.6, TOP]) b.box(f, eu, tv, 6.2, 6.2, 0.5, y, trim);
+    for (const d of [-1, 1]) {
+      b.box(f, eu + d * 2.83, tv, 0.06, 1.7, 3.2, TOP - 4.6, louvre);
+      b.box(f, eu, tv + d * 2.83, 1.7, 0.06, 3.2, TOP - 4.6, louvre);
+      b.cylinder(f, eu + d * 2.83, tv, 0.85, 0.06, TOP - 1.45, louvre, { seg: 12 });
+    }
+    // double onion helmet of brown copper: drum, bulb, lantern, small bulb, spire, cross
+    b.cylinder(f, eu, tv, 2.4, 1.2, TOP + 0.5, white, { seg: 16 });
+    b.dome(f, eu, tv, 2.9, TOP + 1.7, bronze, { squash: 1.25 });
+    b.cylinder(f, eu, tv, 2.5, 0.5, TOP + 1.7, bronze, { seg: 16 });
+    b.cylinder(f, eu, tv, 0.75, 2, TOP + 5.2, bronze, { seg: 8 });
+    b.dome(f, eu, tv, 1.15, TOP + 7.2, bronze, { squash: 1.6 });
+    b.cone(f, eu, tv, 0.3, 2.4, TOP + 8.9, bronze, 8);
+    b.cross(f, eu, tv, 2, TOP + 11.2, LOOK.gold);
   }
-  // the wooden gate to the hermitages in front: an octagonal shingled pavilion with a turret
-  const gu = fu + west * 16;
-  b.cylinder(f, gu, 0, 3.2, 3.4, 0, LOOK.wood, { seg: 8 });
-  b.cone(f, gu, 0, 4.2, 4.5, 3.4, LOOK.shingle, 8);
-  b.cylinder(f, gu, 0, 0.5, 1.2, 7.9, LOOK.shingle, { seg: 8 });
-  b.cross(f, gu, 0, 1.2, 9.1, LOOK.gold);
-  // hermit cottages: low white houses with red roofs in a row behind the chancel
-  for (let k = 0; k < 4; k++) {
-    const cu = -west * (f.hu + 14 + k * 11), cv = (k % 2 ? 1 : -1) * 9;
-    b.box(f, cu, cv, 7, 6, 3.2, 0, LOOK.white);
-    b.gable(f, cu, cv, 7, 6, 3.2, 2.6, LOOK.tile);
+  // the wooden gate to the hermitages: posts and crossed steep shingle gables, a little turret
+  const gu = fu + west * 17;
+  for (const s of [-1, 1]) for (const t of [-1, 1]) b.box(f, gu + s * 2.2, t * 2.2, 0.35, 0.35, 3.2, 0, LOOK.wood);
+  b.gable(f, gu, 0, 5.6, 5.6, 3.2, 4.2, LOOK.shingle, { o: 0.5 });
+  b.gable(f, gu, 0, 5.6, 5.6, 3.2, 4.2, LOOK.shingle, { o: 0.5, yaw: Math.PI / 2 });
+  b.cylinder(f, gu, 0, 0.4, 1.2, 7.2, LOOK.shingle, { seg: 8 });
+  b.cone(f, gu, 0, 0.6, 1.4, 8.4, LOOK.shingle, 8);
+  b.cross(f, gu, 0, 1, 9.8, LOOK.gold);
+  // the picket fence along the front, either side of the gate
+  for (const s of [-1, 1]) b.box(f, gu - west * 1, s * 15, 0.12, 22, 1.4, 0, LOOK.wood);
+  // the hermitages (LoD1 annex, the low buildings round the church)
+  for (const [area, flatRing, hh] of GEO.annex || []) {
+    if (area !== 'uksw-kameduly' || hh >= 9) continue;
+    const r = toPts(flatRing), hf = frameOf(r);
+    b.prism(r, 0, Math.max(2.8, hh - 2.4), white);
+    b.hip(hf, 0, 0, hf.hu * 2, hf.hv * 2, Math.max(2.8, hh - 2.4), 2.6, LOOK.tile, { o: 0.45 });
+    pushColliders(r, hh, colliders);
   }
 }
 

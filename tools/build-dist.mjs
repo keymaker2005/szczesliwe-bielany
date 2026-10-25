@@ -18,9 +18,6 @@ fs.mkdirSync(OUT, { recursive: true });
 for (const item of ['index.html', 'LICENSE', 'css', 'js']) {
   fs.cpSync(path.join(ROOT, item), path.join(OUT, item), { recursive: true });
 }
-// The published site leaves the mayor's draft messages out (they wait for approval): a public js/guide-texts.js
-const pub = spawnSync(process.execPath, [path.join(ROOT, 'tools/guide-texts.mjs'), path.join(OUT, 'js/guide-texts.js'), '--public'], { encoding: 'utf8' });
-if (pub.status !== 0) throw new Error(pub.stderr || pub.stdout);
 // Every module URL carries the build (?v=<commit>): a browser that kept an older module in its cache cannot mix it
 // with a newer page (seen after the 1.5 deploy: the new index.html ran with the old main.js)
 const head = spawnSync('git', ['-C', ROOT, 'rev-parse', '--short', 'HEAD'], { encoding: 'utf8' });

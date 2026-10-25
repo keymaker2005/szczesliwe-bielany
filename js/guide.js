@@ -1,9 +1,9 @@
 // js/guide.js
 // The guide and the mayor in the phone's SMS app. The guide writes once when the player first comes near a landmark
 // (2-3 sentences, a "Czytaj więcej" card); the mayor greets the player and invites them to places as the courier work
-// goes on. Texts: js/guide-texts.js (from docs/teksty-przewodnika.md). The mayor's messages are a draft awaiting his
-// or the district office's approval: they run on localhost only, and tools/build-dist.mjs leaves them out of the
-// published site. Whom the player has already heard from stays in this browser (localStorage).
+// goes on. Texts: js/guide-texts.js (from docs/teksty-przewodnika.md); the mayor's are marked as in-game messages, not
+// the office's position (published by the author's decision of 2026-10-26). Whom the player has already heard from
+// stays in this browser (localStorage).
 
 import { GUIDE_TEXTS } from './guide-texts.js';
 
@@ -30,9 +30,9 @@ const SITES = {
 
 class Guide {
   /**
-   * phone: js/phone.js Phone; mayor: whether the mayor's draft messages run (localhost only)
+   * phone: js/phone.js Phone; mayor: whether the mayor's messages run
    */
-  constructor(phone, { texts = GUIDE_TEXTS, mayor = isLocal(), storage = globalThis.localStorage } = {}) {
+  constructor(phone, { texts = GUIDE_TEXTS, mayor = true, storage = globalThis.localStorage } = {}) {
     this.phone = phone;
     this.storage = storage;
     this.mayor = mayor;
@@ -80,11 +80,6 @@ class Guide {
       if (Math.hypot(pos.x - s.x, pos.z - s.z) <= s.r) this.send(t);
     }
   }
-}
-
-function isLocal() {
-  const h = globalThis.location?.hostname || '';
-  return h === 'localhost' || h === '127.0.0.1' || h === '[::1]';
 }
 
 export { Guide, SITES, MAYOR, GUIDE };

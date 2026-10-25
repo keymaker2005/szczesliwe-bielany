@@ -47,13 +47,13 @@ test('guide: the mayor greets and writes after deliveries, marked as an in-game 
   for (const m of p.sms) assert.match(m.text, /wiadomość w grze/);
 });
 
-test('published site: the mayor draft messages are left out', () => {
+test('published site: guide and mayor messages, versioned module URLs', () => {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'bielany-dist '));
   try {
     const r = spawnSync(process.execPath, [path.join(root, 'tools/build-dist.mjs'), dir], { encoding: 'utf8' });
     assert.equal(r.status, 0, r.stderr);
     const pub = fs.readFileSync(path.join(dir, 'js/guide-texts.js'), 'utf8');
-    assert.ok(!/"kind": "mayor"/.test(pub));
+    assert.ok(/"kind": "mayor"/.test(pub));
     assert.ok(/"kind": "guide"/.test(pub));
     assert.ok(/"kind": "mayor"/.test(fs.readFileSync(path.join(root, 'js/guide-texts.js'), 'utf8')));
     // every module and the stylesheet carry the build, so no cached older file mixes with a newer page
