@@ -26,6 +26,9 @@ import { findRoute } from './gps-route.js';
 import { Phone } from './phone.js';
 import { Courier, COMPANY } from './courier.js';
 import { Guide } from './guide.js';
+import { Taxi, BRAND as TAXI_BRAND } from './taxi.js';
+import { createPassenger } from './passenger.js';
+import { nearestOnStreet } from './gps-route.js';
 
 // js/main.js
 // Main entry point for Szczęśliwe Bielany (Warsaw, along the M1 metro line) in Three.js WebGPURenderer & TSL (three.js dev @ fae8734, pinned in index.html)
@@ -589,7 +592,7 @@ async function initApp() {
       const stars = '★'.repeat(m.stars) + '☆'.repeat(3 - m.stars);
       elMissionResult.innerHTML = m.state === 'abandoned'
         ? `Zlecenie przerwane: ${m.title}`
-        : `${m.state === 'late' ? 'Spóźnione' : 'Dostarczone'} w ${clock(m.time)} · <span class="stars">${stars}</span> · ${m.paid} zł${m.shortcut ? ` · skrót +${m.shortcut} zł` : ''}`;
+        : `${m.state === 'late' ? 'Spóźnione' : 'Dostarczone'} w ${clock(m.time)} · <span class="stars">${stars}</span> · ${m.paid} zł${m.shortcut ? ` · skrót +${m.shortcut} zł` : ''}${m.role === 'taxi' ? ` · komfort ${m.comfort}/100 · napiwek ${m.tip} zł` : ''}`;
       elMissionResult.classList.remove('hidden');
       clearTimeout(resultTimer);
       resultTimer = setTimeout(() => elMissionResult.classList.add('hidden'), 6000);
@@ -605,7 +608,11 @@ async function initApp() {
     elMissionClock.textContent = m.state === 'enRoute' ? `${clock(m.time)} / ${clock(m.par)}` : 'odbiór';
     elMissionClock.classList.toggle('is-late', m.time > m.limit);
     elMissionGoal.textContent = `${m.state === 'accepted' ? 'Odbierz' : 'Dostarcz'}: ${goal.name} · ${dist < 1000 ? `${Math.round(dist / 10) * 10} m` : `${(dist / 1000).toFixed(1)} km`}`;
-    elMissionNote.textContent = missionNote === 'wrong-vehicle'
+    const comfort = m.role === 'taxi' && m.state === 'enRoute' && taxi.ride ? ` · komfort ${Math.max(0, Math.round(taxi.ride.comfort))}/100` : '';
+    elMissionGoal.textContent += comfort;
+    elMissionNote.textContent = taxiNote && performance.now() < taxiNoteUntil
+      ? `Pasażer: ${COMFORT_NOTES[taxiNote]}!`
+      : missionNote === 'wrong-vehicle'
       ? `Tu się nie da ${MODE_NAMES[controllerManager.activeMode]}: ${m.vehicles.map((v) => MODE_NAMES[v]).join(' lub ')}`
       : m.state === 'enRoute' || m.state === 'accepted' ? 'Zatrzymaj się w żółtym kręgu' : '';
   }
@@ -639,13 +646,19 @@ async function initApp() {
   // 5d. The courier (js/courier.js) and the phone (js/phone.js): errands, the map, text messages
   const courier = new Courier(missions);
   courier.near = () => controllerManager.getActiveEntity().position;
+  // 5d'. The taxi driver (js/taxi.js): fares from passengers waving nearby, rated for time and comfort
+  const taxi = new Taxi(missions, trafficSystem.network);
+  taxi.near = () => controllerManager.getActiveEntity().position;
+  const passenger = createPassenger();
+  scene.add(passenger.group);
+  let taxiNote = null, taxiNoteUntil = 0;
   const phone = new Phone({
     root: document.getElementById('phone'),
     button: document.getElementById('btn-phone'),
     missions,
-    jobs: () => courier.jobs(),
+    jobs: () => [...taxi.jobs(), ...courier.jobs()],
     onOpenMap: () => mapSystem.toggleFullMap(true),
-    status: () => (missions.active ? `W drodze: ${missions.goal().name}` : courier.statusLine()),
+    status: () => (missions.active ? `W drodze: ${missions.goal().name}` : controllerManager.activeMode === 'car' ? taxi.statusLine() : courier.statusLine()),
   });
   phone.addSms({
     id: 'hello', from: COMPANY,
@@ -654,6 +667,27 @@ async function initApp() {
   // 5e. The guide's messages at the landmarks, the mayor's at the start and after deliveries
   const guide = new Guide(phone);
   guide.start();
+  const COMFORT_NOTES = { brake: 'ostre hamowanie', crash: 'stłuczka', red: 'czerwone światło' };
+  missions.on('state', (m) => {
+    if (m.role !== 'taxi') return;
+    if (m.state === 'accepted') {
+      // the passenger waits on the sidewalk, facing the street
+      const s = nearestOnStreet(m.start.x, m.start.z);
+      passenger.show(m.start.x, m.start.z, s ? s.x - m.start.x : 0, s ? s.z - m.start.z : 1);
+      phone.addSms({ id: `${m.id}-call`, from: TAXI_BRAND, text: `Nowy kurs: pasażer czeka przy ${m.start.name.replace(/^pasażer, /, '')}. Cel: ${m.target.name}.` });
+    } else {
+      passenger.hide();
+    }
+    if (m.state === 'delivered' || m.state === 'late') {
+      const n = m.rideNotes || {};
+      const issues = [n.brakes && `${n.brakes}× ostre hamowanie`, n.crashes && `${n.crashes}× stłuczka`, n.reds && `${n.reds}× czerwone`].filter(Boolean).join(', ');
+      phone.addSms({
+        id: `${m.id}-done`, from: TAXI_BRAND,
+        text: `Kurs zakończony w ${clock(m.time)}, ${'★'.repeat(m.stars) || 'po czasie'}. Komfort pasażera ${m.comfort}/100${issues ? ` (${issues})` : ''}. Napiwek ${m.tip} zł, razem ${m.paid} zł.`,
+      });
+      setTimeout(() => guide.delivered(courier.stats.deliveries + taxi.stats.rides), 5000);
+    }
+  });
   missions.on('state', (m) => {
     if (m.role !== 'courier' || !m.id.startsWith('poczt-')) return;
     if (m.state === 'delivered' || m.state === 'late') setTimeout(() => guide.delivered(courier.stats.deliveries), 5000);
@@ -668,7 +702,7 @@ async function initApp() {
     }
   });
 
-  globalThis.bielany = { missions, testDelivery, abandon: () => missions.abandon(), teleport: (x, z, heading) => teleportTo(x, z, heading), marker: missionMarker, phone, courier, guide, scene, renderer, lightingSystem, trams };
+  globalThis.bielany = { missions, testDelivery, abandon: () => missions.abandon(), teleport: (x, z, heading) => teleportTo(x, z, heading), marker: missionMarker, phone, courier, guide, scene, renderer, lightingSystem, trams, taxi };
 
   // Initialize the UI and chase camera around the restored player, or the default taxi on a first visit.
   selectMode(controllerManager.activeMode);
@@ -808,6 +842,9 @@ async function initApp() {
       missionNote = missions.update(dt, { x: ent.position.x, z: ent.position.z, speed: ent.speed, mode: controllerManager.activeMode });
       if (warmedUp && !missions.active) missionMarker.hide();
       if (warmedUp) guide.update(dt, ent.position);
+      const note = taxi.update(dt, { x: ent.position.x, z: ent.position.z, speed: ent.speed, mode: controllerManager.activeMode, heading: ent.heading }, elapsed);
+      if (note) { taxiNote = note; taxiNoteUntil = performance.now() + 2500; }
+      passenger.update(elapsed);
       missionMarker.update(elapsed);
     }
     audioSystem.update(dt, elapsed, cameraSystem.camera, lightingSystem.activePresetId === 'midnight');

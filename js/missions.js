@@ -17,7 +17,8 @@ const ENDED = new Set(['delivered', 'late', 'abandoned']);
 /**
  * A mission: { id, role, title, start: { x, z, name } | null (picked up at once), target: { x, z, name },
  * vehicles: modes allowed (person, cyclist, car, helicopter), par: s for 3 stars, limit: s before it is late,
- * reward: zł at 3 stars, bonus: share of the pay added for a shortcut (0: none) }
+ * reward: zł at 3 stars, bonus: share of the pay added for a shortcut (0: none), onFinish(m): called on delivery
+ * before the state changes }
  */
 function createMission(spec) {
   const m = {
@@ -31,6 +32,7 @@ function createMission(spec) {
     limit: spec.limit ?? spec.par * 1.8,
     reward: spec.reward ?? 0,
     bonus: spec.bonus ?? 0,
+    onFinish: spec.onFinish || null,
     radius: spec.radius ?? ARRIVE_RADIUS,
     state: 'offered',
     time: 0, // s since the pick-up
@@ -126,6 +128,7 @@ class MissionEngine {
       m.paid = Math.round((m.reward * Math.max(m.stars, 0.5)) / 3);
       if (m.bonus && m.time <= m.par * SHORTCUT) m.shortcut = Math.round(m.paid * m.bonus);
       m.paid += m.shortcut;
+      if (m.onFinish) m.onFinish(m); // the role adds its own (a tip) before anyone hears of the end
       this.active = null;
       this.setState(m, m.stars ? 'delivered' : 'late');
     }
