@@ -178,4 +178,12 @@ function distanceToRoute(pts, x, z) {
   return d;
 }
 
-export { findRoute, nearestOnStreet, distanceToRoute };
+// Speed limit (km/h, OpenStreetMap maxspeed or the urban default) of the street under (x, z), or null off the streets
+function limitAt(x, z) {
+  const s = nearestOnStreet(x, z);
+  if (!s) return null;
+  const l = links[s.i];
+  return s.d <= l[3] / 2 + 2 ? (l[9] || 50) : null;
+}
+
+export { findRoute, nearestOnStreet, distanceToRoute, limitAt };

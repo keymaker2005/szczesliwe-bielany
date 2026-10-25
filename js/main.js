@@ -22,7 +22,7 @@ import { CityAudioSystem } from './audio-system.js';
 import { GEO } from './bielany-geodata.js';
 import { MissionEngine, ARRIVE_RADIUS } from './missions.js';
 import { createMissionMarker } from './mission-marker.js';
-import { findRoute } from './gps-route.js';
+import { findRoute, limitAt } from './gps-route.js';
 import { Phone } from './phone.js';
 import { Courier, COMPANY } from './courier.js';
 import { Guide } from './guide.js';
@@ -293,7 +293,16 @@ async function initApp() {
   }
 
   function selectMode(mode) {
+    // the new character or vehicle comes to where the player is (out of the cab onto the street, the cab to the
+    // walker), at a safe spot nearby (never inside a building)
+    const prevMode = controllerManager.activeMode;
+    const prev = controllerManager.getActiveEntity();
+    const from = prev ? { x: prev.position.x, z: prev.position.z, heading: prev.heading } : null;
     controllerManager.setMode(mode);
+    if (from && prevMode !== controllerManager.activeMode) {
+      controllerManager.teleportActiveTo(from.x, from.z, from.heading);
+      cameraSystem.resetForTeleport();
+    }
     touchControls.setMode(controllerManager.activeMode);
     gamepadControls.reset();
     modeButtons.forEach((btn) => {
@@ -702,7 +711,7 @@ async function initApp() {
     }
   });
 
-  globalThis.bielany = { missions, testDelivery, abandon: () => missions.abandon(), teleport: (x, z, heading) => teleportTo(x, z, heading), marker: missionMarker, phone, courier, guide, scene, renderer, lightingSystem, trams, taxi };
+  globalThis.bielany = { missions, testDelivery, abandon: () => missions.abandon(), teleport: (x, z, heading) => teleportTo(x, z, heading), marker: missionMarker, phone, courier, guide, scene, renderer, lightingSystem, trams, taxi, controllerManager };
 
   // Initialize the UI and chase camera around the restored player, or the default taxi on a first visit.
   selectMode(controllerManager.activeMode);
@@ -809,6 +818,8 @@ async function initApp() {
 
   if (elFps) elFps.textContent = '60';
 
+  let speedLimit = 50, limitTimer = 0; // km/h, the cab's limit where it is
+  const elLimit = document.getElementById('hud-limit');
   renderer.setAnimationLoop((now) => {
     const rawDt = (now - lastTime) * 0.001;
     lastTime = now;
@@ -818,6 +829,18 @@ async function initApp() {
     // Update 3rd-person controllers, camera, signals, traffic & vehicle collisions, building LODs, and dynamic shadow focus
     gamepadControls.update(dt);
     controllerManager.update(dt, elapsed);
+    // the cab keeps to the street's speed limit (OpenStreetMap maxspeed, else the urban default)
+    if (controllerManager.activeMode === 'car') {
+      const car = controllerManager.getActiveEntity();
+      limitTimer -= dt;
+      if (limitTimer <= 0) {
+        limitTimer = 0.25;
+        const l = limitAt(car.position.x, car.position.z);
+        if (l) speedLimit = l;
+      }
+      const cap = speedLimit / 3.6;
+      if (car.speed > cap) car.speed = cap;
+    }
     cameraSystem.update(dt, elapsed);
     streetDetails.signalClock.value = elapsed;
     trafficSystem.update(
@@ -906,6 +929,10 @@ async function initApp() {
         elFps.className = currentFps >= 50 ? 'fps-ok' : currentFps >= 30 ? 'fps-warn' : 'fps-bad';
       }
       if (elSpeed) elSpeed.textContent = String(kmh);
+      if (elLimit) {
+        elLimit.hidden = mode !== 'car';
+        elLimit.textContent = String(speedLimit);
+      }
       if (elSpeedMeter) elSpeedMeter.style.transform = `scaleX(${Math.min(1, kmh / (topSpeedKmh[mode] || 130))})`;
       document.body.classList.toggle('is-boosting', controllerManager.keys.boost && kmh > 0);
       if (elAltitude) elAltitude.textContent = altM.toLocaleString('pl-PL');

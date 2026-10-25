@@ -54,19 +54,24 @@ test('taxi: a smooth ride earns a tip, hard braking and a crash cost comfort', (
   o = taxi.refill()[0];
   m = ride(eng, taxi, o, () => {
     const notes = [];
-    for (const [a, b] of [[14, 6], [10, 3]]) { // stops at 8 m/s², one deduction per stop
+    // an ordinary stop at the cab's full brake (9 m/s²) from 30 km/h: not counted
+    let ordinary = null;
+    for (let v = 8.3; v >= 0; v -= 0.9) ordinary = taxi.update(0.1, { x: 0, z: 0, speed: v, mode: 'car' }, 0) || ordinary;
+    for (let k = 0; k < 50; k++) ordinary = taxi.update(0.1, { x: 0, z: 0, speed: 0, mode: 'car' }, 0) || ordinary;
+    assert.equal(ordinary, null);
+    for (const [a, b] of [[14, 3], [13, 2]]) { // emergency stops from ~50 km/h, one deduction each
       let note = null;
-      for (let v = a; v >= b; v -= 0.8) note = taxi.update(0.1, { x: 0, z: 0, speed: v, mode: 'car' }, 0) || note;
+      for (let v = a; v >= b; v -= 0.9) note = taxi.update(0.1, { x: 0, z: 0, speed: v, mode: 'car' }, 0) || note;
+      for (let k = 0; k < 45; k++) note = taxi.update(0.1, { x: 0, z: 0, speed: b, mode: 'car' }, 0) || note;
       notes.push(note);
-      for (let k = 0; k < 20; k++) taxi.update(0.1, { x: 0, z: 0, speed: b, mode: 'car' }, 0);
     }
     taxi.update(0.1, { x: 0, z: 0, speed: 12, mode: 'car' }, 0);
     notes.push(taxi.update(0.1, { x: 0, z: 0, speed: 0, mode: 'car' }, 0));
     assert.deepEqual(notes, ['brake', 'brake', 'crash']);
   });
-  assert.equal(m.comfort, 100 - 8 - 8 - 20);
+  assert.equal(m.comfort, 100 - 4 - 4 - 15);
   assert.equal(m.rideNotes.brakes, 2);
   assert.equal(m.rideNotes.crashes, 1);
-  assert.ok(m.tip < 3);
+  assert.ok(m.tip < m.reward * 0.2);
   assert.equal(JSON.parse(store.getItem('bielany-taxi')).rides, 2);
 });

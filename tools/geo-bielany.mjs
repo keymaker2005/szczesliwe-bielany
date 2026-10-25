@@ -46,7 +46,12 @@ function roadOf(tags) {
   // curb to curb: the lanes plus the gutters; pedestrian streets are drawn 6 m wide
   const w = tagW > 0 && tagW < 40 ? tagW : code === 'pedestrian' ? 6 : lanes * laneW + 1;
   const ring = tags.junction === 'roundabout' || tags.junction === 'circular';
-  return { name: tags.name || '', code, dir, lanes, w: q(w), ring, drivable: code !== 'pedestrian' };
+  // speed limit (km/h): the maxspeed tag, else the Polish urban defaults by class (50 in built-up areas, 20 in a
+  // living street, 30 on service roads, 70 on the expressway-like trunk roads)
+  const tagLimit = parseInt(tags.maxspeed, 10);
+  const limit = tagLimit >= 5 && tagLimit <= 140 ? tagLimit : tags.maxspeed === 'PL:living_street' ? 20 : tags.maxspeed === 'PL:zone30' ? 30
+    : ({ trunk: 70, living: 20, service: 30 })[code] ?? 50;
+  return { name: tags.name || '', code, dir, lanes, w: q(w), ring, limit, drivable: code !== 'pedestrian' };
 }
 
 // =====================================================================================================================
@@ -153,7 +158,7 @@ function buildRoadGraph() {
       start = i;
       if (a === b && run.length < 3) continue;
       const inner = rdp(run.map((pt) => pt.p), 0.4).slice(1, -1);
-      links.push([a, b, nameId(r.name), r.w, r.lanes, r.dir, flat(inner), r.code, r.ring ? 1 : 0]);
+      links.push([a, b, nameId(r.name), r.w, r.lanes, r.dir, flat(inner), r.code, r.ring ? 1 : 0, r.limit]);
     }
   }
   return { nodes, links, names };
@@ -863,7 +868,8 @@ const GEO = {
   // points [x, z, ...], class (trunk, primary, secondary, tertiary, local, living, service, pedestrian)]
   roads: mergeRoads(),
   // Drivable street graph: nodes [x, z, ...], links [node a, node b, name index, curb-to-curb width, travel lanes,
-  // direction (1: a -> b, -1: b -> a, 0: both), inner shape points [x, z, ...], class, 1 on a roundabout]
+  // direction (1: a -> b, -1: b -> a, 0: both), inner shape points [x, z, ...], class, 1 on a roundabout, speed limit
+  // km/h]
   roadGraph,
   // Blocks (curb islands between the roadways): [outer ring [x, z, ...], holes [[x, z, ...], ...], area m²]
   blocks,

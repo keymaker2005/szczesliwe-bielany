@@ -18,11 +18,16 @@ const FLAG = 9; // zł flag fall
 const PER_KM = 3.6; // zł per km
 const TIP_SHARE = 0.45; // share of the fare at a perfect ride
 const STORE_KEY = 'bielany-taxi';
-// Comfort: deductions
-const HARD_BRAKE = 5.5; // m/s² of deceleration above 4 m/s
+// Comfort: deductions. The cab's brake is all or nothing (9 m/s²), so ordinary stops must not count: only a long hard
+// stop from speed (an emergency stop) does — braking hard for over BRAKE_TIME from above BRAKE_FROM, losing at least
+// BRAKE_DROP of speed
+const HARD_BRAKE = 7; // m/s² of deceleration
+const BRAKE_TIME = 0.6; // s
+const BRAKE_FROM = 9; // m/s (~32 km/h)
+const BRAKE_DROP = 7; // m/s
 const CRASH = 14; // m/s² of deceleration: an impact, not braking
-const COST = { brake: 8, crash: 20, red: 15 };
-const COOLDOWN = 1.5; // s between two deductions of one kind
+const COST = { brake: 4, crash: 15, red: 12 };
+const COOLDOWN = 4; // s between two deductions of one kind
 
 const STREETS = GEO.addresses.streets;
 const ADDRESSES = GEO.addresses.list;
@@ -67,7 +72,7 @@ class Taxi {
     } catch { /* storage is optional */ }
     missions.on('state', (m) => {
       if (m.role !== 'taxi') return;
-      if (m.state === 'enRoute') this.ride = { comfort: 100, brakes: 0, crashes: 0, reds: 0, cool: { brake: 0, crash: 0, red: 0 }, lastSpeed: null, lastNode: null };
+      if (m.state === 'enRoute') this.ride = { comfort: 100, brakes: 0, crashes: 0, reds: 0, cool: { brake: 0, crash: 0, red: 0 }, lastSpeed: null, lastNode: null, brakeT: 0, brakeV: 0 };
       if (['delivered', 'late', 'abandoned'].includes(m.state)) {
         if (m.state !== 'abandoned') {
           this.stats.rides++;
@@ -177,7 +182,14 @@ class Taxi {
     if (r.lastSpeed !== null && dt > 0) {
       const decel = (r.lastSpeed - v) / dt;
       if (decel > CRASH && r.lastSpeed > 3) note = this.deduct('crash');
-      else if (decel > HARD_BRAKE && r.lastSpeed > 4) note = this.deduct('brake') || note;
+      else if (decel > HARD_BRAKE) {
+        if (!r.brakeT) r.brakeV = r.lastSpeed;
+        r.brakeT = (r.brakeT || 0) + dt;
+      } else if (r.brakeT) {
+        // the stop is over: was it an emergency stop?
+        if (r.brakeT >= BRAKE_TIME && r.brakeV > BRAKE_FROM && r.brakeV - v >= BRAKE_DROP) note = this.deduct('brake') || note;
+        r.brakeT = 0;
+      }
     }
     r.lastSpeed = v;
     // red lights: the approach the car is on, as it reaches the junction

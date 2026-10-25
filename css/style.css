@@ -279,6 +279,23 @@ body::after {
   gap: 8px;
 }
 
+/* Speed limit of the street under the cab: a round sign beside the speed */
+.speed-limit {
+  display: inline-grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  margin-left: 10px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 4px solid #d0202e;
+  color: #111111;
+  font-size: 12px;
+  font-weight: 800;
+  vertical-align: middle;
+}
+.speed-limit[hidden] { display: none; }
+
 /* Mission panel: the goal, the clock against par, a note (wrong vehicle); the result card after the end */
 .mission-hud {
   min-width: 260px;
