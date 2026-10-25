@@ -1,21 +1,24 @@
-# Stan projektu (przekazanie sesji, 2026-10-26)
+# Stan projektu (przekazanie sesji, 2026-10-25 wieczór)
 
 ## Gdzie jesteśmy
 - Faza 0 zamknięta. Faza 1 zrobiona poza bramką (odłożone: test 1.8b na Windows, pakiet dla urzędu — docs/pakiet-urzad.md).
-- Faza 1.5 (smartfon, kurier, landmarki, przewodnik, burmistrz) zaliczona 2026-10-26.
-- Faza 2 (większy obszar, wydajność, tramwaje, taksówkarz, ratownik, Aparat, liście) zrobiona i opublikowana; bramka
-  (60 fps na laptopie z Windows) czeka na test według docs/test-1.8b.md.
-- Faza 3: kroki 3.1-3.8 zrobione i opublikowane 2026-10-25 (b9bfcb1); bramka czeka na test na Windows.
-- Faza 3 (gałąź faza-3, plan docs/plan-fazy-3.md zaakceptowany 2026-10-25): 3.1 dane terenu i 3.2a teren w świecie
-  i 3.2b Las Bielański, 3.3 Wisła i most zrobione (lokalnie, bez deployu); dalej praca równoległa według
-  docs/praca-rownolegla.md (ta sesja koordynuje, 3.4 dyspozytornia, potem sesje służb; tabliczki ulic w osobnej sesji).
+- Faza 1.5 zaliczona 2026-10-26. Faza 2 opublikowana, bramka (60 fps na Windows) czeka na test według docs/test-1.8b.md.
+- Faza 3 (gałąź faza-3, plan docs/plan-fazy-3.md): kroki 3.1-3.8 zrobione i opublikowane 2026-10-25 (wersja b9bfcb1),
+  razem z dodatkami: tabliczki MSI, zwierzęta w lasach, Stadion Hutnika, aplikacja Przewodnik. Bramka czeka na test na
+  Windows; otwarte przed bramką: 52-56 fps pieszo przy Kamedułach (Chrome, M4), 30 fps zgłoszone w Edge (docs/backlog.md).
+- Następny krok (decyzja użytkownika 2026-10-25): plan Fazy 4 (czaty LLM z przewodnikiem i burmistrzem, patronat;
+  opis w docs/backlog.md) jako docs/plan-fazy-4.md do akceptacji, w nowej sesji.
+- Historia: CHANGELOG.md (publiczne wersje 0.1-0.6 według publikacji na Cloudflare), docs/changelog-wewnetrzny.md
+  (kroki i commity). Praca równoległa: docs/praca-rownolegla.md (koordynator + osobne sesje na gałęziach, modele:
+  Haiku proste, Sonnet powtarzalne, Opus myślenie; scalanie do gałęzi fazy tylko na polecenie użytkownika).
 - Drzewa GUGiK: strumień paczki 8,6 GB urwał się przy 355 z 484 arkuszy; data/bielany_trees_2023.json to stary wycinek
-  (bbox z kroku 2.1) + nowy pas (kompletny). Panel przeglądarki w aplikacji bywa bez GPU: sprawdzać w Chrome (Claude in
-  Chrome, za zgodą użytkownika) albo prosić użytkownika o Edge.
-- Uwaga: filtr (blur) na dużym płótnie 2D wysypuje proces GPU przeglądarki razem z WebGPU gry (3.2b); po takiej awarii
-  panel przeglądarki w aplikacji nie ma grafiki do restartu aplikacji. Nie używać ctx.filter w teksturach.
-- Teren: js/terrain.js (groundY, drapeGeometry, groundPose), dane js/bielany-terrain.bin z tools/terrain-bielany.mjs;
-  każdy nowy obiekt na ziemi musi brać wysokość z groundY. ?plaski w adresie = płaska mapa do porównań.
+  (bbox z kroku 2.1) + nowy pas (kompletny).
+- Panel przeglądarki w aplikacji bywa bez GPU: sprawdzać w Chrome (Claude in Chrome, użytkownik się zgodził) albo prosić
+  użytkownika o Edge. Nie używać ctx.filter na dużych płótnach 2D (wysypuje proces GPU przeglądarki razem z WebGPU gry).
+- Teren: js/terrain.js (groundY, drapeGeometry, groundPose), dane js/bielany-terrain.bin z tools/terrain-bielany.mjs
+  (po zmianie dróg w geodanych uruchomić ponownie: wygładza teren pod głównymi drogami). Mosty: js/bridges.js
+  (deckY, surfaceY, deckPose). Każdy nowy obiekt na ziemi bierze wysokość z groundY / surfaceY. ?plaski = płaska mapa.
+- Testy: 165 zielonych, w tym test składni wszystkich modułów (po scaleniach sprawdzić też start gry w przeglądarce).
 - Gałęzie: faza-0, faza-1, faza-1.5, faza-2, faza-3 (bieżąca). main = oryginał mrdooba (tag nyc-original); scalenie do main
   dopiero po bramkach.
 
@@ -30,7 +33,7 @@
 - Node: ~/.local/node/bin (dopisać do PATH). gh: ~/.local/bin/gh (zalogowany jako keymaker2005).
 - Serwer: `node tools/serve.mjs 8080`, podgląd w panelu przeglądarki (.claude/launch.json, nazwa „bielany”).
   Ukryty panel daje ~1 fps — pomiary fps tylko przy widocznym panelu.
-- Testy: `node --test tests/*.test.mjs tests/*.test.cjs` (132 zielone).
+- Testy: `node --test tests/*.test.mjs tests/*.test.cjs` (165 zielonych).
 - Dane: `node tools/geo-bielany.mjs` generuje js/bielany-geodata.js; Overpass: tools/overpass.sh; budynki:
   data/extract_bielany_lod1.py (bez pyproj); drzewa: data/extract_bielany_trees.py (strumień 8,6 GB, ~40 min);
   teksty: tools/guide-texts.mjs.
