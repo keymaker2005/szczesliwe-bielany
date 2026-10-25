@@ -111,3 +111,10 @@ napisy słowne na pojazdach służb bez insygniów, najpierw teren). Gałąź fa
   zwierzętami, Stadion Hutnika, Przewodnik); w Chrome na M4 60 fps przy Moście Północnym, bez błędów w konsoli.
 - [ ] Bramka Fazy 3: cała dzielnica grywalna, 60 fps na laptopie z Windows (docs/test-1.8b.md, dopisać trasy: skarpa,
   Wisłostrada, Most Północny, las), zbadać 52-56 fps przy Kamedułach i 30 fps zgłoszone w Edge.
+
+## Faza 4: Czaty LLM i patronat
+Bramka: wersja 1.0 z patronatem (bez zgody urzędu: 1.0 z przewodnikiem, bez burmistrza i logo). Plan: docs/plan-fazy-4.md
+(do akceptacji, 7 decyzji). Gałąź faza-4 powstanie po akceptacji.
+
+- [ ] 4.0 Plan Fazy 4 (do akceptacji): czat z przewodnikiem i burmistrzem przez Cloudflare Worker, limity i koszty,
+  tryb bez czatu, warunki dla burmistrza, wersja dla urzędu, patronat. Sprawdzam: akceptuję plan i odpowiadam na decyzje.
