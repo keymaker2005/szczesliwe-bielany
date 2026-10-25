@@ -11,7 +11,7 @@ for (const [width, height, dpr] of [[500, 300, 1], [320, 180, 1.5], [1920, 1080,
     const window = { innerWidth: width, innerHeight: height, devicePixelRatio: dpr };
     const { NYCMapSystem } = loadModule(source, {
       globals: { window, performance: { now: () => 0 } },
-      imports: { './bielany-geodata.js': { GEO: {} }, './city-config.js': { LANDMARKS: [], getLocationLabel: () => '', isTypingInField: () => false } }
+      imports: { './bielany-geodata.js': { GEO: {} }, './city-config.js': { LANDMARKS: [], getLocationLabel: () => '', isTypingInField: () => false }, './gps-route.js': { findRoute: () => null } }
     });
     const map = Object.create(NYCMapSystem.prototype);
     // Capture the production render viewport; drawing primitives are irrelevant to coordinate conversion.
@@ -101,7 +101,7 @@ function mapHarness() {
   };
   const { NYCMapSystem } = loadModule(source, {
     globals: { window, document },
-    imports: { './bielany-geodata.js': { GEO: geo }, './city-config.js': { LANDMARKS: [], getLocationLabel: (x, z) => `${x}, ${z}`, isTypingInField: () => false } }
+    imports: { './bielany-geodata.js': { GEO: geo }, './city-config.js': { LANDMARKS: [], getLocationLabel: (x, z) => `${x}, ${z}`, isTypingInField: () => false }, './gps-route.js': { findRoute: () => null } }
   });
   const teleports = [], toggles = [];
   const map = new NYCMapSystem({

@@ -1,5 +1,6 @@
 import { GEO } from './bielany-geodata.js';
 import { LANDMARKS, getLocationLabel, isTypingInField } from './city-config.js';
+import { findRoute } from './gps-route.js';
 
 // js/nyc-map.js
 // GTA 6-Style Live Radar Minimap + Full-Screen Interactive Cartographic Atlas of Bielany (Warsaw).
@@ -267,6 +268,7 @@ for (const r of ROADS) {
     ...boundsOf(r.pts)
   });
 }
+const ROUTE_EVERY = 400; // ms between GPS route updates
 const ROAD_NAME_COUNT = new Set(ROAD_LABELS.map((l) => l.text)).size;
 
 // Addresses (OpenStreetMap): "Żeromskiego 29" finds the sidewalk spot in front of the building
@@ -341,14 +343,14 @@ function drawPlayerArrow(ctx, tipY, halfWidth, tailY) {
   ctx.fill();
 }
 
-// GPS route from the player to the waypoint, along the grid (x first, then z): taxi yellow on a dark casing
-function drawRoute(ctx, x0, y0, x1, y1, width) {
+// GPS route (flat world points [x, z, ...], js/gps-route.js) through the view's transform: taxi yellow on a dark casing
+function drawRoute(ctx, pts, toX, toY, width) {
+  if (!pts || pts.length < 4) return;
   ctx.lineJoin = 'round';
   ctx.lineCap = 'round';
   ctx.beginPath();
-  ctx.moveTo(x0, y0);
-  ctx.lineTo(x1, y0);
-  ctx.lineTo(x1, y1);
+  ctx.moveTo(toX(pts[0]), toY(pts[1]));
+  for (let k = 2; k < pts.length; k += 2) ctx.lineTo(toX(pts[k]), toY(pts[k + 1]));
   ctx.strokeStyle = MAP.halo;
   ctx.lineWidth = width + 3;
   ctx.stroke();
@@ -838,7 +840,29 @@ class NYCMapSystem {
     ctx.textBaseline = 'alphabetic';
   }
 
+  /**
+   * GPS route from the player to the waypoint along the streets, worked out again every ROUTE_EVERY ms (it follows
+   * the player off the route) and at once when the waypoint or the mode changes. The car keeps to the one-way
+   * streets; the helicopter flies straight.
+   */
+  updateRoute() {
+    if (!this.waypoint) { this.route = null; return; }
+    const ent = this.controllerManager.getActiveEntity();
+    const mode = this.controllerManager.activeMode;
+    const now = performance.now();
+    const wp = this.waypoint;
+    const key = `${wp.x}|${wp.z}|${mode}`;
+    if (key === this.routeKey && now - this.routeAt < ROUTE_EVERY) return;
+    this.routeKey = key;
+    this.routeAt = now;
+    const { x, z } = ent.position;
+    this.route = mode === 'helicopter' ? null : findRoute(x, z, wp.x, wp.z, { oneWay: mode === 'car' });
+    // no street route (or flying): a straight line
+    this.routePts = this.route ? this.route.pts : [x, z, wp.x, wp.z];
+  }
+
   update() {
+    this.updateRoute();
     // The full map covers the whole screen, radar included
     if (this.isFullMapOpen) {
       this.renderFullMap();
@@ -940,7 +964,7 @@ class NYCMapSystem {
     if (this.waypoint) {
       const wx = toX(this.waypoint.x);
       const wy = toY(this.waypoint.z);
-      drawRoute(ctx, 0, 0, wx, wy, 3);
+      drawRoute(ctx, this.routePts, toX, toY, 3);
       drawWaypoint(ctx, wx, wy, 4.5);
     }
 
@@ -990,6 +1014,7 @@ class NYCMapSystem {
   // 2. FULL NEW YORK CITY INTERACTIVE STREET MAP MODAL ([M])
   // =========================================================================
   renderFullMap() {
+    this.updateRoute();
     if (!this.fullCtx || !this.fullCanvas || !this.isFullMapOpen) return;
     const ctx = this.fullCtx;
     const dpr = this.fullDpr || 1;
@@ -1030,7 +1055,7 @@ class NYCMapSystem {
     if (this.waypoint) {
       const wx = toX(this.waypoint.x);
       const wy = toY(this.waypoint.z);
-      drawRoute(ctx, toX(ent.position.x), toY(ent.position.z), wx, wy, 4);
+      drawRoute(ctx, this.routePts, toX, toY, 4);
       drawWaypoint(ctx, wx, wy, 7);
     }
 
