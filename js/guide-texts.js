@@ -122,6 +122,18 @@ export const GUIDE_TEXTS = [
   ]
  },
  {
+  "id": "guide-hutnik",
+  "kind": "guide",
+  "landmark": "hutnik",
+  "sms": "Jesteś przy Stadionie Hutnika przy Marymonckiej 42. Obiekt przebudowano w latach 2019–2021: zniknęły ziemne nasypy, a po bokach murawy stanęły dwie zadaszone trybuny na ok. 1300 widzów. Trybuny mają klubowe barwy: pomarańczową i czarną.",
+  "more": "Stary stadion z 1985 r. miał trybuny tylko po jednej stronie i bieżnię. Nowy, otwarty 25 sierpnia 2021 r., jest czysto piłkarski. Zachodnia trybuna ma pomarańczowy beton i czarny dach, wschodnia odwrotnie. Pod trybunami są szatnie, pomieszczenia sędziów i część konferencyjna, a ławki rezerwowych i miejsca dla prasy i gości stoją po zachodniej stronie. Murawa ma drenaż i podgrzewanie, a cztery maszty oświetleniowe dają 500 luksów. Obok leżą dwa boiska treningowe ze sztuczną nawierzchnią i korty tenisowe, całością zarządza ośrodek Aktywna Warszawa.",
+  "sources": [
+   "https://stadiumdb.com/stadiums/pol/osrodek_hutnik_warszawa",
+   "https://en.wikipedia.org/wiki/Hutnik_Warsaw",
+   "https://pik.warszawa.pl/miejsca/osrodek-hutnik/"
+  ]
+ },
+ {
   "id": "mayor-welcome",
   "kind": "mayor",
   "trigger": "start",

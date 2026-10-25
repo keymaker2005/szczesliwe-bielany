@@ -25,6 +25,7 @@ const SITE_OF = {
   'guide-mlociny': 'galeria-mlociny',
   'guide-sw-zygmunt': 'sw-zygmunt',
   'guide-sw-maria-magdalena': 'maria-magdalena',
+  'guide-hutnik': 'hutnik',
 };
 
 const md = fs.readFileSync(ROOT + 'docs/teksty-przewodnika.md', 'utf8');

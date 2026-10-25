@@ -28,6 +28,7 @@ const POINTS = {
   szpital: [[111.8, -529.9], [68, -614], [73, -560], [136, -493]],
   zygmunt: [[-187.1, 282.4]],
   magdalena: [[-1384.1, 121]],
+  hutnik: [[-334, -2044], [-415, -1998]], // the two stands of Stadion Hutnika (their LoD1 blocks are replaced)
 };
 // The rest of the AWF campus and of the Dewajtis campus with the Camaldolese hermitages: buildings whose middle lies
 // in these boxes (x0, z0, x1, z1), east of the MVP strip of Faza 1
@@ -535,13 +536,134 @@ function kameduly(b, colliders) {
   }
 }
 
+// Stadion Hutnika Warszawa (Marymoncka 42; OpenStreetMap way 1218325012, grandstands 1239190581/2; docs/
+// landmarki-referencje.md, section 9): rebuilt 2019-2021 as a football-only ground, a grass pitch (105 × 68 m) with two
+// covered stands facing each other, the west one in orange concrete under a black roof, the east one in black concrete
+// under an orange roof (club colours), steel roof columns, four floodlight masts at the stand ends, boards round the
+// pitch, dugouts at the west stand. The club crest is left out: the lettering is plain.
+// The stadium's fence line and the two training pitches beside it (OpenStreetMap ways 1218325012, 1083811032, 1218325011)
+const HUTNIK_FENCE = [-402.7, -1963.9, -389.3, -1940.8, -300.6, -1990.5, -298.3, -1997.6, -344.4, -2079.3, -353.4, -2074.3, -366.8, -2098, -450, -2051.2, -436.5, -2027.5, -440.2, -2025.4, -404.7, -1962.7];
+const HUTNIK_TRAINING = [[-366.2, -2110.8, -417, -2202, -358.7, -2234.5, -307.9, -2143.3], [-450.3, -2095.1, -390.8, -2128.5, -374.9, -2100.2, -434.4, -2066.8]];
+const HUTNIK = { cx: -374.5, cz: -2020.8, ux: 0.492, uz: 0.871 };
+function hutnikFrame() {
+  const { cx, cz, ux, uz } = HUTNIK, vx = -uz, vz = ux;
+  return { at: (u, v) => ({ x: cx + u * ux + v * vx, z: cz + u * uz + v * vz }), yaw: Math.atan2(-uz, ux) };
+}
+// The pitch with its mown stripes and white lines, 10 px per metre
+function pitchTexture() {
+  const L = 105, W = 68, M = 4, px = 10;
+  const c = document.createElement('canvas');
+  c.width = (L + 2 * M) * px; c.height = (W + 2 * M) * px;
+  const g = c.getContext('2d');
+  for (let i = 0; i < 15; i++) {
+    g.fillStyle = i % 2 ? '#5d8a3a' : '#69973f';
+    g.fillRect((M + i * 7) * px, 0, 7 * px, c.height);
+  }
+  g.fillStyle = '#69973f'; g.fillRect(0, 0, M * px, c.height); g.fillRect((M + L) * px, 0, M * px, c.height);
+  g.strokeStyle = '#f4f4ee'; g.fillStyle = '#f4f4ee'; g.lineWidth = 1.2;
+  const X = (u) => (M + u) * px, Y = (v) => (M + v) * px;
+  g.strokeRect(X(0), Y(0), L * px, W * px);
+  g.beginPath(); g.moveTo(X(L / 2), Y(0)); g.lineTo(X(L / 2), Y(W)); g.stroke();
+  g.beginPath(); g.arc(X(L / 2), Y(W / 2), 9.15 * px, 0, 7); g.stroke();
+  g.beginPath(); g.arc(X(L / 2), Y(W / 2), 0.25 * px, 0, 7); g.fill();
+  for (const s of [0, 1]) {
+    const x0 = s ? L : 0, d = s ? -1 : 1;
+    g.strokeRect(s ? X(L - 16.5) : X(0), Y(W / 2 - 20.16), 16.5 * px, 40.32 * px);
+    g.strokeRect(s ? X(L - 5.5) : X(0), Y(W / 2 - 9.16), 5.5 * px, 18.32 * px);
+    g.beginPath(); g.arc(X(x0 + d * 11), Y(W / 2), 0.25 * px, 0, 7); g.fill();
+    g.beginPath(); g.arc(X(x0 + d * 11), Y(W / 2), 9.15 * px, d > 0 ? -0.93 : Math.PI - 0.93, d > 0 ? 0.93 : Math.PI + 0.93); g.stroke();
+  }
+  const t = new THREE.CanvasTexture(c);
+  t.colorSpace = THREE.SRGBColorSpace;
+  t.anisotropy = 4;
+  return { map: t, w: L + 2 * M, h: W + 2 * M };
+}
+function hutnik(b, colliders) {
+  const f = hutnikFrame();
+  const orange = mat({ color: 0xe8741e, rough: 0.85 }), black = mat({ color: 0x202124, rough: 0.8 });
+  const paving = mat({ color: 0x9a9a94, rough: 0.95 }), board = mat({ color: 0x1d2a36, rough: 0.7 });
+  const white = mat({ color: 0xf1f0ea, rough: 0.6 }), steel = LOOK.steel, lamp = mat({ color: 0xf6f1d0, rough: 0.3 });
+  const L = 105, W = 68;
+  // the apron and the pitch
+  b.box(f, 0, 0, 130, 124, 0.1, 0, paving);
+  const pt = pitchTexture();
+  const turf = b.mesh(new THREE.PlaneGeometry(pt.w, pt.h), mat({ map: pt.map, rough: 0.95 }));
+  turf.rotation.x = -Math.PI / 2;
+  turf.rotation.order = 'YXZ';
+  turf.rotation.y = f.yaw;
+  const c0 = f.at(0, 0);
+  turf.position.set(c0.x, 0.13, c0.z);
+  turf.castShadow = false;
+  // goals
+  for (const s of [-1, 1]) {
+    const gu = s * L / 2;
+    for (const t of [-1, 1]) b.box(f, gu, t * 3.66, 0.12, 0.12, 2.44, 0.1, white);
+    b.box(f, gu, 0, 0.12, 7.44, 0.12, 2.5, white);
+    b.box(f, gu + s * 1.5, 0, 0.04, 7.2, 2.2, 0.1, mat({ color: 0xdadada, rough: 0.9, opacity: 0.35 }));
+  }
+  // boards round the pitch
+  b.box(f, 0, W / 2 + 3.5, L + 8, 0.2, 1, 0.1, board);
+  b.box(f, 0, -(W / 2 + 3.5), L + 8, 0.2, 1, 0.1, board);
+  for (const s of [-1, 1]) b.box(f, s * (L / 2 + 4), 0, 0.2, W + 7, 1, 0.1, board);
+  // the two stands: side +1 is the west (orange, black roof), side -1 the east (black, orange roof)
+  for (const side of [1, -1]) {
+    const conc = side > 0 ? orange : black, roof = side > 0 ? black : orange;
+    const v0 = side * 46.6, vf = v0 - side * 5.75, vr = v0 + side * 5.75, SL = 68;
+    for (let k = 0; k < 7; k++) b.box(f, 0, vf + side * (0.9 + k * 1.6), SL, 1.6, 0.5 * (k + 1), 0.1, conc);
+    b.box(f, 0, vr - side * 0.2, SL, 0.4, 6.8, 0.1, conc); // the rear wall
+    const ve = vf - side * 1.5; // the roof's front edge
+    b.box(f, 0, v0 - side * 0.55, SL + 1.5, 13.4, 0.3, 7, roof);
+    b.box(f, 0, ve + side * 0.15, SL + 1.5, 0.3, 1.1, 6.4, roof); // fascia
+    for (let u = -34; u <= 34.1; u += 8.5) b.box(f, u, vf - side * 0.6, 0.3, 0.3, 6.9, 0.1, steel);
+    const txt = side > 0 ? '#f2f2f2' : '#202124';
+    b.sign(f, 'HUTNIK WARSZAWA', 0, ve - side * 0.12, 6.95, { w: 26, h: 0.85, bg: null, fg: txt }, side > 0 ? Math.PI : 0);
+    // the rear wall faces the street on the west side
+    if (side > 0) b.sign(f, 'HUTNIK WARSZAWA', 0, vr + 0.02, 4.3, { w: 28, h: 1.8, bg: null, fg: '#202124' });
+    else b.sign(f, 'HUTNIK WARSZAWA', 0, vr - 0.02, 4.3, { w: 28, h: 1.8, bg: null, fg: '#e8741e' }, Math.PI);
+  }
+  // the rear walls: panel joints, entrance doors with canopies, a stair tower at each end
+  const door = mat({ color: 0x15171a, rough: 0.5, metal: 0.3 }), joint = mat({ color: 0x0f1012, rough: 0.9 });
+  for (const side of [1, -1]) {
+    const vo = side * (46.6 + 5.95), conc = side > 0 ? orange : black;
+    for (let u = -34; u <= 34.1; u += 8.5) b.box(f, u, vo, 0.12, 0.06, 6.8, 0.1, joint);
+    for (const u of [-25, 0, 25]) {
+      b.box(f, u, vo + side * 0.03, 2.6, 0.08, 2.3, 0.1, door);
+      b.box(f, u, vo + side * 0.9, 4, 1.8, 0.12, 2.6, steel);
+    }
+    for (const u of [-37, 37]) b.box(f, u, vo + side * 1.2, 3.4, 3.2, 8.2, 0.1, conc); // the stair towers
+    b.box(f, 0, vo, 68, 0.1, 0.5, 0.1, steel); // plinth rail
+  }
+  // the fence round the ground (semi-transparent mesh) and the training pitches beside it (artificial turf)
+  b.prism(toPts(HUTNIK_FENCE), 0, 2.4, mat({ color: 0x2b2f33, rough: 0.7, opacity: 0.32, double: true }));
+  const artificial = mat({ color: 0x3f7f3b, rough: 0.95 });
+  for (const ring of HUTNIK_TRAINING) {
+    const r = toPts(ring);
+    b.prism(r, 0, 0.12, artificial, artificial);
+    b.prism(r, 0.12, 3.0, mat({ color: 0x2b2f33, rough: 0.7, opacity: 0.25, double: true }));
+  }
+  // the dugouts at the west stand
+  for (const u of [-9, 9]) {
+    b.box(f, u, W / 2 + 1.6, 6, 1.4, 0.15, 2.3, LOOK.graphite);
+    b.box(f, u, W / 2 + 2.3, 6, 0.1, 2.3, 0.1, mat({ color: 0xcfe0e6, rough: 0.2, opacity: 0.4 }));
+  }
+  // four floodlight masts at the stand ends
+  for (const su of [-1, 1]) for (const sv of [-1, 1]) {
+    const u = su * 41, v = sv * 50;
+    b.cylinder(f, u, v, 0.3, 24, 0, steel, { r1: 0.18, seg: 8 });
+    b.box(f, u, v - sv * 0.4, 3.4, 0.5, 2.4, 24, LOOK.graphite);
+    b.box(f, u, v - sv * 0.7, 3, 0.06, 2, 24.1, lamp);
+  }
+  // the stand walls keep the colliders of their LoD1 blocks (js/buildings.js)
+  void colliders;
+}
+
 /**
  * Builds every landmark into one group; colliders: those of the landmarks without a LoD1 block
  */
 function buildLandmarks(scene) {
   const b = new Builder('BielanyLandmarks');
   const colliders = [];
-  for (const [name, fn] of Object.entries({ galeria, stareBielany, wawrzyszew, mlociny, awf, uksw, szpital, zygmunt, magdalena, kameduly })) {
+  for (const [name, fn] of Object.entries({ galeria, stareBielany, wawrzyszew, mlociny, awf, uksw, szpital, zygmunt, magdalena, kameduly, hutnik })) {
     const parts = new Map([...b.parts].map(([m, list]) => [m, list.length]));
     const meshes = b.group.children.length, firstCollider = colliders.length;
     try {

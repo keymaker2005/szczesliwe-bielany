@@ -14,7 +14,7 @@ const phone = () => ({ sms: [], addSms(m) { this.sms.push(m); return true; } });
 
 test('guide: one message per landmark, the first time the player comes near', () => {
   const guides = GUIDE_TEXTS.filter((t) => t.kind === 'guide');
-  assert.equal(guides.length, 11);
+  assert.equal(guides.length, 12);
   for (const t of guides) {
     assert.ok(SITES[t.landmark], `site for ${t.id}`);
     assert.ok(t.sms.length > 60 && t.sms.length <= 280);

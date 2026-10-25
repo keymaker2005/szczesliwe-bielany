@@ -51,3 +51,5 @@ Pomysł z 2026-10-25, do decyzji i osobnego planu.
   krawędzi mapy); most stoi wyżej niż w rzeczywistości (ok. 23 m nad wodą: zachodni przyczółek na krawędzi skarpy).
 - Wiadukty na płaskowyżu: płaskowyż jest spłaszczony do 0, więc nasypy pod najazdami zniknęły; pomosty nad innymi
   drogami wznoszą się do 12% od ulicy i ich profil faluje (np. nad Marymoncką przy Trasie Mostu Północnego).
+## Przewodnik jako lista landmarków w telefonie (prośba z 2026-10-25, przy Stadionie Hutnika)
+- Nowa aplikacja „Przewodnik” w telefonie (js/phone.js): lista wszystkich landmarków (SITES z js/guide.js, wraz ze stadionem), odhaczanie odwiedzonych (stan „seen” z localStorage), „Nawiguj” wyznacza trasę GPS do landmarku (js/gps-route.js, jak przy zleceniach), „Czytaj więcej” otwiera tekst z guide-texts.js. Do zrobienia osobnym krokiem, nie w zadaniu Stadion Hutnika.
