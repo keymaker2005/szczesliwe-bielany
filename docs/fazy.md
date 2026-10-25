@@ -107,4 +107,7 @@ napisy słowne na pojazdach służb bez insygniów, najpierw teren). Gałąź fa
   kot na drzewie (G na miejscu). Sprawdzam: każde zdarzenie do ukończenia.
 - [x] 3.7 Policjant (2026-10-25, sesja równoległa, scalone): js/police.js, js/patrol-car.js, polecenia dla auta AI w
   traffic.js (command), zderzenia przez addCollisionWatcher obok dźwięku. Sprawdzam: 2 kontrole i 1 pościg bez taranowania.
-- [ ] 3.8 Deploy i bramka. Sprawdzam: pełna pętla wszystkich ról na bielany.zbigniew.ai, 60 fps.
+- [x] 3.8 Deploy (2026-10-25): wersja b9bfcb1 na bielany.zbigniew.ai (wszystkie role, teren, Wisła, mosty, lasy ze
+  zwierzętami, Stadion Hutnika, Przewodnik); w Chrome na M4 60 fps przy Moście Północnym, bez błędów w konsoli.
+- [ ] Bramka Fazy 3: cała dzielnica grywalna, 60 fps na laptopie z Windows (docs/test-1.8b.md, dopisać trasy: skarpa,
+  Wisłostrada, Most Północny, las), zbadać 52-56 fps przy Kamedułach i 30 fps zgłoszone w Edge.

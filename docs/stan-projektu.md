@@ -5,6 +5,7 @@
 - Faza 1.5 (smartfon, kurier, landmarki, przewodnik, burmistrz) zaliczona 2026-10-26.
 - Faza 2 (większy obszar, wydajność, tramwaje, taksówkarz, ratownik, Aparat, liście) zrobiona i opublikowana; bramka
   (60 fps na laptopie z Windows) czeka na test według docs/test-1.8b.md.
+- Faza 3: kroki 3.1-3.8 zrobione i opublikowane 2026-10-25 (b9bfcb1); bramka czeka na test na Windows.
 - Faza 3 (gałąź faza-3, plan docs/plan-fazy-3.md zaakceptowany 2026-10-25): 3.1 dane terenu i 3.2a teren w świecie
   i 3.2b Las Bielański, 3.3 Wisła i most zrobione (lokalnie, bez deployu); dalej praca równoległa według
   docs/praca-rownolegla.md (ta sesja koordynuje, 3.4 dyspozytornia, potem sesje służb; tabliczki ulic w osobnej sesji).
