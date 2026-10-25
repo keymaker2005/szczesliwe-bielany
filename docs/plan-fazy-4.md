@@ -1,7 +1,7 @@
 # Plan Fazy 4: Czaty LLM i patronat
 
 Bramka: wersja 1.0 z patronatem (kryteria na końcu). Gałąź faza-4 (z faza-3), powstaje po akceptacji planu.
-Stan: propozycja z 2026-10-25, czeka na akceptację i 7 decyzji.
+Stan: propozycja z 2026-10-25, czeka na akceptację. Decyzja 5 podjęta (SMS-y od „Burmistrz Bielan”), 6 do decyzji.
 
 ## Co mamy na wejściu
 - Telefon (js/phone.js): aplikacje Zlecenia, Mapa, Służby, Przewodnik, SMS, Pocztówki, Aparat. SMS-y to lista
@@ -10,7 +10,8 @@ Stan: propozycja z 2026-10-25, czeka na akceptację i 7 decyzji.
   i „Nawiguj”. Teksty w js/guide-texts.js (generowane z docs/teksty-przewodnika.md przez tools/guide-texts.mjs),
   razem ok. 20 KB z adresami źródeł. To wystarcza jako cała baza wiedzy przewodnika w jednym zapytaniu (bez wyszukiwarki).
 - Burmistrz: SMS-y w tonie z publicznych wypowiedzi, z dopiskiem „wiadomość w grze, nie oficjalne stanowisko urzędu”,
-  opublikowane decyzją z 2026-10-26. Zgody burmistrza ani urzędu na razie nie ma.
+  opublikowane decyzją z 2026-10-26. Od 2026-10-25 (wersja b55f491) nadawca to „Burmistrz Bielan”, bez imienia
+  i nazwiska, do czasu pisemnej zgody. Zgody burmistrza ani urzędu na razie nie ma.
 - Cloudflare: strona na Pages (bielany.zbigniew.ai), wrangler 3.114.15 podpięty do konta. Workera jeszcze nie ma.
 - Wersja dla urzędu: przełącznik PEDESTRIAN_CONTACT w js/city-config.js (dziś true). Pakiet dla urzędu
   (docs/pakiet-urzad.md) odłożony.
@@ -20,7 +21,8 @@ Stan: propozycja z 2026-10-25, czeka na akceptację i 7 decyzji.
   - Claude Opus 5.5 (`claude-opus-5-5`): 4 / 20 USD, odczyt z pamięci podręcznej 0,20 USD.
 
 ## Jak to działa (w skrócie)
-- W telefonie nowa aplikacja „Czat” z dwiema rozmowami: Przewodnik i Burmistrz (ta druga dopiero po zgodzie).
+- W telefonie nowa aplikacja „Czat” z dwiema rozmowami: Przewodnik i Burmistrz Bielan (ta druga dopiero po zgodzie;
+  imię i nazwisko tylko wtedy, gdy zgoda je obejmuje).
 - Gra wysyła pytanie do Workera na Cloudflare (np. bielany.zbigniew.ai/api/czat). Worker trzyma klucz API, dokleja
   instrukcje i bazę wiedzy, pyta model Claude i odsyła odpowiedź. Klucz nigdy nie trafia do przeglądarki.
 - Bez kont graczy i bez zapisu rozmów: historia rozmowy żyje tylko w otwartej karcie gry (znika po odświeżeniu),
@@ -116,9 +118,9 @@ Stan: propozycja z 2026-10-25, czeka na akceptację i 7 decyzji.
 4. Kto zbiera zgody. Proponuję: Ty wysyłasz pismo i prowadzisz kontakt z urzędem (ja przygotowuję pismo, pakiet,
    listy pytań i tabelę wyników). Potrzebuję od Ciebie: adresata (wydział lub osoba), Twojego imienia, nazwiska
    i e-maila do podpisu (decyzje z docs/pakiet-urzad.md).
-5. SMS-y burmistrza do czasu zgody. Dziś są publiczne z dopiskiem „wiadomość w grze”. Proponuję zostawić je bez
-   zmian, a czat z burmistrzem uruchomić dopiero po zgodzie. Druga możliwość: ukryć SMS-y burmistrza na publicznej
-   stronie do czasu odpowiedzi urzędu (ostrożniej, skoro i tak prosimy o zgodę).
+5. SMS-y burmistrza do czasu zgody. Podjęta 2026-10-25: nadawca „Burmistrz Bielan”, bez imienia i nazwiska,
+   z dopiskiem „wiadomość w grze”; opublikowane (b55f491). Czat z burmistrzem dopiero po zgodzie, a imię i nazwisko
+   wracają tylko, jeśli zgoda je obejmuje.
 6. Zakres wersji dla urzędu. Proponuję: bez kontaktu z pieszymi (PEDESTRIAN_CONTACT = false), reszta gry bez zmian
    (służby, pościg bez taranowania, mandaty zostają). Druga możliwość: dodatkowo bez pościgu policyjnego.
 7. Bez kont i bez zapisu rozmów. Proponuję tak jak w backlogu: nic nie zapisujemy, tylko liczniki. Konsekwencja: nie
