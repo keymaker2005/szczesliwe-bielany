@@ -69,3 +69,8 @@ Bramka: 60 fps na laptopie. Plan: docs/plan-fazy-2.md (zaakceptowany 2026-10-26)
 - [x] 2.7 Deploy na bielany.zbigniew.ai (2026-10-26): wszystkie role (kurier, taksówkarz, ratownik), tramwaje, Aparat, większy obszar. Sprawdzam: 60 fps, pełna pętla wszystkich ról na publicznym linku.
 - [ ] Bramka Fazy 2: 60 fps na zwykłym laptopie z Windows (test według docs/test-1.8b.md, punkty 6a i 6b). Na MacBooku M4: 54–60 fps z helikoptera, 60 na ziemi.
 
+
+## Faza 3: Służby i teren
+Bramka: cała dzielnica grywalna. Plan: docs/plan-fazy-3.md (do akceptacji). Gałąź faza-3 po akceptacji planu.
+
+- [ ] 3.0 Plan Fazy 3 (pliki, kolejność, ryzyka, 4 decyzje). Sprawdzam: akceptuję plan i odpowiadam na decyzje.
