@@ -39,6 +39,8 @@ import { Guard, DISPATCH as GUARD_DISPATCH, SERVICE as GUARD_SERVICE, MESSAGES a
 import { createPatrolCar } from './guard-car.js';
 import { Firefighter, DISPATCH as FIRE_DISPATCH, SERVICE as FIRE_SERVICE, NAMES as FIRE_NAMES } from './firefighter.js';
 import { createFireEngine, createFireEffects, createFireHud } from './fire-engine.js';
+import { Police, DISPATCH as POLICE_DISPATCH, SERVICE as POLICE_SERVICE } from './police.js';
+import { createPatrolCar } from './patrol-car.js';
 import { PhotoMode } from './photo-mode.js';
 import { Postcards } from './postcards.js';
 import { createFallingLeaves } from './falling-leaves.js';
@@ -796,6 +798,37 @@ async function initApp() {
       },
     });
     globalThis.bielanyFire = { firefighter, fireEngine, fireFx };
+  // The police officer (js/police.js): speed checks with the radar and chases, in the patrol car (js/patrol-car.js)
+  const police = new Police(missions, trafficSystem);
+  {
+    const note = document.createElement('div');
+    note.className = 'mission-note';
+    note.style.cssText = 'font-weight: 600; color: var(--taxi); margin-top: 4px;';
+    elMission?.appendChild(note);
+    Object.assign(police, {
+      near: () => controllerManager.getActiveEntity().position,
+      player: () => (controllerManager.activeMode === 'car' ? controllerManager.entities.car : null),
+      siren: () => dispatch.siren,
+      choose: (o) => dispatch.choose(o),
+      sms: (id, text) => phone.addSms({ id, from: POLICE_DISPATCH, text }),
+      mark: (x, z, refresh) => { missionMarker.show(x, z); if (refresh) mapSystem.waypoint = { x, z, name: 'zatrzymywane auto' }; },
+      note: (text) => { note.textContent = text; },
+    });
+    trafficSystem.addCollisionWatcher((e) => police.onCollision(e)); // beside the audio system's listener
+    const CHOICES = { none: 'bez uwag', warning: 'pouczenie', fine: 'mandat', court: 'wniosek do sądu' };
+    const knocks = (m) => (m.hits ? ` Uderzenia: ${m.hits} (każde to gwiazdka mniej).` : '');
+    dispatch.register({
+      role: 'police', name: POLICE_SERVICE, dispatcher: POLICE_DISPATCH, glyph: '🚓', mode: 'car', livery: createPatrolCar(), siren: false, provider: police,
+      messages: {
+        call: (m) => (m.kind === 'chase'
+          ? 'Kierowca nie zatrzymał się do kontroli i ucieka ulicami w twojej okolicy (słup światła nad autem). Włącz sygnał (K), dojedź tuż za niego i trzymaj się kilka sekund albo stań mu na drodze, a sam zjedzie. Bez taranowania: każde uderzenie to gwiazdka mniej.'
+          : `Kontrola prędkości: ${m.start.name.replace(/^kontrola prędkości, /, 'ul. ')}. Dojedź do żółtego kręgu. Potem: 1) radar zmierzy auta wokół, 2) za szybkie auto dogoń i włącz sygnał (K), 3) zatrzymaj się za nim i zdecyduj: pouczenie czy mandat.`),
+        picked: (m) => (m.kind === 'radar' ? 'Jesteś na miejscu, radar włączony. Podpowiedzi masz pod panelem zlecenia.' : ''),
+        done: (m) => (m.lost
+          ? `Uciekinier zgubiony. ${m.paid} zł.`
+          : `${m.kind === 'chase' ? 'Pościg zakończony' : 'Kontrola zakończona'}: ${CHOICES[m.choice] || 'bez decyzji'}, ${'★'.repeat(m.stars) || 'bez gwiazdek'}.${knocks(m)} ${m.paid} zł.`),
+      },
+    });
   }
   const COMFORT_NOTES = { brake: 'ostre hamowanie', crash: 'stłuczka', red: 'czerwone światło' };
   missions.on('state', (m) => {

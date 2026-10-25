@@ -75,23 +75,40 @@ function createBusDestinationTexture() {
 
 const clamp = (x, lo, hi) => Math.max(lo, Math.min(hi, x));
 
+// One car the police deal with (js/police.js, step 3.7): order 'speed' (drives at `pace` m/s, over the limit, for the
+// radar), 'flee' (at `pace`, and like a patrol car on through reds), 'stop' (pulls up to the curb and stands there),
+// or null (back to its own pace). An ordered car is not recycled when it gets far from the camera.
+function commandCar(v, order, pace) {
+  if (v.cruise === undefined) v.cruise = v.v0;
+  v.order = order || null;
+  v.v0 = (order === 'speed' || order === 'flee') && pace > 0 ? pace : v.cruise;
+}
+// A patrol car or a car fleeing one: on through reds, carefully
+const runsReds = (v) => v.isPolice || v.order === 'flee';
+
 function createTrafficSystem(scene, sidewalks, obstacles) {
   const group = new THREE.Group();
   group.name = 'BielanyTrafficAndPedestrians';
-  let collisionListener = null;
+  let collisionListener = null; // the audio system's (one, set and cleared by it)
+  const collisionWatchers = []; // and the game's own (the police: knocks into the traffic), added for good
   const collisionEvent = { a: null, b: null, kind: 'vehicle', x: 0, y: 0, z: 0, nx: 0, ny: 0, nz: 0, speed: 0 };
 
   function setCollisionListener(listener) {
     collisionListener = typeof listener === 'function' ? listener : null;
   }
 
+  function addCollisionWatcher(listener) {
+    if (typeof listener === 'function') collisionWatchers.push(listener);
+  }
+
   // Synchronous notification: listeners must copy any fields they retain. Normal points from b toward a.
   function reportCollision(a, b, x, y, z, nx, nz, speed) {
-    if (!collisionListener || speed <= 0.5) return;
+    if ((!collisionListener && !collisionWatchers.length) || speed <= 0.5) return;
     collisionEvent.a = a; collisionEvent.b = b;
     collisionEvent.x = x; collisionEvent.y = y; collisionEvent.z = z;
     collisionEvent.nx = nx; collisionEvent.nz = nz; collisionEvent.speed = speed;
-    collisionListener(collisionEvent);
+    if (collisionListener) collisionListener(collisionEvent);
+    for (const w of collisionWatchers) w(collisionEvent);
   }
 
   const dummy = new THREE.Object3D();
@@ -139,7 +156,7 @@ function createTrafficSystem(scene, sidewalks, obstacles) {
   function createVehicle(bus, half, halfWidth, axle, driver, v0) {
     return {
       bus, half, halfWidth, axle, driver, v0,
-      edge: null, lane: 0, s: 0, speed: 0, acc: 0, gap: Infinity, leaderSpeed: 0,
+      edge: null, lane: 0, s: 0, speed: 0, acc: 0, gap: Infinity, leaderSpeed: 0, order: null,
       move: null, out: 0, conn: null, cs: 0, trail: null, commit: null, claimed: false, yielding: false, yieldAt: 0,
       wait: 0, laneTimer: Math.random() * 0.5,
       dl: 0, dlv: 0, blink: 0, blinkPhase: Math.random() * 0.8,
@@ -678,7 +695,7 @@ function createTrafficSystem(scene, sidewalks, obstacles) {
 
   // Braking for a red (or an amber with room to stop) at the end of edge f, `d` metres ahead
   function signalAhead(v, f, d) {
-    if (v.isPolice || !f.to.signal || d > LOOKAHEAD) return 0;
+    if (runsReds(v) || !f.to.signal || d > LOOKAHEAD) return 0;
     const phase = phaseOf(f);
     if (phase === 'green' || (phase === 'amber' && !canStopBefore(v, d))) return 0;
     return stopAt(v, d);
@@ -734,7 +751,7 @@ function createTrafficSystem(scene, sidewalks, obstacles) {
     for (const list of o.occ) {
       const lead = leadOf(list);
       if (!lead || (lead.v.edge === o && lead.v.move.turn === 'L')) continue;
-      if (red && !lead.v.isPolice) continue;
+      if (red && !runsReds(lead.v)) continue;
       if (!canStop(lead, o, impatient)) return true;
       const u = lead.v;
       const j = u.edge === o ? u.move.out[u.lane] : -1;
@@ -893,7 +910,7 @@ function createTrafficSystem(scene, sidewalks, obstacles) {
       }
       return false;
     }
-    if (!v.isPolice && (phase === 'red' || (phase === 'amber' && stoppable))) return false;
+    if (!runsReds(v) && (phase === 'red' || (phase === 'amber' && stoppable))) return false;
     if (boxBusy(n, e.axisIndex)) return false; // crossing traffic inside
     const lead = ahead(e.occ[v.lane], v.s, v);
     if (lead && lead.v.yielding) return false; // the vehicle ahead waits inside to turn: wait behind the line
@@ -902,11 +919,11 @@ function createTrafficSystem(scene, sidewalks, obstacles) {
     // road it turns into (they walk on the same green): short of their crosswalk or, turning left across oncoming
     // traffic, short of the oncoming lanes until there is a gap. The light changing stops both for it at the latest.
     const c = connector(e, v.lane, f, j);
-    const first = n.signal && (!v.isPolice || phase === 'green') && m.turn !== 'S' && !lead;
+    const first = n.signal && (!runsReds(v) || phase === 'green') && m.turn !== 'S' && !lead;
     const across = m.turn === 'L' && !!e.opposite;
     const wait = first ? (across ? yieldPoint(v, c, e) : c.len - 3 - v.half) : -1; // < 0: no room inside to wait
     if (m.turn === 'L' ? across && wait < 0 && yieldOncoming(e.opposite, v.wait > 8, v) : e.opposite && e.opposite.lefts > 0) return false;
-    if ((n.signal ? v.isPolice && phase !== 'green' : e.axisIndex !== 0) && yieldToCrossTraffic(v, n)) return false;
+    if ((n.signal ? runsReds(v) && phase !== 'green' : e.axisIndex !== 0) && yieldToCrossTraffic(v, n)) return false;
     // nobody on the crosswalks while it passes over them, on the way in and on the way out, and a free place to
     // clear the intersection to, taking turns with lanes merging into it
     if (pedestrianOn(n, e.inSide, laneCoord(e, v.lane), 0, timeTo(v, d + 2.5 + 2 * v.half))) return false;
@@ -1018,7 +1035,7 @@ function createTrafficSystem(scene, sidewalks, obstacles) {
         const o = c && !v.claimed && mergingAhead(v, f, j);
         if (o) worst = Math.min(worst, Math.max(-v.driver.b, brake(v, o.s - o.v.half - vs - v.half, o.v.speed)));
         let vt = c ? bendSpeed(v, c) : Infinity;
-        const cautious = e.to.signal ? v.isPolice && phaseOf(e) !== 'green' : e.axisIndex !== 0;
+        const cautious = e.to.signal ? runsReds(v) && phaseOf(e) !== 'green' : e.axisIndex !== 0;
         if (cautious) vt = Math.min(vt, 5);
         cap = Math.sqrt(vt * vt + 5 * Math.max(0, d));
       }
@@ -1045,7 +1062,8 @@ function createTrafficSystem(scene, sidewalks, obstacles) {
         v.leaderSpeed = v.pSpeed;
       }
     }
-    v.pull = yieldsToSiren(v);
+    // pulls over for the siren behind it (not when fleeing it), or stops there when told to (not inside a junction)
+    v.pull = v.order === 'stop' ? !v.conn : v.order !== 'flee' && yieldsToSiren(v);
     if (v.pull) worst = Math.min(worst, stopAt(v, Math.max(1, v.speed * 1.6)));
     for (let k = 0; k < blockers.length; k++) {
       const o = blockers[k];
@@ -2099,7 +2117,7 @@ function createTrafficSystem(scene, sidewalks, obstacles) {
       const v = vehicles[vehicleCursor];
       vehicleCursor = (vehicleCursor + 1) % vehicles.length;
       const d = v.edge ? Math.hypot(v.x - focusX, v.z - focusZ) : Infinity;
-      if (d <= (jump ? NEAR_RADIUS : VEHICLE_RADIUS)) continue;
+      if (d <= (jump ? NEAR_RADIUS : VEHICLE_RADIUS) || v.order) continue;
       budget--;
       spawnVehicle(v, jump ? 0 : 100, NEAR_RADIUS, !jump);
     }
@@ -2210,12 +2228,14 @@ function createTrafficSystem(scene, sidewalks, obstacles) {
     group,
     update,
     setCollisionListener,
+    addCollisionWatcher,
     cars,
     buses,
     peds,
     network,
     blockers,
-    yieldTo
+    yieldTo,
+    command: commandCar
   };
 }
 

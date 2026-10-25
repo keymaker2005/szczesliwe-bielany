@@ -92,6 +92,7 @@ function trafficFunction(name, context) {
   assert.ok(match, `${name} is present`);
   context.groundY ??= () => 0; // a flat world (js/terrain.js before loadTerrain), no bridges
   context.surfaceY ??= () => 0;
+  context.runsReds ??= (v) => v.isPolice || v.order === 'flee'; // as in js/traffic.js
   return vm.runInNewContext(`(${match[0].trim()})`, context);
 }
 
@@ -259,4 +260,29 @@ test('crossing pedestrians fall back to a sidewalk when nearby crosswalks are un
   assert.equal(crossings, 5);
   assert.equal(ped.node, null);
   assert.equal(ped.z, 210);
+});
+
+test('the police order one car about: faster for the radar, fleeing through reds, stopping, then its own pace again', () => {
+  const command = source.match(/^function commandCar\(v, order, pace\) \{[\s\S]*?\n\}/m)?.[0];
+  const reds = source.match(/^const runsReds = .*$/m)?.[0];
+  assert.ok(command && reds, 'the order API is present');
+  assert.match(source, /command: commandCar/, 'and returned by the traffic system');
+  assert.match(source, /v\.pull = v\.order === 'stop' \? !v\.conn : v\.order !== 'flee' && yieldsToSiren\(v\);/);
+  assert.match(source, /\|\| v\.order\) continue;/, 'an ordered car is not recycled');
+  const { commandCar, runsReds } = vm.runInNewContext(`${command}\n${reds}\n({ commandCar, runsReds });`);
+  const v = { v0: 11, isPolice: false };
+  commandCar(v, 'speed', 18);
+  assert.equal(v.order, 'speed');
+  assert.equal(v.v0, 18);
+  assert.equal(runsReds(v), false);
+  commandCar(v, 'flee', 16);
+  assert.equal(v.v0, 16);
+  assert.equal(runsReds(v), true);
+  commandCar(v, 'stop');
+  assert.equal(v.order, 'stop');
+  assert.equal(v.v0, 11);
+  commandCar(v, null);
+  assert.equal(v.order, null);
+  assert.equal(v.v0, 11);
+  assert.equal(runsReds({ isPolice: true }), true);
 });
