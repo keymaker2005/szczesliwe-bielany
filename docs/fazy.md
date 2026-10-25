@@ -1,6 +1,6 @@
 # Fazy: bieżący zakres
 
-Status: FAZA 1 (MVP "Bielany przy M1"). Faza 0 zamknięta 2026-10-24, plan: docs/plan-fazy-1.md. Kolejna faza startuje dopiero po przejściu bramki poprzedniej.
+Status: FAZA 1.5 (smartfon i kurier), gałąź faza-1.5. Faza 0 zamknięta 2026-10-24. Faza 1 zrobiona poza bramką: test 1.8b i pakiet dla urzędu odłożone decyzją z 2026-10-25 (wracamy później); do tego czasu main zostaje bez zmian, a faza-1.5 wychodzi z faza-1. Kolejna faza startuje dopiero po przejściu bramki poprzedniej, chyba że zdecyduję inaczej.
 
 ## Faza 0: Rozpoznanie
 Bramka: dane się wczytują, plan Fazy 1 zaakceptowany.
@@ -27,8 +27,9 @@ Bramka: publiczny link na Cloudflare Pages + pakiet dla urzędu.
 - [x] 1.7 Drzewa z modelu GUGiK, jesienne korony (żółć, pomarańcz, rdza z domieszką zieleni), liście na ziemi. Sprawdzam: zieleń tam, gdzie jest naprawdę.
 - [x] 1.8a Minimapa z polskimi nazwami, teleporty do stref, atrybucja, wydajność. Sprawdzam: kryteria akceptacji niżej.
 - [x] 1.9a Deploy podglądowy na Cloudflare Pages pod szczesliwe-bielany.pages.dev (bez własnej domeny). Sprawdzam: działający link.
-- [ ] 1.8b Test wydajności na Windows w Edge na linku z 1.9a (preset "Złota jesień", fps, błędy w konsoli); test robi ktoś z zespołu z laptopem z Windows według docs/test-1.8b.md. Sprawdzam: co najmniej 30 fps, brak błędów.
-- [ ] 1.9b Po zielonym 1.8b: podpięcie domeny bielany.zbigniew.ai, scalenie faza-1 do main, bramka zaliczona. Sprawdzam: działający publiczny link.
+- [ ] 1.8b (odłożone) Test wydajności na Windows w Edge na linku z 1.9a (preset "Złota jesień", fps, błędy w konsoli); test robi ktoś z zespołu z laptopem z Windows według docs/test-1.8b.md. Sprawdzam: co najmniej 30 fps, brak błędów.
+- [x] 1.9b Podpięcie domeny bielany.zbigniew.ai (działa od 2026-10-25). Sprawdzam: działający publiczny link.
+- [ ] 1.9c (odłożone) Pakiet dla urzędu według docs/pakiet-urzad.md, potem scalenie faza-1 do main i bramka zaliczona.
 
 ### Kryteria akceptacji Fazy 1
 - [ ] Startuje w Chrome i Edge na laptopie, bez błędów w konsoli.
@@ -40,3 +41,8 @@ Bramka: publiczny link na Cloudflare Pages + pakiet dla urzędu.
 - [ ] Publiczny link.
 
 Poza zakresem Fazy 1: tramwaje, teren, Wisła, noc, landmarki poza AWF, gameplay, smartfon. Wszystko to jest w docs/backlog.md.
+
+## Faza 1.5: Smartfon i kurier
+Bramka: pierwsza grywalna pętla. Plan: docs/plan-fazy-1.5.md (do akceptacji), kroki 1.5.1–1.5.7 dopiszę po akceptacji.
+
+- [ ] 1.5.0 Plan Fazy 1.5 (pliki, kolejność, ryzyka). Sprawdzam: akceptuję plan.

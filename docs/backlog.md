@@ -1,12 +1,7 @@
 # Backlog (poza bieżącą fazą, nie realizować bez decyzji)
 
 ## Faza 1.5: Smartfon i kurier
-Bramka: pierwsza grywalna pętla.
-- Silnik zleceń js/missions.js: zlecenie = rola, start, cel, pojazd, warunek ukończenia, ocena.
-- Rola kuriera: rower i auto, dostawy pod prawdziwe adresy z OSM, ocena za czas i skróty.
-- Smartfon (nakładka HTML): Zlecenia, Mapa, SMS, Pocztówki.
-- Przewodnik: SMS po wjeździe w promień ok. 50 m od landmarku, 2 do 3 zdań + karta "czytaj więcej". Landmarki: klasztor Kamedułów, Las Bielański, AWF, UKSW, stacje M1, Szpital Bielański, Młociny. Teksty pisane ręcznie ze źródeł, do akceptacji urzędu.
-- Burmistrz Grzegorz Pietruczuk w zatwierdzonych SMS-ach (powitanie, zaproszenia do miejsc).
+Przeniesiona do docs/fazy.md (bieżąca faza).
 
 ## Faza 2: Osiedla, taksówkarz, ratownik
 Bramka: 60 fps na laptopie.
