@@ -1,7 +1,7 @@
 # Plan Fazy 4: Czaty LLM i patronat
 
-Bramka: wersja 1.0 z patronatem (kryteria na końcu). Gałąź faza-4 (z faza-3), powstaje po akceptacji planu.
-Stan: propozycja z 2026-10-25, czeka na akceptację. Decyzja 5 podjęta (SMS-y od „Burmistrz Bielan”), 6 do decyzji.
+Bramka: wersja 1.0 z patronatem (kryteria na końcu). Gałąź faza-4 (z faza-3).
+Zaakceptowany 2026-10-25 ze wszystkimi propozycjami decyzji (decyzja 5: SMS-y od „Burmistrz Bielan”, bez nazwiska).
 
 ## Co mamy na wejściu
 - Telefon (js/phone.js): aplikacje Zlecenia, Mapa, Służby, Przewodnik, SMS, Pocztówki, Aparat. SMS-y to lista

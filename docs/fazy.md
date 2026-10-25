@@ -114,7 +114,9 @@ napisy słowne na pojazdach służb bez insygniów, najpierw teren). Gałąź fa
 
 ## Faza 4: Czaty LLM i patronat
 Bramka: wersja 1.0 z patronatem (bez zgody urzędu: 1.0 z przewodnikiem, bez burmistrza i logo). Plan: docs/plan-fazy-4.md
-(do akceptacji; decyzja 5 podjęta: SMS-y od „Burmistrz Bielan”, 6 decyzji czeka). Gałąź faza-4 powstanie po akceptacji.
+(zaakceptowany 2026-10-25 ze wszystkimi propozycjami: Haiku 5.5 dla przewodnika, Sonnet 5.5 dla burmistrza,
+1000 pytań dziennie i 30 USD miesięcznie, najpierw przewodnik, pismo do urzędu wysyła autor, wersja dla urzędu bez
+potrącania pieszych, bez zapisu rozmów; SMS-y od „Burmistrz Bielan” bez nazwiska do czasu zgody). Gałąź faza-4.
 
-- [ ] 4.0 Plan Fazy 4 (do akceptacji): czat z przewodnikiem i burmistrzem przez Cloudflare Worker, limity i koszty,
+- [x] 4.0 Plan Fazy 4 (zaakceptowany 2026-10-25): czat z przewodnikiem i burmistrzem przez Cloudflare Worker, limity i koszty,
   tryb bez czatu, warunki dla burmistrza, wersja dla urzędu, patronat. Sprawdzam: akceptuję plan i odpowiadam na decyzje.
