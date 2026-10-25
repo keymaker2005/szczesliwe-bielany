@@ -214,7 +214,9 @@ function balconyParts() {
   return { slab, rails: mergeGeometries([front, left, right], false) };
 }
 
-function buildCityBlocks(scene) {
+// skip: building indices (GEO.buildings) modelled by js/landmarks.js instead: they keep their colliders and their
+// footprints on the maps, but get no walls or roof here
+function buildCityBlocks(scene, { skip = new Set() } = {}) {
   const group = new THREE.Group();
   group.name = 'BielanyBuildings';
   const facadeMat = createFacadeMaterial();
@@ -237,6 +239,12 @@ function buildCityBlocks(scene) {
     if (!(h > 0.5)) return;
     const outer = toPts(outerFlat);
     const holes = holesFlat.map(toPts);
+    if (skip.has(id)) {
+      pushColliders(outer, h, colliders);
+      for (const hole of holes) pushColliders(hole.slice().reverse(), h, colliders);
+      footprints.push({ h, pts: outer });
+      return;
+    }
     let cx = 0, cz = 0;
     for (const p of outer) { cx += p.x; cz += p.z; }
     cx /= outer.length;

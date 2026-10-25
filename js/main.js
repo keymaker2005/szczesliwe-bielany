@@ -23,6 +23,7 @@ import { createMissionMarker } from './mission-marker.js';
 import { findRoute } from './gps-route.js';
 import { Phone } from './phone.js';
 import { Courier, COMPANY } from './courier.js';
+import { Guide } from './guide.js';
 
 // js/main.js
 // Main entry point for Szczęśliwe Bielany (Warsaw, along the M1 metro line) in Three.js WebGPURenderer & TSL (three.js dev @ fae8734, pinned in index.html)
@@ -644,8 +645,12 @@ async function initApp() {
     id: 'hello', from: COMPANY,
     text: 'Dzień dobry! Mamy paczki do rozwiezienia po Bielanach. Zlecenia w telefonie (P): odbierz paczkę przy stacji metra i dowieź rowerem lub autem. Szybciej niż GPS = premia za skrót.',
   });
+  // 5e. The guide's messages at the landmarks, the mayor's (localhost only) at the start and after deliveries
+  const guide = new Guide(phone);
+  guide.start();
   missions.on('state', (m) => {
     if (m.role !== 'courier' || !m.id.startsWith('poczt-')) return;
+    if (m.state === 'delivered' || m.state === 'late') setTimeout(() => guide.delivered(courier.stats.deliveries), 5000);
     if (m.state === 'enRoute') phone.addSms({ id: `${m.id}-picked`, from: COMPANY, text: `Paczka odebrana. Adres: ${m.target.name}. Na trzy gwiazdki masz ${clock(m.par)}.` });
     if (m.state === 'delivered' || m.state === 'late') {
       phone.addSms({
@@ -657,7 +662,7 @@ async function initApp() {
     }
   });
 
-  globalThis.bielany = { missions, testDelivery, abandon: () => missions.abandon(), teleport: (x, z, heading) => teleportTo(x, z, heading), marker: missionMarker, phone, courier };
+  globalThis.bielany = { missions, testDelivery, abandon: () => missions.abandon(), teleport: (x, z, heading) => teleportTo(x, z, heading), marker: missionMarker, phone, courier, guide };
 
   // Initialize the UI and chase camera around the restored player, or the default taxi on a first visit.
   selectMode(controllerManager.activeMode);
@@ -795,6 +800,7 @@ async function initApp() {
       const ent = controllerManager.getActiveEntity();
       missionNote = missions.update(dt, { x: ent.position.x, z: ent.position.z, speed: ent.speed, mode: controllerManager.activeMode });
       if (warmedUp && !missions.active) missionMarker.hide();
+      if (warmedUp) guide.update(dt, ent.position);
       missionMarker.update(elapsed);
     }
     audioSystem.update(dt, elapsed, cameraSystem.camera, lightingSystem.activePresetId === 'midnight');

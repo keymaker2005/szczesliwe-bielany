@@ -8,6 +8,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { spawnSync } from 'node:child_process';
 
 const ROOT = fileURLToPath(new URL('../', import.meta.url));
 const OUT = path.resolve(process.argv[2] || path.join(ROOT, 'dist'));
@@ -17,6 +18,9 @@ fs.mkdirSync(OUT, { recursive: true });
 for (const item of ['index.html', 'LICENSE', 'css', 'js']) {
   fs.cpSync(path.join(ROOT, item), path.join(OUT, item), { recursive: true });
 }
+// The published site leaves the mayor's draft messages out (they wait for approval): a public js/guide-texts.js
+const pub = spawnSync(process.execPath, [path.join(ROOT, 'tools/guide-texts.mjs'), path.join(OUT, 'js/guide-texts.js'), '--public'], { encoding: 'utf8' });
+if (pub.status !== 0) throw new Error(pub.stderr || pub.stdout);
 // Cloudflare Pages headers: the modules revalidate on every load (the URLs carry no version)
 fs.writeFileSync(path.join(OUT, '_headers'), `/*
   X-Content-Type-Options: nosniff

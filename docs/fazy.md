@@ -52,5 +52,5 @@ Bramka: pierwsza grywalna pętla. Plan: docs/plan-fazy-1.5.md (zaakceptowany 202
 - [x] 1.5.4 Smartfon (P): Zlecenia, Mapa, SMS, Pocztówki. Sprawdzam: telefon otwiera się, zamyka i nie blokuje sterowania.
 - [x] 1.5.5 Rola kuriera (rower, auto, gwiazdki, bonus za skrót). Sprawdzam: 3 dostawy pod rząd, ocena ma sens.
 - [ ] 1.5.6 Landmarki ze zdjęć, każdy osobno. Sprawdzam: każdy landmark porównany ze zdjęciem.
-- [ ] 1.5.7 Przewodnik i burmistrz w SMS-ach (burmistrz publicznie po akceptacji). Sprawdzam: SMS-y przy landmarkach, poprawne teksty.
+- [x] 1.5.7 Przewodnik i burmistrz w SMS-ach (burmistrz publicznie po akceptacji). Sprawdzam: SMS-y przy landmarkach, poprawne teksty.
 - [ ] 1.5.8 Deploy i test pętli. Sprawdzam: pełna pętla na publicznym linku.
