@@ -69,7 +69,8 @@ test('preset and map teleports share arrival resets and mark the resolved landin
       getAttribute: () => key,
       addEventListener: (_event, handler) => handlers.set(key, handler)
     })),
-    closePopovers: () => {}
+    closePopovers: () => {},
+    missions: { goal: () => null }
   };
   vm.runInNewContext(main.slice(start, end), environment);
   for (const [name, point] of Object.entries(TELEPORT_LOCATIONS)) {
