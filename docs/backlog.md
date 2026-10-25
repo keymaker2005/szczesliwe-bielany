@@ -34,7 +34,6 @@ Pomysł z 2026-10-25, do decyzji i osobnego planu.
 
 ## Pomysły luźne
 (tu dopisuj nowe pomysły w trakcie pracy)
-- Faza 1.5: tabliczki z nazwami ulic w stylu warszawskim (niebiesko-białe) zamiast nowojorskich zielonych (main.js renderLocation, css/style.css .street-sign).
 - Porządki: w tsl-materials.js zostały nieużywane materiały Nowego Jorku (reklamy Times Square, korona Chryslera, schody TKTS, odbicia wody portu); do usunięcia.
 - Porządki: wewnętrzne nazwy plików i komentarzy z Nowego Jorku (nyc-map.js, NYCMapSystem, „Manhattan” w komentarzach controllers.js i helikoptera); niewidoczne dla gracza.
 - Błąd w konsoli przy starcie (lokalnie, przy powtórnym wczytaniu tej samej strony): „GPUValidationError: Binding size for [Buffer] is zero” (storage buffer w shaderze fragmentów, ok. 200 razy w trakcie rozgrzewki, potem cisza). Widoczne od co najmniej 1.5.2 na localhost:8080; na świeżym originie (localhost:8081, bielany.zbigniew.ai) brak. Podejrzenie: wyścig między szybką kompilacją z pamięci podręcznej a pierwszą klatką (ClusteredLighting lub instancje z zerową liczbą). Sprawdzić przed testem 1.8b.

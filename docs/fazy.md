@@ -94,7 +94,9 @@ napisy słowne na pojazdach służb bez insygniów, najpierw teren). Gałąź fa
 - [x] 3.4 Wspólna dyspozytornia służb (2026-10-25): js/dispatch.js (rejestr służb, tryb, oznakowanie pojazdu, syrena
   i ustępowanie aut, SMS-y dyspozytora, okno wyboru choose()), zakładka „Służby” w telefonie, ratownik przeniesiony.
   Sprawdzam: ratownik bez zmian, nowa zakładka „Służby”.
-- [ ] 3.5 Strażnik Miejski. Sprawdzam: 3 zgłoszenia (trawnik, śmieci, hałas), wybór pouczenie lub mandat zmienia ocenę.
+- [x] 3.5 Strażnik Miejski (2026-10-25, sesja równoległa, scalone): js/guard.js, js/guard-car.js; zgłoszenia trawnik,
+  śmieci, hałas, wybór pouczenie / mandat / laweta. Sprawdzam: 3 zgłoszenia, wybór zmienia ocenę.
+- [x] Tabliczki ulic w stylu warszawskim (MSI, z backlogu; sesja równoległa, scalone 2026-10-25).
 - [ ] 3.6 Strażak. Sprawdzam: pożar, zalana piwnica i kot na drzewie do ukończenia.
 - [ ] 3.7 Policjant. Sprawdzam: 2 kontrole drogowe i 1 pościg bez taranowania.
 - [ ] 3.8 Deploy i bramka. Sprawdzam: pełna pętla wszystkich ról na bielany.zbigniew.ai, 60 fps.
