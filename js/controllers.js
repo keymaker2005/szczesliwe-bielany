@@ -1036,9 +1036,13 @@ class ThirdPersonControllerManager {
       if (e.type === 'car' || e.type === 'cyclist') {
         const onDeck = e.position.y - groundY(e.position.x, e.position.z) > 0.3; // up on a bridge
         const pose = (onDeck ? deckPose : groundPose)(e.position.x, e.position.z, Math.sin(e.heading), Math.cos(e.heading), e.type === 'car' ? 1.4 : 0.55, e.type === 'car' ? 0.8 : 0.05, this._pose || (this._pose = {}));
+        // eased: the ground is flat in 8 m triangles, a body lying on each in turn would tip at every seam
+        const ease = 1 - Math.exp(-dt * 9);
+        e._pitch = (e._pitch ?? pose.pitch) + (pose.pitch - (e._pitch ?? pose.pitch)) * ease;
+        e._roll = (e._roll ?? pose.roll) + (pose.roll - (e._roll ?? pose.roll)) * ease;
         e.mesh.rotation.order = 'YXZ';
-        e.mesh.rotation.x = pose.pitch;
-        e.mesh.rotation.z = e.type === 'car' ? pose.roll : e.mesh.rotation.z;
+        e.mesh.rotation.x = e._pitch;
+        e.mesh.rotation.z = e.type === 'car' ? e._roll : e.mesh.rotation.z;
       }
     }
 

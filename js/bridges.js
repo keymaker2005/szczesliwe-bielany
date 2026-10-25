@@ -3,7 +3,8 @@
 // the expressway and the valley roads (OpenStreetMap bridge=yes, js/bielany-geodata.js GEO.bridges). The pieces of
 // one bridge are joined by their shared ends into a deck; the deck starts and ends on the ground (js/terrain.js) where
 // it meets the streets, and in between it lies on the line between those ends, raised by a gentle hump (6 % up from
-// each end, at most 6 m) so it clears the river, the roads and the paths under it.
+// each end, at most 6 m); over another road or the water it stands 6 m high where a climb of 12 % from its ends allows
+// (an end never leaves its street).
 // deckY answers where a deck is; the traffic on a bridge edge, the player arriving along the road and the people
 // crossing the river use it, everything under the bridge keeps to the ground.
 
@@ -18,10 +19,13 @@ const STEP = 4; // m: decks are cut into pieces this long (heights, geometry)
 const RISE = 0.06; // the hump's slope from each end
 const HUMP = 6; // m, the hump's height at most
 const WALK = 3.2; // m of sidewalk on each side of the roadway
-const GIRDER = 1.4; // m from the deck surface to its underside
+const GIRDER = 1.0; // m from the deck surface to its underside
 const RAIL = 1.1; // m, the railing
 const PIER_EVERY = 40; // m between piers
 const CELL = 32; // m, the lookup grid
+const CLEAR = 6; // m from a road (or the water) under a deck to the deck's surface (5 m under its girders)
+const RAMP = 0.12; // the steepest a deck climbs to clear what is under it (the plateau's embankments are flattened, so
+// the decks over Marymoncka by the Skłodowska-Curie bridge rise from street level)
 
 let decks = null; // [{ w, kind, pts: [{ x, z, y }] }] (kind 0: a road, 1: a tram track)
 let grid = null;
@@ -50,6 +54,38 @@ function overWater(x, z) {
     const b = w.box;
     if (x < b[0] || x > b[2] || z < b[1] || z > b[3]) continue;
     if (inRing(w.outer, x, z) && !w.holes.some((h) => inRing(h, x, z))) return true;
+  }
+  return false;
+}
+
+// Does a road that is not on a bridge pass under (x, z) across a deck running (dx, dz)? (its roadway within 2 m, at
+// more than 30° to the deck: a street alongside the deck's end is the one it lands on)
+let under = null;
+function roadUnder(x, z, dx, dz) {
+  if (!under) {
+    under = new Map();
+    const RG = GEO.roadGraph;
+    for (const l of RG?.links || []) {
+      if (l[10]) continue; // itself on a bridge
+      const pts = [RG.nodes[l[0] * 2], RG.nodes[l[0] * 2 + 1], ...l[6], RG.nodes[l[1] * 2], RG.nodes[l[1] * 2 + 1]];
+      for (let k = 2; k < pts.length; k += 2) {
+        const seg = [pts[k - 2], pts[k - 1], pts[k], pts[k + 1], l[3] / 2 + 2];
+        for (let gx = Math.floor((Math.min(seg[0], seg[2]) - 12) / CELL); gx <= Math.floor((Math.max(seg[0], seg[2]) + 12) / CELL); gx++) {
+          for (let gz = Math.floor((Math.min(seg[1], seg[3]) - 12) / CELL); gz <= Math.floor((Math.max(seg[1], seg[3]) + 12) / CELL); gz++) {
+            const key = gx * 100000 + gz;
+            if (!under.has(key)) under.set(key, []);
+            under.get(key).push(seg);
+          }
+        }
+      }
+    }
+  }
+  const dl = Math.hypot(dx, dz) || 1;
+  for (const [ax, az, bx, bz, r] of under.get(Math.floor(x / CELL) * 100000 + Math.floor(z / CELL)) || []) {
+    const sx = bx - ax, sz = bz - az, l2 = sx * sx + sz * sz || 1;
+    const t = Math.max(0, Math.min(1, ((x - ax) * sx + (z - az) * sz) / l2));
+    if (Math.hypot(x - ax - sx * t, z - az - sz * t) >= r) continue;
+    if (Math.abs(sx * dx + sz * dz) / (Math.sqrt(l2) * dl) < 0.87) return true;
   }
   return false;
 }
@@ -125,7 +161,35 @@ function build() {
         sw += w;
         sy += w * endY[i];
       });
+      nodes.get(k).base = sy / sw; // on the line between the ends
       nodes.get(k).y = sy / sw + Math.min(near * RISE, HUMP);
+    }
+    // clearance over the roads and the water below, then no steeper than RAMP towards it (from every such point, along
+    // the deck)
+    // (not within 15 m of the deck's ends: there the road under it is the street it lands on)
+    const need = new Map();
+    for (const k of comp) {
+      const n = nodes.get(k);
+      const fromEnd = Math.min(...dists.map((d) => d.get(k) ?? Infinity));
+      const o = nodes.get(adj.get(k)[0]?.[0]) || n;
+      // never above what a RAMP climb from the nearest end allows: the ends stay on their streets
+      if (fromEnd > 15 && (overWater(n.x, n.z) || roadUnder(n.x, n.z, o.x - n.x, o.z - n.z))) {
+        need.set(k, Math.min(groundY(n.x, n.z) + CLEAR, n.base + fromEnd * RAMP));
+      }
+    }
+    if (need.size) {
+      const best = new Map([...need]);
+      const queue = [...need].map(([k, y]) => [y, k]);
+      while (queue.length) {
+        queue.sort((p, q) => p[0] - q[0]);
+        const [yk, k] = queue.pop();
+        if (yk < (best.get(k) ?? -Infinity)) continue;
+        for (const [n, w] of adj.get(k)) {
+          const yn = yk - w * RAMP;
+          if (yn > (best.get(n) ?? -Infinity)) { best.set(n, yn); queue.push([yn, n]); }
+        }
+      }
+      for (const [k, y] of best) nodes.get(k).y = Math.max(nodes.get(k).y, y);
     }
   }
   decks = pieces.map((pc) => ({ w: pc.w, kind: pc.kind, pts: pc.keys.map((k, i) => ({ x: pc.pts[i].x, z: pc.pts[i].z, y: nodes.get(k).y })) }));
@@ -165,14 +229,16 @@ function deckY(x, z, kind = 0) {
 }
 
 /**
- * The surface under a body at (x, z) that was at height fromY: the deck when it is up there already (arrived along the
- * bridge from its end, where the deck meets the ground) or the ground is water, else the ground
+ * The surface under a body at (x, z) that was at height fromY: the deck when it is up there already (within 0.6 m:
+ * arrived along the bridge from its end, where the deck meets the ground) or the ground is water, else the ground
  */
 function surfaceY(x, z, fromY = -Infinity) {
   const g = groundY(x, z);
   const d = deckY(x, z);
   if (d === null || d - g < 0.05) return g;
-  return fromY > d - 2.5 || overWater(x, z) ? d : g;
+  // up there already: within 0.6 m of the deck (a deck rises gently from its ends, so a body arriving along it keeps
+  // to it; one passing under even a low viaduct stays on the ground)
+  return fromY > d - 0.6 || overWater(x, z) ? d : g;
 }
 
 /** Deck pose under a vehicle on a bridge (as terrain.js groundPose), of a road deck or a tram deck (kind 1) */

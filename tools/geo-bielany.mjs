@@ -21,6 +21,9 @@ const q = (v) => Math.round(v * 10) / 10;
 // =====================================================================================================================
 // OSM highway class -> [short class code, default travel lanes (two-way), default curb-to-curb width per lane (m)]
 const CLASSES = {
+  // the S8 expressway (Trasa Armii Krajowej) is a motorway in OpenStreetMap, and its ramps are what join Wisłostrada
+  // to the city: without them Wybrzeże Gdyńskie was an island and lost its traffic (step 3.3)
+  motorway: ['trunk', 4, 3.5], motorway_link: ['trunk', 1, 3.5],
   trunk: ['trunk', 4, 3.5], trunk_link: ['trunk', 1, 3.5],
   primary: ['primary', 4, 3.5], primary_link: ['primary', 1, 3.5],
   secondary: ['secondary', 2, 3.5], secondary_link: ['secondary', 1, 3.5],

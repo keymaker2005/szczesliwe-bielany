@@ -101,6 +101,78 @@ export function gameField(h, nx, nz) {
   return y;
 }
 
+// Main roads in the valley drive smooth: the raw terrain under Wybrzeże Gdyńskie and the other main roads keeps its
+// ditches, kerbs and embankment edges, so the asphalt bumped like a country track (step 3.3, the player's remark). Under
+// every trunk, primary, secondary and tertiary road (GEO.roads, off its bridges) the ground is replaced by a much
+// smoother one (a Gaussian of sigma 12 m over the whole field: one surface, so neighbouring carriageways and ramps
+// meet without steps), blending into the untouched ground 6 m beyond the curbs. y: the game field (int16 cm, nx x nz
+// cells of `cell` m from x0, z0), changed in place.
+export function smoothRoads(y, { x0, z0, cell, nx, nz }, roads, bridges = []) {
+  const MAIN = new Set(['trunk', 'primary', 'secondary', 'tertiary']);
+  const STEP = 4, SIGMA = 12, BLEND = 6;
+  const onBridge = (x, z) => bridges.some(([w, p]) => {
+    for (let k = 2; k < p.length; k += 2) {
+      const ax = p[k - 2], az = p[k - 1], bx = p[k], bz = p[k + 1];
+      const dx = bx - ax, dz = bz - az, l2 = dx * dx + dz * dz || 1;
+      const t = Math.max(0, Math.min(1, ((x - ax) * dx + (z - az) * dz) / l2));
+      if (Math.hypot(x - ax - dx * t, z - az - dz * t) < w / 2 + 2) return true;
+    }
+    return false;
+  });
+  // where: the roadways and 6 m round them, softly
+  const mask = new Float32Array(nx * nz);
+  for (const [, w, , , , flatPts, cls] of roads) {
+    if (!MAIN.has(cls)) continue;
+    const R = w / 2 + BLEND;
+    for (let k = 0; k + 3 < flatPts.length; k += 2) {
+      const ax = flatPts[k], az = flatPts[k + 1], bx = flatPts[k + 2], bz = flatPts[k + 3];
+      const n = Math.max(1, Math.ceil(Math.hypot(bx - ax, bz - az) / STEP));
+      for (let s = 0; s <= n; s++) {
+        const px = ax + ((bx - ax) * s) / n, pz = az + ((bz - az) * s) / n;
+        const i0 = Math.max(0, Math.floor((px - R - x0) / cell)), i1 = Math.min(nx - 1, Math.ceil((px + R - x0) / cell));
+        const j0 = Math.max(0, Math.floor((pz - R - z0) / cell)), j1 = Math.min(nz - 1, Math.ceil((pz + R - z0) / cell));
+        if (i0 > i1 || j0 > j1) continue;
+        let any = false;
+        for (let j = j0; j <= j1 && !any; j++) for (let i = i0; i <= i1; i++) if (y[j * nx + i]) { any = true; break; }
+        if (!any || onBridge(px, pz)) continue; // on the plateau (flat already) or a bridge's deck
+        for (let j = j0; j <= j1; j++) {
+          for (let i = i0; i <= i1; i++) {
+            const wgt = Math.min(1, Math.max(0, (R - Math.hypot(x0 + i * cell - px, z0 + j * cell - pz)) / BLEND));
+            if (wgt > mask[j * nx + i]) mask[j * nx + i] = wgt;
+          }
+        }
+      }
+    }
+  }
+  // the smooth surface: a separable Gaussian of the field
+  const r = Math.ceil((3 * SIGMA) / cell), w = [];
+  let sum = 0;
+  for (let k = -r; k <= r; k++) { const v = Math.exp(-((k * cell) ** 2) / (2 * SIGMA * SIGMA)); w.push(v); sum += v; }
+  const pass = (src, dx, dy) => {
+    const out = new Float32Array(src.length);
+    for (let j = 0; j < nz; j++) {
+      for (let i = 0; i < nx; i++) {
+        let a = 0;
+        for (let k = -r; k <= r; k++) {
+          const ii = Math.min(nx - 1, Math.max(0, i + k * dx)), jj = Math.min(nz - 1, Math.max(0, j + k * dy));
+          a += src[jj * nx + ii] * w[k + r];
+        }
+        out[j * nx + i] = a / sum;
+      }
+    }
+    return out;
+  };
+  const smooth = pass(pass(y, 1, 0), 0, 1);
+  let changed = 0;
+  for (let k = 0; k < y.length; k++) {
+    if (!mask[k]) continue;
+    const v = Math.min(0, Math.round(y[k] + mask[k] * (smooth[k] - y[k])));
+    if (v !== y[k]) changed++;
+    y[k] = v;
+  }
+  return changed;
+}
+
 // js/bielany-terrain.bin: 'BTR1', float32 x0, z0, cell, uint32 nx, nz; then per row a uint16 count of spans, each
 // span uint16 first column, uint16 length and that many int16 heights in cm (the cells outside every span are 0)
 export function encodeGameField(y, { x0, z0, cell, nx, nz }) {
@@ -288,6 +360,8 @@ async function main() {
   fs.writeFileSync(path.join(OUT, 'bielany_nmt_4m.bin'), bin);
   fs.writeFileSync(path.join(OUT, 'bielany_nmt_4m.json'), JSON.stringify(meta, null, 2) + '\n');
   const field = gameField(h, nx, nz);
+  const { GEO } = await import(pathToFileURL(path.join(ROOT, 'js/bielany-geodata.js')).href);
+  const smoothed = smoothRoads(field, { x0, z0, cell: CELL, nx, nz }, GEO.roads, GEO.bridges || []);
   const game = encodeGameField(field, { x0, z0, cell: CELL, nx, nz });
   fs.writeFileSync(path.join(ROOT, 'js/bielany-terrain.bin'), game);
   let low = 0;
@@ -341,7 +415,7 @@ async function main() {
 
   console.log(`grid ${nx} x ${nz} (${CELL} m), tiles ${tiles.size}, heights ${min.toFixed(1)}-${max.toFixed(1)} m (median ${median.toFixed(1)}), `
     + `station ${meta.stats.station} m, holes filled ${missing}, cliffs drawn ${cliffCount}; game field: valley `
-    + `${((low * CELL * CELL) / 1e6).toFixed(2)} km², ${(game.length / 1e6).toFixed(2)} MB`);
+    + `${((low * CELL * CELL) / 1e6).toFixed(2)} km², ${(game.length / 1e6).toFixed(2)} MB, ${smoothed} cells smoothed under main roads`);
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) await main();

@@ -131,6 +131,52 @@ function buildRoadNetwork(sidewalks, obstacles) {
       pts.push(pos[b]);
       links.push({ a, b, name: RG.names[ni], w, lanes, dir, cls, ring: !!ring, bridge: !!bridge, pts, len: lengthOf(pts) });
     }
+    // Turning round at the edge of the map: a street cut by the map's edge leads nowhere, and the traffic keeps only
+    // the streets it can drive round and round (the largest strongly connected part, section 5), so Wisłostrada, the
+    // Skłodowska-Curie bridge and every one-way road leaving the map lost all their cars. Each road end on the edge is
+    // joined to the nearest one there going the other way (the other carriageway, a neighbouring street) by a short
+    // portal link: cars come back the other way, out of sight at the map's edge. Portals are neither painted nor
+    // checked against the median they cross.
+    const B = GEO.frame.bounds;
+    const degree = new Map();
+    for (const l of links) for (const n of [l.a, l.b]) degree.set(n, (degree.get(n) || 0) + 1);
+    const ends = [];
+    for (const l of links) {
+      for (const n of [l.a, l.b]) {
+        const p = pos[n];
+        if (degree.get(n) !== 1 || Math.min(p.x - B.minX, B.maxX - p.x, p.z - B.minZ, B.maxZ - p.z) > 3) continue;
+        const arrives = l.dir === 0 || (l.dir > 0 ? l.b === n : l.a === n);
+        const departs = l.dir === 0 || (l.dir > 0 ? l.a === n : l.b === n);
+        ends.push({ n, arrives, departs, l, fed: false, used: false });
+      }
+    }
+    const portal = (from, to, dir) => {
+      const pts = [pos[from.n], pos[to.n]];
+      links.push({ a: from.n, b: to.n, name: '', w: Math.min(from.l.w, to.l.w), lanes: Math.min(from.l.lanes, to.l.lanes), dir, cls: from.l.cls,
+        ring: false, bridge: false, portal: true, pts, len: lengthOf(pts) });
+      from.used = to.fed = true;
+    };
+    const nearest = (e, ok) => {
+      let best = null, bd = 150;
+      for (const o of ends) {
+        if (o === e || !ok(o)) continue;
+        const d = Math.hypot(pos[o.n].x - pos[e.n].x, pos[o.n].z - pos[e.n].z);
+        if (d < bd) { bd = d; best = o; }
+      }
+      return best;
+    };
+    for (const e of ends.filter((x) => x.arrives && !x.departs)) {
+      const o = nearest(e, (x) => x.departs && !x.fed);
+      if (o) portal(e, o, 1);
+    }
+    for (const e of ends.filter((x) => x.departs && !x.arrives && !x.fed)) {
+      const o = nearest(e, (x) => x.arrives && !x.used);
+      if (o) portal(o, e, 1);
+    }
+    for (const e of ends.filter((x) => x.arrives && x.departs && !x.used && !x.fed)) {
+      const o = nearest(e, (x) => x.arrives && x.departs && !x.used && !x.fed);
+      if (o) portal(e, o, 0);
+    }
     // Junctions a few metres apart (divided roads, offset corners) are one: collapse links under 10 m (a longer reach
     // would move the merged junction off the streets, onto the blocks), but not round a roundabout (it would become one
     // junction, its chords across the island)
@@ -201,7 +247,7 @@ function buildRoadNetwork(sidewalks, obstacles) {
       }
       stations.push(B);
       const lanes = lanesOf(l);
-      for (let k = 0; k + 1 < stations.length; k++) runs.push({ from: stations[k], to: stations[k + 1], ...lanes, bridge: l.bridge });
+      for (let k = 0; k + 1 < stations.length; k++) runs.push({ from: stations[k], to: stations[k + 1], ...lanes, bridge: l.bridge, portal: !!l.portal });
     }
     console.info(`[roads] streets: ${links.length} links, ${runs.length} straight runs`);
     return runs;
@@ -218,16 +264,18 @@ function buildRoadNetwork(sidewalks, obstacles) {
     }
     return true;
   };
-  function addEdgeGeneral(from, to, axis, lanes, half, divided, bridge = false) {
+  function addEdgeGeneral(from, to, axis, lanes, half, divided, bridge = false, portal = false) {
     const x0 = from.x;
     const z0 = from.z;
     const span = Math.hypot(to.x - x0, to.z - z0);
     if (span < 8) return;
     const dx = (to.x - x0) / span;
     const dz = (to.z - z0) / span;
-    const open = lanes.filter((o) => laneOpen(x0, z0, dx, dz, span, o));
+    // a portal crosses the median at the map's edge, a bridge runs on its deck over whatever lies below (its straight
+    // chord of a curved viaduct strays over the curb islands under it): neither is checked against the ground
+    const open = portal || bridge ? lanes : lanes.filter((o) => laneOpen(x0, z0, dx, dz, span, o));
     if (!open.length) return;
-    edges.push({ from, to, axis, x0, z0, dx, dz, rx: -dz, rz: dx, span, half, lanes: open.sort((p, q) => p - q), moves: [], general: true, cand: lanes, divided: !!divided, bridge });
+    edges.push({ from, to, axis, x0, z0, dx, dz, rx: -dz, rz: dx, span, half, lanes: open.sort((p, q) => p - q), moves: [], general: true, cand: lanes, divided: !!divided, bridge, portal });
   }
   // A divided road drawn as two one-way roadways between the same two junctions (al. Reymonta, Wólczyńska) runs both ways
   // along one centreline here: each way keeps to the right of it, as on a two-way street, and the road is as wide as
@@ -256,8 +304,8 @@ function buildRoadNetwork(sidewalks, obstacles) {
     if (r.half >= 7.25) r.axis = o.axis = 'ave'; // as wide as a major road (see lanesOf)
   }
   for (const r of genRuns) {
-    if (r.fwd.length) addEdgeGeneral(r.from, r.to, r.axis, r.fwd, r.half, r.divided, !!r.bridge);
-    if (r.back.length) addEdgeGeneral(r.to, r.from, r.axis, r.back, r.half, r.divided, !!r.bridge);
+    if (r.fwd.length) addEdgeGeneral(r.from, r.to, r.axis, r.fwd, r.half, r.divided, !!r.bridge, !!r.portal);
+    if (r.back.length) addEdgeGeneral(r.to, r.from, r.axis, r.back, r.half, r.divided, !!r.bridge, !!r.portal);
   }
   // Two edges from one node to the same next one (a service road whose ends were drawn onto its main road's junctions)
   // would drive through each other: keep the one with the most lanes
@@ -321,7 +369,7 @@ function buildRoadNetwork(sidewalks, obstacles) {
       }
     }
     for (const [e, other] of partner) {
-      e.lanes = e.cand.map((o) => o - e.cand[0] + 1.8).filter((o) => laneOpen(e.x0, e.z0, e.dx, e.dz, e.span, o));
+      e.lanes = e.cand.map((o) => o - e.cand[0] + 1.8).filter((o) => e.bridge || e.portal || laneOpen(e.x0, e.z0, e.dx, e.dz, e.span, o));
       e.half += other;
       if (e.half >= 7.25) e.axis = 'ave'; // as wide as a major road (see lanesOf)
       e.divided = true;
@@ -493,7 +541,7 @@ function buildRoadNetwork(sidewalks, obstacles) {
   // Paint describes the physical streets, including dead ends and roads AI traffic cannot circulate through.
   // Snapshot their geometry before routing moves stop lines, drops edges and renumbers the surviving junctions.
   const paintNodes = new Map(nodes.map((n, id) => [n, { id, x: n.x, z: n.z, shape: n.shape }]));
-  const paintEdges = edges.map(({ from, to, axis, x0, z0, sx, sz, dx, dz, rx, rz, span, len, half, lanes, bridge }) => ({
+  const paintEdges = edges.filter((e) => !e.portal).map(({ from, to, axis, x0, z0, sx, sz, dx, dz, rx, rz, span, len, half, lanes, bridge }) => ({
     from: paintNodes.get(from), to: paintNodes.get(to), axis, x0, z0, sx, sz, dx, dz, rx, rz, span, len, half, lanes, bridge
   }));
 
@@ -535,7 +583,7 @@ function buildRoadNetwork(sidewalks, obstacles) {
   // Let lane i of e make move m into lane j of its edge (clamped to the lanes there), if the way is clear
   function link(e, m, i, j) {
     j = Math.max(0, Math.min(m.to.lanes.length - 1, j));
-    if (m.out[i] < 0 && inOrder(e, m, i, j) && pathClear(e, i, m.to, j)) m.out[i] = j;
+    if (m.out[i] < 0 && inOrder(e, m, i, j) && (e.portal || m.to.portal || e.bridge || m.to.bridge || pathClear(e, i, m.to, j))) m.out[i] = j;
     return m.out[i] >= 0;
   }
   function serveEveryLane(e) {

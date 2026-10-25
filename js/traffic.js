@@ -438,7 +438,7 @@ function createTrafficSystem(scene, sidewalks, obstacles) {
   const phaseOf = (e) => (e.axisIndex === 0 ? avePhase : stPhase);
   let focusX = 0;
   let focusZ = 140;
-  const player = { active: false, entity: null, x: 0, z: 0, vx: 0, vz: 0, halfW: 0.86, halfL: 2.18, push: 0.5 };
+  const player = { active: false, entity: null, x: 0, y: 0, z: 0, vx: 0, vz: 0, halfW: 0.86, halfL: 2.18, push: 0.5 };
 
   // Lane lists hold pooled { v, s } entries sorted by position s along the lane, rebuilt every frame
   const pool = [];
@@ -596,10 +596,15 @@ function createTrafficSystem(scene, sidewalks, obstacles) {
     }
   }
 
+  // The height of the surface a vehicle drives on (its bridge's deck, or the ground), and whether the player is on the
+  // same level: a car under a viaduct and the player on it (or the other way round) neither meet nor wait for each other
+  const levelOf = (v) => (v._onDeck ? deckY(v.x, v.z) ?? groundY(v.x, v.z) : groundY(v.x, v.z));
+  const sameLevel = (y) => Math.abs(player.y - y) < 3;
+
   // Where the player is relative to v: metres ahead, metres to the right, and how fast it moves v's way
   function relateToPlayer(v) {
     v.pAhead = Infinity;
-    if (!player.active) return;
+    if (!player.active || !sameLevel(levelOf(v))) return;
     const dx = player.x - v.x;
     const dz = player.z - v.z;
     if (Math.abs(dx) > LOOKAHEAD + 10 || Math.abs(dz) > LOOKAHEAD + 10) return;
@@ -1323,6 +1328,7 @@ function createTrafficSystem(scene, sidewalks, obstacles) {
     const relX = pe.position.x - v.x;
     const relZ = pe.position.z - v.z;
     if (Math.abs(relX) > halfL + 3 || Math.abs(relZ) > halfL + 3) return;
+    if (!sameLevel(levelOf(v))) return;
     const hit = overlapWithPlayer(relX, relZ, rotY, halfW, halfL, pe.heading || 0, player.halfW, player.halfL);
     if (!hit) return;
     const { nx, nz, pen, localX, localZ, pSin, pCos } = hit;
@@ -1773,6 +1779,11 @@ function createTrafficSystem(scene, sidewalks, obstacles) {
     // edge along its deck (js/bridges.js)
     c._onDeck = !!(c.edge?.bridge || c.move?.to?.bridge);
     (c._onDeck ? deckPose : groundPose)(c.x, c.z, sinY, cosY, spec.wheelZ, spec.wheelX, ground);
+    // eased frame to frame: the ground is flat in 8 m triangles, a car would tip at every seam
+    c._sp = c._sp === undefined ? ground.pitch : c._sp + (ground.pitch - c._sp) * 0.2;
+    c._sr = c._sr === undefined ? ground.roll : c._sr + (ground.roll - c._sr) * 0.2;
+    ground.pitch = c._sp;
+    ground.roll = c._sr;
     c._groundY = ground.y;
     c._slopePitch = ground.pitch;
     c._slopeRoll = ground.roll;
@@ -1997,6 +2008,7 @@ function createTrafficSystem(scene, sidewalks, obstacles) {
     const pe = player.entity;
     const dx = p.x - player.x, dz = p.z - player.z;
     if (Math.abs(dx) > 4 || Math.abs(dz) > 4) return false;
+    if (!sameLevel(surfaceY(p.x, p.z))) return false;
     const h = pe.heading || 0, fx = Math.sin(h), fz = Math.cos(h);
     const ahead = dx * fx + dz * fz, right = dz * fx - dx * fz;
     const ox = Math.abs(right) - player.halfW - PED_R, oz = Math.abs(ahead) - player.halfL - PED_R;
@@ -2095,8 +2107,11 @@ function createTrafficSystem(scene, sidewalks, obstacles) {
     refreshNear();
     updateView(camera);
 
-    player.active = Boolean(playerEntity && activeMode !== 'helicopter' && playerEntity.position.y < 2.6);
+    // on the ground or a bridge's deck (not the helicopter, not in mid-air over a curb): the traffic minds the player
+    player.active = Boolean(playerEntity && activeMode !== 'helicopter'
+      && playerEntity.position.y - surfaceY(playerEntity.position.x, playerEntity.position.z, playerEntity.position.y) < 2.6);
     if (playerEntity) {
+      player.y = playerEntity.position.y;
       const heading = playerEntity.heading || 0;
       const speed = playerEntity.speed || 0;
       player.entity = playerEntity;
