@@ -269,6 +269,45 @@ body::after {
   left: max(var(--edge), env(safe-area-inset-left));
 }
 
+.hud-top-center {
+  top: calc(var(--edge) + 64px); /* under the toolbar, which reaches the middle on narrower screens */
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Mission panel: the goal, the clock against par, a note (wrong vehicle); the result card after the end */
+.mission-hud {
+  min-width: 260px;
+  max-width: min(420px, calc(100vw - 2 * var(--edge)));
+  padding: 10px 14px;
+  border-left: 3px solid var(--taxi);
+}
+.mission-hud.hidden,
+.mission-result.hidden { display: none; }
+.mission-title {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  font-weight: 700;
+  font-size: 14px;
+}
+.mission-clock { font-variant-numeric: tabular-nums; color: var(--taxi); }
+.mission-clock.is-late { color: var(--bad); }
+.mission-goal { margin-top: 3px; font-size: 13px; color: var(--text-2); }
+.mission-note { margin-top: 3px; font-size: 12px; color: var(--warn); }
+.mission-note:empty { display: none; }
+.mission-result {
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: center;
+}
+.mission-result .stars { color: var(--taxi); letter-spacing: 2px; font-size: 18px; }
+
 .hud-top-right {
   top: var(--edge);
   right: var(--edge);

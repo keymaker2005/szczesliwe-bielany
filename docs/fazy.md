@@ -47,7 +47,7 @@ Bramka: pierwsza grywalna pętla. Plan: docs/plan-fazy-1.5.md (zaakceptowany 202
 
 - [x] 1.5.0 Plan Fazy 1.5 (pliki, kolejność, ryzyka). Sprawdzam: akceptuję plan.
 - [x] 1.5.1 Adresy z OSM jako punkty dostawy przy chodniku, w wyszukiwarce mapy. Sprawdzam: mapa znajduje „Żeromskiego 29” i pokazuje pinezkę.
-- [ ] 1.5.2 Trasa GPS po grafie dróg. Sprawdzam: trasa od stacji do adresu idzie ulicami i przelicza się po zjechaniu.
+- [x] 1.5.2 Trasa GPS po grafie dróg. Sprawdzam: trasa od stacji do adresu idzie ulicami i przelicza się po zjechaniu.
 - [ ] 1.5.3 Silnik zleceń js/missions.js, znacznik celu w świecie i na mapie. Sprawdzam: testowe zlecenie da się ukończyć.
 - [ ] 1.5.4 Smartfon (P): Zlecenia, Mapa, SMS, Pocztówki. Sprawdzam: telefon otwiera się, zamyka i nie blokuje sterowania.
 - [ ] 1.5.5 Rola kuriera (rower, auto, gwiazdki, bonus za skrót). Sprawdzam: 3 dostawy pod rząd, ocena ma sens.

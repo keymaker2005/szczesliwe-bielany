@@ -17,6 +17,10 @@ import { LightingSystem } from './lighting.js';
 import { NYCMapSystem } from './nyc-map.js';
 import { setupSceneCulling, updateSceneCulling } from './scene-culling.js';
 import { CityAudioSystem } from './audio-system.js';
+import { GEO } from './bielany-geodata.js';
+import { MissionEngine, ARRIVE_RADIUS } from './missions.js';
+import { createMissionMarker } from './mission-marker.js';
+import { findRoute } from './gps-route.js';
 
 // js/main.js
 // Main entry point for Szczęśliwe Bielany (Warsaw, along the M1 metro line) in Three.js WebGPURenderer & TSL (three.js dev @ fae8734, pinned in index.html)
@@ -79,6 +83,10 @@ async function initApp() {
   const allColliders = [...cityBlocks.colliders, ...(cityGrid.colliders || [])];
 
   const streetDetails = buildStreetDetails(scene);
+  // Mission goal pillar: in the scene (far below the ground) from the start, so the warm-up frame compiles it
+  const missionMarker = createMissionMarker(ARRIVE_RADIUS);
+  missionMarker.group.position.set(0, -500, 0);
+  scene.add(missionMarker.group);
   markInit('streetDetails');
   // Oriented colliders (buildings along the streets) reach past their footprints with their world bounds: they stay
   // inside the property line anyway, so the road network (lanes & sidewalks) doesn't need them.
@@ -435,7 +443,9 @@ async function initApp() {
     gamepadControls.reset();
     cameraSystem.resetForTeleport();
     selectCamera('chase', true);
-    mapSystem.waypoint = {
+    // an active mission keeps its goal as the waypoint
+    const goal = missions.goal();
+    mapSystem.waypoint = goal ? { x: goal.x, z: goal.z, name: goal.name } : {
       x: destination.x,
       z: destination.z,
       name: getLocationLabel(destination.x, destination.z)
@@ -543,6 +553,81 @@ async function initApp() {
       mapSystem.renderFullMap();
     }
   });
+
+  // 5c. Missions (js/missions.js): the goal as the GPS waypoint and the pillar of light, a panel with the clock, a card
+  //     with the stars at the end. bielany.testDelivery() in the console offers & accepts a delivery near the player.
+  const missions = new MissionEngine();
+  const elMission = document.getElementById('mission-hud');
+  const elMissionTitle = document.getElementById('mission-title');
+  const elMissionClock = document.getElementById('mission-clock');
+  const elMissionGoal = document.getElementById('mission-goal');
+  const elMissionNote = document.getElementById('mission-note');
+  const elMissionResult = document.getElementById('mission-result');
+  const MODE_NAMES = { person: 'pieszo', cyclist: 'rowerem', car: 'autem', helicopter: 'helikopterem' };
+  const clock = (s) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
+  let missionNote = null;
+  let resultTimer = 0;
+  missions.on('state', (m) => {
+    const goal = missions.goal();
+    if (goal) {
+      missionMarker.show(goal.x, goal.z);
+      mapSystem.waypoint = { x: goal.x, z: goal.z, name: goal.name };
+    } else {
+      missionMarker.hide();
+    }
+    if (elMission) elMission.classList.toggle('hidden', !missions.active);
+    if (['delivered', 'late', 'abandoned'].includes(m.state) && elMissionResult) {
+      const stars = '★'.repeat(m.stars) + '☆'.repeat(3 - m.stars);
+      elMissionResult.innerHTML = m.state === 'abandoned'
+        ? `Zlecenie przerwane: ${m.title}`
+        : `${m.state === 'late' ? 'Spóźnione' : 'Dostarczone'} w ${clock(m.time)} · <span class="stars">${stars}</span> · ${m.paid} zł`;
+      elMissionResult.classList.remove('hidden');
+      clearTimeout(resultTimer);
+      resultTimer = setTimeout(() => elMissionResult.classList.add('hidden'), 6000);
+    }
+  });
+  function renderMission() {
+    const m = missions.active;
+    if (!m || !elMission) return;
+    const goal = missions.goal();
+    const route = mapSystem.route;
+    const dist = route ? route.length : Math.hypot(goal.x - controllerManager.getActiveEntity().position.x, goal.z - controllerManager.getActiveEntity().position.z);
+    elMissionTitle.textContent = m.title;
+    elMissionClock.textContent = m.state === 'enRoute' ? `${clock(m.time)} / ${clock(m.par)}` : 'odbiór';
+    elMissionClock.classList.toggle('is-late', m.time > m.limit);
+    elMissionGoal.textContent = `${m.state === 'accepted' ? 'Odbierz' : 'Dostarcz'}: ${goal.name} · ${dist < 1000 ? `${Math.round(dist / 10) * 10} m` : `${(dist / 1000).toFixed(1)} km`}`;
+    elMissionNote.textContent = missionNote === 'wrong-vehicle'
+      ? `Tu się nie da ${MODE_NAMES[controllerManager.activeMode]}: ${m.vehicles.map((v) => MODE_NAMES[v]).join(' lub ')}`
+      : m.state === 'enRoute' || m.state === 'accepted' ? 'Zatrzymaj się w żółtym kręgu' : '';
+  }
+  // A delivery to a random address minDist-maxDist m (along the streets) from the player, picked up where it stands;
+  // par time from the route at a steady pace of the current mode
+  const PACE = { person: 1.6, cyclist: 5.5, car: 8, helicopter: 8 }; // m/s, junctions and lights included
+  let deliveryCount = 0;
+  function testDelivery(minDist = 300, maxDist = 900) {
+    const p = controllerManager.getActiveEntity().position;
+    const { streets, list } = GEO.addresses;
+    const near = list.filter((a) => {
+      const d = Math.hypot(a[4] - p.x, a[5] - p.z);
+      return d >= minDist * 0.7 && d <= maxDist;
+    });
+    for (let tries = 0; tries < 20 && near.length; tries++) {
+      const a = near[Math.floor(Math.random() * near.length)];
+      const r = findRoute(p.x, p.z, a[4], a[5], { oneWay: controllerManager.activeMode === 'car' });
+      if (!r || r.length < minDist || r.length > maxDist * 1.4) continue;
+      const pace = PACE[controllerManager.activeMode] || PACE.cyclist;
+      const id = `test-${++deliveryCount}`;
+      missions.offer({
+        id, role: 'courier', title: 'Paczka (test)', start: null,
+        target: { x: a[4], z: a[5], name: `${streets[a[0]]} ${a[1]}` },
+        vehicles: ['person', 'cyclist', 'car'], par: Math.round(r.length / pace + 15), reward: 30,
+      });
+      missions.accept(id);
+      return missions.missions.get(id);
+    }
+    return null;
+  }
+  globalThis.bielany = { missions, testDelivery, abandon: () => missions.abandon(), teleport: (x, z, heading) => teleportTo(x, z, heading), marker: missionMarker };
 
   // Initialize the UI and chase camera around the restored player, or the default taxi on a first visit.
   selectMode(controllerManager.activeMode);
@@ -676,6 +761,12 @@ async function initApp() {
     if (streetDetails.update) streetDetails.update(cameraSystem.camera);
     lightingSystem.update(cameraSystem.currentPos);
     mapSystem.update();
+    {
+      const ent = controllerManager.getActiveEntity();
+      missionNote = missions.update(dt, { x: ent.position.x, z: ent.position.z, speed: ent.speed, mode: controllerManager.activeMode });
+      if (warmedUp && !missions.active) missionMarker.hide();
+      missionMarker.update(elapsed);
+    }
     audioSystem.update(dt, elapsed, cameraSystem.camera, lightingSystem.activePresetId === 'midnight');
     if (warmedUp) updateSceneCulling(cameraSystem.camera.position); // the warm-up frame draws every chunk
 
@@ -741,6 +832,7 @@ async function initApp() {
       // The street corner of the player on the follow cameras, of the camera itself on the scenic ones
       const where = cameraSystem.getActivePreset().category === 'follow' ? activeEnt.position : cameraSystem.currentPos;
       renderLocation(getLocationLabel(where.x, where.z));
+      renderMission();
     }
   });
 }
