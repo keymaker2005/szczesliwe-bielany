@@ -82,7 +82,8 @@ napisy słowne na pojazdach służb bez insygniów, najpierw teren). Gałąź fa
 - [x] 3.2a Teren w świecie (2026-10-25): płaskowyż płaski (y = 0 od 96 m n.p.m.), skarpa i dolina Wisły do -21 m
   (js/terrain.js, js/bielany-terrain.bin); asfalt, trawniki, krawężniki, chodniki, farba i tory na jednej siatce 8 m;
   budynki, landmarki, drzewa, sygnalizatory, auta, autobusy, tramwaje, piesi, gracz, kamera i helikopter na gruncie.
-  Porównanie z płaską mapą: adres z ?plaski. Sprawdzam: zejście i zjazd ze skarpy, widok z krawędzi, Kameduły na wzgórzu, 60 fps.
+  Porównanie z płaską mapą: adres z ?plaski. Poprawki po uwagach (2026-10-25): dźwięk pojazdów, pieszych i helikoptera
+  liczony od gruntu (audio-sources.js za zgodą), tory i tramwaje na zielonym pasie Marymonckiej z torowiskiem. Sprawdzam: zejście i zjazd ze skarpy, widok z krawędzi, Kameduły na wzgórzu, 60 fps.
 - [ ] 3.2b Las Bielański: leśne dno zamiast trawnika, ścieżki, gęstsze poszycie (granice lasu z OSM). Sprawdzam: las wygląda jak las.
 - [ ] 3.3 Wisła, nabrzeże i most Marii Skłodowskiej-Curie (poszerzona mapa). Sprawdzam: dojazd Wisłostradą na most, spacer nabrzeżem.
 - [ ] 3.4 Wspólna dyspozytornia służb w telefonie. Sprawdzam: ratownik bez zmian, nowa zakładka „Służby”.

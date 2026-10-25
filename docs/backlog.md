@@ -32,8 +32,6 @@ Bramka: wersja 1.0 z patronatem.
 - Raz podczas testu ponowne wczytanie bielany.zbigniew.ai zatrzymało się na ekranie ładowania („Failed to resolve module specifier three/webgpu”) po moich ręcznych wstrzyknięciach skryptów; kolejne wczytania działały. Obserwować przy teście 1.8b.
 - Tramwaje: linia Marymoncką według danych OSM kończy się przy Cmentarzu Włoskim (tory nie łączą się z pętlą Młociny w obszarze); gracz przenika przez tramwaj (tramwaj hamuje przed graczem, ale nie ma kolizji); brak dźwięku dzwonka i rozjazdów na ekranie.
 - Wersja dla urzędu: wyłączyć kontakt z pieszymi i ragdolla (PEDESTRIAN_CONTACT = false w js/city-config.js), decyzja z 2026-10-26.
-- Teren (3.2a): dźwięk helikoptera (audio-sources.js, moduł przenośny) uznaje maszynę za stojącą na ziemi poniżej 0,35 m
-  bezwzględnie, więc w dolinie (do -21 m) wirnik brzmi jak na postoju; poprawka wymaga zgody na zmianę audio-*.
 - Teren (3.2a): trawniki w dolinie to ok. 0,9 mln trójkątów (długie trójkąty z podziału wielokątów kwartałów cięte siatką 8 m);
   jeśli test na Windows pokaże spadek fps, przebudować dachy kwartałów w dolinie na siatkę zamiast cięcia.
 

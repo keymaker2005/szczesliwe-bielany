@@ -9,6 +9,7 @@ import * as THREE from 'three/webgpu';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { GEO } from './bielany-geodata.js';
 import { groundPose, drapeGeometry } from './terrain.js';
+import { blockAt, ISLAND_BOUNDS } from './city-config.js';
 
 const SECTION = 10.2; // m, one body section
 const GAP = 0.5; // m between sections (the bellows)
@@ -22,6 +23,12 @@ const TERMINUS = 35; // s at the end of the line
 const HEADWAY = 1800; // m of route per tram
 const LOOKAHEAD = 40; // m: the player or a tram ahead within this makes it brake
 const GAUGE = 1.435;
+const PIECE = 4; // m: the rails & the bed follow the ground and the curb islands in pieces this long
+const BED_W = 2.8; // m, the ballast bed of one track on a tramway of its own
+
+// Height of a track at (x, z) above the ground: on a curb island (the tramway between Marymoncka's carriageways, as
+// OpenStreetMap draws it) it lies on the island's top, in a street on the asphalt
+const trackLift = (x, z) => (blockAt(x, z) ? ISLAND_BOUNDS.sidewalkHeight : 0);
 
 // Route geometry: points and cumulative lengths, position and heading at arc length s
 function prepare(route) {
@@ -75,31 +82,43 @@ function sectionGeometry(front) {
   return mergeGeometries(parts, false);
 }
 
-// The rails of every track: two steel strips GAUGE apart, slightly above the road
-function railsGeometry() {
-  const pos = [];
+// The rails of every track: two steel strips GAUGE apart, slightly above the road; on a tramway of its own (a curb
+// island) they stand on sleepers in a ballast bed laid on the lawn
+function trackGeometry() {
+  const rails = [], bed = [];
+  const strip = (out, ax, az, bx, bz, nx, nz, o0, o1, ya, yb) => {
+    const p = [ax + nx * o0, az + nz * o0, ax + nx * o1, az + nz * o1, bx + nx * o1, bz + nz * o1, bx + nx * o0, bz + nz * o0];
+    out.push(p[0], ya, p[1], p[2], ya, p[3], p[4], yb, p[5], p[0], ya, p[1], p[4], yb, p[5], p[6], yb, p[7]);
+  };
   for (const t of GEO.trams?.tracks || []) {
     for (let k = 0; k + 3 < t.length; k += 2) {
       const ax = t[k], az = t[k + 1], bx = t[k + 2], bz = t[k + 3];
       const len = Math.hypot(bx - ax, bz - az);
       if (len < 0.05) continue;
       const nx = -(bz - az) / len, nz = (bx - ax) / len;
-      for (const side of [-1, 1]) {
-        const o = (side * GAUGE) / 2;
-        const p = [ax + nx * (o - 0.04), az + nz * (o - 0.04), ax + nx * (o + 0.04), az + nz * (o + 0.04),
-          bx + nx * (o + 0.04), bz + nz * (o + 0.04), bx + nx * (o - 0.04), bz + nz * (o - 0.04)];
-        const y = 0.035;
-        pos.push(p[0], y, p[1], p[2], y, p[3], p[4], y, p[5], p[0], y, p[1], p[4], y, p[5], p[6], y, p[7]);
+      const n = Math.ceil(len / PIECE);
+      for (let s = 0; s < n; s++) {
+        const x0 = ax + ((bx - ax) * s) / n, z0 = az + ((bz - az) * s) / n;
+        const x1 = ax + ((bx - ax) * (s + 1)) / n, z1 = az + ((bz - az) * (s + 1)) / n;
+        const l0 = trackLift(x0, z0), l1 = trackLift(x1, z1);
+        if (trackLift((x0 + x1) / 2, (z0 + z1) / 2)) strip(bed, x0, z0, x1, z1, nx, nz, -BED_W / 2, BED_W / 2, l0 + 0.03, l1 + 0.03);
+        for (const side of [-1, 1]) {
+          const o = (side * GAUGE) / 2;
+          strip(rails, x0, z0, x1, z1, nx, nz, o - 0.04, o + 0.04, l0 + (l0 ? 0.12 : 0.035), l1 + (l1 ? 0.12 : 0.035));
+        }
       }
     }
   }
-  const g = new THREE.BufferGeometry();
-  g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
-  // up-facing normals; the strips are wound either way, so the material is double-sided
-  const n = new Float32Array(pos.length);
-  for (let i = 1; i < n.length; i += 3) n[i] = 1;
-  g.setAttribute('normal', new THREE.BufferAttribute(n, 3));
-  return g;
+  // up-facing normals; the strips are wound either way, so the materials are double-sided
+  const geometry = (pos) => {
+    const g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+    const n = new Float32Array(pos.length);
+    for (let i = 1; i < n.length; i += 3) n[i] = 1;
+    g.setAttribute('normal', new THREE.BufferAttribute(n, 3));
+    return g;
+  };
+  return { rails: geometry(rails), bed: geometry(bed) };
 }
 
 function createTrams(scene, { blockers = [] } = {}) {
@@ -108,10 +127,14 @@ function createTrams(scene, { blockers = [] } = {}) {
   const routes = (GEO.trams?.routes || []).map(prepare);
   const bounds = GEO.frame.bounds;
 
-  const rails = new THREE.Mesh(drapeGeometry(railsGeometry()), new THREE.MeshStandardNodeMaterial({ color: 0x8e9196, roughness: 0.35, metalness: 0.8, side: THREE.DoubleSide }));
+  const track = trackGeometry();
+  const rails = new THREE.Mesh(drapeGeometry(track.rails), new THREE.MeshStandardNodeMaterial({ color: 0x8e9196, roughness: 0.35, metalness: 0.8, side: THREE.DoubleSide }));
   rails.name = 'TramRails';
   rails.receiveShadow = true;
-  group.add(rails);
+  const bed = new THREE.Mesh(drapeGeometry(track.bed), new THREE.MeshStandardNodeMaterial({ color: 0x6e675e, roughness: 1, side: THREE.DoubleSide }));
+  bed.name = 'TramBed';
+  bed.receiveShadow = true;
+  group.add(bed, rails);
 
   // trams: spaced along each route; the routes come in pairs (there, back)
   const trams = [];
@@ -156,7 +179,8 @@ function createTrams(scene, { blockers = [] } = {}) {
         groundPose(p.x, p.z, Math.sin(p.yaw), Math.cos(p.yaw), SECTION / 2, HALF_W, pose);
         q.setFromEuler(tilt.set(pose.pitch, p.yaw, pose.roll, 'YXZ'));
         if (k === SECTIONS - 1) q.multiply(flip); // the rear section's nose faces backwards
-        m4.compose(v3.set(p.x, pose.y, p.z), q, one);
+        const lift = trackLift(p.x, p.z);
+        m4.compose(v3.set(p.x, pose.y + (lift ? lift + 0.09 : 0), p.z), q, one);
         mesh.setMatrixAt(idx, m4);
       }
     });
