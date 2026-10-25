@@ -35,6 +35,8 @@ import { createPassenger } from './passenger.js';
 import { Medic, DISPATCH, SERVICE as MEDIC_SERVICE } from './medic.js';
 import { Dispatch } from './dispatch.js';
 import { createAmbulance } from './ambulance.js';
+import { Firefighter, DISPATCH as FIRE_DISPATCH, SERVICE as FIRE_SERVICE, NAMES as FIRE_NAMES } from './firefighter.js';
+import { createFireEngine, createFireEffects, createFireHud } from './fire-engine.js';
 import { PhotoMode } from './photo-mode.js';
 import { Postcards } from './postcards.js';
 import { createFallingLeaves } from './falling-leaves.js';
@@ -737,6 +739,34 @@ async function initApp() {
       done: (m) => `Pacjent przekazany na SOR. Dojazd ${clock(m.responseTime || 0)} (${'★'.repeat(m.responseStars) || 'za długo'}), transport ${clock(m.time)} (${'★'.repeat(m.transportStars) || 'za długo'}). ${m.paid} zł. Dziękujemy.`,
     },
   });
+  // The firefighter (js/firefighter.js): fire, flooded basement, cat up a tree; the fire engine and the effects
+  // (js/fire-engine.js); G held on the spot: the water cannon, the pump, the ladder
+  {
+    const firefighter = new Firefighter(missions, { skip: landmarkBuildingIds(), ground: groundY });
+    firefighter.near = () => controllerManager.getActiveEntity().position;
+    firefighter.player = () => { const e = controllerManager.getActiveEntity(); return { x: e.position.x, z: e.position.z, speed: e.speed, mode: controllerManager.activeMode }; };
+    const fireEngine = createFireEngine();
+    const fireFx = createFireEffects(scene);
+    const fireHud = createFireHud();
+    firefighter.onFrame = (dt) => {
+      fireFx.update(firefighter.scene(), dt, fireEngine, cameraSystem.camera, () => firefighter.clear());
+      fireHud.update(firefighter.scene(), missions.active?.role === 'firefighter');
+    };
+    const holdG = (on) => (e) => { if (e.code === 'KeyG' && !isTypingInField(e)) firefighter.hold(on); };
+    window.addEventListener('keydown', holdG(true));
+    window.addEventListener('keyup', holdG(false));
+    window.addEventListener('blur', () => firefighter.hold(false));
+    const STEPS = { fire: 'Na miejscu: stań do 45 m od ognia i trzymaj G (działko wodne).', flood: 'Na miejscu: stań przy budynku i naciśnij G (pompa).', cat: 'Na miejscu: stań przy drzewie i trzymaj G (drabina).' };
+    dispatch.register({
+      role: 'firefighter', name: FIRE_SERVICE, dispatcher: FIRE_DISPATCH, glyph: '🚒', mode: 'car', livery: fireEngine, siren: true, provider: firefighter,
+      messages: {
+        call: (m) => `${FIRE_NAMES[m.kind]}: ${m.start.name.replace(/^[^,]*, /, '')} — ${m.reason}. Jedź na sygnale (K: syrena).`,
+        picked: (m) => `Dojazd w ${clock(m.responseTime || 0)}. ${STEPS[m.kind]}`,
+        done: (m) => `Akcja zakończona. Dojazd ${clock(m.responseTime || 0)} (${'★'.repeat(m.responseStars) || 'za długo'}), akcja ${clock(m.time)} (${'★'.repeat(m.actionStars) || 'za długo'}). ${m.paid} zł. Dziękujemy.`,
+      },
+    });
+    globalThis.bielanyFire = { firefighter, fireEngine, fireFx };
+  }
   const COMFORT_NOTES = { brake: 'ostre hamowanie', crash: 'stłuczka', red: 'czerwone światło' };
   missions.on('state', (m) => {
     if (m.role !== 'taxi') return;

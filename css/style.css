@@ -1719,3 +1719,10 @@ body.touch-enabled .pop-item { min-height: 44px; }
     transition-duration: 0.01ms !important;
   }
 }
+
+/* The firefighter's action (js/fire-engine.js): the hint and a progress bar inside the mission panel */
+.duty-progress { margin-top: 8px; }
+.duty-progress.hidden { display: none; }
+.duty-progress-text { font-size: 13px; font-weight: 600; margin-bottom: 5px; }
+.duty-progress-bar { height: 6px; border-radius: 3px; background: rgba(255, 255, 255, 0.15); overflow: hidden; }
+.duty-progress-bar span { display: block; height: 100%; width: 0; background: #e8452c; transition: width 0.15s linear; }
