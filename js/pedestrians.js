@@ -1564,6 +1564,7 @@ class PersonRagdoll {
   get z() { return this.p[RJ.pelvis].z; }
 
   step(dt) {
+    if (!(dt > 0)) { this.pose(); return; } // no time passed (the frame of the hit): just the pose
     dt = Math.min(dt, 1 / 30);
     this.time += dt;
     const p = this.p, prev = this.prev;

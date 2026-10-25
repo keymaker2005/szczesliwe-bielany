@@ -1965,7 +1965,7 @@ function createTrafficSystem(scene, sidewalks, obstacles) {
     if (ox > 0 || oz > 0) return false; // not touching
     const speed = Math.hypot(player.vx, player.vz);
     if (speed > KNOCK_SPEED && player.halfL > 0.5) { // a car or a bike
-      p.ragdoll = new PersonRagdoll(p.rig, { x: player.vx * 1.05, y: 2 + speed * 0.18, z: player.vz * 1.05 }, (x, z) => pedGround(p, x, z));
+      p.ragdoll = new PersonRagdoll(p.rig, { x: player.vx * 0.8, y: 2 + speed * 0.15, z: player.vz * 0.8 }, (x, z) => pedGround(p, x, z));
       p.ragdollTime = 0;
       if (p.conversation) endConversation(p.conversation);
       pe.speed *= 0.8;
