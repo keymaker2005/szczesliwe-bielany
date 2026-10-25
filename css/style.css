@@ -469,6 +469,19 @@ body.photo-mode .hud, body.photo-mode .phone, body.photo-mode .phone-toast, body
 .phone-more h3 { font-size: 13px; margin: 0 0 4px; color: var(--taxi); }
 .phone-more p { margin: 0; color: var(--text-2); line-height: 1.45; }
 .phone-empty { color: var(--text-2); }
+.phone-service { display: flex; flex-direction: column; gap: 1px; padding: 4px 2px 0; font-size: 13px; }
+.phone-service span { color: var(--text-2); font-size: 11px; }
+
+/* The services' choice on the spot (js/dispatch.js choose): pouczenie, mandat... */
+.duty-choice { position: fixed; inset: 0; display: grid; place-items: center; background: rgba(0, 0, 0, 0.35); z-index: 60; }
+.duty-card { width: min(420px, calc(100vw - 32px)); background: rgba(16, 17, 20, 0.94); border-radius: 18px; padding: 18px; color: var(--text); }
+.duty-card h2 { margin: 0 0 6px; font-size: 18px; }
+.duty-card p { margin: 0 0 12px; color: var(--text-2); line-height: 1.45; font-size: 14px; }
+.duty-options { display: flex; flex-direction: column; gap: 8px; }
+.duty-option { display: flex; flex-direction: column; gap: 2px; text-align: left; padding: 10px 12px; border-radius: 12px; background: rgba(255, 255, 255, 0.1); color: var(--text); }
+.duty-option:hover { background: rgba(255, 194, 26, 0.25); }
+.duty-option span { color: var(--text-2); font-size: 12px; }
+
 .phone-toast {
   position: fixed;
   right: var(--edge);

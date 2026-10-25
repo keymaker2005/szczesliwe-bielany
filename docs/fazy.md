@@ -91,7 +91,9 @@ napisy słowne na pojazdach służb bez insygniów, najpierw teren). Gałąź fa
   Wisła, stawy i plaże z OSM (js/water.js, własny materiał wody), pomosty mostów i wiaduktów z OSM z ruchem, pieszymi,
   barierkami, filarami i tramwajem na Moście Północnym (js/bridges.js), teleport „Most Północny”. 60 fps w Chrome na M4.
   Sprawdzam: przejazd przez most, Wisła pod mostem, plaża.
-- [ ] 3.4 Wspólna dyspozytornia służb w telefonie. Sprawdzam: ratownik bez zmian, nowa zakładka „Służby”.
+- [x] 3.4 Wspólna dyspozytornia służb (2026-10-25): js/dispatch.js (rejestr służb, tryb, oznakowanie pojazdu, syrena
+  i ustępowanie aut, SMS-y dyspozytora, okno wyboru choose()), zakładka „Służby” w telefonie, ratownik przeniesiony.
+  Sprawdzam: ratownik bez zmian, nowa zakładka „Służby”.
 - [ ] 3.5 Strażnik Miejski. Sprawdzam: 3 zgłoszenia (trawnik, śmieci, hałas), wybór pouczenie lub mandat zmienia ocenę.
 - [ ] 3.6 Strażak. Sprawdzam: pożar, zalana piwnica i kot na drzewie do ukończenia.
 - [ ] 3.7 Policjant. Sprawdzam: 2 kontrole drogowe i 1 pościg bez taranowania.

@@ -32,7 +32,8 @@ import { Courier, COMPANY } from './courier.js';
 import { Guide } from './guide.js';
 import { Taxi, BRAND as TAXI_BRAND } from './taxi.js';
 import { createPassenger } from './passenger.js';
-import { Medic, DISPATCH } from './medic.js';
+import { Medic, DISPATCH, SERVICE as MEDIC_SERVICE } from './medic.js';
+import { Dispatch } from './dispatch.js';
 import { createAmbulance } from './ambulance.js';
 import { PhotoMode } from './photo-mode.js';
 import { Postcards } from './postcards.js';
@@ -578,11 +579,9 @@ async function initApp() {
         if (!e.repeat && ph && !ph.active && !mapSystem.isFullMapOpen) ph.enter();
         break;
       }
-      case 'KeyK': { // the ambulance's siren (set up further down, after the missions)
-        const amb = globalThis.bielany?.ambulance;
-        if (!e.repeat && amb?.active) amb.setSiren(!amb.siren, audioSystem.enabled);
+      case 'KeyK': // the service vehicle's siren (js/dispatch.js, set up further down, after the missions)
+        if (!e.repeat) globalThis.bielany?.dispatch?.toggleSiren();
         break;
-      }
       case 'KeyN':
         if (!e.repeat && !e.metaKey && !e.ctrlKey && !e.altKey) audioSystem.setEnabled(!audioSystem.enabled);
         break;
@@ -701,13 +700,15 @@ async function initApp() {
     place: () => getLocationLabel(cameraSystem.camera.position.x, cameraSystem.camera.position.z),
     onShot: (blob, meta) => postcards.add(blob, meta).then((p) => phone.addSms({ id: `photo-${p.id}`, from: 'Aparat', text: `Zapisano pocztówkę: ${p.place} (${p.filter}). Zobacz w Pocztówkach.` })),
   });
+  let dispatch = null; // the emergency services' dispatch (js/dispatch.js), right after the phone
   const phone = new Phone({
     onCamera: () => photo.enter(),
     postcards,
     root: document.getElementById('phone'),
     button: document.getElementById('btn-phone'),
     missions,
-    jobs: () => [...medic.jobs(), ...taxi.jobs(), ...courier.jobs()],
+    jobs: () => [...taxi.jobs(), ...courier.jobs()],
+    services: () => (dispatch ? dispatch.services() : []),
     onOpenMap: () => mapSystem.toggleFullMap(true),
     status: () => (missions.active ? `W drodze: ${missions.goal().name}` : controllerManager.activeMode === 'car' ? taxi.statusLine() : courier.statusLine()),
   });
@@ -718,26 +719,23 @@ async function initApp() {
   // 5e. The guide's messages at the landmarks, the mayor's at the start and after deliveries
   const guide = new Guide(phone);
   guide.start();
-  missions.on('state', (m) => {
-    if (m.role !== 'medic') return;
-    if (m.state === 'accepted') {
-      if (controllerManager.activeMode !== 'car') selectMode('car');
-      ambulance.attach(controllerManager.entities.car);
-      ambulance.setSiren(true, audioSystem.enabled);
-      if (elMode) elMode.textContent = controllerManager.getActiveEntity().label;
-      phone.addSms({ id: `${m.id}-call`, from: DISPATCH, text: `Wezwanie: ${m.start.name.replace(/^pacjent, /, '')} — ${m.reason || 'pacjent potrzebuje pomocy'}. Jedź na sygnale (K włącza i wyłącza syrenę).` });
-    } else if (m.state === 'enRoute') {
-      phone.addSms({ id: `${m.id}-picked`, from: DISPATCH, text: `Pacjent w karetce. Dojazd w ${clock(m.responseTime || 0)}. Teraz SOR Szpitala Bielańskiego.` });
-    } else if (['delivered', 'late', 'abandoned'].includes(m.state)) {
-      ambulance.detach();
-      if (elMode) elMode.textContent = controllerManager.getActiveEntity().label;
-      if (m.state !== 'abandoned') {
-        phone.addSms({
-          id: `${m.id}-done`, from: DISPATCH,
-          text: `Pacjent przekazany na SOR. Dojazd ${clock(m.responseTime || 0)} (${'★'.repeat(m.responseStars) || 'za długo'}), transport ${clock(m.time)} (${'★'.repeat(m.transportStars) || 'za długo'}). ${m.paid} zł. Dziękujemy.`,
-        });
-      }
-    }
+  // 5d'''. The dispatch: the paramedic now, the city guard, the firefighter and the police officer next (Faza 3)
+  dispatch = new Dispatch({
+    missions,
+    phone,
+    selectMode,
+    vehicle: (mode) => controllerManager.entities[mode],
+    mode: () => controllerManager.activeMode,
+    soundOn: () => audioSystem.enabled,
+    onLivery: () => { if (elMode) elMode.textContent = controllerManager.getActiveEntity().label; },
+  });
+  dispatch.register({
+    role: 'medic', name: MEDIC_SERVICE, dispatcher: DISPATCH, glyph: '🚑', mode: 'car', livery: ambulance, siren: true, provider: medic,
+    messages: {
+      call: (m) => `Wezwanie: ${m.start.name.replace(/^pacjent, /, '')} — ${m.reason || 'pacjent potrzebuje pomocy'}. Jedź na sygnale (K włącza i wyłącza syrenę).`,
+      picked: (m) => `Pacjent w karetce. Dojazd w ${clock(m.responseTime || 0)}. Teraz SOR Szpitala Bielańskiego.`,
+      done: (m) => `Pacjent przekazany na SOR. Dojazd ${clock(m.responseTime || 0)} (${'★'.repeat(m.responseStars) || 'za długo'}), transport ${clock(m.time)} (${'★'.repeat(m.transportStars) || 'za długo'}). ${m.paid} zł. Dziękujemy.`,
+    },
   });
   const COMFORT_NOTES = { brake: 'ostre hamowanie', crash: 'stłuczka', red: 'czerwone światło' };
   missions.on('state', (m) => {
@@ -774,7 +772,7 @@ async function initApp() {
     }
   });
 
-  globalThis.bielany = { missions, testDelivery, abandon: () => missions.abandon(), teleport: (x, z, heading) => teleportTo(x, z, heading), marker: missionMarker, phone, courier, guide, scene, renderer, lightingSystem, trams, taxi, medic, ambulance, controllerManager, photo, postcards, fallingLeaves, trafficSystem };
+  globalThis.bielany = { missions, testDelivery, abandon: () => missions.abandon(), teleport: (x, z, heading) => teleportTo(x, z, heading), marker: missionMarker, phone, courier, guide, scene, renderer, lightingSystem, trams, taxi, medic, ambulance, dispatch, controllerManager, photo, postcards, fallingLeaves, trafficSystem };
 
   // Initialize the UI and chase camera around the restored player, or the default taxi on a first visit.
   selectMode(controllerManager.activeMode);
@@ -901,7 +899,7 @@ async function initApp() {
         const l = limitAt(car.position.x, car.position.z);
         if (l) speedLimit = l;
       }
-      const cap = (ambulance.siren ? Math.min(90, speedLimit + 30) : speedLimit) / 3.6; // on lights: +30 km/h
+      const cap = (dispatch.siren ? Math.min(90, speedLimit + 30) : speedLimit) / 3.6; // on lights: +30 km/h
       if (car.speed > cap && !controllerManager.keys.boost) car.speed = cap; // Shift (boost) ignores the limit
     }
     if (!photo.active) cameraSystem.update(dt, elapsed);
@@ -934,9 +932,8 @@ async function initApp() {
       const note = taxi.update(dt, { x: ent.position.x, z: ent.position.z, speed: ent.speed, mode: controllerManager.activeMode, heading: ent.heading }, elapsed);
       if (note) { taxiNote = note; taxiNoteUntil = performance.now() + 2500; }
       passenger.update(elapsed);
-      medic.update(dt);
-      ambulance.update(elapsed);
-      trafficSystem.yieldTo.active = ambulance.siren && controllerManager.activeMode === 'car';
+      dispatch.update(dt, elapsed);
+      trafficSystem.yieldTo.active = dispatch.siren && controllerManager.activeMode === 'car';
       trafficSystem.yieldTo.heading = controllerManager.entities.car.heading;
       missionMarker.update(elapsed);
     }

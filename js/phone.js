@@ -1,11 +1,13 @@
 // js/phone.js
-// The player's smartphone: an HTML overlay (P or the phone button) with five apps: Zlecenia (offered and active
-// errands, from js/missions.js), Mapa (the full map), SMS (messages from the guide, the mayor, the dispatchers),
+// The player's smartphone: an HTML overlay (P or the phone button) with six apps: Zlecenia (offered and active
+// errands, from js/missions.js), Służby (the emergency services and their calls, js/dispatch.js), Mapa (the full map),
+// SMS (messages from the guide, the mayor, the dispatchers),
 // Pocztówki (the photos, js/postcards.js) and Aparat (photo mode, js/photo-mode.js). A fictional handset: no maker's
 // name or logo. The game keeps running under it; keys still drive the player, the phone only takes clicks.
 
 const APPS = [
   { id: 'jobs', name: 'Zlecenia', glyph: '📦' },
+  { id: 'services', name: 'Służby', glyph: '🚨' },
   { id: 'map', name: 'Mapa', glyph: '🗺️' },
   { id: 'sms', name: 'SMS', glyph: '💬' },
   { id: 'cards', name: 'Pocztówki', glyph: '🖼️' },
@@ -19,9 +21,11 @@ const dist = (m) => (m < 1000 ? `${Math.round(m / 10) * 10} m` : `${(m / 1000).t
 class Phone {
   /**
    * options: { root (element), button (element), missions (MissionEngine), jobs: () => [{ id, title, from, to,
-   * distance, par, reward, vehicles }] offered now, onOpenMap(), status: () => line under the clock, time: '12:40' }
+   * distance, par, reward, vehicles }] offered now, services: () => [{ role, name, glyph, status, jobs }] (the
+   * dispatch), onOpenMap(), status: () => line under the clock, time: '12:40' }
    */
-  constructor({ root, button, missions, jobs, onOpenMap, onCamera, postcards, status, time = '12:40' }) {
+  constructor({ root, button, missions, jobs, services, onOpenMap, onCamera, postcards, status, time = '12:40' }) {
+    this.services = services || (() => []);
     this.onCamera = onCamera;
     this.postcards = postcards || null;
     this.openCard = null;
@@ -63,7 +67,7 @@ class Phone {
       else if (e.code === 'Escape' && this.isOpen) this.toggle(false);
     });
     // the lists change while the phone is open (offers, the active clock)
-    setInterval(() => { if (this.isOpen && this.app === 'jobs') this.render(); }, 500);
+    setInterval(() => { if (this.isOpen && (this.app === 'jobs' || this.app === 'services')) this.render(); }, 500);
     if (this.postcards) this.postcards.onChange(() => { if (this.isOpen && this.app === 'cards') this.render(); });
     missions.on('state', () => { if (this.isOpen) this.render(); this.renderBadge(); });
     this.render();
@@ -128,7 +132,7 @@ class Phone {
     const id = t.dataset.id;
     if (act === 'app') this.show(id);
     else if (act === 'accept') {
-      const job = this.jobs().find((j) => j.id === id);
+      const job = [...this.jobs(), ...this.services().flatMap((sv) => sv.jobs)].find((j) => j.id === id);
       if (job && job.accept) job.accept();
       this.render();
     } else if (act === 'abandon') {
@@ -162,7 +166,11 @@ class Phone {
   render() {
     const s = this.screen;
     if (this.app === 'home') {
-      const badge = (id) => (id === 'sms' && this.unread() ? `<span class="phone-badge">${this.unread()}</span>` : id === 'jobs' && this.missions.active ? '<span class="phone-badge">1</span>' : '');
+      const serviceRoles = new Set(this.services().map((sv) => sv.role));
+      const active = this.missions.active;
+      const onDuty = Boolean(active && serviceRoles.has(active.role));
+      const badge = (id) => (id === 'sms' && this.unread() ? `<span class="phone-badge">${this.unread()}</span>`
+        : (id === 'jobs' && active && !onDuty) || (id === 'services' && onDuty) ? '<span class="phone-badge">1</span>' : '');
       s.innerHTML = `
         <div class="phone-status">${esc(this.status())}</div>
         <div class="phone-apps">${APPS.map((a) => `
@@ -174,22 +182,42 @@ class Phone {
       return;
     }
     const head = (title) => `<div class="phone-head"><button type="button" class="phone-back" data-act="back" aria-label="Wstecz">‹</button><h2>${esc(title)}</h2></div>`;
+    const offerCard = (j) => `
+        <div class="phone-card">
+          <div class="phone-card-title">${esc(j.title)}<span>${j.reward} zł</span></div>
+          <div class="phone-card-line">${esc(j.from)} → ${esc(j.to)}</div>
+          <div class="phone-card-line is-dim">${dist(j.distance)} · na 3★ ${clock(j.par)} · ${esc(j.vehicles)}</div>
+          <button type="button" class="phone-btn" data-act="accept" data-id="${esc(j.id)}">Przyjmij</button>
+        </div>`;
+    if (this.app === 'services') {
+      const m = this.missions.active;
+      const list = this.services();
+      const mine = m && list.some((sv) => sv.role === m.role);
+      const active = mine ? `
+        <div class="phone-card is-active">
+          <div class="phone-card-title">${esc(m.title)}<span>${m.state === 'enRoute' ? `${clock(m.time)} / ${clock(m.par)}` : 'w drodze'}</span></div>
+          <div class="phone-card-line">${m.state === 'accepted' ? `Na miejsce: ${esc(m.start?.name)}` : `Dalej: ${esc(m.target.name)}`}</div>
+          <button type="button" class="phone-btn is-quiet" data-act="abandon">Przerwij wezwanie</button>
+        </div>` : '';
+      const busy = m && !mine ? '<p class="phone-empty">Najpierw skończ bieżące zlecenie.</p>' : '';
+      const services = mine ? '' : list.map((sv) => `
+        <div class="phone-service"><b>${esc(sv.glyph)} ${esc(sv.name)}</b><span>${esc(sv.status)}</span></div>
+        ${sv.jobs.map(offerCard).join('') || (busy ? '' : '<p class="phone-empty">Brak wezwań. Dyspozytor odezwie się, gdy coś się wydarzy.</p>')}`).join('');
+      s.innerHTML = `${head('Służby')}<div class="phone-list">${active}${busy}${services}</div>`;
+      return;
+    }
     if (this.app === 'jobs') {
       const m = this.missions.active;
-      const active = m ? `
+      const onDuty = m && this.services().some((sv) => sv.role === m.role);
+      const active = m && !onDuty ? `
         <div class="phone-card is-active">
           <div class="phone-card-title">${esc(m.title)}<span>${m.state === 'enRoute' ? `${clock(m.time)} / ${clock(m.par)}` : 'odbiór'}</span></div>
           <div class="phone-card-line">${m.state === 'accepted' ? `Odbierz: ${esc(m.start?.name)}` : `Dostarcz: ${esc(m.target.name)}`}</div>
           <button type="button" class="phone-btn is-quiet" data-act="abandon">Przerwij zlecenie</button>
         </div>` : '';
       const jobs = m ? [] : this.jobs();
-      const offers = jobs.length ? jobs.map((j) => `
-        <div class="phone-card">
-          <div class="phone-card-title">${esc(j.title)}<span>${j.reward} zł</span></div>
-          <div class="phone-card-line">${esc(j.from)} → ${esc(j.to)}</div>
-          <div class="phone-card-line is-dim">${dist(j.distance)} · na 3★ ${clock(j.par)} · ${esc(j.vehicles)}</div>
-          <button type="button" class="phone-btn" data-act="accept" data-id="${esc(j.id)}">Przyjmij</button>
-        </div>`).join('') : m ? '' : '<p class="phone-empty">Brak zleceń w okolicy. Podjedź do punktu odbioru przy stacji metra.</p>';
+      const offers = jobs.length ? jobs.map(offerCard).join('') : onDuty ? '<p class="phone-empty">Jesteś na wezwaniu (Służby).</p>'
+        : m ? '' : '<p class="phone-empty">Brak zleceń w okolicy. Podjedź do punktu odbioru przy stacji metra.</p>';
       s.innerHTML = `${head('Zlecenia')}<div class="phone-list">${active}${offers}</div>`;
       return;
     }
