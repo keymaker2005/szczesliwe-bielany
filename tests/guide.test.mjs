@@ -56,6 +56,11 @@ test('published site: the mayor draft messages are left out', () => {
     assert.ok(!/"kind": "mayor"/.test(pub));
     assert.ok(/"kind": "guide"/.test(pub));
     assert.ok(/"kind": "mayor"/.test(fs.readFileSync(path.join(root, 'js/guide-texts.js'), 'utf8')));
+    // every module and the stylesheet carry the build, so no cached older file mixes with a newer page
+    const html = fs.readFileSync(path.join(dir, 'index.html'), 'utf8');
+    assert.match(html, /src="\.\/js\/main\.js\?v=\w+"/);
+    assert.match(html, /href="\.\/css\/style\.css\?v=\w+"/);
+    assert.match(fs.readFileSync(path.join(dir, 'js/main.js'), 'utf8'), /from '\.\/phone\.js\?v=\w+'/);
   } finally {
     fs.rmSync(dir, { recursive: true, force: true });
   }

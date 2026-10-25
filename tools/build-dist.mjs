@@ -21,9 +21,23 @@ for (const item of ['index.html', 'LICENSE', 'css', 'js']) {
 // The published site leaves the mayor's draft messages out (they wait for approval): a public js/guide-texts.js
 const pub = spawnSync(process.execPath, [path.join(ROOT, 'tools/guide-texts.mjs'), path.join(OUT, 'js/guide-texts.js'), '--public'], { encoding: 'utf8' });
 if (pub.status !== 0) throw new Error(pub.stderr || pub.stdout);
-// Cloudflare Pages headers: the modules revalidate on every load (the URLs carry no version)
+// Every module URL carries the build (?v=<commit>): a browser that kept an older module in its cache cannot mix it
+// with a newer page (seen after the 1.5 deploy: the new index.html ran with the old main.js)
+const head = spawnSync('git', ['-C', ROOT, 'rev-parse', '--short', 'HEAD'], { encoding: 'utf8' });
+const BUILD = (head.stdout || '').trim() || String(Date.now());
+const versioned = (text) => text.replace(/(["'])(\.\.?\/(?:js\/|css\/)?[\w-]+\.(?:js|css))(?:\?v=[^"']*)?\1/g, (m, q, url) => `${q}${url}?v=${BUILD}${q}`);
+const walkFiles = (dir) => fs.readdirSync(dir, { withFileTypes: true }).flatMap((e) => (e.isDirectory() ? walkFiles(path.join(dir, e.name)) : [path.join(dir, e.name)]));
+for (const file of walkFiles(OUT)) {
+  if (!/\.(js|html)$/.test(file)) continue;
+  fs.writeFileSync(file, versioned(fs.readFileSync(file, 'utf8')));
+}
+// Cloudflare Pages headers: the page itself revalidates on every load, the versioned modules can stay cached
 fs.writeFileSync(path.join(OUT, '_headers'), `/*
   X-Content-Type-Options: nosniff
+/
+  Cache-Control: no-cache
+/index.html
+  Cache-Control: no-cache
 /js/*
   Cache-Control: public, max-age=0, must-revalidate
 /css/*
