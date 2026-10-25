@@ -21,25 +21,47 @@ z OSM, dostaje ocenę, a po drodze przewodnik pisze SMS-y przy landmarkach. Gał
   dostawy pod adresy w zasięgu 0,5–2 km. Rower i auto; czas docelowy z trasy GPS, gwiazdki za czas, bonus za skrót
   (szybciej niż trasa GPS, np. przez chodnik lub park rowerem). Licznik dostaw i zarobku w telefonie.
   Sprawdzam: 3 dostawy pod rząd rowerem i autem, ocena ma sens.
-- 1.5.6 Przewodnik: SMS po wjeździe w promień ok. 50 m od landmarku, 2–3 zdania i karta „czytaj więcej”.
-  Landmarki: klasztor Kamedułów, Las Bielański, AWF, UKSW, stacje M1, Szpital Bielański, Młociny. Teksty piszę
-  ręcznie ze źródeł (z linkami) jako wersję roboczą do akceptacji urzędu; każdy SMS przychodzi raz.
+- 1.5.6 Landmarki. Każdy landmark osobno, ze zdjęć referencyjnych (patrz „Źródła wyglądu”): bryła z LoD1, dach
+  z LoD2 2017 tam, gdzie się zgadza, i modelowane detale 3D (wejścia, kolumny, wieże, przeszklenia, napisy z
+  prawdziwą nazwą, bez logotypów). Kolejność: Galeria Młociny, stacje M1 (Stare Bielany, Wawrzyszew, Młociny)
+  z wejściami i pętlą, AWF, UKSW (Kampus Dewajtis), Szpital Bielański, kościół św. Zygmunta (pl. Konfederacji),
+  kościół Marii Magdaleny; klasztor Kamedułów jako bryła na płaskim terenie (skarpa w Fazie 3). Jeden landmark =
+  jeden podkrok do akceptacji.
+  Sprawdzam: każdy landmark porównany ze zdjęciem.
+- 1.5.7 Przewodnik i burmistrz w SMS-ach. Przewodnik: SMS po wjeździe w promień ok. 50 m od landmarku, 2–3 zdania
+  i karta „czytaj więcej”, teksty ręcznie ze źródeł (z linkami). Burmistrz Grzegorz Pietruczuk: powitanie
+  i zaproszenia do miejsc, ton oparty na jego publicznych postach i wypowiedziach (lista źródeł w
+  docs/teksty-przewodnika.md). Teksty powstają jako wersja robocza; SMS-y burmistrza wchodzą na publiczny link
+  dopiero po akceptacji jego lub urzędu (jak w warunkach Fazy 4). Każdy SMS przychodzi raz.
   Sprawdzam: przejazd obok AWF i stacji daje SMS-y, teksty są poprawne.
-- 1.5.7 Deploy podglądowy na bielany.zbigniew.ai i test pętli. Sprawdzam: bramka (pełna pętla na publicznym linku).
+- 1.5.8 Deploy podglądowy na bielany.zbigniew.ai i test pętli. Sprawdzam: bramka (pełna pętla na publicznym linku).
 
 ## Pliki
-- Nowe: js/missions.js, js/phone.js (nakładka), js/guide.js (SMS-y przewodnika), docs/teksty-przewodnika.md,
+- Nowe: js/missions.js, js/phone.js (nakładka), js/guide.js (SMS-y przewodnika i burmistrza), js/landmarks.js (rozbudowa), docs/teksty-przewodnika.md,
   tests/missions.test.mjs, tests/addresses.test.mjs.
 - Zmiany: tools/geo-bielany.mjs (adresy), js/road-network.js (trasa dla GPS), js/nyc-map.js (trasa, pinezka, adresy
   w wyszukiwarce), js/main.js (podpięcie), index.html, css/style.css.
 - Bez zmian w modułach przenośnych (controllers, cameras, audio-*, pedestrians, scene-culling). Zlecenia tylko czytają
   pozycję i tryb gracza z controllerManager.
 
+## Źródła wyglądu
+- Zdjęcia ulic: Mapillary (zdjęcia uliczne na licencji CC BY-SA, wolno z nich korzystać przy modelowaniu)
+  i Wikimedia Commons.
+- Ortofotomapa GUGiK (geoportal.gov.pl, otwarte dane): układ placów, parkingów, zieleni, kolory dachów.
+- Google Maps i Street View: tylko do Twojego podglądu i porównania. Regulamin Google zabrania odwzorowywania
+  i kopiowania ich zdjęć i map do innych projektów, więc nie biorę z nich danych ani tekstur.
+- Gdzie zdjęć brak, proszę Cię o zdjęcie z telefonu (własne zdjęcia są najprostsze licencyjnie).
+
+## Nazwy
+- Oficjalne nazwy miejsc, instytucji i obiektów zostają prawdziwe (Galeria Młociny, AWF, Szpital Bielański,
+  stacje M1). Projekt jest niekomercyjny.
+- Bez logotypów firm i insygniów służb; szyldy zwykłych sklepów w blokach dalej fikcyjne.
+
 ## Ryzyka i decyzje
-- Burmistrz w SMS-ach: prawdziwa osoba. Proponuję odłożyć do pisemnej zgody (jak w Fazie 4); do tego czasu bez SMS-ów
-  od burmistrza i bez nazwiska w grze.
+- Burmistrz: prawdziwa osoba. Teksty w jego tonie są wersją roboczą; publikacja po akceptacji jego lub urzędu,
+  w grze oznaczenie, że to wiadomości w grze, nie oficjalne stanowisko.
 - Klasztor Kamedułów nie wyszedł w obecnym wycinku miejsc z OSM; dopiszę zapytanie albo pozycję ze źródła.
-- „Galeria Młociny” to prawdziwa marka: w grze tylko „Młociny” (pętla, stacja), bez nazw centrów handlowych.
+- Landmarki to najwięcej pracy w tej fazie; jeśli któryś blokuje, idzie do backlogu, a pętla gry i tak działa.
 - Adresy OSM mają luki (2132 adresy na ok. 2300 budynków); zlecenia losują tylko adresy z punktem przy chodniku.
-- Wydajność: nakładka HTML i znaczniki są lekkie; drzewa z helikoptera zostają w backlogu.
+- Wydajność: detale landmarków jako instancje i LOD; drzewa z helikoptera zostają w backlogu.
 - Poza zakresem: taksówkarz z pasażerem, karetka, Aparat (Faza 2), tabliczki ulic (osobny pomysł w backlogu).

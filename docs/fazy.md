@@ -43,6 +43,6 @@ Bramka: publiczny link na Cloudflare Pages + pakiet dla urzędu.
 Poza zakresem Fazy 1: tramwaje, teren, Wisła, noc, landmarki poza AWF, gameplay, smartfon. Wszystko to jest w docs/backlog.md.
 
 ## Faza 1.5: Smartfon i kurier
-Bramka: pierwsza grywalna pętla. Plan: docs/plan-fazy-1.5.md (do akceptacji), kroki 1.5.1–1.5.7 dopiszę po akceptacji.
+Bramka: pierwsza grywalna pętla. Plan: docs/plan-fazy-1.5.md (do akceptacji), kroki 1.5.1–1.5.8 dopiszę po akceptacji.
 
 - [ ] 1.5.0 Plan Fazy 1.5 (pliki, kolejność, ryzyka). Sprawdzam: akceptuję plan.

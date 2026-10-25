@@ -11,7 +11,7 @@ Pełna dokumentacja: https://claude.ai/artifact/4wjHwfUPzV9NmL6BudsRnL
 - three.js przypięty do jednej wersji w importmap (nie @dev).
 - Atrybucja w stopce aplikacji: "Dane: © współtwórcy OpenStreetMap (ODbL); GUGiK, geoportal.gov.pl". Informacja o oryginale mrdooba zostaje w README i LICENSE.
 - Commit po każdym zamkniętym kroku. Jedna gałąź na fazę, scalenie do main po przejściu bramki.
-- Bez prawdziwych logotypów firm i oficjalnych insygniów służb. Fikcyjne nazwy szyldów.
+- Bez prawdziwych logotypów firm i oficjalnych insygniów służb. Fikcyjne nazwy szyldów zwykłych sklepów; oficjalne nazwy miejsc, instytucji i obiektów (np. Galeria Młociny) zostają prawdziwe. Projekt niekomercyjny.
 - Nie jestem programistą: komendy terminala uruchamiasz sam, mnie prosisz tylko o decyzje i sprawdzenie efektu. Pisz po polsku, krótko, w punktach.
 
 ## Dane
