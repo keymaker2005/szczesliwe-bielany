@@ -35,6 +35,8 @@ import { createPassenger } from './passenger.js';
 import { Medic, DISPATCH, SERVICE as MEDIC_SERVICE } from './medic.js';
 import { Dispatch } from './dispatch.js';
 import { createAmbulance } from './ambulance.js';
+import { Guard, DISPATCH as GUARD_DISPATCH, SERVICE as GUARD_SERVICE, MESSAGES as GUARD_MESSAGES } from './guard.js';
+import { createPatrolCar } from './guard-car.js';
 import { PhotoMode } from './photo-mode.js';
 import { Postcards } from './postcards.js';
 import { createFallingLeaves } from './falling-leaves.js';
@@ -737,6 +739,9 @@ async function initApp() {
       done: (m) => `Pacjent przekazany na SOR. Dojazd ${clock(m.responseTime || 0)} (${'★'.repeat(m.responseStars) || 'za długo'}), transport ${clock(m.time)} (${'★'.repeat(m.transportStars) || 'za długo'}). ${m.paid} zł. Dziękujemy.`,
     },
   });
+  const guard = new Guard(missions, { choose: (q) => dispatch.choose(q) });
+  guard.near = () => controllerManager.getActiveEntity().position;
+  dispatch.register({ role: 'guard', name: GUARD_SERVICE, dispatcher: GUARD_DISPATCH, glyph: '🛡️', mode: 'car', livery: createPatrolCar(), siren: true, provider: guard, messages: GUARD_MESSAGES });
   const COMFORT_NOTES = { brake: 'ostre hamowanie', crash: 'stłuczka', red: 'czerwone światło' };
   missions.on('state', (m) => {
     if (m.role !== 'taxi') return;
