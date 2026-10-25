@@ -20,6 +20,7 @@ import { NYCMapSystem } from './nyc-map.js';
 import { setupSceneCulling, updateSceneCulling } from './scene-culling.js';
 import { CityAudioSystem } from './audio-system.js';
 import { GEO } from './bielany-geodata.js';
+import { loadTerrain, groundY } from './terrain.js';
 import { MissionEngine, ARRIVE_RADIUS } from './missions.js';
 import { createMissionMarker } from './mission-marker.js';
 import { findRoute, limitAt } from './gps-route.js';
@@ -88,7 +89,11 @@ async function initApp() {
     loadingStatus.textContent = 'Budowanie ulic Bielan...';
   }
 
-  // 3. Build the ground & streets of Bielany, the LoD1 buildings, street details & traffic
+  // 3. Build the ground & streets of Bielany, the LoD1 buildings, street details & traffic. First the terrain (the
+  // escarpment and the Vistula valley below the plateau): everything below stands on it
+  // (?plaski: the flat world of Faza 2, to compare)
+  if (!new URLSearchParams(location.search).has('plaski')) await loadTerrain(new URL('./bielany-terrain.bin', import.meta.url));
+  markInit('terrain');
   const cityGrid = buildCityGrid(scene);
   markInit('cityGrid');
   const cityBlocks = buildCityBlocks(scene, { skip: landmarkBuildingIds() });
@@ -110,7 +115,7 @@ async function initApp() {
   const trafficSystem = createTrafficSystem(scene, cityGrid.sidewalks, [
     ...cityGrid.footprints,
     ...streetDetails.footprints,
-    ...allColliders.filter((c) => !c.obb && (c.minY ?? 0) < 3.5)
+    ...allColliders.filter((c) => !c.obb && (c.minY ?? 0) - (c.base ?? 0) < 3.5)
   ]);
   markInit('traffic');
   const trams = createTrams(scene, { blockers: trafficSystem.blockers });
@@ -981,7 +986,7 @@ async function initApp() {
       const activeEnt = controllerManager.getActiveEntity();
       const mode = controllerManager.activeMode;
       const kmh = Math.round(Math.abs(activeEnt.speed) * 3.6);
-      const altM = Math.max(0, Math.round(activeEnt.position.y));
+      const altM = Math.max(0, Math.round(activeEnt.position.y - groundY(activeEnt.position.x, activeEnt.position.z))); // above the ground
 
       if (elFps) {
         elFps.textContent = String(currentFps);

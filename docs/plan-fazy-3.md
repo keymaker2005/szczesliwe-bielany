@@ -24,6 +24,9 @@ Zaakceptowany 2026-10-25 ze wszystkimi czterema propozycjami decyzji.
   zjeżdżające ze skarpy dostają spadek, budynki stoją na swoim gruncie z LoD1. Las Bielański dostaje
   ścieżki, gęstsze poszycie i drzewa GUGiK na prawdziwym zboczu, a Kameduły stają na wzgórzu.
   Sprawdzam: zejście i zjazd ze skarpy, widok z krawędzi na dolinę, Kameduły na wzgórzu, 60 fps.
+  Wykonanie (3.2a, 2026-10-25): próg płaskowyżu 96 m n.p.m. (y = 0); dolina to obszar poniżej progu połączony z Wisłą,
+  dołki na płaskowyżu (wykopy, fosa Fortu Bema) zostają płaskie. W obecnej mapie w dół schodzi ok. 4,1 km² (18%).
+  Krok podzielony: 3.2b to wygląd Lasu Bielańskiego (dno lasu, ścieżki, poszycie).
 - 3.3 Wisła, nabrzeże i most (zakres zależy od decyzji 1). Woda z refleksami (materiał z portu Nowego Jorku
   wraca do użycia), plaże i bulwar, Wisłostrada, a przy Młocinach Most Marii Skłodowskiej-Curie z dojazdem.
   Sprawdzam: dojazd Wisłostradą na most, spacer nabrzeżem, woda wygląda jak rzeka, a nie jak lustro.

@@ -20,6 +20,7 @@ import {
   createLoftedBusMaterial
 } from './actor-models.js';
 import { PersonCrowd, PersonRig, PersonRagdoll } from './pedestrians.js';
+import { groundY, groundPose } from './terrain.js';
 
 // js/traffic.js
 // Manhattan traffic and pedestrians on the road graph road-network.js derives from the city as built:
@@ -524,6 +525,7 @@ function createTrafficSystem(scene, sidewalks, obstacles) {
   let camX = 0;
   let camY = 10;
   let camZ = 140;
+  const ground = { y: 0, pitch: 0, roll: 0 }; // the pose on the ground of the vehicle being drawn (js/terrain.js)
   let camFwdX = 0;
   let camFwdZ = 1;
   function updateView(camera) {
@@ -545,13 +547,13 @@ function createTrafficSystem(scene, sidewalks, obstacles) {
     if (!hasView) return false;
     for (let k = 0; k < 4; k++) {
       const { normal, constant } = frustum.planes[k];
-      if (normal.x * x + normal.y + normal.z * z + constant < -r) return false;
+      if (normal.x * x + normal.y * (groundY(x, z) + 1) + normal.z * z + constant < -r) return false;
     }
     return true;
   }
 
   function nearView(x, z, radius, distance) {
-    return hasView && Math.hypot(x - camX, camY, z - camZ) < distance && visible(x, z, radius);
+    return hasView && Math.hypot(x - camX, camY - groundY(x, z), z - camZ) < distance && visible(x, z, radius);
   }
 
   // Edges and signalized intersections around the focus, to place vehicles and pedestrians on
@@ -1711,11 +1713,14 @@ function createTrafficSystem(scene, sidewalks, obstacles) {
     for (let w = 0; w < 2; w++) {
       const wz = w === 0 ? halfBase : -halfBase;
       dummy.rotation.set(v.wheelSpin + w * 0.55, rotY + (w === 0 ? v.steer : 0), roll, 'YXZ');
-      dummy.position.set(v.x - halfTrack * cosY + wz * sinY, radius, v.z + halfTrack * sinY + wz * cosY);
+      let x = v.x - halfTrack * cosY + wz * sinY, z = v.z + halfTrack * sinY + wz * cosY;
+      dummy.position.set(x, radius + groundY(x, z), z);
       dummy.updateMatrix();
       leftInst.setMatrixAt(i * 2 + w, dummy.matrix);
 
-      dummy.position.set(v.x + halfTrack * cosY + wz * sinY, radius, v.z - halfTrack * sinY + wz * cosY);
+      x = v.x + halfTrack * cosY + wz * sinY;
+      z = v.z - halfTrack * sinY + wz * cosY;
+      dummy.position.set(x, radius + groundY(x, z), z);
       dummy.updateMatrix();
       rightInst.setMatrixAt(i * 2 + w, dummy.matrix);
     }
@@ -1744,8 +1749,13 @@ function createTrafficSystem(scene, sidewalks, obstacles) {
     const bodyInst = near ? bodies[c.bodyType].near : bodies[c.bodyType].far;
     const slot = bodyInst.count++;
 
-    dummy.position.set(c.x, 0.0, c.z);
-    dummy.rotation.set(c.pitch, rotY, c.roll, 'YXZ');
+    // on the escarpment & in the valley the car lies along the slope (js/terrain.js; flat on the plateau)
+    groundPose(c.x, c.z, sinY, cosY, spec.wheelZ, spec.wheelX, ground);
+    c._groundY = ground.y;
+    c._slopePitch = ground.pitch;
+    c._slopeRoll = ground.roll;
+    dummy.position.set(c.x, ground.y, c.z);
+    dummy.rotation.set(c.pitch + ground.pitch, rotY, c.roll + ground.roll, 'YXZ');
     dummy.scale.set(1, 1, 1);
     dummy.updateMatrix();
     bodyInst.setMatrixAt(slot, dummy.matrix);
@@ -1777,15 +1787,15 @@ function createTrafficSystem(scene, sidewalks, obstacles) {
 
     // Soft Under-Car Contact Shadow (AO) stays flat on the asphalt
     const visIdx = visibleCars++;
-    dummy.rotation.set(0, rotY, 0, 'YXZ');
-    dummy.position.set(c.x, 0.018, c.z);
+    dummy.rotation.set(ground.pitch, rotY, ground.roll, 'YXZ');
+    dummy.position.set(c.x, ground.y + 0.018, c.z);
     dummy.scale.set(2.22, 1.0, 5.05);
     dummy.updateMatrix();
     carShadowInst.setMatrixAt(visIdx, dummy.matrix);
 
     const dxCam = c.x - camX;
     const dzCam = c.z - camZ;
-    const distSq = dxCam * dxCam + dzCam * dzCam + camY * camY;
+    const distSq = dxCam * dxCam + dzCam * dzCam + (camY - ground.y) * (camY - ground.y);
     if (distSq < MAX_LIGHT_DIST_SQ) {
       const d = Math.sqrt(distSq);
       const forwardDot = dxCam * camFwdX + dzCam * camFwdZ;
@@ -1801,7 +1811,7 @@ function createTrafficSystem(scene, sidewalks, obstacles) {
     }
 
     if (near) {
-      placeWheels(c, wheelCars++, rotY, c.roll, spec.wheelRadius, spec.wheelX, spec.wheelZ, carWheelLeftInst, carWheelRightInst);
+      placeWheels(c, wheelCars++, rotY, c.roll + ground.roll, spec.wheelRadius, spec.wheelX, spec.wheelZ, carWheelLeftInst, carWheelRightInst);
     }
   }
 
@@ -1815,15 +1825,19 @@ function createTrafficSystem(scene, sidewalks, obstacles) {
     if (hasView && !visible(b.x, b.z, 22)) return;
 
     const i = visibleBuses++;
-    dummy.position.set(b.x, 0.018, b.z);
-    dummy.rotation.set(0, rotY, 0, 'YXZ');
+    groundPose(b.x, b.z, sinY, cosY, 5.2, 1.2, ground);
+    b._groundY = ground.y;
+    b._slopePitch = ground.pitch;
+    b._slopeRoll = ground.roll;
+    dummy.position.set(b.x, ground.y + 0.018, b.z);
+    dummy.rotation.set(ground.pitch, rotY, ground.roll, 'YXZ');
     dummy.scale.set(2.92, 1.0, 12.1);
     dummy.updateMatrix();
     busShadowInst.setMatrixAt(i, dummy.matrix);
 
     // Lofted Bus Body is defined in ground-relative Y (0.36m skirt to 3.0m roof crown)
-    dummy.position.set(b.x, 0.0, b.z);
-    dummy.rotation.set(b.pitch, rotY, b.roll, 'YXZ');
+    dummy.position.set(b.x, ground.y, b.z);
+    dummy.rotation.set(b.pitch + ground.pitch, rotY, b.roll + ground.roll, 'YXZ');
     dummy.scale.set(1, 1, 1);
     dummy.updateMatrix();
     busBodyInst.setMatrixAt(i, dummy.matrix);
@@ -1832,7 +1846,7 @@ function createTrafficSystem(scene, sidewalks, obstacles) {
 
     const dxCam = b.x - camX;
     const dzCam = b.z - camZ;
-    const distSq = dxCam * dxCam + dzCam * dzCam + camY * camY;
+    const distSq = dxCam * dxCam + dzCam * dzCam + (camY - ground.y) * (camY - ground.y);
     if (distSq < MAX_LIGHT_DIST_SQ) {
       const d = Math.sqrt(distSq);
       const forwardDot = dxCam * camFwdX + dzCam * camFwdZ;
@@ -1887,8 +1901,8 @@ function createTrafficSystem(scene, sidewalks, obstacles) {
 
         const baseInt = (v.bus ? HEADLIGHTS.busIntensity : HEADLIGHTS.intensity) * beamScale * fade;
         // Match the body instance, including suspension and impact rotation.
-        dummy.position.set(v.x, 0, v.z);
-        dummy.rotation.set(v.pitch, v.yaw + v.yawOffset, v.roll, 'YXZ');
+        dummy.position.set(v.x, v._groundY || 0, v.z);
+        dummy.rotation.set(v.pitch + (v._slopePitch || 0), v.yaw + v.yawOffset, v.roll + (v._slopeRoll || 0), 'YXZ');
         dummy.scale.set(1, 1, 1);
         dummy.updateMatrix();
         for (let side = -1; side <= 1; side += 2) {
@@ -1918,7 +1932,7 @@ function createTrafficSystem(scene, sidewalks, obstacles) {
       const side = redPhase ? -0.36 : 0.36;
       const pt = policeLightPool[policeLightsUsed++];
       pt.color.setHex(redPhase ? 0xff1828 : 0x1868ff);
-      pt.position.set(v.x + side * v._cosY - 0.25 * v._sinY, 1.85, v.z - side * v._sinY - 0.25 * v._cosY);
+      pt.position.set(v.x + side * v._cosY - 0.25 * v._sinY, (v._groundY || 0) + 1.85, v.z - side * v._sinY - 0.25 * v._cosY);
       pt.distance = 12.0;
       pt.intensity = 42.0 * tailScale * fade * pulse;
     }
@@ -1934,9 +1948,9 @@ function createTrafficSystem(scene, sidewalks, obstacles) {
   const SIDEWALK_Y = ISLAND_BOUNDS.sidewalkHeight;
   const CROSSWALK_Y = 0.012;
   function pedGround(p, x, z) {
-    if (!p.node) return SIDEWALK_Y;
+    if (!p.node) return groundY(x, z) + SIDEWALK_Y;
     const t = (x - p.ax) * p.ux + (z - p.az) * p.uz;
-    return t > 2 && t < p.len - 2 ? CROSSWALK_Y : SIDEWALK_Y;
+    return groundY(x, z) + (t > 2 && t < p.len - 2 ? CROSSWALK_Y : SIDEWALK_Y);
   }
 
   // Every rig's gait advances every frame; only those the camera may see (or whose shadow it may see) solve their
@@ -2009,8 +2023,9 @@ function createTrafficSystem(scene, sidewalks, obstacles) {
         sp.x += sp.vx * dt;
         sp.y += sp.vy * dt;
         sp.z += sp.vz * dt;
-        if (sp.y < 0.03) {
-          sp.y = 0.03;
+        const floor = groundY(sp.x, sp.z) + 0.03;
+        if (sp.y < floor) {
+          sp.y = floor;
           sp.vy = Math.abs(sp.vy) * 0.45;
           sp.vx *= 0.78;
           sp.vz *= 0.78;

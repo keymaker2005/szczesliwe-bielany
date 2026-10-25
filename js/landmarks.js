@@ -13,6 +13,7 @@
 import * as THREE from 'three/webgpu';
 import { GEO } from './bielany-geodata.js';
 import { Builder, frameOf, toPts, facadeTexture, mat } from './landmark-kit.js';
+import { groundY } from './terrain.js';
 
 const bryantParkLawn = null;
 
@@ -541,16 +542,43 @@ function buildLandmarks(scene) {
   const b = new Builder('BielanyLandmarks');
   const colliders = [];
   for (const [name, fn] of Object.entries({ galeria, stareBielany, wawrzyszew, mlociny, awf, uksw, szpital, zygmunt, magdalena, kameduly })) {
+    const parts = new Map([...b.parts].map(([m, list]) => [m, list.length]));
+    const meshes = b.group.children.length, firstCollider = colliders.length;
     try {
       fn(b, colliders);
     } catch (e) {
       console.warn(`[landmarks] ${name}:`, e);
     }
+    onGround(b, parts, meshes, colliders.slice(firstCollider));
   }
   const group = b.finish();
   scene.add(group);
   console.info(`[landmarks] ${group.children.length} meshes, ${colliders.length} colliders`);
   return { group, colliders };
+}
+
+// A landmark on the escarpment (js/terrain.js) stands as a whole at the lowest ground under its walls' feet: the
+// pieces just built (the parts added since `parts`, the meshes since `meshes`) and its colliders move down together
+function onGround(b, parts, meshes, colliders) {
+  const geos = new Set();
+  for (const [m, list] of b.parts) for (const g of list.slice(parts.get(m) || 0)) geos.add(g);
+  const own = b.group.children.slice(meshes);
+  let base = 0;
+  const v = new THREE.Vector3();
+  const feet = (g, matrix) => {
+    const p = g.attributes.position;
+    for (let k = 0; k < p.count; k++) {
+      v.fromBufferAttribute(p, k);
+      if (matrix) v.applyMatrix4(matrix);
+      if (v.y < 0.5) base = Math.min(base, groundY(v.x, v.z));
+    }
+  };
+  for (const g of geos) feet(g, null);
+  for (const m of own) { m.updateMatrix(); feet(m.geometry, m.matrix); }
+  if (!base) return;
+  for (const g of geos) g.translate(0, base, 0);
+  for (const m of own) m.position.y += base;
+  for (const c of colliders) { c.minY = (c.minY ?? 0) + base; c.maxY += base; c.base = base; }
 }
 
 export { bryantParkLawn, buildLandmarks, landmarkBuildingIds };

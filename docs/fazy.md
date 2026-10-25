@@ -79,7 +79,11 @@ napisy słowne na pojazdach służb bez insygniów, najpierw teren). Gałąź fa
 - [x] 3.1 Dane terenu: NMT GUGiK (WCS, 2 m) na siatce 4 m w układzie świata, data/bielany_nmt_4m.bin i .json,
   podgląd data/podglad_terenu.png z urwiskami OSM (tools/terrain-bielany.mjs). Sprawdzam: na podglądzie widać skarpę,
   dolinę Wisły i Las Bielański tam, gdzie są.
-- [ ] 3.2 Skarpa i Las Bielański w świecie. Sprawdzam: zejście i zjazd ze skarpy, widok z krawędzi, Kameduły na wzgórzu, 60 fps.
+- [x] 3.2a Teren w świecie (2026-10-25): płaskowyż płaski (y = 0 od 96 m n.p.m.), skarpa i dolina Wisły do -21 m
+  (js/terrain.js, js/bielany-terrain.bin); asfalt, trawniki, krawężniki, chodniki, farba i tory na jednej siatce 8 m;
+  budynki, landmarki, drzewa, sygnalizatory, auta, autobusy, tramwaje, piesi, gracz, kamera i helikopter na gruncie.
+  Porównanie z płaską mapą: adres z ?plaski. Sprawdzam: zejście i zjazd ze skarpy, widok z krawędzi, Kameduły na wzgórzu, 60 fps.
+- [ ] 3.2b Las Bielański: leśne dno zamiast trawnika, ścieżki, gęstsze poszycie (granice lasu z OSM). Sprawdzam: las wygląda jak las.
 - [ ] 3.3 Wisła, nabrzeże i most Marii Skłodowskiej-Curie (poszerzona mapa). Sprawdzam: dojazd Wisłostradą na most, spacer nabrzeżem.
 - [ ] 3.4 Wspólna dyspozytornia służb w telefonie. Sprawdzam: ratownik bez zmian, nowa zakładka „Służby”.
 - [ ] 3.5 Strażnik Miejski. Sprawdzam: 3 zgłoszenia (trawnik, śmieci, hałas), wybór pouczenie lub mandat zmienia ocenę.

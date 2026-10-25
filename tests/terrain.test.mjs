@@ -4,7 +4,7 @@ import os from 'node:os';
 import path from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
-import { toPuwg92, fromWorld, readTiff, writePng } from '../tools/terrain-bielany.mjs';
+import { toPuwg92, fromWorld, readTiff, writePng, gameField, encodeGameField } from '../tools/terrain-bielany.mjs';
 import { toWorld } from '../tools/bielany-frame.mjs';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
@@ -72,4 +72,31 @@ test('Terrain data: the 4 m grid covers the Phase 3 area and shows the Vistula e
   assert.ok(at(vx, vz) < 78, `Vistula ${at(vx, vz)}`);
   assert.ok(station - at(1828, -848) > 15, `valley east of the escarpment ${at(1828, -848)}`);
   assert.ok(meta.stats.min > 70 && meta.stats.max < 115, `heights ${meta.stats.min}-${meta.stats.max}`);
+});
+
+test('Game field: the plateau stays at 0, only the valley reached from the river sinks', () => {
+  // 40 x 10 cells: a plateau at 100 m with a pit (90 m) in it, an escarpment, the valley at 80 m and the river at 75 m
+  const nx = 40, nz = 10, h = new Float32Array(nx * nz);
+  for (let j = 0; j < nz; j++) {
+    for (let i = 0; i < nx; i++) h[j * nx + i] = i < 15 ? 100 : i < 25 ? 100 - (i - 15) * 2 : i < 37 ? 80 : 75;
+  }
+  for (const [i, j] of [[4, 4], [5, 4], [4, 5], [5, 5]]) h[j * nx + i] = 90;
+  const y = gameField(h, nx, nz);
+  assert.equal(y[5 * nx + 4], 0, 'a pit on the plateau stays flat');
+  assert.equal(y[5 * nx + 10], 0, 'the plateau is 0');
+  assert.ok(y[5 * nx + 30] < -1500 && y[5 * nx + 30] > -1700, `the valley ${y[5 * nx + 30]} cm`);
+  assert.ok(y[5 * nx + 22] < 0 && y[5 * nx + 22] > y[5 * nx + 30], 'the escarpment between');
+  // the encoded file: header, then spans of the non-zero cells only
+  const buf = encodeGameField(y, { x0: -10, z0: 5, cell: 4, nx, nz });
+  assert.equal(buf.toString('latin1', 0, 4), 'BTR1');
+  assert.deepEqual([buf.readFloatLE(4), buf.readFloatLE(8), buf.readFloatLE(12), buf.readUInt32LE(16), buf.readUInt32LE(20)], [-10, 5, 4, nx, nz]);
+  assert.ok(buf.length < 24 + nz * (2 + 4) + 2 * nx * nz);
+});
+
+test('Game field file: js/bielany-terrain.bin matches the terrain data', () => {
+  const meta = JSON.parse(fs.readFileSync(path.join(root, 'data/bielany_nmt_4m.json'), 'utf8'));
+  const buf = fs.readFileSync(path.join(root, 'js/bielany-terrain.bin'));
+  assert.equal(buf.toString('latin1', 0, 4), 'BTR1');
+  assert.deepEqual([buf.readUInt32LE(16), buf.readUInt32LE(20)], [meta.nx, meta.nz]);
+  assert.ok(buf.length < 2.5e6, `${buf.length} bytes`);
 });

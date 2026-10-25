@@ -8,6 +8,7 @@
 import * as THREE from 'three/webgpu';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { GEO } from './bielany-geodata.js';
+import { groundPose, drapeGeometry } from './terrain.js';
 
 const SECTION = 10.2; // m, one body section
 const GAP = 0.5; // m between sections (the bellows)
@@ -107,7 +108,7 @@ function createTrams(scene, { blockers = [] } = {}) {
   const routes = (GEO.trams?.routes || []).map(prepare);
   const bounds = GEO.frame.bounds;
 
-  const rails = new THREE.Mesh(railsGeometry(), new THREE.MeshStandardNodeMaterial({ color: 0x8e9196, roughness: 0.35, metalness: 0.8, side: THREE.DoubleSide }));
+  const rails = new THREE.Mesh(drapeGeometry(railsGeometry()), new THREE.MeshStandardNodeMaterial({ color: 0x8e9196, roughness: 0.35, metalness: 0.8, side: THREE.DoubleSide }));
   rails.name = 'TramRails';
   rails.receiveShadow = true;
   group.add(rails);
@@ -138,6 +139,7 @@ function createTrams(scene, { blockers = [] } = {}) {
   const m4 = new THREE.Matrix4(), q = new THREE.Quaternion(), up = new THREE.Vector3(0, 1, 0), one = new THREE.Vector3(1, 1, 1);
   const zero = new THREE.Matrix4().makeScale(0, 0, 0), v3 = new THREE.Vector3();
   const flip = new THREE.Quaternion().setFromAxisAngle(up, Math.PI);
+  const pose = {}, tilt = new THREE.Euler(0, 0, 0, 'YXZ');
   const inArea = (x, z) => x >= bounds.minX && x <= bounds.maxX && z >= bounds.minZ && z <= bounds.maxZ;
 
   function place() {
@@ -150,9 +152,11 @@ function createTrams(scene, { blockers = [] } = {}) {
         const mesh = k === 0 || k === SECTIONS - 1 ? fronts : middles;
         const idx = mesh === fronts ? fi++ : mi++;
         if (!t.visible) { mesh.setMatrixAt(idx, zero); continue; }
-        q.setFromAxisAngle(up, p.yaw);
+        // each section on the ground under it, along the slope (js/terrain.js)
+        groundPose(p.x, p.z, Math.sin(p.yaw), Math.cos(p.yaw), SECTION / 2, HALF_W, pose);
+        q.setFromEuler(tilt.set(pose.pitch, p.yaw, pose.roll, 'YXZ'));
         if (k === SECTIONS - 1) q.multiply(flip); // the rear section's nose faces backwards
-        m4.compose(v3.set(p.x, 0, p.z), q, one);
+        m4.compose(v3.set(p.x, pose.y, p.z), q, one);
         mesh.setMatrixAt(idx, m4);
       }
     });

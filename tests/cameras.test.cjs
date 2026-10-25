@@ -59,7 +59,7 @@ function cameraHarness(entity = {
   window.innerHeight = 900;
   const { CameraSystem } = loadModule(source, {
     globals: { window, document },
-    imports: { 'three/webgpu': { Vector3, PerspectiveCamera }, './landmarks.js': {} }
+    imports: { 'three/webgpu': { Vector3, PerspectiveCamera }, './landmarks.js': {}, './terrain.js': { groundY: () => 0, groundPose: (x, z, s, c, l, w, out = {}) => Object.assign(out, { y: 0, pitch: 0, roll: 0 }) } }
   });
   const camera = new CameraSystem(canvas, { getActiveEntity: () => entity });
   return {

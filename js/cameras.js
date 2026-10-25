@@ -1,4 +1,5 @@
 import * as THREE from 'three/webgpu';
+import { groundY } from './terrain.js';
 
 // js/cameras.js
 // Multi-camera system supporting Third-Person Chase (with mouse/touch orbit + zoom),
@@ -195,11 +196,8 @@ class CameraSystem {
         const height = entity.chaseHeight * this.zoomMultiplier + Math.sin(this.orbitPitchOffset) * dist * 0.85;
         const horizDist = Math.cos(this.orbitPitchOffset) * dist + speedLag;
 
-        desiredPos.set(
-          entity.position.x - Math.sin(totalYaw) * horizDist,
-          Math.max(0.65, entity.position.y + height),
-          entity.position.z - Math.cos(totalYaw) * horizDist
-        );
+        const cx = entity.position.x - Math.sin(totalYaw) * horizDist, cz = entity.position.z - Math.cos(totalYaw) * horizDist;
+        desiredPos.set(cx, Math.max(groundY(cx, cz) + 0.65, entity.position.y + height), cz);
 
         const lookUpBias = entity.type === 'helicopter' ? 0.2 : (entity.type === 'car' ? 0.52 : 1.55);
         desiredLook.set(
@@ -215,11 +213,9 @@ class CameraSystem {
         const backDist = (entity.type === 'car' ? 3.6 : (entity.type === 'helicopter' ? 8.5 : 2.8)) + speedLag;
         const lowY = entity.type === 'helicopter' ? entity.position.y + 1.2 : entity.position.y + 0.92;
 
-        desiredPos.set(
-          entity.position.x - Math.sin(entity.heading) * backDist + Math.cos(entity.heading) * sideOffset,
-          Math.max(0.55, lowY),
-          entity.position.z - Math.cos(entity.heading) * backDist - Math.sin(entity.heading) * sideOffset
-        );
+        const ax = entity.position.x - Math.sin(entity.heading) * backDist + Math.cos(entity.heading) * sideOffset;
+        const az = entity.position.z - Math.cos(entity.heading) * backDist - Math.sin(entity.heading) * sideOffset;
+        desiredPos.set(ax, Math.max(groundY(ax, az) + 0.55, lowY), az);
         desiredLook.set(
           entity.position.x + Math.sin(entity.heading) * 3.2,
           entity.position.y + 1.05,
@@ -258,8 +254,8 @@ class CameraSystem {
       case 'centralPark': {
         // At the edge of Las Bielański (the survey's densest woods), looking in under the autumn crowns
         const sway = Math.sin(elapsed * 0.22) * 3.5;
-        desiredPos.set(150.0 + sway, 4.5, -1450.0);
-        desiredLook.set(320.0, 8.0, -1700.0);
+        desiredPos.set(150.0 + sway, groundY(150.0, -1450.0) + 4.5, -1450.0);
+        desiredLook.set(320.0, groundY(320.0, -1700.0) + 8.0, -1700.0);
         break;
       }
 
@@ -350,7 +346,7 @@ class CameraSystem {
       this.followLookOffset.lerp(desiredLook.sub(entity.position), k);
       this.currentPos.set(entity.position.x, this.followBaseY, entity.position.z).add(this.followOffset);
       this.currentLookAt.set(entity.position.x, this.followBaseY, entity.position.z).add(this.followLookOffset);
-      this.currentPos.y = Math.max(0.55, this.currentPos.y);
+      this.currentPos.y = Math.max(groundY(this.currentPos.x, this.currentPos.z) + 0.55, this.currentPos.y); // never inside the slope
     } else {
       this.followEntity = null;
       const k = 1 - Math.exp(-dt * 8.5);

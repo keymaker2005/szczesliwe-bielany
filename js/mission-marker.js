@@ -3,6 +3,7 @@
 // ring the size of the arrival radius, gently pulsing.
 
 import * as THREE from 'three/webgpu';
+import { groundY } from './terrain.js';
 
 const PILLAR_H = 70; // m
 
@@ -41,7 +42,7 @@ function createMissionMarker(radius) {
   return {
     group,
     show(x, z) {
-      group.position.set(x, 0, z);
+      group.position.set(x, groundY(x, z), z);
       group.visible = true;
     },
     hide() {

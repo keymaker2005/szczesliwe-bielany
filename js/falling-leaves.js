@@ -4,6 +4,7 @@
 // behind. One instanced mesh; the leaves sit in a box that follows the camera, so they cost the same anywhere.
 
 import * as THREE from 'three/webgpu';
+import { groundY } from './terrain.js';
 
 const COUNT = 320;
 const RADIUS = 30; // m round the camera
@@ -51,7 +52,7 @@ function createFallingLeaves(scene) {
     // cam: the camera position; wind: m/s along x
     update(dt, elapsed, cam, wind = 0.6) {
       if (!on) return;
-      const cx = cam.x, cz = cam.z, base = Math.max(0, cam.y - TOP * 0.6);
+      const cx = cam.x, cz = cam.z, base = Math.max(groundY(cx, cz), cam.y - TOP * 0.6);
       for (let i = 0; i < COUNT; i++) {
         const l = leaves[i];
         l.y -= l.fall * dt;

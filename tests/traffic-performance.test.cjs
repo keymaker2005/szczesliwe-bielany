@@ -8,6 +8,7 @@ const source = readFileSync(join(__dirname, '../js/traffic.js'), 'utf8');
 function productionFunction(name, context) {
   const match = source.match(new RegExp(`  function ${name}\\([^]*?\\n  \\}`));
   assert.ok(match, `${name} is present`);
+  context.groundY ??= () => 0; // a flat world (js/terrain.js before loadTerrain)
   return vm.runInNewContext(`(${match[0].trim()})`, context);
 }
 

@@ -1,6 +1,7 @@
 import * as THREE from 'three/webgpu';
 import { attribute, uv, fract, floor, mod, mix, color, float, vec3, smoothstep, step, fwidth, max, min, abs, sin } from 'three/tsl';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
+import { groundY } from './terrain.js';
 import { GEO } from './bielany-geodata.js';
 
 // js/buildings.js
@@ -187,7 +188,8 @@ function pushWalls(ring, h, look, w, onWall) {
 }
 
 // Wall colliders of one ring: oriented boxes WALL_T thick just inside each wall, from the ground to the roof
-function pushColliders(ring, h, out) {
+// base: the ground under the building (js/terrain.js; 0 on the plateau); its walls reach well below it on a slope
+function pushColliders(ring, h, out, base = 0) {
   for (let i = 0; i < ring.length; i++) {
     const a = ring[i];
     const b = ring[(i + 1) % ring.length];
@@ -198,7 +200,7 @@ function pushColliders(ring, h, out) {
     const hx = len / 2 + 0.05, hz = WALL_T / 2;
     const rx = Math.abs(ex) * hx + Math.abs(ez) * hz, rz = Math.abs(ez) * hx + Math.abs(ex) * hz;
     out.push({
-      minX: cx - rx, maxX: cx + rx, minZ: cz - rz, maxZ: cz + rz, minY: 0, maxY: h,
+      minX: cx - rx, maxX: cx + rx, minZ: cz - rz, maxZ: cz + rz, minY: base ? base - 40 : 0, maxY: base + h, base,
       obb: { cx, cz, hx, hz, cs: ex, sn: -ez }
     });
   }
@@ -239,9 +241,12 @@ function buildCityBlocks(scene, { skip = new Set() } = {}) {
     if (!(h > 0.5)) return;
     const outer = toPts(outerFlat);
     const holes = holesFlat.map(toPts);
+    // On the escarpment the building stands at the lowest ground under its outline, the uphill side in the slope
+    let base = 0;
+    for (const p of outer) base = Math.min(base, groundY(p.x, p.z));
     if (skip.has(id)) {
-      pushColliders(outer, h, colliders);
-      for (const hole of holes) pushColliders(hole.slice().reverse(), h, colliders);
+      pushColliders(outer, h, colliders, base);
+      for (const hole of holes) pushColliders(hole.slice().reverse(), h, colliders, base);
       footprints.push({ h, pts: outer });
       return;
     }
@@ -279,29 +284,31 @@ function buildCityBlocks(scene, { skip = new Set() } = {}) {
           const s0 = ((k + 0.5) / bays) * len;
           for (let s = 1; s < floors; s++) {
             scale.makeScale((len / bays) * 0.86, 1, 1);
-            m4.multiplyMatrices(basis, scale).setPosition(a.x + ex * s0, s * T.storey - 0.08, a.z + ez * s0);
+            m4.multiplyMatrices(basis, scale).setPosition(a.x + ex * s0, base + s * T.storey - 0.08, a.z + ez * s0);
             balconies.push({ m: m4.clone(), c: front });
           }
         }
       } else if (type === 5) {
         scale.makeScale(len + 0.5, 0.42, 0.5);
-        m4.multiplyMatrices(basis, scale).setPosition(a.x + ex * len / 2 + ez * 0.2, h - 0.55, a.z + ez * len / 2 - ex * 0.2);
+        m4.multiplyMatrices(basis, scale).setPosition(a.x + ex * len / 2 + ez * 0.2, base + h - 0.55, a.z + ez * len / 2 - ex * 0.2);
         cornices.push(m4.clone());
       }
     };
+    const first = t.walls.pos.length;
     pushWalls(outer, h, look, t.walls, onWall);
     for (const hole of holes) pushWalls(hole.slice().reverse(), h, look, t.walls, onWall); // courtyard walls face inwards
+    if (base) for (let k = first + 1; k < t.walls.pos.length; k += 3) t.walls.pos[k] += base;
 
     const shape = new THREE.Shape(outer.map((p) => new THREE.Vector2(p.x, -p.z)));
     for (const hole of holes) shape.holes.push(new THREE.Path(hole.map((p) => new THREE.Vector2(p.x, -p.z))));
     const roof = new THREE.ShapeGeometry(shape, 1);
     roof.rotateX(-Math.PI / 2);
-    roof.translate(0, h, 0);
+    roof.translate(0, base + h, 0);
     roof.deleteAttribute('uv');
     t.roofs.push(roof);
 
-    pushColliders(outer, h, colliders);
-    for (const hole of holes) pushColliders(hole.slice().reverse(), h, colliders);
+    pushColliders(outer, h, colliders, base);
+    for (const hole of holes) pushColliders(hole.slice().reverse(), h, colliders, base);
     footprints.push({ h, pts: outer });
   });
 

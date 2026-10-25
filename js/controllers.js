@@ -22,6 +22,7 @@ import {
 import { PersonCrowd, PersonRig } from './pedestrians.js';
 import { HEADLIGHTS, createVehicleHeadlight, placeVehicleHeadlight } from './vehicle-lights.js';
 import { bryantParkLawn } from './landmarks.js';
+import { groundY, groundPose } from './terrain.js';
 
 // js/controllers.js
 // Sculpted, non-blocky GTA 6-style 3D models, animations, and physics controllers
@@ -844,10 +845,12 @@ class ThirdPersonControllerManager {
     if (lawn && x > lawn.minX && x < lawn.maxX && z > lawn.minZ && z < lawn.maxZ) {
       return lawn.top;
     }
+    // the plateau is at 0, the escarpment & the Vistula valley below it (js/terrain.js)
+    const ground = groundY(x, z);
     if (mode === 'person') {
-      return this.isPointOnSidewalk(x, z) ? ISLAND_BOUNDS.sidewalkHeight : 0.0;
+      return ground + (this.isPointOnSidewalk(x, z) ? ISLAND_BOUNDS.sidewalkHeight : 0.0);
     }
-    return 0.0;
+    return ground;
   }
 
   // The colliders whose bounds come within `r` of (x, z), in their original order. They never move, so they are
@@ -1027,6 +1030,13 @@ class ThirdPersonControllerManager {
       const e = this.entities[key];
       e.mesh.position.copy(e.position);
       e.mesh.rotation.y = e.heading;
+      // the car & the bike lie along the slope of the ground under their wheels (the person and the helicopter stay upright)
+      if (e.type === 'car' || e.type === 'cyclist') {
+        const pose = groundPose(e.position.x, e.position.z, Math.sin(e.heading), Math.cos(e.heading), e.type === 'car' ? 1.4 : 0.55, e.type === 'car' ? 0.8 : 0.05, this._pose || (this._pose = {}));
+        e.mesh.rotation.order = 'YXZ';
+        e.mesh.rotation.x = pose.pitch;
+        e.mesh.rotation.z = e.type === 'car' ? pose.roll : e.mesh.rotation.z;
+      }
     }
 
     // Modulate clustered vehicle & bike lights by time of day (off during Midday & Golden Hour; fade in at Dusk & Night)
@@ -1223,10 +1233,11 @@ class ThirdPersonControllerManager {
     h.position.z += Math.cos(h.heading) * h.speed * dt;
     h.position.y += h.verticalSpeed * dt;
 
-    if (h.position.y < 0.25) {
-      this.reportCollision(h, groundCollider, 'ground', h.position.x, 0.25, h.position.z, 0, 1, 0, -h.verticalSpeed);
+    const floor = groundY(h.position.x, h.position.z) + 0.25;
+    if (h.position.y < floor) {
+      this.reportCollision(h, groundCollider, 'ground', h.position.x, floor, h.position.z, 0, 1, 0, -h.verticalSpeed);
     }
-    h.position.y = Math.max(0.25, Math.min(380, h.position.y));
+    h.position.y = Math.max(floor, Math.min(380, h.position.y));
     this.resolveHorizontalCollision(h.position, 4.5, null, h);
 
     const targetPitch = (h.speed / maxHorizSpeed) * 0.24;

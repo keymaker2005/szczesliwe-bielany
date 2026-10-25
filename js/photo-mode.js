@@ -5,6 +5,7 @@
 // postcards album (js/postcards.js). Esc leaves.
 
 import * as THREE from 'three/webgpu';
+import { groundY } from './terrain.js';
 
 const FILTERS = [
   { name: 'Naturalny', css: 'none' },
@@ -112,7 +113,7 @@ class PhotoMode {
     const sp = SPEED * (k.has('ShiftLeft') || k.has('ShiftRight') ? 3 : 1) * dt;
     c.position.x += mx * sp;
     c.position.z += mz * sp;
-    c.position.y = Math.max(0.6, c.position.y + my * sp);
+    c.position.y = Math.max(groundY(c.position.x, c.position.z) + 0.6, c.position.y + my * sp);
     const t = new THREE.Vector3(c.position.x + Math.sin(this.yaw) * Math.cos(this.pitch), c.position.y + Math.sin(this.pitch), c.position.z + Math.cos(this.yaw) * Math.cos(this.pitch));
     c.lookAt(t);
     if (c.fov !== this.fov) { c.fov = this.fov; c.updateProjectionMatrix(); }

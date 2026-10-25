@@ -3,6 +3,7 @@
 // shown at the pick-up of a taxi fare and gone once they are in the car. A new coat colour for every fare.
 
 import * as THREE from 'three/webgpu';
+import { groundY } from './terrain.js';
 
 const COATS = [0x8a3b2e, 0x2f4f6f, 0x5b6b3a, 0x6b4a7a, 0xb07a2a, 0x3a3d40];
 
@@ -44,7 +45,7 @@ function createPassenger() {
     // stand at (x, z) facing (fx, fz) (the street)
     show(x, z, fx = 0, fz = 1) {
       coat.color.setHex(COATS[serial++ % COATS.length]);
-      group.position.set(x, 0.15, z);
+      group.position.set(x, groundY(x, z) + 0.15, z);
       group.rotation.y = Math.atan2(fx, fz);
       group.visible = true;
     },

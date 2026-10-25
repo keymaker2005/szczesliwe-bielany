@@ -3,6 +3,7 @@ import { uniform, mod, step, float, mix, color } from 'three/tsl';
 import { SIGNAL_TIMING, ISLAND_BOUNDS, blockAt, buildingAt, nearestRoads } from './city-config.js';
 import { GEO } from './bielany-geodata.js';
 import { createTreeField } from './trees.js';
+import { groundY } from './terrain.js';
 
 // js/street-details.js
 // The street furniture & trees of Bielany:
@@ -59,7 +60,7 @@ function treeSites() {
     const ratio = r / h;
     const species = h < 9 ? 1 : ratio < 0.24 ? 2 : 0; // small & open: locust; tall & narrow: elm (vase); else plane
     const rnd = Math.abs(Math.sin(x * 12.9898 + z * 78.233) * 43758.5453) % 1;
-    sites.push({ x, y: block ? ISLAND_BOUNDS.sidewalkHeight : 0, z, species, height: h, crown: Math.max(1.2, r), tint: autumnTint(rnd) });
+    sites.push({ x, y: (block ? ISLAND_BOUNDS.sidewalkHeight : 0) + groundY(x, z), z, species, height: h, crown: Math.max(1.2, r), tint: autumnTint(rnd) });
   }
   return sites;
 }
@@ -86,7 +87,7 @@ function buildStreetDetails(scene) {
         const x = e.sx + e.dx * e.len + e.rx * r;
         const z = e.sz + e.dz * e.len + e.rz * r;
         heads.push({ x, z, yaw: Math.atan2(-e.dx, -e.dz), main: e.axisIndex === 0 });
-        audioSignals.push({ x, y: POLE_H - 0.4, z, isAvenue: e.axisIndex === 0 });
+        audioSignals.push({ x, y: groundY(x, z) + POLE_H - 0.4, z, isAvenue: e.axisIndex === 0 });
       }
     }
     if (!heads.length) return;
@@ -105,7 +106,7 @@ function buildStreetDetails(scene) {
     const boxes = make(housing, new THREE.MeshStandardNodeMaterial({ color: 0x1b1d20, roughness: 0.6 }), heads, 'SignalHeads');
     const dummy = new THREE.Object3D();
     heads.forEach((h, i) => {
-      dummy.position.set(h.x, 0, h.z);
+      dummy.position.set(h.x, groundY(h.x, h.z), h.z);
       dummy.rotation.set(0, h.yaw, 0);
       dummy.updateMatrix();
       poles.setMatrixAt(i, dummy.matrix);
@@ -118,7 +119,7 @@ function buildStreetDetails(scene) {
       for (const lamp of ['red', 'amber', 'green']) {
         const im = make(lens, createLensMaterial(signalClock, main, lamp), list, `SignalLens ${main ? 'main' : 'cross'} ${lamp}`, false);
         list.forEach((h, i) => {
-          dummy.position.set(h.x, 0, h.z);
+          dummy.position.set(h.x, groundY(h.x, h.z), h.z);
           dummy.rotation.set(0, h.yaw, 0);
           dummy.updateMatrix();
           dummy.matrix.multiply(new THREE.Matrix4().makeTranslation(0, lampY[lamp], HEAD.d + 0.065));

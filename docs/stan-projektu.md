@@ -5,8 +5,11 @@
 - Faza 1.5 (smartfon, kurier, landmarki, przewodnik, burmistrz) zaliczona 2026-10-26.
 - Faza 2 (większy obszar, wydajność, tramwaje, taksówkarz, ratownik, Aparat, liście) zrobiona i opublikowana; bramka
   (60 fps na laptopie z Windows) czeka na test według docs/test-1.8b.md.
-- Następny krok do decyzji: plan Fazy 3 (służby i teren, docs/backlog.md) albo najpierw test na Windows.
-- Gałęzie: faza-0, faza-1, faza-1.5, faza-2 (bieżąca). main = oryginał mrdooba (tag nyc-original); scalenie do main
+- Faza 3 (gałąź faza-3, plan docs/plan-fazy-3.md zaakceptowany 2026-10-25): 3.1 dane terenu i 3.2a teren w świecie
+  zrobione (lokalnie, bez deployu); następny 3.2b Las Bielański, potem 3.3 Wisła i most (poszerzenie mapy).
+- Teren: js/terrain.js (groundY, drapeGeometry, groundPose), dane js/bielany-terrain.bin z tools/terrain-bielany.mjs;
+  każdy nowy obiekt na ziemi musi brać wysokość z groundY. ?plaski w adresie = płaska mapa do porównań.
+- Gałęzie: faza-0, faza-1, faza-1.5, faza-2, faza-3 (bieżąca). main = oryginał mrdooba (tag nyc-original); scalenie do main
   dopiero po bramkach.
 
 ## Publikacja

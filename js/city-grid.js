@@ -4,15 +4,17 @@ import { ISLAND_BOUNDS, BLOCKS, SIDEWALKS } from './city-config.js';
 import { texture, positionWorld, vec2, vec3, float, color, mix, fract, sin, dot, floor, smoothstep, fwidth, length, max, min } from 'three/tsl';
 import { createRoadSurfaceMaterial, createParkLawnMaterial, createSidewalkMaterial, createCurbMaterial } from './tsl-materials.js';
 import { GEO } from './bielany-geodata.js';
+import { drapeGeometry, groundTiles } from './terrain.js';
 
 // js/city-grid.js
-// Builds the ground of Bielany (Faza 1: flat, no terrain): the roadway is everything between the blocks, so the MVP
-// area is one asphalt plate; on it stand the blocks (curb islands from tools/geo-bielany.mjs, city-config.js BLOCKS)
+// Builds the ground of Bielany: the roadway is everything between the blocks, so the MVP area is one asphalt plate
+// (flat on the plateau, laid on the escarpment & the valley below it, js/terrain.js); on it stand the blocks (curb islands from tools/geo-bielany.mjs, city-config.js BLOCKS)
 // raised to the curb height, granite-grey curb faces, lawn on top and the sidewalks along their curbs. Beyond the area
 // lawn runs out to the horizon haze. Autumn: the lawns a little faded, and fallen leaves under and round every tree of
 // the survey (a density map drawn from the crowns) on lawns, sidewalks & the roadway's edges.
 
 const PLATE_MARGIN = 1500; // m of ground beyond the MVP area
+const HORIZON = 20000; // m the outermost ground reaches further out, flat at its edge heights
 const CURB = ISLAND_BOUNDS.sidewalkHeight; // block top above the roadway
 const SIDEWALK_LIFT = 0.006; // sidewalk paving just above the lawn on the block top
 
@@ -98,22 +100,26 @@ function buildCityGrid(scene) {
   group.name = 'BielanyCityGrid';
   const b = ISLAND_BOUNDS;
 
-  // 1. Lawn out to the horizon, just below the area's asphalt plate
-  const outerGeo = new THREE.PlaneGeometry(b.maxX - b.minX + 2 * PLATE_MARGIN, b.maxZ - b.minZ + 2 * PLATE_MARGIN, 1, 1);
-  outerGeo.rotateX(-Math.PI / 2);
+  // 1. Lawn out to the horizon round the area's asphalt plate (just below its edge): four strips on the terrain
+  const M = PLATE_MARGIN, H = HORIZON;
+  const strips = [
+    [b.minX - M, b.minZ - M, b.minX, b.maxZ + M, { w: H, n: H, s: H }],
+    [b.maxX, b.minZ - M, b.maxX + M, b.maxZ + M, { e: H, n: H, s: H }],
+    [b.minX, b.minZ - M, b.maxX, b.minZ, { n: H }],
+    [b.minX, b.maxZ, b.maxX, b.maxZ + M, { s: H }]
+  ];
   const leaves = leafDensityTexture();
+  const outerGeo = merge(strips.flatMap(([x0, z0, x1, z1, skirt]) => groundTiles(x0, z0, x1, z1, { skirt, every: 2 })));
   const outer = new THREE.Mesh(outerGeo, withLeaves(createParkLawnMaterial(false), leaves, 0, 0.35));
   outer.name = 'GroundBeyond';
-  outer.position.set((b.minX + b.maxX) / 2, -0.03, (b.minZ + b.maxZ) / 2);
+  outer.position.y = -0.03;
   outer.receiveShadow = true;
   group.add(outer);
 
   // 2. The roadway: the whole MVP area (the blocks stand on it)
-  const plateGeo = new THREE.PlaneGeometry(b.maxX - b.minX, b.maxZ - b.minZ, 1, 1);
-  plateGeo.rotateX(-Math.PI / 2);
+  const plateGeo = merge(groundTiles(b.minX, b.minZ, b.maxX, b.maxZ));
   const roadway = new THREE.Mesh(plateGeo, withLeaves(createRoadSurfaceMaterial(), leaves, 0.35));
   roadway.name = 'Roadway';
-  roadway.position.set((b.minX + b.maxX) / 2, 0, (b.minZ + b.maxZ) / 2);
   roadway.receiveShadow = true;
   group.add(roadway);
 
@@ -125,13 +131,14 @@ function buildCityGrid(scene) {
     g.rotateX(-Math.PI / 2);
     tops.push(groupPart(g, 0));
     curbs.push(groupPart(g, 1));
+    for (const part of [tops.at(-1), curbs.at(-1)]) part.deleteAttribute('uv'); // their materials paint by world position
     g.dispose();
   }
   if (tops.length) {
-    const lawn = new THREE.Mesh(merge(tops), withLeaves(createParkLawnMaterial(false), leaves, 1.0, 0.35));
+    const lawn = new THREE.Mesh(drapeGeometry(merge(tops)), withLeaves(createParkLawnMaterial(false), leaves, 1.0, 0.35));
     lawn.name = 'BlockTops';
     lawn.receiveShadow = true;
-    const curb = new THREE.Mesh(merge(curbs), createCurbMaterial());
+    const curb = new THREE.Mesh(drapeGeometry(merge(curbs)), createCurbMaterial());
     curb.name = 'Curbs';
     curb.receiveShadow = true;
     curb.castShadow = true;
@@ -139,12 +146,13 @@ function buildCityGrid(scene) {
   }
 
   // 4. Sidewalks: flat paving along the curbs on the block tops
-  const walkGeo = merge(SIDEWALKS.map((s) => {
+  const walkGeo = drapeGeometry(merge(SIDEWALKS.map((s) => {
     const g = new THREE.ShapeGeometry(shapeOf(s.poly, s.holes), 1).toNonIndexed();
+    g.deleteAttribute('uv'); // the paving is painted by world position
     g.rotateX(-Math.PI / 2);
     g.translate(0, CURB + SIDEWALK_LIFT, 0);
     return g;
-  }));
+  })));
   if (walkGeo) {
     const walks = new THREE.Mesh(walkGeo, withLeaves(createSidewalkMaterial(), leaves, 0.6));
     walks.name = 'Sidewalks';

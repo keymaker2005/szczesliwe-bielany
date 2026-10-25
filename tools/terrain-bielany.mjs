@@ -6,6 +6,8 @@
 //   data/bielany_nmt_4m.bin   Uint16 little-endian, row-major (z, then x), centimetres above meta.base
 //   data/bielany_nmt_4m.json  meta: grid origin, cell, size, base, stats, source
 //   data/podglad_terenu.png   preview: height tint + hillshade, OSM cliffs in red, the current map area in white
+//   js/bielany-terrain.bin    the game's ground (step 3.2, js/terrain.js): 0 on the plateau, the escarpment and the
+//                             Vistula valley below it (see gameField)
 // The raw tiles are cached in data/raw/nmt/ (not committed), so a second run works offline.
 //
 // usage: node tools/terrain-bielany.mjs [--offline]
@@ -23,6 +25,9 @@ const FETCH = 2; // m, WCS resolution (SCALEFACTOR 0.5 of the 1 m model)
 const TILE = 2000; // m, WCS request size in EPSG:2180
 const WCS = 'https://mapy.geoportal.gov.pl/wss/service/PZGIK/NMT/GRID1/WCS/DigitalTerrainModelFormatTIFF';
 const CACHE = path.join(ROOT, 'data/raw/nmt');
+const PLATEAU = 96; // m a.s.l.: the game's ground level y = 0 (the escarpment's upper edge; the plateau lies 96-112 m)
+const RIVER = 77; // m a.s.l.: cells below it are the Vistula, the seeds of the valley
+const SMOOTH = 3; // cells: Gaussian blur radius (sigma 6 m) before the game field, so slopes have no 1 m bumps
 const OUT = path.join(ROOT, 'data');
 
 // EPSG:2180 (PUWG 1992): transverse Mercator on GRS80, central meridian 19°, k0 0.9993, E0 500 km, N0 -5300 km.
@@ -55,6 +60,76 @@ const worldScale = (() => {
   return { kx: x1 - x0, kz: z1 - z0, lon0: -x0 / (x1 - x0), lat0: -z0 / (z1 - z0) };
 })();
 export const fromWorld = (x, z) => [worldScale.lon0 + x / worldScale.kx, worldScale.lat0 + z / worldScale.kz];
+
+// The game's ground from the terrain model (heights a.s.l., nx x nz cells): the plateau stays flat at y = 0 (its few
+// metres of slope over kilometres go unseen, and the city on it keeps its flat roads, curbs and traffic), the valley
+// of the Vistula, flooded from the river over every smoothed cell under PLATEAU, sinks to its real depth below the
+// escarpment's edge (y = height - PLATEAU, down to about -21 m at the water). Pits on the plateau that the valley
+// does not reach (excavations, ponds, the moat of Fort Bema) stay flat.
+export function gameField(h, nx, nz) {
+  const r = SMOOTH, w = [];
+  let sum = 0;
+  for (let k = -r; k <= r; k++) { const v = Math.exp(-(k * k) / (2 * (r / 2) ** 2)); w.push(v); sum += v; }
+  const pass = (src, dx, dy) => {
+    const out = new Float32Array(src.length);
+    for (let j = 0; j < nz; j++) {
+      for (let i = 0; i < nx; i++) {
+        let a = 0;
+        for (let k = -r; k <= r; k++) {
+          const ii = Math.min(nx - 1, Math.max(0, i + k * dx)), jj = Math.min(nz - 1, Math.max(0, j + k * dy));
+          a += src[jj * nx + ii] * w[k + r];
+        }
+        out[j * nx + i] = a / sum;
+      }
+    }
+    return out;
+  };
+  const hs = pass(pass(h, 1, 0), 0, 1);
+  const valley = new Uint8Array(nx * nz);
+  const stack = [];
+  for (let k = 0; k < h.length; k++) if (h[k] < RIVER) { valley[k] = 1; stack.push(k); }
+  while (stack.length) {
+    const k = stack.pop(), i = k % nx, j = (k - i) / nx;
+    for (const [a, b] of [[i + 1, j], [i - 1, j], [i, j + 1], [i, j - 1]]) {
+      if (a < 0 || b < 0 || a >= nx || b >= nz) continue;
+      const q = b * nx + a;
+      if (!valley[q] && hs[q] < PLATEAU) { valley[q] = 1; stack.push(q); }
+    }
+  }
+  const y = new Int16Array(nx * nz);
+  for (let k = 0; k < y.length; k++) if (valley[k]) y[k] = Math.min(0, Math.round((hs[k] - PLATEAU) * 100));
+  return y;
+}
+
+// js/bielany-terrain.bin: 'BTR1', float32 x0, z0, cell, uint32 nx, nz; then per row a uint16 count of spans, each
+// span uint16 first column, uint16 length and that many int16 heights in cm (the cells outside every span are 0)
+export function encodeGameField(y, { x0, z0, cell, nx, nz }) {
+  const parts = [];
+  const head = Buffer.alloc(24);
+  head.write('BTR1', 0, 'latin1');
+  head.writeFloatLE(x0, 4); head.writeFloatLE(z0, 8); head.writeFloatLE(cell, 12);
+  head.writeUInt32LE(nx, 16); head.writeUInt32LE(nz, 20);
+  parts.push(head);
+  for (let j = 0; j < nz; j++) {
+    const spans = [];
+    for (let i = 0; i < nx;) {
+      if (!y[j * nx + i]) { i++; continue; }
+      let e = i;
+      while (e < nx && y[j * nx + e]) e++;
+      spans.push([i, e - i]);
+      i = e;
+    }
+    const row = Buffer.alloc(2 + spans.reduce((s, [, n]) => s + 4 + 2 * n, 0));
+    let o = row.writeUInt16LE(spans.length, 0);
+    for (const [i0, n] of spans) {
+      o = row.writeUInt16LE(i0, o);
+      o = row.writeUInt16LE(n, o);
+      for (let k = 0; k < n; k++) o = row.writeInt16LE(y[j * nx + i0 + k], o);
+    }
+    parts.push(row);
+  }
+  return Buffer.concat(parts);
+}
 
 // Minimal GeoTIFF reader for what the GUGiK WCS returns: one band, float32, uncompressed strips, a tie point and
 // a pixel scale (GeoTIFF model space = EPSG:2180 easting, northing)
@@ -212,6 +287,11 @@ async function main() {
   };
   fs.writeFileSync(path.join(OUT, 'bielany_nmt_4m.bin'), bin);
   fs.writeFileSync(path.join(OUT, 'bielany_nmt_4m.json'), JSON.stringify(meta, null, 2) + '\n');
+  const field = gameField(h, nx, nz);
+  const game = encodeGameField(field, { x0, z0, cell: CELL, nx, nz });
+  fs.writeFileSync(path.join(ROOT, 'js/bielany-terrain.bin'), game);
+  let low = 0;
+  for (const v of field) if (v < 0) low++;
 
   // Preview, 8 m per pixel: hypsometric tint (valley green -> plateau ochre) with a north-west hillshade
   const S = 2, pw = Math.floor((nx - 1) / S), ph = Math.floor((nz - 1) / S);
@@ -260,7 +340,8 @@ async function main() {
   writePng(path.join(OUT, 'podglad_terenu.png'), pw, ph, rgb);
 
   console.log(`grid ${nx} x ${nz} (${CELL} m), tiles ${tiles.size}, heights ${min.toFixed(1)}-${max.toFixed(1)} m (median ${median.toFixed(1)}), `
-    + `station ${meta.stats.station} m, holes filled ${missing}, cliffs drawn ${cliffCount}`);
+    + `station ${meta.stats.station} m, holes filled ${missing}, cliffs drawn ${cliffCount}; game field: valley `
+    + `${((low * CELL * CELL) / 1e6).toFixed(2)} km², ${(game.length / 1e6).toFixed(2)} MB`);
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) await main();
