@@ -22,6 +22,7 @@ import { CityAudioSystem } from './audio-system.js';
 import { GEO } from './bielany-geodata.js';
 import { loadTerrain, groundY } from './terrain.js';
 import { buildForest } from './forest.js';
+import { buildWildlife } from './wildlife.js';
 import { buildWater } from './water.js';
 import { buildBridges } from './bridges.js';
 import { MissionEngine, ARRIVE_RADIUS } from './missions.js';
@@ -116,6 +117,7 @@ async function initApp() {
 
   const streetDetails = buildStreetDetails(scene);
   const forest = buildForest(scene); // the undergrowth of the woods
+  const wildlife = buildWildlife(scene); // boars, roe deer & squirrels in the woods (js/wildlife.js)
   // Mission goal pillar: in the scene (far below the ground) from the start, so the warm-up frame compiles it
   const missionMarker = createMissionMarker(ARRIVE_RADIUS);
   missionMarker.group.position.set(0, -500, 0);
@@ -1016,6 +1018,7 @@ async function initApp() {
     }
     if (streetDetails.update) streetDetails.update(cameraSystem.camera);
     forest.update(cameraSystem.camera);
+    wildlife.update(dt, cameraSystem.camera, controllerManager.getActiveEntity().position);
     lightingSystem.update(cameraSystem.currentPos);
     mapSystem.update();
     {
