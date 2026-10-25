@@ -248,4 +248,4 @@ function buildForest(scene) {
   };
 }
 
-export { buildForest, withForestFloor, withForestPaths, inWood };
+export { buildForest, withForestFloor, withForestPaths, inWood, pathGrid };
