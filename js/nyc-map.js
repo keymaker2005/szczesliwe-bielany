@@ -269,6 +269,23 @@ for (const r of ROADS) {
 }
 const ROAD_NAME_COUNT = new Set(ROAD_LABELS.map((l) => l.text)).size;
 
+// Addresses (OpenStreetMap): "Żeromskiego 29" finds the sidewalk spot in front of the building
+const ADDRESSES = (GEO.addresses?.list || []).map(([s, num, bx, bz, x, z]) => {
+  const street = GEO.addresses.streets[s];
+  return { street, num, lower: fold(street), numLower: fold(num), bx, bz, x, z };
+});
+// "<street> <number>" in a folded query -> the best address, or null (the exact number first, then one it begins)
+function findAddress(q) {
+  const m = q.match(/^(.+?)\s+(\d+[a-z]?(?:[/-]\d+[a-z]?)?)$/);
+  if (!m) return null;
+  const street = m[1].trim(), num = m[2];
+  const on = ADDRESSES.filter((a) => a.lower.includes(street));
+  if (!on.length) return null;
+  // the street whose name ends with the typed words wins ("zeromskiego" -> "Stefana Żeromskiego")
+  on.sort((a, b) => (b.lower.endsWith(street) - a.lower.endsWith(street)) || a.lower.length - b.lower.length);
+  return on.find((a) => a.numLower === num) || on.find((a) => a.numLower.startsWith(num)) || null;
+}
+
 /** A map viewport: centre (cx, cz) in world metres, s pixels per metre, w x h CSS pixels on a canvas of pixel ratio dpr */
 class MapView {
   constructor(cx, cz, s, w, h, dpr = 1) {
@@ -390,7 +407,7 @@ class NYCMapSystem {
     this.elHoverInfo = document.getElementById('fullmap-hover-info');
     this.elPlayerInfo = document.getElementById('fullmap-player-info');
     this.elSearchInput = document.getElementById('fullmap-search');
-    if (this.elSearchInput) this.elSearchInput.placeholder = `Szukaj wśród ${ROAD_NAME_COUNT} ulic i miejsc…`;
+    if (this.elSearchInput) this.elSearchInput.placeholder = `Szukaj wśród ${ROAD_NAME_COUNT} ulic, ${ADDRESSES.length} adresów i miejsc…`;
 
     this.isFullMapOpen = false;
     // Full map viewport state (world metres; zoom in CSS pixels per metre)
@@ -581,7 +598,18 @@ class NYCMapSystem {
     const q = fold(String(text || '').trim());
     this.searchHighlight = q;
     this.searchPath = null;
-    if (q.length > 0) {
+    const addr = q.length > 0 ? findAddress(q) : null;
+    if (addr) {
+      // the address becomes the GPS waypoint; its street stays highlighted
+      this.searchHighlight = addr.lower;
+      this.searchPath = new Path2D();
+      for (const l of ROAD_LABELS.filter((r) => r.lower === addr.lower || r.raw === addr.lower)) addLine(this.searchPath, l.road.pts);
+      this.waypoint = { x: addr.x, z: addr.z, name: `${addr.street} ${addr.num}` };
+      this.viewCenterX = addr.x;
+      this.viewCenterZ = addr.z;
+      this.viewZoom = Math.max(this.viewZoom, 1.6);
+      if (this.elHoverInfo) this.elHoverInfo.textContent = `${addr.street} ${addr.num} · cel GPS ustawiony`;
+    } else if (q.length > 0) {
       const lmMatch = MAP_LANDMARKS.find((l) => fold(l.name).includes(q) || fold(l.short).includes(q));
       const roads = ROAD_LABELS.filter((l) => l.lower.includes(q) || l.raw.includes(q));
       if (roads.length) {

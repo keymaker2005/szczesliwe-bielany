@@ -2,9 +2,9 @@
 // Builds js/bielany-geodata.js: the Bielany MVP area (Stare Bielany, Wawrzyszew, Młociny) in the simulation's world
 // frame (tools/bielany-frame.mjs: 1 unit = 1 m, x = east, z = south, origin at the Stare Bielany metro station, no
 // rotation): the streets (map lines and the drivable graph), the blocks between them with their sidewalks, the
-// buildings, the M1 stations.
+// buildings, the M1 stations, the addresses.
 //
-// Inputs: tools/data/osm_bielany_{streets,rail,buildings,districts,signals}.json (OpenStreetMap via Overpass, see
+// Inputs: tools/data/osm_bielany_{streets,rail,buildings,districts,signals,addresses}.json (OpenStreetMap via Overpass, see
 // tools/overpass.sh and tools/data/q_bielany_*.overpassql); data/bielany_lod1_2024.geojson (GUGiK LoD1 buildings)
 //
 // usage: node tools/geo-bielany.mjs [outFile]
@@ -391,7 +391,16 @@ function buildBlocks(graph) {
       if (Math.abs(ringArea(p.outer)) >= 4) outWalks.push([index, flat(p.outer), p.holes.map(flat)]);
     }
   }
-  return { blocks: outBlocks, sidewalks: outWalks };
+  // Sidewalk lookup for the addresses: a cell of a kept block within its sidewalk's width of the roadway
+  const kept = new Uint8Array(blocks.length);
+  for (const b of blocks) kept[b.id] = b.cells * RES * RES >= MIN_BLOCK ? 1 : 0;
+  const isWalk = (x, z) => {
+    const i = Math.floor((x - X0) / RES), j = Math.floor((z - Z0) / RES);
+    if (i < 0 || j < 0 || i >= W || j >= H) return false;
+    const c = j * W + i;
+    return label[c] >= 0 && kept[label[c]] === 1 && near[c] <= widthOf[road[src[c]] - 1];
+  };
+  return { blocks: outBlocks, sidewalks: outWalks, isWalk };
 }
 
 // =====================================================================================================================
@@ -623,10 +632,107 @@ const stations = osm('rail')
   .filter((s) => inside([s.x, s.z]));
 
 // =====================================================================================================================
-// 9. OUTPUT
+// 9. ADDRESSES (OpenStreetMap addr:*): each street + number once, at its building (the door end of a delivery) and at
+//    the sidewalk spot in front of it on its own street (where a courier stops): the point of the nearest stretch of
+//    the named street, stepped from the curb towards the building to the first sidewalk cell
+// =====================================================================================================================
+const ADDR_MAX = 150; // m from the building to its street; farther addresses (deep in a courtyard, a lost tag) are left out
+function buildAddresses(graph, isWalk, sidewalks) {
+  const { nodes, links, names } = graph;
+  // A spot counts when its 1 m cell and the cells half a metre around are sidewalk and it lies inside a simplified
+  // sidewalk outline (what the game walks on): outlines indexed on a 50 m grid
+  const GRID = 50, grid = new Map();
+  const inRing = (x, z, r) => {
+    let c = false;
+    for (let k = 0, m = r.length - 2; k < r.length; m = k, k += 2) {
+      if ((r[k + 1] > z) !== (r[m + 1] > z) && x < ((r[m] - r[k]) * (z - r[k + 1])) / (r[m + 1] - r[k + 1]) + r[k]) c = !c;
+    }
+    return c;
+  };
+  sidewalks.forEach(([, outer], n) => {
+    let x0 = Infinity, z0 = Infinity, x1 = -Infinity, z1 = -Infinity;
+    for (let k = 0; k < outer.length; k += 2) {
+      x0 = Math.min(x0, outer[k]); x1 = Math.max(x1, outer[k]); z0 = Math.min(z0, outer[k + 1]); z1 = Math.max(z1, outer[k + 1]);
+    }
+    for (let gx = Math.floor(x0 / GRID); gx <= Math.floor(x1 / GRID); gx++) {
+      for (let gz = Math.floor(z0 / GRID); gz <= Math.floor(z1 / GRID); gz++) {
+        const k = `${gx},${gz}`;
+        if (!grid.has(k)) grid.set(k, []);
+        grid.get(k).push(n);
+      }
+    }
+  });
+  const onOutline = (x, z) => (grid.get(`${Math.floor(x / GRID)},${Math.floor(z / GRID)}`) || [])
+    .some((n) => inRing(x, z, sidewalks[n][1]) && !sidewalks[n][2].some((h) => inRing(x, z, h)));
+  const good = (x, z) => isWalk(x, z) && isWalk(x + 0.5, z) && isWalk(x - 0.5, z) && isWalk(x, z + 0.5) && isWalk(x, z - 0.5) && onOutline(x, z);
+  // Every stretch of the graph as [ax, az, bx, bz, name index, half width]
+  const segs = [];
+  for (const [a, b, name, w, , , inner] of links) {
+    const pts = [nodes[2 * a], nodes[2 * a + 1], ...inner, nodes[2 * b], nodes[2 * b + 1]];
+    for (let k = 0; k + 3 < pts.length; k += 2) segs.push([pts[k], pts[k + 1], pts[k + 2], pts[k + 3], name, w / 2]);
+  }
+  const closest = (x, z, ok) => {
+    let best = null, bd = Infinity;
+    for (const sg of segs) {
+      if (!ok(sg)) continue;
+      const [ax, az, bx, bz] = sg, vx = bx - ax, vz = bz - az;
+      const t = Math.max(0, Math.min(1, ((x - ax) * vx + (z - az) * vz) / (vx * vx + vz * vz || 1e-9)));
+      const px = ax + vx * t, pz = az + vz * t, d = Math.hypot(x - px, z - pz);
+      if (d < bd) { bd = d; best = { px, pz, d, half: sg[5] }; }
+    }
+    return best;
+  };
+  // street + number -> the building's centre (a building outline wins over a shop or entrance node)
+  const seen = new Map();
+  for (const e of osm('addresses')) {
+    const t = e.tags || {};
+    const street = t['addr:street'] || t['addr:place'], num = t['addr:housenumber'];
+    const lat = e.lat ?? e.center?.lat, lon = e.lon ?? e.center?.lon;
+    if (!street || !num || lat == null) continue;
+    const [x, z] = toWorld(lon, lat);
+    if (!inside([x, z])) continue;
+    const k = `${street}|${num.toLowerCase()}`, isBuilding = e.type !== 'node' && !!t.building;
+    if (!seen.has(k) || (isBuilding && !seen.get(k).isBuilding)) seen.set(k, { street, num, x, z, isBuilding });
+  }
+  const streetNames = [];
+  const streetIds = new Map();
+  const out = [];
+  let far = 0, noWalk = 0;
+  for (const a of seen.values()) {
+    const id = names.indexOf(a.street);
+    const hit = id >= 0 ? closest(a.x, a.z, (sg) => sg[4] === id) : null;
+    if (!hit || hit.d > ADDR_MAX) { far++; continue; }
+    // from the curb towards the building, 0.5 m steps, to the first sidewalk cell
+    const ux = (a.x - hit.px) / (hit.d || 1), uz = (a.z - hit.pz) / (hit.d || 1);
+    let spot = null;
+    for (let s = hit.half; s <= Math.min(hit.d, hit.half + 12); s += 0.5) {
+      const x = hit.px + ux * s, z = hit.pz + uz * s;
+      if (good(x, z)) { spot = [x, z]; break; }
+    }
+    // else the sidewalk cell nearest that stretch of curb (a narrow walk, a driveway cut in front of the door)
+    for (let r = 1; !spot && r <= 15; r += 1) {
+      let bd = Infinity;
+      for (let k = 0; k < 8 * r; k++) {
+        const ang = (k / (8 * r)) * Math.PI * 2, x = hit.px + Math.cos(ang) * (hit.half + r), z = hit.pz + Math.sin(ang) * (hit.half + r);
+        const d = Math.hypot(x - a.x, z - a.z);
+        if (d < bd && good(x, z)) { bd = d; spot = [x, z]; }
+      }
+    }
+    if (!spot) { noWalk++; continue; }
+    if (!streetIds.has(a.street)) { streetIds.set(a.street, streetNames.length); streetNames.push(a.street); }
+    out.push([streetIds.get(a.street), a.num, q(a.x), q(a.z), q(spot[0]), q(spot[1])]);
+  }
+  out.sort((p, r) => streetNames[p[0]].localeCompare(streetNames[r[0]], 'pl') || p[1].localeCompare(r[1], 'pl', { numeric: true }));
+  log(`addresses: ${seen.size} in the area, ${out.length} with a sidewalk spot (${far} without their street within ${ADDR_MAX} m, ${noWalk} without a sidewalk in front)`);
+  return { streets: streetNames, list: out };
+}
+
+// =====================================================================================================================
+// 10. OUTPUT
 // =====================================================================================================================
 const roadGraph = buildRoadGraph();
-const { blocks, sidewalks } = buildBlocks(roadGraph);
+const { blocks, sidewalks, isWalk } = buildBlocks(roadGraph);
+const addresses = buildAddresses(roadGraph, isWalk, sidewalks);
 const GEO = {
   version: 1,
   frame: {
@@ -654,6 +760,8 @@ const GEO = {
   // 2: nowe osiedle, 3: pawilon, 4: wysoka płyta, 5: blok z lat 50.), palette (0: pastel, 1: bold)]
   buildings: buildBuildings(),
   stations,
+  // Addresses (OpenStreetMap): streets [name, ...] and list [street index, number, building x, z, sidewalk spot x, z]
+  addresses,
 };
 
 const json = JSON.stringify(GEO);
@@ -666,4 +774,4 @@ const header = `// js/bielany-geodata.js — GENERATED by tools/geo-bielany.mjs,
 fs.writeFileSync(OUT, `${header}export const GEO = ${json};\n`);
 log(`wrote ${OUT} (${(fs.statSync(OUT).size / 1024).toFixed(0)} KB): ${GEO.roads.length} roads, ` +
   `${GEO.roadGraph.nodes.length / 2} nodes, ${GEO.roadGraph.links.length} links, ${GEO.blocks.length} blocks, ` +
-  `${GEO.sidewalks.length} sidewalks, ${GEO.signals.length / 2} signals, ${GEO.trees.length / 5} trees, ${GEO.buildings.length} buildings, ${GEO.stations.length} stations`);
+  `${GEO.sidewalks.length} sidewalks, ${GEO.signals.length / 2} signals, ${GEO.trees.length / 5} trees, ${GEO.buildings.length} buildings, ${GEO.stations.length} stations, ${GEO.addresses.list.length} addresses`);
