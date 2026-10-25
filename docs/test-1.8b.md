@@ -32,6 +32,8 @@ każdej zmiany widoku. Na górze powinien być aktywny przycisk „Złota jesie�
 | 4 | Teleport (przycisk z pinezką u góry) → Wawrzyszew, rozejrzyj się (przeciągnij myszą) | fps |
 | 5 | Teleport → Młociny | fps |
 | 6 | Klawisz **4** (helikopter), Spacja, by wznieść się wysoko, i leć nad las na wschodzie (Las Bielański) | najniższy fps |
+| 6a | Teleport → Słodowiec, potem jedź taksówką na Piaski (Kochanowskiego) | najniższy fps |
+| 6b | Klawisz **4**, przeleć nad Lasem Bielańskim i Kamedułami (teleport → Kameduły) | najniższy fps |
 | 7 | Klawisz **M** (mapa): wpisz w wyszukiwarkę „zeromskiego”, kliknij w mapę, by się przenieść | czy ulica się podświetla |
 | 8 | Naciśnij **F12** → zakładka Konsola (Console) | czy są czerwone błędy (zrzut ekranu) |
 
@@ -46,5 +48,7 @@ robiłeś chwilę wcześniej.
 - Zrzut `edge://gpu` (górna część) i zrzut konsoli z punktu 8.
 - Krótko: czy coś wyglądało dziwnie (np. czarne budynki, brak drzew, migające cienie).
 
-**Zaliczone**, gdy w punktach 1–5 jest co najmniej 30 fps i w konsoli nie ma czerwonych błędów. Punkt 6 (helikopter
+**Zaliczone (Faza 1)**, gdy w punktach 1–5 jest co najmniej 30 fps i w konsoli nie ma czerwonych błędów. Punkt 6 (helikopter
 nad lasem) jest najcięższy; wynik poniżej 30 fps zapiszemy, ale nie blokuje testu.
+
+**Bramka Fazy 2**: co najmniej 60 fps w punktach 1–5 i 6a, a nad lasem (6, 6b) bez wyraźnego szarpania.

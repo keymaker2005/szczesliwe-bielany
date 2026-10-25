@@ -812,12 +812,16 @@ const TREE_CELL_SIZE = 200;
 // Bielany has ~27 000 surveyed trees, thick woods among them (Las Bielański), several times Midtown's density: the
 // levels switch nearer than for Manhattan's street trees
 const LOD_NEAR = 60; // full detail within (m)
-const LOD_MID = 220; // coarse cards & branches within; whole-crown cards beyond
+const LOD_MID = 180; // coarse cards & branches within; whole-crown cards beyond
 const LOD_HYSTERESIS = 6;
 // Draw distance per tier (0 park & plaza, 1 avenue & esplanade, 2 cross-street); at street level everything beyond
 // LOW_CUTOFF is behind the buildings anyway
-const MAX_DIST = [1800, 1200, 900];
-const LOW_CUTOFF = 900;
+const MAX_DIST = [1400, 1000, 750];
+const LOW_CUTOFF = 750;
+// Step 2.1 tripled the trees (~78 000): beyond THIN_DIST two trees in five are left out (a wood still reads as a wood
+// from the helicopter), and the whole-crown cards of the far level cast no shadow
+const THIN_DIST = 450;
+const THIN_SHARE = 0.4;
 
 function hashPos(x, y, z) {
   const s = Math.sin(x * 127.1 + y * 311.7 + z * 74.7) * 43758.5453;
@@ -849,6 +853,7 @@ function createTreeField(scene, sites) {
   const meshOf = new Int32Array(N * 3); // mesh index per level
   const cellOf = new Array(N);
   const tier = new Uint8Array(N);
+  const thin = new Uint8Array(N); // 1: left out beyond THIN_DIST
   const lod = new Uint8Array(N).fill(255);
 
   // Shared geometry types: lod 0 & 1 per species & variant, lod 2 per species
@@ -900,6 +905,7 @@ function createTreeField(scene, sites) {
     py[i] = (t.y || 0) + 6 * s;
     pz[i] = t.z;
     tier[i] = Math.min(2, t.tier || 0);
+    thin[i] = r3 < THIN_SHARE ? 1 : 0;
     const key = Math.floor(t.x / TREE_CELL_SIZE) + ',' + Math.floor(t.z / TREE_CELL_SIZE);
     let cell = cells.get(key);
     if (!cell) {
@@ -919,7 +925,7 @@ function createTreeField(scene, sites) {
       let index = cell.meshes.get(type);
       if (index === undefined) {
         index = meshes.length;
-        meshes.push({ type, cell, name: `${type.name}_${key}`, capacity: 0 });
+        meshes.push({ type, cell, level: l, name: `${type.name}_${key}`, capacity: 0 });
         cell.meshes.set(type, index);
       }
       meshOf[i * 3 + l] = index;
@@ -943,7 +949,7 @@ function createTreeField(scene, sites) {
     mesh.name = m.name;
     mesh.count = 0;
     mesh.visible = false;
-    mesh.castShadow = true;
+    mesh.castShadow = m.level < 2;
     mesh.receiveShadow = true;
     m.cell.group.add(mesh);
     m.type.meshes.push(mesh);
@@ -1006,7 +1012,7 @@ function createTreeField(scene, sites) {
       const maxD = low ? Math.min(MAX_DIST[tier[i]], LOW_CUTOFF) : MAX_DIST[tier[i]];
       // levels 0-2, 3 = hidden; next to a boundary a tree keeps the level it has
       const curL = lod[i] === 255 ? 3 : lod[i];
-      let nextL = d < LOD_NEAR ? 0 : d < LOD_MID ? 1 : d < maxD ? 2 : 3;
+      let nextL = d < LOD_NEAR ? 0 : d < LOD_MID ? 1 : d < maxD && !(thin[i] && d > THIN_DIST) ? 2 : 3;
       if (Math.abs(nextL - curL) === 1) {
         const edge = [LOD_NEAR, LOD_MID, maxD][Math.min(nextL, curL)];
         if (Math.abs(d - edge) < LOD_HYSTERESIS) nextL = curL;
