@@ -37,3 +37,8 @@ Bramka: wersja 1.0 z patronatem.
 
 ## Pomysły luźne
 (tu dopisuj nowe pomysły w trakcie pracy)
+- Faza 1.5: tabliczki z nazwami ulic w stylu warszawskim (niebiesko-białe) zamiast nowojorskich zielonych (main.js renderLocation, css/style.css .street-sign).
+- Porządki: w tsl-materials.js zostały nieużywane materiały Nowego Jorku (reklamy Times Square, korona Chryslera, schody TKTS, odbicia wody portu); do usunięcia.
+- Porządki: wewnętrzne nazwy plików i komentarzy z Nowego Jorku (nyc-map.js, NYCMapSystem, „Manhattan” w komentarzach controllers.js i helikoptera); niewidoczne dla gracza.
+- Porządki: przy następnym pobraniu drzew GUGiK uruchomić poprawiony data/extract_bielany_trees.py (podstawa korony liczona od dołu bryły, w obecnym wycinku do ~1 m za wysoko).
+- Wydajność: drzewa z helikoptera nad Lasem Bielańskim (ok. 30 fps w panelu podglądu); ewentualnie lżejsze dalekie LOD albo bez cieni dla dalekich koron.
