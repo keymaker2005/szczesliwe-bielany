@@ -741,6 +741,8 @@ async function initApp() {
     jobs: () => [...taxi.jobs(), ...courier.jobs()],
     services: () => (dispatch ? dispatch.services() : []),
     onOpenMap: () => mapSystem.toggleFullMap(true),
+    landmarks: () => guide.landmarks(),
+    onNavigate: (l) => { mapSystem.waypoint = { x: l.x, z: l.z, name: l.name }; },
     status: () => (missions.active ? `W drodze: ${missions.goal().name}` : controllerManager.activeMode === 'car' ? taxi.statusLine() : courier.statusLine()),
   });
   phone.addSms({

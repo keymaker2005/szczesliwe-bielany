@@ -65,3 +65,30 @@ test('published site: guide and mayor messages, versioned module URLs', () => {
     fs.rmSync(dir, { recursive: true, force: true });
   }
 });
+
+test('guide: landmarks() lists every site with a player name and the visited state', async () => {
+  const { NAMES } = await import('../js/guide.js');
+  const g = new Guide(phone(), { mayor: false, storage: memory() });
+  const list = g.landmarks();
+  assert.equal(list.length, Object.keys(SITES).length);
+  for (const l of list) {
+    assert.ok(NAMES[l.id], `name for ${l.id}`);
+    assert.ok(l.sms && l.more, `texts for ${l.id}`);
+    assert.equal(l.seen, false);
+    assert.equal(l.x, SITES[l.id].x);
+  }
+  assert.ok(list.some((l) => l.id === 'hutnik'));
+  g.update(1, { x: SITES.awf.x, z: SITES.awf.z });
+  assert.equal(g.landmarks().find((l) => l.id === 'awf').seen, true);
+  assert.equal(g.landmarks().filter((l) => l.seen).length, 1);
+});
+
+test('phone: Przewodnik app is wired in phone.js and main.js sets the GPS waypoint', () => {
+  const src = fs.readFileSync(path.join(root, 'js/phone.js'), 'utf8');
+  assert.match(src, /id: 'guide', name: 'Przewodnik'/);
+  assert.match(src, /data-act="navigate"/);
+  assert.match(src, /Czytaj więcej/);
+  const main = fs.readFileSync(path.join(root, 'js/main.js'), 'utf8');
+  assert.match(main, /landmarks: \(\) => guide\.landmarks\(\)/);
+  assert.match(main, /onNavigate: \(l\) => \{ mapSystem\.waypoint = \{ x: l\.x, z: l\.z, name: l\.name \}/);
+});
