@@ -1,5 +1,5 @@
 // js/courier.js
-// The courier role: parcels for "Pocztylion Bielański" (a fictional courier firm) from pick-up points by the three M1
+// The courier role: parcels for "Pocztylion Bielański" (a fictional courier firm) from pick-up points by the M1
 // stations to real OpenStreetMap addresses 0.5-2 km away along the streets. By bike or by car; the par time is the
 // GPS route at a steady bike pace, a delivery well under it (a shortcut through a park, along a path) pays a bonus.
 // Offers sit in the phone's Zlecenia app; the earnings stay in this browser (localStorage).

@@ -170,7 +170,12 @@ const TELEPORT_LOCATIONS = {
   mlociny: { x: -1336.5, z: -1005.0, heading: -0.413 }, // al. gen. Marii Wittek at the Młociny station
   awf: { x: 205.9, z: -638.1, heading: -2.583 }, // Marymoncka at the AWF
   chomiczowka: { x: -1645.6, z: 502.2, heading: -0.584 }, // Pabla Nerudy, Chomiczówka
-  wrzeciono: { x: -690.4, z: -1224.9, heading: 2.115 } // Przy Agorze, Wrzeciono
+  wrzeciono: { x: -690.4, z: -1224.9, heading: 2.115 }, // Przy Agorze, Wrzeciono
+  slodowiec: { x: 710.9, z: 543.0, heading: 2.634 }, // rondo AWF at the Słodowiec station
+  marymont: { x: 1548.7, z: 1121.3, heading: 1.218 }, // Słowackiego at the Marymont station
+  piaski: { x: -319.5, z: 1452.3, heading: 1.185 }, // Kochanowskiego, Piaski
+  kaskada: { x: 1196.4, z: 284.8, heading: 0.769 }, // Gdańska, Marymont-Kaskada
+  kameduly: { x: 597.1, z: -1583.6, heading: -0.503 } // Dewajtis by the Camaldolese church
 };
 
 /**

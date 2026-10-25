@@ -13,7 +13,7 @@ Każde drzewo: [lon, lat, wysokość m, wysokość pnia (podstawa korony) m, pro
 import sys, struct, zlib, json, re, math
 
 SRC, OUT = sys.argv[1], sys.argv[2]
-E0, N0, E1, N1 = 630616, 491502, 633607, 494475  # bbox 52.274,20.915 - 52.300,20.960 (jak w extract_bielany_lod1.py)
+E0, N0, E1, N1 = 629517, 490141, 635086, 494513  # bbox 52.262,20.900 - 52.300,20.980 (Faza 2) (jak w extract_bielany_lod1.py)
 
 # EPSG:2180 (PUWG 1992): poprzeczny Merkator na GRS80, południk 19°, k0 0.9993, E0 500 km, N0 -5300 km. Odwrotność
 # wg Snydera (Map Projections, 1987), dokładność poniżej milimetra na tym obszarze.

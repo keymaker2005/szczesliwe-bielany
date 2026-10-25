@@ -16,20 +16,23 @@ import { Builder, frameOf, toPts, facadeTexture, mat } from './landmark-kit.js';
 
 const bryantParkLawn = null;
 
-// GEO.buildings indices of each landmark's LoD1 blocks (tools: the building containing the reference point)
-const IDS = {
-  galeria: [50],
-  stareBielany: [1723, 1724],
-  wawrzyszew: [1722, 2247],
-  mlociny: [339, 338],
-  awf: [1071, 1520],
-  uksw: [187],
-  szpital: [804, 2153, 2265, 995],
-  zygmunt: [1827],
-  magdalena: [376],
+// Each landmark's LoD1 blocks: the buildings (GEO.buildings) under these points of the world frame
+const POINTS = {
+  galeria: [[-1294.7, -1444.6]],
+  stareBielany: [[60, 46.5], [-60.8, -44.8]],
+  wawrzyszew: [[-728.3, -546.6], [-610.9, -459.8]],
+  mlociny: [[-1281.1, -958.3], [-1378.6, -1034]],
+  awf: [[616.2, -416.4], [653.7, -377.5]],
+  uksw: [[667.4, -1593.7]],
+  szpital: [[111.8, -529.9], [68, -614], [73, -560], [136, -493]],
+  zygmunt: [[-187.1, 282.4]],
+  magdalena: [[-1384.1, 121]],
 };
+// The rest of the AWF campus and of the Dewajtis campus with the Camaldolese hermitages: buildings whose middle lies
+// in these boxes (x0, z0, x1, z1), east of the MVP strip of Faza 1
+const CAMPUS = { awf: [727, -631, 1000, -75], uksw: [727, -1800, 1000, -1299] };
 
-// The Camaldolese church (OpenStreetMap way 173130486, outside the LoD1 cut): footprint in the world frame
+// The Camaldolese church (OpenStreetMap way 173130486; its LoD1 block is replaced): footprint in the world frame
 const KAMEDULY_RING = [711.7, -1575, 713.2, -1577.9, 715.6, -1576.6, 716.9, -1579.7, 720.3, -1577.1, 724, -1576.7, 725.4, -1578.5,
   728.2, -1577.3, 729.1, -1579.4, 730.1, -1579.7, 737.6, -1575.7, 737.9, -1574.8, 736.6, -1572.5, 738.9, -1571.1, 738.1, -1569, 740,
   -1566.2, 743.4, -1564.5, 744.6, -1567.1, 745.6, -1567.3, 754.7, -1561.8, 746.6, -1547.7, 743.2, -1541.6, 733.9, -1546.9, 735.5, -1550,
@@ -38,8 +41,58 @@ const KAMEDULY_RING = [711.7, -1575, 713.2, -1577.9, 715.6, -1576.6, 716.9, -157
 
 const WALL_T = 1.2; // m, as js/buildings.js
 
+const inRing = (x, z, r) => {
+  let c = false;
+  for (let k = 0, m = r.length - 2; k < r.length; m = k, k += 2) {
+    if ((r[k + 1] > z) !== (r[m + 1] > z) && x < ((r[m] - r[k]) * (z - r[k + 1])) / (r[m + 1] - r[k + 1]) + r[k]) c = !c;
+  }
+  return c;
+};
+const centroid = (r) => {
+  let x = 0, z = 0;
+  for (let k = 0; k < r.length; k += 2) { x += r[k]; z += r[k + 1]; }
+  return [x / (r.length / 2), z / (r.length / 2)];
+};
+// The building under a point, else the one whose middle is nearest (within 30 m)
+function buildingAt(x, z) {
+  let best = -1, bd = 30;
+  for (let i = 0; i < GEO.buildings.length; i++) {
+    const r = GEO.buildings[i][0];
+    if (inRing(x, z, r)) return i;
+    const [cx, cz] = centroid(r);
+    const d = Math.hypot(cx - x, cz - z);
+    if (d < bd) { bd = d; best = i; }
+  }
+  return best;
+}
+
+let resolved = null;
+function resolve() {
+  if (resolved) return resolved;
+  const IDS = {};
+  for (const [name, pts] of Object.entries(POINTS)) IDS[name] = pts.map(([x, z]) => buildingAt(x, z)).filter((i) => i >= 0);
+  const taken = new Set(Object.values(IDS).flat());
+  // the Camaldolese church's own LoD1 block(s), replaced by the model
+  const church = new Set();
+  for (let i = 0; i < GEO.buildings.length; i++) {
+    const [cx, cz] = centroid(GEO.buildings[i][0]);
+    if (inRing(cx, cz, KAMEDULY_RING)) church.add(i);
+  }
+  const campus = { awf: [], uksw: [] };
+  for (let i = 0; i < GEO.buildings.length; i++) {
+    if (taken.has(i) || church.has(i)) continue;
+    const [cx, cz] = centroid(GEO.buildings[i][0]);
+    for (const [area, [x0, z0, x1, z1]] of Object.entries(CAMPUS)) {
+      if (cx >= x0 && cx <= x1 && cz >= z0 && cz <= z1) campus[area].push(i);
+    }
+  }
+  resolved = { IDS, church, campus };
+  return resolved;
+}
+
 function landmarkBuildingIds() {
-  return new Set(Object.values(IDS).flat());
+  const { IDS, church, campus } = resolve();
+  return new Set([...Object.values(IDS).flat(), ...church, ...campus.awf, ...campus.uksw]);
 }
 
 const ringOf = (id) => toPts(GEO.buildings[id][0]);
@@ -138,6 +191,7 @@ function stationBoard(b, f, u, v, name) {
 // (the lower one dark glass, the upper one striped and overhanging), the name over the glazed entrance and the big
 // rust letters "Młociny" spread over the plaza; tenant boards with fictional names
 function galeria(b) {
+  const { IDS } = resolve();
   const id = IDS.galeria[0], ring = ringOf(id), h = heightOf(id);
   const f = frameOf(ring);
   const panels = mat({ map: galeriaTexture(), rough: 0.45, metal: 0.4 });
@@ -188,7 +242,7 @@ function galeria(b) {
 function stareBielany(b) {
   const glass = mat({ map: facadeTexture({ glass: true, win: '#4a5560', frame: '#5f6468', w: 3, h: 3.6, mullion: 1.2 }), rough: 0.1, metal: 0.5 });
   const slab = mat({ color: 0x55595e, rough: 0.6, metal: 0.3 });
-  for (const id of IDS.stareBielany) {
+  for (const id of resolve().IDS.stareBielany) {
     const ring = ringOf(id), h = heightOf(id), f = frameOf(ring);
     b.prism(ring, 0, h - 0.9, glass);
     b.box(f, 0, 0, f.hu * 2 + 4.5, f.hv * 2 + 4.5, 0.9, h - 0.9, slab);
@@ -202,7 +256,7 @@ function stareBielany(b) {
 
 function wawrzyszew(b) {
   const creeper = mat({ map: noiseTexture('#5b2a22', ['#a3271f', '#c23b23', '#7d1f19', '#d0602a', '#4f6b2e'], '#6e7276', 2, 2, 7), rough: 0.95 });
-  for (const id of IDS.wawrzyszew) {
+  for (const id of resolve().IDS.wawrzyszew) {
     const ring = ringOf(id), h = heightOf(id), f = frameOf(ring);
     b.prism(ring, 0, h - 0.4, creeper);
     // the steel pergola roof, overhanging, with cross slats on slender columns
@@ -220,7 +274,7 @@ function wawrzyszew(b) {
 // round its edge and a mesh railing on top — over free-standing gabion walls; the stairs go down in the open middle
 function mlociny(b) {
   const gabion = mat({ map: noiseTexture('#8f8572', ['#a39883', '#b8ae99', '#7d7563', '#c7bfae'], '#8d8f90', 1, 1, 3), rough: 0.95 });
-  for (const id of IDS.mlociny) {
+  for (const id of resolve().IDS.mlociny) {
     const ring = ringOf(id), h = heightOf(id), f = frameOf(ring);
     const W = f.hu * 2, D = f.hv * 2;
     b.box(f, 0, 0, W + 1, D + 1, 0.4, h - 1.6, mat({ color: 0xd9dcdf, rough: 0.6 }));
@@ -251,6 +305,7 @@ function toRect(f, hu, hv) {
 // it, a kiosk, a railing and masts on top; the rotunda ringed by touching white cylinders with portholes above them and
 // a low blue-grey dome; the eastern wings from the full LoD1 package
 function awf(b, colliders) {
+  const { IDS, campus } = resolve();
   const main = IDS.awf[0], tower = IDS.awf[1];
   const upper = mat({ map: facadeTexture({ wall: '#f3f2ec', win: '#34383c', frame: '#3a3d40', w: 3.2, h: 3.8, ww: 1.8, wh: 1.9, sill: 1 }), rough: 0.85 });
   const portholes = mat({ map: facadeTexture({ wall: '#f3f2ec', win: '#34383c', frame: '#d9d7cf', w: 2.6, h: 3.8, ww: 1.1, sill: 1.2, round: true }), rough: 0.85 });
@@ -263,11 +318,9 @@ function awf(b, colliders) {
     b.prism(ring, h + 0.8, h + 1.8, railing);
   };
   block(ringOf(main), heightOf(main));
-  for (const [area, flatRing, h] of GEO.annex || []) {
-    if (area !== 'awf') continue;
-    const ring = toPts(flatRing);
-    if (h > 2.5) block(ring, h);
-    pushColliders(ring, h, colliders);
+  for (const i of campus.awf) {
+    const h = heightOf(i);
+    if (h > 2.5) block(ringOf(i), h);
   }
   // the tower
   const tr = ringOf(tower), th = heightOf(tower), tf = frameOf(tr);
@@ -306,21 +359,19 @@ function uksw(b, colliders) {
       b.prism(ring, h, h + 2.6, LOOK.graphite, LOOK.graphite, { inset: 1.6 });
     }
   };
+  const { IDS, campus } = resolve();
   const id = IDS.uksw[0];
   building(ringOf(id), heightOf(id));
   const f = frameOf(ringOf(id));
   b.sign(f, 'Uniwersytet Kardynała Stefana Wyszyńskiego', 0, f.hv + 0.4, 3.6, { w: 16, h: 0.9, bg: null, fg: '#7a1f2b', serif: true });
-  for (const [area, flatRing, h] of GEO.annex || []) {
-    if (area !== 'uksw-kameduly' || h < 9) continue; // the low ones are the hermitages (js: kameduly)
-    const ring = toPts(flatRing);
-    building(ring, h);
-    pushColliders(ring, h, colliders);
+  for (const i of campus.uksw) {
+    if (heightOf(i) >= 9) building(ringOf(i), heightOf(i)); // the low ones are the hermitages (kameduly)
   }
 }
 
 function szpital(b) {
   const plaster = mat({ map: facadeTexture({ wall: '#dcd8cc', win: '#4a5058', frame: '#eeeeea', w: 3, h: 3.6, ww: 1.5, wh: 1.6, sill: 0.95 }), rough: 0.9 });
-  IDS.szpital.forEach((id, i) => {
+  resolve().IDS.szpital.forEach((id, i) => {
     const ring = ringOf(id), h = heightOf(id), f = frameOf(ring);
     b.prism(ring, 0, h, plaster, LOOK.roofGrey);
     b.prism(ring, h, h + 0.8, mat({ color: 0xcfcbbf, rough: 0.9 }));
@@ -338,7 +389,7 @@ function szpital(b) {
 // crown with a big cross on top; the tall concrete bell tower with vertical slots and the bells in its open top
 // stands at the east corner; a tall wooden cross in front
 function zygmunt(b) {
-  const id = IDS.zygmunt[0], ring = ringOf(id), h = heightOf(id), f = frameOf(ring);
+  const id = resolve().IDS.zygmunt[0], ring = ringOf(id), h = heightOf(id), f = frameOf(ring);
   const base = mat({ map: facadeTexture({ wall: '#dedad0', win: '#3c4248', frame: '#dedad0', w: 3, h: h, ww: 2.4, wh: 2.2, sill: h - 3 }), rough: 0.9 });
   b.prism(ring, 0, h - 0.3, base, LOOK.roofGrey);
   // the folded star roof
@@ -387,7 +438,7 @@ function zygmunt(b) {
 }
 
 function magdalena(b) {
-  const id = IDS.magdalena[0], ring = ringOf(id), h = heightOf(id), f = frameOf(ring);
+  const id = resolve().IDS.magdalena[0], ring = ringOf(id), h = heightOf(id), f = frameOf(ring);
   const wall = mat({ map: facadeTexture({ wall: '#f2f0ea', win: '#46413a', frame: '#f2f0ea', w: 4, h: h, ww: 1.1, wh: 2.6, sill: 2.4 }), rough: 0.9 });
   const eaves = h - 1.5;
   b.prism(ring, 0, eaves, wall);
@@ -474,12 +525,12 @@ function kameduly(b, colliders) {
   // the picket fence along the front, either side of the gate
   for (const s of [-1, 1]) b.box(f, gu - west * 1, s * 15, 0.12, 22, 1.4, 0, LOOK.wood);
   // the hermitages (LoD1 annex, the low buildings round the church)
-  for (const [area, flatRing, hh] of GEO.annex || []) {
-    if (area !== 'uksw-kameduly' || hh >= 9) continue;
-    const r = toPts(flatRing), hf = frameOf(r);
+  for (const i of resolve().campus.uksw) {
+    const hh = heightOf(i);
+    if (hh >= 9) continue;
+    const r = ringOf(i), hf = frameOf(r);
     b.prism(r, 0, Math.max(2.8, hh - 2.4), white);
     b.hip(hf, 0, 0, hf.hu * 2, hf.hv * 2, Math.max(2.8, hh - 2.4), 2.6, LOOK.tile, { o: 0.45 });
-    pushColliders(r, hh, colliders);
   }
 }
 

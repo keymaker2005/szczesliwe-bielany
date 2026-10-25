@@ -665,9 +665,17 @@ function buildAddresses(graph, isWalk, sidewalks) {
   const onOutline = (x, z) => (grid.get(`${Math.floor(x / GRID)},${Math.floor(z / GRID)}`) || [])
     .some((n) => inRing(x, z, sidewalks[n][1]) && !sidewalks[n][2].some((h) => inRing(x, z, h)));
   const good = (x, z) => isWalk(x, z) && isWalk(x + 0.5, z) && isWalk(x - 0.5, z) && isWalk(x, z + 0.5) && isWalk(x, z - 0.5) && onOutline(x, z);
-  // Every stretch of the graph as [ax, az, bx, bz, name index, half width]
+  // The main network (links both ways): addresses by streets cut off from it could not be driven to
+  const parent = Array.from({ length: nodes.length / 2 }, (_, i) => i);
+  const root = (i) => (parent[i] === i ? i : (parent[i] = root(parent[i])));
+  for (const [a, b] of links) parent[root(a)] = root(b);
+  const size = new Map();
+  for (let i = 0; i < parent.length; i++) size.set(root(i), (size.get(root(i)) || 0) + 1);
+  const main = [...size].sort((p, r) => r[1] - p[1])[0][0];
+  // Every stretch of the main network as [ax, az, bx, bz, name index, half width]
   const segs = [];
   for (const [a, b, name, w, , , inner] of links) {
+    if (root(a) !== main) continue;
     const pts = [nodes[2 * a], nodes[2 * a + 1], ...inner, nodes[2 * b], nodes[2 * b + 1]];
     for (let k = 0; k + 3 < pts.length; k += 2) segs.push([pts[k], pts[k + 1], pts[k + 2], pts[k + 3], name, w / 2]);
   }
@@ -734,18 +742,6 @@ const roadGraph = buildRoadGraph();
 const { blocks, sidewalks, isWalk } = buildBlocks(roadGraph);
 const addresses = buildAddresses(roadGraph, isWalk, sidewalks);
 
-// Landmark annex: the LoD1 buildings of AWF, UKSW and the Camaldolese complex just east of the area's edge
-// (data/extract_bielany_lod1_annex.py), for js/landmarks.js: [area, outer ring, height]
-const ANNEX_FILE = ROOT + 'data/bielany_lod1_annex.geojson';
-const annex = fs.existsSync(ANNEX_FILE) ? read(ANNEX_FILE).features.map((f) => {
-  const pts = f.geometry.coordinates[0].map(([lon, lat]) => toWorld(lon, lat));
-  if (pts.length > 1 && pts[0][0] === pts[pts.length - 1][0] && pts[0][1] === pts[pts.length - 1][1]) pts.pop();
-  let r = rdpRing(pts, 0.2);
-  let a = 0;
-  for (let k = 0, m = r.length - 1; k < r.length; m = k++) a += r[m][0] * r[k][1] - r[k][0] * r[m][1];
-  if (a < 0) r = r.slice().reverse();
-  return [f.properties.area, flat(r), q(f.properties.height_m)];
-}).filter((b) => b[1].length >= 6) : [];
 const GEO = {
   version: 1,
   frame: {
@@ -773,8 +769,6 @@ const GEO = {
   // 2: nowe osiedle, 3: pawilon, 4: wysoka płyta, 5: blok z lat 50.), palette (0: pastel, 1: bold)]
   buildings: buildBuildings(),
   stations,
-  // Landmark annex east of the area (GUGiK LoD1 2024): [area (awf, uksw-kameduly), outer ring [x, z, ...], height]
-  annex,
   // Addresses (OpenStreetMap): streets [name, ...] and list [street index, number, building x, z, sidewalk spot x, z]
   addresses,
 };

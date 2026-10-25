@@ -1,16 +1,17 @@
 """Wycina budynki LoD1 (GUGiK, EPSG:2180) z paczki zip dla bboxa Bielan i zapisuje GeoJSON w WGS84.
 usage: python3 extract_bielany_lod1.py <zip> <out.geojson>
 """
-import sys, zipfile, json, re
+import sys, zipfile, json, re, os
 import xml.etree.ElementTree as ET
-from pyproj import Transformer
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from extract_bielany_trees import to_wgs84  # noqa: E402  (EPSG:2180 -> WGS84 bez pyproj, dokładność < 1 mm)
 
 ZIP, OUT = sys.argv[1], sys.argv[2]
-E0, N0, E1, N1 = 630616, 491502, 633607, 494475  # bbox 52.274,20.915 - 52.300,20.960
+E0, N0, E1, N1 = 629517, 490141, 635086, 494513  # bbox 52.262,20.900 - 52.300,20.980 (Faza 2)
 G = '{http://www.opengis.net/gml}'
 B = '{http://www.opengis.net/citygml/building/2.0}'
 GEN = '{http://www.opengis.net/citygml/generics/2.0}'
-tr = Transformer.from_crs(2180, 4326, always_xy=True)
 
 feats, heights = [], []
 with zipfile.ZipFile(ZIP) as z:
@@ -43,7 +44,7 @@ with zipfile.ZipFile(ZIP) as z:
                     ce = sum(p[0] for p in best[1]) / len(best[1])
                     cn = sum(p[1] for p in best[1]) / len(best[1])
                     if E0 <= ce <= E1 and N0 <= cn <= N1:
-                        ring = [list(map(lambda c: round(c, 7), tr.transform(p[0], p[1]))) for p in best[1]]
+                        ring = [[round(c, 7) for c in to_wgs84(p[0], p[1])] for p in best[1]]
                         hv = float(h.text)
                         heights.append(hv)
                         feats.append({'type': 'Feature', 'properties': {

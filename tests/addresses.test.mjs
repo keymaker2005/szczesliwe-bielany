@@ -15,7 +15,7 @@ test('Addresses: real Bielany addresses, each with a sidewalk spot on its own st
   const { streets, list } = GEO.addresses;
   assert.ok(list.length > 1500, `${list.length} addresses`);
   const find = (street, num) => list.find((a) => streets[a[0]] === street && a[1] === num);
-  for (const [s, n] of [['Stefana Żeromskiego', '29'], ['Marymoncka', '34'], ['Wólczyńska', '133']]) {
+  for (const [s, n] of [['Stefana Żeromskiego', '29'], ['Marymoncka', '34A'], ['Wólczyńska', '133']]) {
     assert.ok(find(s, n), `missing address ${s} ${n}`);
   }
 

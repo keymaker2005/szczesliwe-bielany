@@ -16,6 +16,3 @@ Link do paczki: https://opendata.geoportal.gov.pl/InneDane/Budynki3D/LOD1/2024/1
 Drzewa: https://opendata.geoportal.gov.pl/InneDane/Drzewa3D/LOD1/2023/14/1465.zip (12 z 484 arkuszy w bboxie; każde drzewo to dwa obiekty: pień i korona, skrypt bierze korony).
 Atrybucja w aplikacji: "Budynki: GUGiK, geoportal.gov.pl (CC BY 4.0)".
 
-
-## Aneks LoD1 dla landmarków (bielany_lod1_annex.geojson)
-47 budynków GUGiK LoD1 2024 tuż za wschodnią granicą obszaru (lon > 20.960): wschodnie skrzydła AWF, kampus UKSW przy Dewajtis i eremy Kamedułów. Skrypt: data/extract_bielany_lod1_annex.py (z pełnej paczki w data/raw/). Licencja CC BY 4.0, GUGiK.

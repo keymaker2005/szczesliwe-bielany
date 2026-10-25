@@ -20,7 +20,7 @@ Pełna dokumentacja: https://claude.ai/artifact/4wjHwfUPzV9NmL6BudsRnL
   Gotowy wycinek MVP: data/bielany_lod1_2024.geojson (2296 budynków, WGS84, pola height_m, ground_z), skrypt: data/extract_bielany_lod1.py.
   Dla Warszawy istnieje też LoD2 2017 z dachami (https://opendata.geoportal.gov.pl/InneDane/Budynki3D/LOD2/1465_gml.zip), ale jest starsze niż nowe osiedla.
 - Drzewa: modele 3D drzew GUGiK dla Warszawy (LoD1 2023), od kroku 1.7.
-- Granice MVP (bbox WGS84): 52.274,20.915,52.300,20.960. Potwierdzone w kroku 0.2.
+- Granice obszaru (bbox WGS84): 52.262,20.900,52.300,20.980 od kroku 2.1 (MVP: 52.274,20.915,52.300,20.960, krok 0.2).
 
 ## Układ świata
 - 1 jednostka = 1 m. Punkt zerowy przy stacji metra Stare Bielany. Osie bez obrotu (północ = -Z).

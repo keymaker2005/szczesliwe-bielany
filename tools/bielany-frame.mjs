@@ -10,8 +10,8 @@ const DATA = process.env.GEO_DATA || ROOT + 'tools/data/';
 const read = (f) => JSON.parse(fs.readFileSync(f, 'utf8'));
 const osm = (n) => read(`${DATA}osm_bielany_${n}.json`).elements;
 
-// MVP bounds (WGS84), confirmed in step 0.2
-const BBOX = { s: 52.274, w: 20.915, n: 52.3, e: 20.96 };
+// Area bounds (WGS84): the MVP strip of step 0.2, widened in step 2.1 (Słodowiec, Piaski, Kaskada, Chomiczówka, Las Bielański)
+const BBOX = { s: 52.262, w: 20.9, n: 52.3, e: 20.98 };
 
 const station = osm('rail').find((e) => e.type === 'node' && e.tags?.name === 'Stare Bielany' && e.tags?.station === 'subway');
 if (!station) throw new Error('Stare Bielany station node missing from osm_bielany_rail.json');

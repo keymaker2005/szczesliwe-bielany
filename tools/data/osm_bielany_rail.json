@@ -2,11 +2,35 @@
   "version": 0.6,
   "generator": "Overpass API 0.7.62.11 87bfad18",
   "osm3s": {
-    "timestamp_osm_base": "2026-10-24T20:16:46Z",
+    "timestamp_osm_base": "2026-10-25T10:32:51Z",
     "copyright": "The data included in this document is from www.openstreetmap.org. The data is made available under ODbL."
   },
   "elements": [
 
+{
+  "type": "node",
+  "id": 254508220,
+  "lat": 52.2718236,
+  "lon": 20.9732386,
+  "tags": {
+    "bench": "yes",
+    "bin": "yes",
+    "local_ref": "03",
+    "name": "Metro Marymont 03",
+    "network": "ZTM Warszawa",
+    "network:wikidata": "Q8066998",
+    "old_name": "Potocka",
+    "operator": "Tramwaje Warszawskie",
+    "operator:wikidata": "Q9360809",
+    "public_transport": "stop_position",
+    "railway": "tram_stop",
+    "ref": "600503",
+    "shelter": "yes",
+    "tactile_paving": "yes",
+    "tactile_paving:slab_size": "40x40",
+    "tram": "yes"
+  }
+},
 {
   "type": "node",
   "id": 261178627,
@@ -126,6 +150,92 @@
 },
 {
   "type": "node",
+  "id": 261239280,
+  "lat": 52.2693628,
+  "lon": 20.9533553,
+  "tags": {
+    "name": "Romaszewskiego 03",
+    "network": "ZTM Warszawa",
+    "network:wikidata": "Q8066998",
+    "old_name": "Duracza 03",
+    "operator": "Tramwaje Warszawskie",
+    "operator:wikidata": "Q9360809",
+    "public_transport": "stop_position",
+    "railway": "tram_stop",
+    "ref": "604303",
+    "shelter": "yes",
+    "tactile_paving": "yes",
+    "tactile_paving:slab_size": "40x40",
+    "tram": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 261239342,
+  "lat": 52.2643657,
+  "lon": 20.9714282,
+  "tags": {
+    "name": "Sady Żoliborskie 03",
+    "network": "ZTM Warszawa",
+    "network:wikidata": "Q8066998",
+    "operator": "Tramwaje Warszawskie",
+    "operator:wikidata": "Q9360809",
+    "public_transport": "stop_position",
+    "railway": "tram_stop",
+    "ref": "604003",
+    "shelter": "yes",
+    "tactile_paving": "yes",
+    "tactile_paving:slab_size": "40x40",
+    "tram": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 261239348,
+  "lat": 52.2641506,
+  "lon": 20.9723226,
+  "tags": {
+    "name": "Sady Żoliborskie 04",
+    "network": "ZTM Warszawa",
+    "network:wikidata": "Q8066998",
+    "operator": "Tramwaje Warszawskie",
+    "operator:wikidata": "Q9360809",
+    "public_transport": "stop_position",
+    "railway": "tram_stop",
+    "ref": "604004",
+    "shelter": "yes",
+    "tactile_paving": "yes",
+    "tactile_paving:slab_size": "40x40",
+    "tram": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 291414851,
+  "lat": 52.2715768,
+  "lon": 20.9719399,
+  "tags": {
+    "colour": "blue",
+    "name": "Marymont",
+    "name:pl": "Marymont",
+    "name:ru": "Марымонт",
+    "name:uk": "Маримонт",
+    "network": "Warsaw Metro",
+    "operator": "Metro Warszawskie",
+    "public_transport": "station",
+    "railway": "station",
+    "railway:ref": "Mt",
+    "ref": "A19",
+    "start_date": "2006-12-29",
+    "station": "subway",
+    "subway": "yes",
+    "wheelchair": "yes",
+    "wikidata": "Q638585",
+    "wikipedia": "pl:Marymont (stacja metra)"
+  }
+},
+{
+  "type": "node",
   "id": 307389114,
   "lat": 52.2818277,
   "lon": 20.9493511,
@@ -198,6 +308,26 @@
 },
 {
   "type": "node",
+  "id": 312059775,
+  "lat": 52.2712962,
+  "lon": 20.9439438,
+  "tags": {
+    "name": "Piaski 05",
+    "network": "ZTM Warszawa",
+    "network:wikidata": "Q8066998",
+    "operator": "Tramwaje Warszawskie",
+    "operator:wikidata": "Q9360809",
+    "public_transport": "stop_position",
+    "railway": "tram_stop",
+    "ref": "604505",
+    "shelter": "no",
+    "tactile_paving": "yes",
+    "tactile_paving:slab_size": "40x40",
+    "tram": "yes"
+  }
+},
+{
+  "type": "node",
   "id": 339474430,
   "lat": 52.2813671,
   "lon": 20.9238433,
@@ -213,6 +343,286 @@
     "shelter": "yes",
     "tactile_paving": "yes",
     "tactile_paving:slab_size": "40x40",
+    "tram": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 411903716,
+  "lat": 52.2628607,
+  "lon": 20.9794432,
+  "tags": {
+    "name": "Plac Grunwaldzki 03",
+    "network": "ZTM Warszawa",
+    "network:wikidata": "Q8066998",
+    "operator": "Tramwaje Warszawskie",
+    "operator:wikidata": "Q9360809",
+    "public_transport": "stop_position",
+    "railway": "tram_stop",
+    "ref": "603903",
+    "shelter": "yes",
+    "tactile_paving": "yes",
+    "tactile_paving:slab_size": "40x40",
+    "tram": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 411903717,
+  "lat": 52.2630519,
+  "lon": 20.9793709,
+  "tags": {
+    "name": "Plac Grunwaldzki 04",
+    "network": "ZTM Warszawa",
+    "network:wikidata": "Q8066998",
+    "operator": "Tramwaje Warszawskie",
+    "operator:wikidata": "Q9360809",
+    "public_transport": "stop_position",
+    "railway": "tram_stop",
+    "ref": "603904",
+    "shelter": "no",
+    "tactile_paving": "yes",
+    "tactile_paving:slab_size": "40x40",
+    "tram": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 411903718,
+  "lat": 52.2625727,
+  "lon": 20.9780232,
+  "tags": {
+    "name": "Plac Grunwaldzki 08",
+    "network": "ZTM Warszawa",
+    "network:wikidata": "Q8066998",
+    "operator": "Tramwaje Warszawskie",
+    "operator:wikidata": "Q9360809",
+    "public_transport": "stop_position",
+    "railway": "tram_stop",
+    "ref": "603908",
+    "shelter": "yes",
+    "tactile_paving": "yes",
+    "tactile_paving:slab_size": "40x40",
+    "tram": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 411903719,
+  "lat": 52.2624027,
+  "lon": 20.9784970,
+  "tags": {
+    "name": "Plac Grunwaldzki 07",
+    "network": "ZTM Warszawa",
+    "network:wikidata": "Q8066998",
+    "operator": "Tramwaje Warszawskie",
+    "operator:wikidata": "Q9360809",
+    "public_transport": "stop_position",
+    "railway": "tram_stop",
+    "ref": "603907",
+    "shelter": "yes",
+    "tactile_paving": "yes",
+    "tactile_paving:slab_size": "40x40",
+    "tram": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 411903996,
+  "lat": 52.2668175,
+  "lon": 20.9626934,
+  "tags": {
+    "name": "Włościańska 04",
+    "network": "ZTM Warszawa",
+    "network:wikidata": "Q8066998",
+    "operator": "Tramwaje Warszawskie",
+    "operator:wikidata": "Q9360809",
+    "public_transport": "stop_position",
+    "railway": "tram_stop",
+    "ref": "604104",
+    "shelter": "yes",
+    "tactile_paving": "yes",
+    "tactile_paving:slab_size": "35x35",
+    "tram": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 411903997,
+  "lat": 52.2666807,
+  "lon": 20.9630479,
+  "tags": {
+    "name": "Włościańska 03",
+    "network": "ZTM Warszawa",
+    "network:wikidata": "Q8066998",
+    "operator": "Tramwaje Warszawskie",
+    "operator:wikidata": "Q9360809",
+    "public_transport": "stop_position",
+    "railway": "tram_stop",
+    "ref": "604103",
+    "shelter": "yes",
+    "tactile_paving": "yes",
+    "tactile_paving:slab_size": "35x35",
+    "tram": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 411906912,
+  "lat": 52.2681610,
+  "lon": 20.9578507,
+  "tags": {
+    "name": "Park Olszyna 04",
+    "network": "ZTM Warszawa",
+    "network:wikidata": "Q8066998",
+    "operator": "Tramwaje Warszawskie",
+    "operator:wikidata": "Q9360809",
+    "public_transport": "stop_position",
+    "railway": "tram_stop",
+    "ref": "604204",
+    "shelter": "yes",
+    "tactile_paving": "yes",
+    "tactile_paving:slab_size": "35x35",
+    "tram": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 411906913,
+  "lat": 52.2679692,
+  "lon": 20.9583930,
+  "tags": {
+    "name": "Park Olszyna 03",
+    "network": "ZTM Warszawa",
+    "network:wikidata": "Q8066998",
+    "operator": "Tramwaje Warszawskie",
+    "operator:wikidata": "Q9360809",
+    "public_transport": "stop_position",
+    "railway": "tram_stop",
+    "ref": "604203",
+    "shelter": "yes",
+    "tactile_paving": "yes",
+    "tactile_paving:slab_size": "35x35",
+    "tram": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 436251326,
+  "lat": 52.2638400,
+  "lon": 20.9281028,
+  "tags": {
+    "name": "Piastów Śląskich 06",
+    "network": "ZTM Warszawa",
+    "network:wikidata": "Q8066998",
+    "operator": "Tramwaje Warszawskie",
+    "operator:wikidata": "Q9360809",
+    "public_transport": "stop_position",
+    "railway": "tram_stop",
+    "ref": "506206",
+    "shelter": "yes",
+    "tactile_paving": "yes",
+    "tactile_paving:slab_size": "35x35",
+    "tram": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 436251395,
+  "lat": 52.2632277,
+  "lon": 20.9272478,
+  "tags": {
+    "name": "Piastów Śląskich 05",
+    "network": "ZTM Warszawa",
+    "network:wikidata": "Q8066998",
+    "operator": "Tramwaje Warszawskie",
+    "operator:wikidata": "Q9360809",
+    "public_transport": "stop_position",
+    "railway": "tram_stop",
+    "ref": "506205",
+    "shelter": "yes",
+    "tactile_paving": "yes",
+    "tactile_paving:slab_size": "35x35",
+    "tram": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 436253615,
+  "lat": 52.2691402,
+  "lon": 20.9328915,
+  "tags": {
+    "name": "Ogrody Działkowe Bemowo 05",
+    "network": "ZTM Warszawa",
+    "network:wikidata": "Q8066998",
+    "operator": "Tramwaje Warszawskie",
+    "operator:wikidata": "Q9360809",
+    "public_transport": "stop_position",
+    "railway": "tram_stop",
+    "ref": "506505",
+    "shelter": "yes",
+    "tactile_paving": "yes",
+    "tactile_paving:slab_size": "35x35",
+    "tram": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 436253621,
+  "lat": 52.2689345,
+  "lon": 20.9327202,
+  "tags": {
+    "name": "Ogrody Działkowe Bemowo 06",
+    "network": "ZTM Warszawa",
+    "network:wikidata": "Q8066998",
+    "operator": "Tramwaje Warszawskie",
+    "operator:wikidata": "Q9360809",
+    "public_transport": "stop_position",
+    "railway": "tram_stop",
+    "ref": "506506",
+    "shelter": "yes",
+    "tactile_paving": "yes",
+    "tactile_paving:slab_size": "35x35",
+    "tram": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 436256078,
+  "lat": 52.2709016,
+  "lon": 20.9338356,
+  "tags": {
+    "name": "Conrada 06",
+    "network": "ZTM Warszawa",
+    "network:wikidata": "Q8066998",
+    "operator": "Tramwaje Warszawskie",
+    "operator:wikidata": "Q9360809",
+    "public_transport": "stop_position",
+    "railway": "tram_stop",
+    "ref": "604706",
+    "shelter": "yes",
+    "tactile_paving": "yes",
+    "tactile_paving:slab_size": "35x35",
+    "tram": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 436256079,
+  "lat": 52.2715920,
+  "lon": 20.9341448,
+  "tags": {
+    "name": "Conrada 05",
+    "network": "ZTM Warszawa",
+    "network:wikidata": "Q8066998",
+    "operator": "Tramwaje Warszawskie",
+    "operator:wikidata": "Q9360809",
+    "public_transport": "stop_position",
+    "railway": "tram_stop",
+    "ref": "604705",
+    "shelter": "yes",
+    "tactile_paving": "yes",
+    "tactile_paving:slab_size": "35x35",
     "tram": "yes"
   }
 },
@@ -682,6 +1092,361 @@
 },
 {
   "type": "node",
+  "id": 436354011,
+  "lat": 52.2756973,
+  "lon": 20.9638341,
+  "tags": {
+    "local_ref": "05",
+    "name": "Metro Słodowiec 05",
+    "network": "ZTM Warszawa",
+    "network:wikidata": "Q8066998",
+    "old_name": "Żeromskiego 05",
+    "operator": "Tramwaje Warszawskie",
+    "operator:wikidata": "Q9360809",
+    "public_transport": "stop_position",
+    "railway": "tram_stop",
+    "ref": "600605",
+    "shelter": "no",
+    "tactile_paving": "yes",
+    "tactile_paving:slab_size": "40x40",
+    "tram": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 436355418,
+  "lat": 52.2734176,
+  "lon": 20.9674078,
+  "tags": {
+    "name": "Park Kaskada 03",
+    "network": "ZTM Warszawa",
+    "network:wikidata": "Q8066998",
+    "old_name": "Aleja Armii Krajowej 03",
+    "operator": "Tramwaje Warszawskie",
+    "operator:wikidata": "Q9360809",
+    "public_transport": "stop_position",
+    "railway": "tram_stop",
+    "ref": "607503",
+    "shelter": "yes",
+    "tactile_paving": "yes",
+    "tactile_paving:slab_size": "40x40",
+    "tram": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 436355419,
+  "lat": 52.2736763,
+  "lon": 20.9669808,
+  "tags": {
+    "name": "Park Kaskada 04",
+    "network": "ZTM Warszawa",
+    "network:wikidata": "Q8066998",
+    "old_name": "Aleja Armii Krajowej 04",
+    "operator": "Tramwaje Warszawskie",
+    "operator:wikidata": "Q9360809",
+    "public_transport": "stop_position",
+    "railway": "tram_stop",
+    "ref": "607504",
+    "shelter": "yes",
+    "tactile_paving": "yes",
+    "tactile_paving:slab_size": "40x40",
+    "tram": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 436360470,
+  "lat": 52.2667401,
+  "lon": 20.9768657,
+  "tags": {
+    "name": "Księdza Popiełuszki 03",
+    "network": "ZTM Warszawa",
+    "network:wikidata": "Q8066998",
+    "operator": "Tramwaje Warszawskie",
+    "operator:wikidata": "Q9360809",
+    "public_transport": "stop_position",
+    "railway": "tram_stop",
+    "ref": "609403",
+    "shelter": "no",
+    "tactile_paving": "yes",
+    "tactile_paving:slab_size": "40x40",
+    "tram": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 437249916,
+  "lat": 52.2714755,
+  "lon": 20.9457320,
+  "tags": {
+    "name": "Piaski 03",
+    "network": "ZTM Warszawa",
+    "network:wikidata": "Q8066998",
+    "operator": "Tramwaje Warszawskie",
+    "operator:wikidata": "Q9360809",
+    "public_transport": "stop_position",
+    "railway": "tram_stop",
+    "ref": "604503",
+    "shelter": "yes",
+    "tactile_paving": "yes",
+    "tactile_paving:slab_size": "40x40",
+    "tram": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 437249917,
+  "lat": 52.2716023,
+  "lon": 20.9454055,
+  "tags": {
+    "name": "Piaski 04",
+    "network": "ZTM Warszawa",
+    "network:wikidata": "Q8066998",
+    "operator": "Tramwaje Warszawskie",
+    "operator:wikidata": "Q9360809",
+    "public_transport": "stop_position",
+    "railway": "tram_stop",
+    "ref": "604504",
+    "shelter": "yes",
+    "tactile_paving": "yes",
+    "tactile_paving:slab_size": "40x40",
+    "tram": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 612046533,
+  "lat": 52.2713872,
+  "lon": 20.9730105,
+  "tags": {
+    "railway": "subway_entrance",
+    "ref": "8",
+    "wheelchair": "no"
+  }
+},
+{
+  "type": "node",
+  "id": 612046541,
+  "lat": 52.2719102,
+  "lon": 20.9726308,
+  "tags": {
+    "railway": "subway_entrance",
+    "ref": "2",
+    "wheelchair": "no"
+  }
+},
+{
+  "type": "node",
+  "id": 612046542,
+  "lat": 52.2721203,
+  "lon": 20.9727529,
+  "tags": {
+    "railway": "subway_entrance",
+    "ref": "4",
+    "wheelchair": "limited"
+  }
+},
+{
+  "type": "node",
+  "id": 612046543,
+  "lat": 52.2719810,
+  "lon": 20.9726696,
+  "tags": {
+    "railway": "subway_entrance",
+    "ref": "3",
+    "wheelchair": "no"
+  }
+},
+{
+  "type": "node",
+  "id": 612046561,
+  "lat": 52.2718880,
+  "lon": 20.9730989,
+  "tags": {
+    "railway": "subway_entrance",
+    "ref": "6",
+    "wheelchair": "no"
+  }
+},
+{
+  "type": "node",
+  "id": 612046562,
+  "lat": 52.2718173,
+  "lon": 20.9730582,
+  "tags": {
+    "railway": "subway_entrance",
+    "ref": "7",
+    "wheelchair": "no"
+  }
+},
+{
+  "type": "node",
+  "id": 612046564,
+  "lat": 52.2720274,
+  "lon": 20.9731833,
+  "tags": {
+    "railway": "subway_entrance",
+    "ref": "5",
+    "wheelchair": "limited"
+  }
+},
+{
+  "type": "node",
+  "id": 612046565,
+  "lat": 52.2718982,
+  "lon": 20.9732865,
+  "tags": {
+    "bench": "yes",
+    "bin": "yes",
+    "local_ref": "05",
+    "name": "Metro Marymont 05",
+    "network": "ZTM Warszawa",
+    "network:wikidata": "Q8066998",
+    "old_name": "Potocka",
+    "operator": "Tramwaje Warszawskie",
+    "operator:wikidata": "Q9360809",
+    "public_transport": "stop_position",
+    "railway": "tram_stop",
+    "ref": "600505",
+    "shelter": "yes",
+    "tactile_paving": "yes",
+    "tactile_paving:slab_size": "40x40",
+    "tram": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 615475074,
+  "lat": 52.2720726,
+  "lon": 20.9726542,
+  "tags": {
+    "bench": "yes",
+    "bin": "yes",
+    "local_ref": "04",
+    "name": "Metro Marymont 04",
+    "network": "ZTM Warszawa",
+    "network:wikidata": "Q8066998",
+    "old_name": "Potocka",
+    "operator": "Tramwaje Warszawskie",
+    "operator:wikidata": "Q9360809",
+    "public_transport": "stop_position",
+    "railway": "tram_stop",
+    "ref": "600504",
+    "shelter": "yes",
+    "tactile_paving": "yes",
+    "tactile_paving:slab_size": "40x40",
+    "tram": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 834672301,
+  "lat": 52.2718398,
+  "lon": 20.9708954,
+  "tags": {
+    "railway": "subway_entrance",
+    "ref": "9",
+    "wheelchair": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 942626590,
+  "lat": 52.2725117,
+  "lon": 20.9248940,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "name": "Pętla Chomiczówka",
+    "name:ru": "Петля Хомичувка",
+    "name:uk": "Петля Хомічувка",
+    "operator": "ZTM",
+    "public_transport": "station",
+    "wheelchair": "limited"
+  }
+},
+{
+  "type": "node",
+  "id": 1458107722,
+  "lat": 52.2695295,
+  "lon": 20.9528977,
+  "tags": {
+    "name": "Romaszewskiego 04",
+    "network": "ZTM Warszawa",
+    "network:wikidata": "Q8066998",
+    "old_name": "Duracza 04",
+    "operator": "Tramwaje Warszawskie",
+    "operator:wikidata": "Q9360809",
+    "public_transport": "stop_position",
+    "railway": "tram_stop",
+    "ref": "604304",
+    "shelter": "yes",
+    "tactile_paving": "yes",
+    "tactile_paving:slab_size": "40x40",
+    "tram": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 1458200781,
+  "lat": 52.2725291,
+  "lon": 20.9702220,
+  "tags": {
+    "local_ref": "08",
+    "name": "Metro Marymont 08",
+    "network": "ZTM Warszawa",
+    "network:wikidata": "Q8066998",
+    "operator": "Tramwaje Warszawskie",
+    "public_transport": "stop_position",
+    "railway": "tram_stop",
+    "ref": "600508",
+    "shelter": "no",
+    "tram": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 1458200796,
+  "lat": 52.2722427,
+  "lon": 20.9714319,
+  "tags": {
+    "local_ref": "09",
+    "name": "Metro Marymont 09",
+    "network": "ZTM Warszawa",
+    "network:wikidata": "Q8066998",
+    "operator": "Tramwaje Warszawskie",
+    "public_transport": "stop_position",
+    "railway": "tram_stop",
+    "ref": "600509",
+    "shelter": "yes",
+    "tram": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 1458206617,
+  "lat": 52.2755061,
+  "lon": 20.9641472,
+  "tags": {
+    "local_ref": "06",
+    "name": "Metro Słodowiec 06",
+    "network": "ZTM Warszawa",
+    "network:wikidata": "Q8066998",
+    "old_name": "Żeromskiego 06",
+    "operator": "Tramwaje Warszawskie",
+    "operator:wikidata": "Q9360809",
+    "public_transport": "stop_position",
+    "railway": "tram_stop",
+    "ref": "600606",
+    "shelter": "yes",
+    "tactile_paving": "yes",
+    "tactile_paving:slab_size": "40#40",
+    "tram": "yes"
+  }
+},
+{
+  "type": "node",
   "id": 1459949870,
   "lat": 52.2801551,
   "lon": 20.9285336,
@@ -758,6 +1523,68 @@
     "railway": "subway_entrance",
     "ref": "1",
     "wheelchair": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 1958108834,
+  "lat": 52.2768261,
+  "lon": 20.9601259,
+  "tags": {
+    "colour": "blue",
+    "name": "Słodowiec",
+    "name:pl": "Słodowiec",
+    "name:ru": "Слодовец",
+    "name:uk": "Слодовець",
+    "network": "Warsaw Metro",
+    "operator": "Metro Warszawskie",
+    "platforms": "1",
+    "public_transport": "station",
+    "railway": "station",
+    "railway:ref": "Sc",
+    "ref": "A20",
+    "start_date": "2008-04-23",
+    "station": "subway",
+    "subway": "yes",
+    "wheelchair": "yes",
+    "wikidata": "Q638940",
+    "wikipedia": "pl:Słodowiec (stacja metra)"
+  }
+},
+{
+  "type": "node",
+  "id": 1989498875,
+  "lat": 52.2714786,
+  "lon": 20.9434926,
+  "tags": {
+    "name": "Piaski 10",
+    "network": "ZTM Warszawa",
+    "network:wikidata": "Q8066998",
+    "operator": "Tramwaje Warszawskie",
+    "operator:wikidata": "Q9360809",
+    "public_transport": "stop_position",
+    "railway": "tram_stop",
+    "ref": "604510",
+    "shelter": "no",
+    "tram": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 1989499040,
+  "lat": 52.2713128,
+  "lon": 20.9438613,
+  "tags": {
+    "name": "Piaski 06",
+    "network": "ZTM Warszawa",
+    "network:wikidata": "Q8066998",
+    "operator": "Tramwaje Warszawskie",
+    "operator:wikidata": "Q9360809",
+    "public_transport": "stop_position",
+    "railway": "tram_stop",
+    "ref": "604506",
+    "shelter": "no",
+    "tram": "yes"
   }
 },
 {
@@ -845,6 +1672,24 @@
 },
 {
   "type": "node",
+  "id": 1989628516,
+  "lat": 52.2659346,
+  "lon": 20.9774473,
+  "tags": {
+    "name": "Księdza Popiełuszki 04",
+    "network": "ZTM Warszawa",
+    "network:wikidata": "Q8066998",
+    "operator": "Tramwaje Warszawskie",
+    "operator:wikidata": "Q9360809",
+    "public_transport": "stop_position",
+    "railway": "tram_stop",
+    "ref": "609404",
+    "shelter": "no",
+    "tram": "yes"
+  }
+},
+{
+  "type": "node",
   "id": 2258353422,
   "lat": 52.2858958,
   "lon": 20.9405049,
@@ -863,6 +1708,17 @@
     "railway": "subway_entrance",
     "ref": "2",
     "wheelchair": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 2282041295,
+  "lat": 52.2715773,
+  "lon": 20.9724540,
+  "tags": {
+    "railway": "subway_entrance",
+    "ref": "1",
+    "wheelchair": "limited"
   }
 },
 {
@@ -925,6 +1781,28 @@
   "id": 2517817559,
   "lat": 52.2912508,
   "lon": 20.9288493,
+  "tags": {
+    "railway": "subway_entrance",
+    "ref": "2",
+    "wheelchair": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 2652580744,
+  "lat": 52.2763384,
+  "lon": 20.9611768,
+  "tags": {
+    "railway": "subway_entrance",
+    "ref": "1",
+    "wheelchair": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 2652580752,
+  "lat": 52.2764907,
+  "lon": 20.9608480,
   "tags": {
     "railway": "subway_entrance",
     "ref": "2",
@@ -1005,6 +1883,63 @@
 },
 {
   "type": "node",
+  "id": 4576965896,
+  "lat": 52.2727784,
+  "lon": 20.9718895,
+  "tags": {
+    "description": "Przystanek techniczny dla linii 36.",
+    "name": "Metro Marymont 72",
+    "network": "ZTM Warszawa",
+    "network:wikidata": "Q8066998",
+    "operator": "Tramwaje Warszawskie",
+    "operator:wikidata": "Q9360809",
+    "public_transport": "stop_position",
+    "railway": "tram_stop",
+    "ref": "600572",
+    "shelter": "no",
+    "tram": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 9934487534,
+  "lat": 52.2728127,
+  "lon": 20.9718659,
+  "tags": {
+    "description": "Przystanek techniczny dla linii 27.",
+    "name": "Metro Marymont 73",
+    "network": "ZTM Warszawa",
+    "network:wikidata": "Q8066998",
+    "operator": "Tramwaje Warszawskie",
+    "operator:wikidata": "Q9360809",
+    "public_transport": "stop_position",
+    "railway": "tram_stop",
+    "ref": "600573",
+    "shelter": "no",
+    "tram": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 9962649666,
+  "lat": 52.2727268,
+  "lon": 20.9718987,
+  "tags": {
+    "description": "Przystanek techniczny dla linii 17.",
+    "name": "Metro Marymont 71",
+    "network": "ZTM Warszawa",
+    "network:wikidata": "Q8066998",
+    "operator": "Tramwaje Warszawskie",
+    "operator:wikidata": "Q9360809",
+    "public_transport": "stop_position",
+    "railway": "tram_stop",
+    "ref": "600571",
+    "shelter": "no",
+    "tram": "yes"
+  }
+},
+{
+  "type": "node",
   "id": 13374576614,
   "lat": 52.2921096,
   "lon": 20.9286361,
@@ -1023,6 +1958,180 @@
     "tactile_paving": "yes",
     "tactile_paving:slab_size": "40x40",
     "tram": "yes"
+  }
+},
+{
+  "type": "way",
+  "id": 5111165,
+  "bounds": {
+    "minlat": 52.2717955,
+    "minlon": 20.9610430,
+    "maxlat": 52.2763731,
+    "maxlon": 20.9707035
+  },
+  "geometry": [
+    { "lat": 52.2763731, "lon": 20.9610430 },
+    { "lat": 52.2762899, "lon": 20.9612210 },
+    { "lat": 52.2762069, "lon": 20.9613954 },
+    { "lat": 52.2761196, "lon": 20.9615737 },
+    { "lat": 52.2760361, "lon": 20.9617392 },
+    { "lat": 52.2759506, "lon": 20.9619011 },
+    { "lat": 52.2758649, "lon": 20.9620576 },
+    { "lat": 52.2757643, "lon": 20.9622336 },
+    { "lat": 52.2756622, "lon": 20.9624051 },
+    { "lat": 52.2755643, "lon": 20.9625629 },
+    { "lat": 52.2754661, "lon": 20.9627143 },
+    { "lat": 52.2753634, "lon": 20.9628644 },
+    { "lat": 52.2752588, "lon": 20.9630098 },
+    { "lat": 52.2751557, "lon": 20.9631464 },
+    { "lat": 52.2750481, "lon": 20.9632861 },
+    { "lat": 52.2744328, "lon": 20.9640653 },
+    { "lat": 52.2741605, "lon": 20.9644133 },
+    { "lat": 52.2740529, "lon": 20.9645615 },
+    { "lat": 52.2739502, "lon": 20.9647096 },
+    { "lat": 52.2738393, "lon": 20.9648793 },
+    { "lat": 52.2737457, "lon": 20.9650293 },
+    { "lat": 52.2736483, "lon": 20.9651933 },
+    { "lat": 52.2735987, "lon": 20.9652826 },
+    { "lat": 52.2735513, "lon": 20.9653653 },
+    { "lat": 52.2734626, "lon": 20.9655308 },
+    { "lat": 52.2733765, "lon": 20.9656968 },
+    { "lat": 52.2732879, "lon": 20.9658756 },
+    { "lat": 52.2731922, "lon": 20.9660751 },
+    { "lat": 52.2731013, "lon": 20.9662728 },
+    { "lat": 52.2730220, "lon": 20.9664529 },
+    { "lat": 52.2729328, "lon": 20.9666656 },
+    { "lat": 52.2728468, "lon": 20.9668782 },
+    { "lat": 52.2727743, "lon": 20.9670690 },
+    { "lat": 52.2727038, "lon": 20.9672610 },
+    { "lat": 52.2726391, "lon": 20.9674464 },
+    { "lat": 52.2725713, "lon": 20.9676459 },
+    { "lat": 52.2725106, "lon": 20.9678379 },
+    { "lat": 52.2724486, "lon": 20.9680413 },
+    { "lat": 52.2723999, "lon": 20.9681998 },
+    { "lat": 52.2723488, "lon": 20.9683760 },
+    { "lat": 52.2722771, "lon": 20.9686400 },
+    { "lat": 52.2722176, "lon": 20.9688811 },
+    { "lat": 52.2721593, "lon": 20.9691264 },
+    { "lat": 52.2721137, "lon": 20.9693220 },
+    { "lat": 52.2720674, "lon": 20.9695192 },
+    { "lat": 52.2720176, "lon": 20.9697329 },
+    { "lat": 52.2719717, "lon": 20.9699403 },
+    { "lat": 52.2719249, "lon": 20.9701520 },
+    { "lat": 52.2717955, "lon": 20.9707035 }
+  ],
+  "tags": {
+    "electrified": "rail",
+    "electrified:rail": "side",
+    "frequency": "0",
+    "gauge": "1435",
+    "layer": "-3",
+    "level": "-2",
+    "maxspeed": "80",
+    "operator": "Metro Warszawskie",
+    "railway": "subway",
+    "railway:bidirectional": "regular",
+    "railway:preferred_direction": "forward",
+    "railway:sop": "2W",
+    "railway:track_ref": "2",
+    "ref": "M1",
+    "start_date": "2008-04-23",
+    "tunnel": "yes",
+    "voltage": "750",
+    "wikidata": "Q17462780",
+    "wikipedia": "pl:Linia M1 metra w Warszawie"
+  }
+},
+{
+  "type": "way",
+  "id": 23501075,
+  "bounds": {
+    "minlat": 52.2688388,
+    "minlon": 20.9732865,
+    "maxlat": 52.2718982,
+    "maxlon": 20.9864750
+  },
+  "geometry": [
+    { "lat": 52.2718982, "lon": 20.9732865 },
+    { "lat": 52.2718734, "lon": 20.9733984 },
+    { "lat": 52.2718506, "lon": 20.9734997 },
+    { "lat": 52.2718405, "lon": 20.9735432 },
+    { "lat": 52.2718378, "lon": 20.9735542 },
+    { "lat": 52.2718267, "lon": 20.9736013 },
+    { "lat": 52.2718070, "lon": 20.9736727 },
+    { "lat": 52.2717814, "lon": 20.9737591 },
+    { "lat": 52.2717461, "lon": 20.9738686 },
+    { "lat": 52.2716798, "lon": 20.9740624 },
+    { "lat": 52.2716431, "lon": 20.9741709 },
+    { "lat": 52.2716249, "lon": 20.9742225 },
+    { "lat": 52.2715814, "lon": 20.9743596 },
+    { "lat": 52.2715614, "lon": 20.9744177 },
+    { "lat": 52.2715211, "lon": 20.9745574 },
+    { "lat": 52.2714840, "lon": 20.9747006 },
+    { "lat": 52.2711485, "lon": 20.9762373 },
+    { "lat": 52.2707253, "lon": 20.9781646 },
+    { "lat": 52.2707112, "lon": 20.9782269 },
+    { "lat": 52.2704434, "lon": 20.9794123 },
+    { "lat": 52.2704303, "lon": 20.9794718 },
+    { "lat": 52.2702094, "lon": 20.9804727 },
+    { "lat": 52.2701267, "lon": 20.9808475 },
+    { "lat": 52.2700929, "lon": 20.9810015 },
+    { "lat": 52.2700570, "lon": 20.9811653 },
+    { "lat": 52.2699345, "lon": 20.9817372 },
+    { "lat": 52.2697825, "lon": 20.9825264 },
+    { "lat": 52.2696454, "lon": 20.9831576 },
+    { "lat": 52.2694583, "lon": 20.9840193 },
+    { "lat": 52.2693148, "lon": 20.9846727 },
+    { "lat": 52.2691705, "lon": 20.9853378 },
+    { "lat": 52.2691287, "lon": 20.9855267 },
+    { "lat": 52.2691045, "lon": 20.9856308 },
+    { "lat": 52.2690820, "lon": 20.9857245 },
+    { "lat": 52.2690618, "lon": 20.9858043 },
+    { "lat": 52.2690373, "lon": 20.9858969 },
+    { "lat": 52.2689877, "lon": 20.9860709 },
+    { "lat": 52.2689175, "lon": 20.9863024 },
+    { "lat": 52.2688841, "lon": 20.9863864 },
+    { "lat": 52.2688388, "lon": 20.9864750 }
+  ],
+  "tags": {
+    "electrified": "contact_line",
+    "frequency": "0",
+    "gauge": "1435",
+    "maxspeed": "50",
+    "oneway": "yes",
+    "operator": "Tramwaje Warszawskie",
+    "railway": "tram",
+    "voltage": "600"
+  }
+},
+{
+  "type": "way",
+  "id": 23501076,
+  "bounds": {
+    "minlat": 52.2729419,
+    "minlon": 20.9658990,
+    "maxlat": 52.2742491,
+    "maxlon": 20.9688207
+  },
+  "geometry": [
+    { "lat": 52.2729419, "lon": 20.9688207 },
+    { "lat": 52.2731336, "lon": 20.9682180 },
+    { "lat": 52.2732568, "lon": 20.9678842 },
+    { "lat": 52.2733843, "lon": 20.9675855 },
+    { "lat": 52.2735532, "lon": 20.9672295 },
+    { "lat": 52.2736763, "lon": 20.9669808 },
+    { "lat": 52.2742491, "lon": 20.9658990 }
+  ],
+  "tags": {
+    "bridge": "yes",
+    "electrified": "contact_line",
+    "frequency": "0",
+    "gauge": "1435",
+    "layer": "1",
+    "oneway": "yes",
+    "operator": "Tramwaje Warszawskie",
+    "railway": "tram",
+    "voltage": "600"
   }
 },
 {
@@ -1289,6 +2398,130 @@
 },
 {
   "type": "way",
+  "id": 24094654,
+  "bounds": {
+    "minlat": 52.2618481,
+    "minlon": 20.9733164,
+    "maxlat": 52.2719280,
+    "maxlon": 20.9801701
+  },
+  "geometry": [
+    { "lat": 52.2618481, "lon": 20.9801701 },
+    { "lat": 52.2625962, "lon": 20.9796696 },
+    { "lat": 52.2627111, "lon": 20.9795948 },
+    { "lat": 52.2627557, "lon": 20.9795668 },
+    { "lat": 52.2630519, "lon": 20.9793709 },
+    { "lat": 52.2634893, "lon": 20.9790766 },
+    { "lat": 52.2639284, "lon": 20.9787875 },
+    { "lat": 52.2648055, "lon": 20.9782020 },
+    { "lat": 52.2650593, "lon": 20.9780306 },
+    { "lat": 52.2659346, "lon": 20.9774473 },
+    { "lat": 52.2661437, "lon": 20.9773089 },
+    { "lat": 52.2663121, "lon": 20.9772002 },
+    { "lat": 52.2665340, "lon": 20.9770518 },
+    { "lat": 52.2666774, "lon": 20.9769551 },
+    { "lat": 52.2685482, "lon": 20.9757107 },
+    { "lat": 52.2685717, "lon": 20.9756952 },
+    { "lat": 52.2699539, "lon": 20.9747741 },
+    { "lat": 52.2706584, "lon": 20.9743040 },
+    { "lat": 52.2711931, "lon": 20.9739627 },
+    { "lat": 52.2712307, "lon": 20.9739379 },
+    { "lat": 52.2713685, "lon": 20.9738383 },
+    { "lat": 52.2716144, "lon": 20.9736777 },
+    { "lat": 52.2718094, "lon": 20.9735434 },
+    { "lat": 52.2718270, "lon": 20.9735291 },
+    { "lat": 52.2718506, "lon": 20.9734997 },
+    { "lat": 52.2718643, "lon": 20.9734818 },
+    { "lat": 52.2718746, "lon": 20.9734688 },
+    { "lat": 52.2718880, "lon": 20.9734451 },
+    { "lat": 52.2719002, "lon": 20.9734147 },
+    { "lat": 52.2719280, "lon": 20.9733164 }
+  ],
+  "tags": {
+    "electrified": "contact_line",
+    "frequency": "0",
+    "gauge": "1435",
+    "maxspeed": "50",
+    "oneway": "yes",
+    "operator": "Tramwaje Warszawskie",
+    "railway": "tram",
+    "voltage": "600"
+  }
+},
+{
+  "type": "way",
+  "id": 24094656,
+  "bounds": {
+    "minlat": 52.2720942,
+    "minlon": 20.9722783,
+    "maxlat": 52.2724600,
+    "maxlon": 20.9725552
+  },
+  "geometry": [
+    { "lat": 52.2720942, "lon": 20.9725552 },
+    { "lat": 52.2721104, "lon": 20.9724925 },
+    { "lat": 52.2721245, "lon": 20.9724512 },
+    { "lat": 52.2721422, "lon": 20.9724142 },
+    { "lat": 52.2721554, "lon": 20.9723885 },
+    { "lat": 52.2721709, "lon": 20.9723661 },
+    { "lat": 52.2721858, "lon": 20.9723479 },
+    { "lat": 52.2722028, "lon": 20.9723296 },
+    { "lat": 52.2722215, "lon": 20.9723139 },
+    { "lat": 52.2722427, "lon": 20.9722995 },
+    { "lat": 52.2722610, "lon": 20.9722908 },
+    { "lat": 52.2722845, "lon": 20.9722836 },
+    { "lat": 52.2723140, "lon": 20.9722783 },
+    { "lat": 52.2723290, "lon": 20.9722801 },
+    { "lat": 52.2723539, "lon": 20.9722863 },
+    { "lat": 52.2723956, "lon": 20.9723009 },
+    { "lat": 52.2724600, "lon": 20.9723395 }
+  ],
+  "tags": {
+    "electrified": "contact_line",
+    "frequency": "0",
+    "gauge": "1435",
+    "maxspeed": "35",
+    "oneway": "yes",
+    "operator": "Tramwaje Warszawskie",
+    "railway": "tram",
+    "voltage": "600"
+  }
+},
+{
+  "type": "way",
+  "id": 28408390,
+  "bounds": {
+    "minlat": 52.2716765,
+    "minlon": 20.9439254,
+    "maxlat": 52.2720127,
+    "maxlon": 20.9441140
+  },
+  "geometry": [
+    { "lat": 52.2716765, "lon": 20.9440674 },
+    { "lat": 52.2717025, "lon": 20.9440815 },
+    { "lat": 52.2717324, "lon": 20.9440942 },
+    { "lat": 52.2717542, "lon": 20.9441035 },
+    { "lat": 52.2718029, "lon": 20.9441139 },
+    { "lat": 52.2718288, "lon": 20.9441140 },
+    { "lat": 52.2718594, "lon": 20.9441066 },
+    { "lat": 52.2718913, "lon": 20.9440913 },
+    { "lat": 52.2719168, "lon": 20.9440751 },
+    { "lat": 52.2719389, "lon": 20.9440516 },
+    { "lat": 52.2719702, "lon": 20.9440098 },
+    { "lat": 52.2720127, "lon": 20.9439254 }
+  ],
+  "tags": {
+    "electrified": "contact_line",
+    "frequency": "0",
+    "gauge": "1435",
+    "oneway": "yes",
+    "operator": "Tramwaje Warszawskie",
+    "railway": "tram",
+    "voltage": "600"
+  }
+},
+{
+  "type": "way",
   "id": 35151989,
   "bounds": {
     "minlat": 52.2924490,
@@ -1485,6 +2718,43 @@
 },
 {
   "type": "way",
+  "id": 37378558,
+  "bounds": {
+    "minlat": 52.2720942,
+    "minlon": 20.9708029,
+    "maxlat": 52.2723725,
+    "maxlon": 20.9725552
+  },
+  "geometry": [
+    { "lat": 52.2720942, "lon": 20.9725552 },
+    { "lat": 52.2721092, "lon": 20.9724858 },
+    { "lat": 52.2721884, "lon": 20.9721216 },
+    { "lat": 52.2722227, "lon": 20.9719632 },
+    { "lat": 52.2722403, "lon": 20.9718657 },
+    { "lat": 52.2722509, "lon": 20.9717886 },
+    { "lat": 52.2722608, "lon": 20.9717067 },
+    { "lat": 52.2722671, "lon": 20.9716343 },
+    { "lat": 52.2722718, "lon": 20.9715661 },
+    { "lat": 52.2722919, "lon": 20.9712656 },
+    { "lat": 52.2722996, "lon": 20.9711816 },
+    { "lat": 52.2723098, "lon": 20.9711042 },
+    { "lat": 52.2723234, "lon": 20.9710217 },
+    { "lat": 52.2723374, "lon": 20.9709541 },
+    { "lat": 52.2723725, "lon": 20.9708029 }
+  ],
+  "tags": {
+    "electrified": "contact_line",
+    "frequency": "0",
+    "gauge": "1435",
+    "maxspeed": "50",
+    "oneway": "yes",
+    "operator": "Tramwaje Warszawskie",
+    "railway": "tram",
+    "voltage": "600"
+  }
+},
+{
+  "type": "way",
   "id": 48083495,
   "bounds": {
     "minlat": 52.2846647,
@@ -1594,6 +2864,942 @@
 },
 {
   "type": "way",
+  "id": 121242773,
+  "bounds": {
+    "minlat": 52.2719280,
+    "minlon": 20.9726542,
+    "maxlat": 52.2720726,
+    "maxlon": 20.9733164
+  },
+  "geometry": [
+    { "lat": 52.2719280, "lon": 20.9733164 },
+    { "lat": 52.2720726, "lon": 20.9726542 }
+  ],
+  "tags": {
+    "electrified": "contact_line",
+    "frequency": "0",
+    "gauge": "1435",
+    "maxspeed": "50",
+    "oneway": "yes",
+    "operator": "Tramwaje Warszawskie",
+    "railway": "tram",
+    "voltage": "600"
+  }
+},
+{
+  "type": "way",
+  "id": 132569247,
+  "bounds": {
+    "minlat": 52.2620794,
+    "minlon": 20.9461131,
+    "maxlat": 52.2714106,
+    "maxlon": 20.9797906
+  },
+  "geometry": [
+    { "lat": 52.2620794, "lon": 20.9797906 },
+    { "lat": 52.2620877, "lon": 20.9797613 },
+    { "lat": 52.2623348, "lon": 20.9788863 },
+    { "lat": 52.2623789, "lon": 20.9787274 },
+    { "lat": 52.2623921, "lon": 20.9786787 },
+    { "lat": 52.2625727, "lon": 20.9780232 },
+    { "lat": 52.2641506, "lon": 20.9723226 },
+    { "lat": 52.2642179, "lon": 20.9720870 },
+    { "lat": 52.2642908, "lon": 20.9718226 },
+    { "lat": 52.2643424, "lon": 20.9716357 },
+    { "lat": 52.2646769, "lon": 20.9704177 },
+    { "lat": 52.2651853, "lon": 20.9685929 },
+    { "lat": 52.2656509, "lon": 20.9669217 },
+    { "lat": 52.2660350, "lon": 20.9655162 },
+    { "lat": 52.2665494, "lon": 20.9636614 },
+    { "lat": 52.2668175, "lon": 20.9626934 },
+    { "lat": 52.2668862, "lon": 20.9624453 },
+    { "lat": 52.2669346, "lon": 20.9622702 },
+    { "lat": 52.2675620, "lon": 20.9600051 },
+    { "lat": 52.2675862, "lon": 20.9599176 },
+    { "lat": 52.2676301, "lon": 20.9597593 },
+    { "lat": 52.2678825, "lon": 20.9588447 },
+    { "lat": 52.2679254, "lon": 20.9586901 },
+    { "lat": 52.2679457, "lon": 20.9586182 },
+    { "lat": 52.2681610, "lon": 20.9578507 },
+    { "lat": 52.2682393, "lon": 20.9575580 },
+    { "lat": 52.2682676, "lon": 20.9574520 },
+    { "lat": 52.2682825, "lon": 20.9573983 },
+    { "lat": 52.2684429, "lon": 20.9568206 },
+    { "lat": 52.2687926, "lon": 20.9555572 },
+    { "lat": 52.2693575, "lon": 20.9535195 },
+    { "lat": 52.2693622, "lon": 20.9535026 },
+    { "lat": 52.2695295, "lon": 20.9528977 },
+    { "lat": 52.2697561, "lon": 20.9520783 },
+    { "lat": 52.2703261, "lon": 20.9500198 },
+    { "lat": 52.2703386, "lon": 20.9499746 },
+    { "lat": 52.2703863, "lon": 20.9498012 },
+    { "lat": 52.2704260, "lon": 20.9496601 },
+    { "lat": 52.2704400, "lon": 20.9496104 },
+    { "lat": 52.2707426, "lon": 20.9485056 },
+    { "lat": 52.2710873, "lon": 20.9472691 },
+    { "lat": 52.2714106, "lon": 20.9461131 }
+  ],
+  "tags": {
+    "electrified": "contact_line",
+    "frequency": "0",
+    "gauge": "1435",
+    "oneway": "yes",
+    "operator": "Tramwaje Warszawskie",
+    "railway": "tram",
+    "voltage": "600"
+  }
+},
+{
+  "type": "way",
+  "id": 132570749,
+  "bounds": {
+    "minlat": 52.2709112,
+    "minlon": 20.9431508,
+    "maxlat": 52.2710878,
+    "maxlon": 20.9436929
+  },
+  "geometry": [
+    { "lat": 52.2709348, "lon": 20.9431508 },
+    { "lat": 52.2709186, "lon": 20.9432343 },
+    { "lat": 52.2709126, "lon": 20.9432921 },
+    { "lat": 52.2709115, "lon": 20.9433101 },
+    { "lat": 52.2709112, "lon": 20.9433354 },
+    { "lat": 52.2709121, "lon": 20.9433544 },
+    { "lat": 52.2709134, "lon": 20.9433757 },
+    { "lat": 52.2709167, "lon": 20.9434031 },
+    { "lat": 52.2709192, "lon": 20.9434208 },
+    { "lat": 52.2709235, "lon": 20.9434439 },
+    { "lat": 52.2709290, "lon": 20.9434653 },
+    { "lat": 52.2709343, "lon": 20.9434838 },
+    { "lat": 52.2709411, "lon": 20.9435043 },
+    { "lat": 52.2709517, "lon": 20.9435310 },
+    { "lat": 52.2709595, "lon": 20.9435490 },
+    { "lat": 52.2709675, "lon": 20.9435649 },
+    { "lat": 52.2709727, "lon": 20.9435739 },
+    { "lat": 52.2709841, "lon": 20.9435916 },
+    { "lat": 52.2709995, "lon": 20.9436119 },
+    { "lat": 52.2710336, "lon": 20.9436506 },
+    { "lat": 52.2710878, "lon": 20.9436929 }
+  ],
+  "tags": {
+    "electrified": "contact_line",
+    "frequency": "0",
+    "gauge": "1435",
+    "oneway": "yes",
+    "operator": "Tramwaje Warszawskie",
+    "railway": "tram",
+    "voltage": "600"
+  }
+},
+{
+  "type": "way",
+  "id": 132570754,
+  "bounds": {
+    "minlat": 52.2713939,
+    "minlon": 20.9439185,
+    "maxlat": 52.2716072,
+    "maxlon": 20.9444355
+  },
+  "geometry": [
+    { "lat": 52.2713939, "lon": 20.9439185 },
+    { "lat": 52.2714359, "lon": 20.9439674 },
+    { "lat": 52.2714673, "lon": 20.9440090 },
+    { "lat": 52.2715006, "lon": 20.9440712 },
+    { "lat": 52.2715161, "lon": 20.9440983 },
+    { "lat": 52.2715387, "lon": 20.9441541 },
+    { "lat": 52.2715618, "lon": 20.9442248 },
+    { "lat": 52.2715664, "lon": 20.9442424 },
+    { "lat": 52.2715885, "lon": 20.9443276 },
+    { "lat": 52.2716072, "lon": 20.9444355 }
+  ],
+  "tags": {
+    "electrified": "contact_line",
+    "frequency": "0",
+    "gauge": "1435",
+    "oneway": "yes",
+    "operator": "Tramwaje Warszawskie",
+    "railway": "tram",
+    "voltage": "600"
+  }
+},
+{
+  "type": "way",
+  "id": 132570755,
+  "bounds": {
+    "minlat": 52.2709553,
+    "minlon": 20.9429854,
+    "maxlat": 52.2714616,
+    "maxlon": 20.9438613
+  },
+  "geometry": [
+    { "lat": 52.2714616, "lon": 20.9433949 },
+    { "lat": 52.2714358, "lon": 20.9433035 },
+    { "lat": 52.2714295, "lon": 20.9432841 },
+    { "lat": 52.2714211, "lon": 20.9432592 },
+    { "lat": 52.2714138, "lon": 20.9432399 },
+    { "lat": 52.2714055, "lon": 20.9432190 },
+    { "lat": 52.2713973, "lon": 20.9432002 },
+    { "lat": 52.2713864, "lon": 20.9431759 },
+    { "lat": 52.2713793, "lon": 20.9431616 },
+    { "lat": 52.2713711, "lon": 20.9431465 },
+    { "lat": 52.2713648, "lon": 20.9431349 },
+    { "lat": 52.2713563, "lon": 20.9431204 },
+    { "lat": 52.2713476, "lon": 20.9431063 },
+    { "lat": 52.2713384, "lon": 20.9430920 },
+    { "lat": 52.2713317, "lon": 20.9430823 },
+    { "lat": 52.2713210, "lon": 20.9430677 },
+    { "lat": 52.2713112, "lon": 20.9430554 },
+    { "lat": 52.2713029, "lon": 20.9430457 },
+    { "lat": 52.2712966, "lon": 20.9430390 },
+    { "lat": 52.2712896, "lon": 20.9430326 },
+    { "lat": 52.2712808, "lon": 20.9430250 },
+    { "lat": 52.2712725, "lon": 20.9430184 },
+    { "lat": 52.2712649, "lon": 20.9430128 },
+    { "lat": 52.2712558, "lon": 20.9430073 },
+    { "lat": 52.2712475, "lon": 20.9430029 },
+    { "lat": 52.2712407, "lon": 20.9430000 },
+    { "lat": 52.2712302, "lon": 20.9429961 },
+    { "lat": 52.2712206, "lon": 20.9429932 },
+    { "lat": 52.2712100, "lon": 20.9429901 },
+    { "lat": 52.2711985, "lon": 20.9429875 },
+    { "lat": 52.2711889, "lon": 20.9429863 },
+    { "lat": 52.2711786, "lon": 20.9429857 },
+    { "lat": 52.2711692, "lon": 20.9429854 },
+    { "lat": 52.2711605, "lon": 20.9429860 },
+    { "lat": 52.2711514, "lon": 20.9429870 },
+    { "lat": 52.2711430, "lon": 20.9429888 },
+    { "lat": 52.2711332, "lon": 20.9429916 },
+    { "lat": 52.2711239, "lon": 20.9429953 },
+    { "lat": 52.2711150, "lon": 20.9429992 },
+    { "lat": 52.2711066, "lon": 20.9430036 },
+    { "lat": 52.2710984, "lon": 20.9430086 },
+    { "lat": 52.2710893, "lon": 20.9430153 },
+    { "lat": 52.2710787, "lon": 20.9430238 },
+    { "lat": 52.2710714, "lon": 20.9430300 },
+    { "lat": 52.2710626, "lon": 20.9430388 },
+    { "lat": 52.2710528, "lon": 20.9430498 },
+    { "lat": 52.2710425, "lon": 20.9430621 },
+    { "lat": 52.2710305, "lon": 20.9430786 },
+    { "lat": 52.2710206, "lon": 20.9430938 },
+    { "lat": 52.2710116, "lon": 20.9431090 },
+    { "lat": 52.2710034, "lon": 20.9431248 },
+    { "lat": 52.2709954, "lon": 20.9431433 },
+    { "lat": 52.2709896, "lon": 20.9431580 },
+    { "lat": 52.2709829, "lon": 20.9431761 },
+    { "lat": 52.2709771, "lon": 20.9431938 },
+    { "lat": 52.2709716, "lon": 20.9432150 },
+    { "lat": 52.2709664, "lon": 20.9432389 },
+    { "lat": 52.2709625, "lon": 20.9432606 },
+    { "lat": 52.2709597, "lon": 20.9432817 },
+    { "lat": 52.2709572, "lon": 20.9433059 },
+    { "lat": 52.2709562, "lon": 20.9433217 },
+    { "lat": 52.2709555, "lon": 20.9433390 },
+    { "lat": 52.2709553, "lon": 20.9433612 },
+    { "lat": 52.2709560, "lon": 20.9433812 },
+    { "lat": 52.2709573, "lon": 20.9434023 },
+    { "lat": 52.2709594, "lon": 20.9434225 },
+    { "lat": 52.2709631, "lon": 20.9434467 },
+    { "lat": 52.2709681, "lon": 20.9434708 },
+    { "lat": 52.2709723, "lon": 20.9434888 },
+    { "lat": 52.2709769, "lon": 20.9435058 },
+    { "lat": 52.2709826, "lon": 20.9435253 },
+    { "lat": 52.2709908, "lon": 20.9435482 },
+    { "lat": 52.2709973, "lon": 20.9435651 },
+    { "lat": 52.2710035, "lon": 20.9435781 },
+    { "lat": 52.2710126, "lon": 20.9435960 },
+    { "lat": 52.2710239, "lon": 20.9436172 },
+    { "lat": 52.2710299, "lon": 20.9436266 },
+    { "lat": 52.2710357, "lon": 20.9436344 },
+    { "lat": 52.2710878, "lon": 20.9436929 },
+    { "lat": 52.2713128, "lon": 20.9438613 }
+  ],
+  "tags": {
+    "electrified": "contact_line",
+    "frequency": "0",
+    "gauge": "1435",
+    "oneway": "yes",
+    "operator": "Tramwaje Warszawskie",
+    "railway": "tram",
+    "voltage": "600"
+  }
+},
+{
+  "type": "way",
+  "id": 132570758,
+  "bounds": {
+    "minlat": 52.2715290,
+    "minlon": 20.9437828,
+    "maxlat": 52.2717024,
+    "maxlon": 20.9451758
+  },
+  "geometry": [
+    { "lat": 52.2716662, "lon": 20.9451758 },
+    { "lat": 52.2716889, "lon": 20.9450235 },
+    { "lat": 52.2716980, "lon": 20.9449235 },
+    { "lat": 52.2717024, "lon": 20.9448750 },
+    { "lat": 52.2716983, "lon": 20.9447813 },
+    { "lat": 52.2716825, "lon": 20.9446615 },
+    { "lat": 52.2716082, "lon": 20.9442309 },
+    { "lat": 52.2715766, "lon": 20.9440678 },
+    { "lat": 52.2715702, "lon": 20.9440204 },
+    { "lat": 52.2715290, "lon": 20.9437828 }
+  ],
+  "tags": {
+    "electrified": "contact_line",
+    "frequency": "0",
+    "gauge": "1435",
+    "oneway": "yes",
+    "operator": "Tramwaje Warszawskie",
+    "railway": "tram",
+    "voltage": "600"
+  }
+},
+{
+  "type": "way",
+  "id": 132570759,
+  "bounds": {
+    "minlat": 52.2715290,
+    "minlon": 20.9426322,
+    "maxlat": 52.2724111,
+    "maxlon": 20.9440361
+  },
+  "geometry": [
+    { "lat": 52.2724111, "lon": 20.9426322 },
+    { "lat": 52.2722937, "lon": 20.9428570 },
+    { "lat": 52.2722559, "lon": 20.9429374 },
+    { "lat": 52.2722034, "lon": 20.9430633 },
+    { "lat": 52.2721533, "lon": 20.9432027 },
+    { "lat": 52.2721038, "lon": 20.9433468 },
+    { "lat": 52.2719713, "lon": 20.9437872 },
+    { "lat": 52.2719399, "lon": 20.9438780 },
+    { "lat": 52.2719013, "lon": 20.9439459 },
+    { "lat": 52.2718713, "lon": 20.9439801 },
+    { "lat": 52.2718405, "lon": 20.9440032 },
+    { "lat": 52.2718104, "lon": 20.9440226 },
+    { "lat": 52.2717766, "lon": 20.9440340 },
+    { "lat": 52.2717510, "lon": 20.9440356 },
+    { "lat": 52.2717434, "lon": 20.9440361 },
+    { "lat": 52.2716958, "lon": 20.9440246 },
+    { "lat": 52.2716528, "lon": 20.9440005 },
+    { "lat": 52.2716174, "lon": 20.9439689 },
+    { "lat": 52.2715888, "lon": 20.9439277 },
+    { "lat": 52.2715556, "lon": 20.9438658 },
+    { "lat": 52.2715290, "lon": 20.9437828 }
+  ],
+  "tags": {
+    "electrified": "contact_line",
+    "frequency": "0",
+    "gauge": "1435",
+    "oneway": "yes",
+    "operator": "Tramwaje Warszawskie",
+    "railway": "tram",
+    "voltage": "600"
+  }
+},
+{
+  "type": "way",
+  "id": 132570760,
+  "bounds": {
+    "minlat": 52.2716332,
+    "minlon": 20.9426322,
+    "maxlat": 52.2724111,
+    "maxlon": 20.9451590
+  },
+  "geometry": [
+    { "lat": 52.2724111, "lon": 20.9426322 },
+    { "lat": 52.2723264, "lon": 20.9428462 },
+    { "lat": 52.2722379, "lon": 20.9430831 },
+    { "lat": 52.2721224, "lon": 20.9434250 },
+    { "lat": 52.2720458, "lon": 20.9436830 },
+    { "lat": 52.2719389, "lon": 20.9440516 },
+    { "lat": 52.2717536, "lon": 20.9447157 },
+    { "lat": 52.2716980, "lon": 20.9449235 },
+    { "lat": 52.2716332, "lon": 20.9451590 }
+  ],
+  "tags": {
+    "electrified": "contact_line",
+    "frequency": "0",
+    "gauge": "1435",
+    "oneway": "yes",
+    "operator": "Tramwaje Warszawskie",
+    "railway": "tram",
+    "voltage": "600"
+  }
+},
+{
+  "type": "way",
+  "id": 132570823,
+  "bounds": {
+    "minlat": 52.2708875,
+    "minlon": 20.9428246,
+    "maxlat": 52.2714616,
+    "maxlon": 20.9439438
+  },
+  "geometry": [
+    { "lat": 52.2714616, "lon": 20.9433949 },
+    { "lat": 52.2714238, "lon": 20.9431781 },
+    { "lat": 52.2714187, "lon": 20.9431504 },
+    { "lat": 52.2714131, "lon": 20.9431234 },
+    { "lat": 52.2714072, "lon": 20.9430996 },
+    { "lat": 52.2714017, "lon": 20.9430765 },
+    { "lat": 52.2713946, "lon": 20.9430508 },
+    { "lat": 52.2713865, "lon": 20.9430246 },
+    { "lat": 52.2713777, "lon": 20.9430011 },
+    { "lat": 52.2713711, "lon": 20.9429850 },
+    { "lat": 52.2713623, "lon": 20.9429655 },
+    { "lat": 52.2713552, "lon": 20.9429518 },
+    { "lat": 52.2713460, "lon": 20.9429364 },
+    { "lat": 52.2713369, "lon": 20.9429229 },
+    { "lat": 52.2713263, "lon": 20.9429089 },
+    { "lat": 52.2713133, "lon": 20.9428937 },
+    { "lat": 52.2713031, "lon": 20.9428824 },
+    { "lat": 52.2712919, "lon": 20.9428714 },
+    { "lat": 52.2712822, "lon": 20.9428634 },
+    { "lat": 52.2712722, "lon": 20.9428555 },
+    { "lat": 52.2712623, "lon": 20.9428487 },
+    { "lat": 52.2712524, "lon": 20.9428426 },
+    { "lat": 52.2712421, "lon": 20.9428374 },
+    { "lat": 52.2712295, "lon": 20.9428326 },
+    { "lat": 52.2712159, "lon": 20.9428284 },
+    { "lat": 52.2711996, "lon": 20.9428257 },
+    { "lat": 52.2711862, "lon": 20.9428248 },
+    { "lat": 52.2711720, "lon": 20.9428246 },
+    { "lat": 52.2711616, "lon": 20.9428254 },
+    { "lat": 52.2711489, "lon": 20.9428274 },
+    { "lat": 52.2711357, "lon": 20.9428309 },
+    { "lat": 52.2711223, "lon": 20.9428357 },
+    { "lat": 52.2711092, "lon": 20.9428421 },
+    { "lat": 52.2710985, "lon": 20.9428494 },
+    { "lat": 52.2710835, "lon": 20.9428596 },
+    { "lat": 52.2710691, "lon": 20.9428706 },
+    { "lat": 52.2710555, "lon": 20.9428835 },
+    { "lat": 52.2710448, "lon": 20.9428950 },
+    { "lat": 52.2710319, "lon": 20.9429117 },
+    { "lat": 52.2710237, "lon": 20.9429229 },
+    { "lat": 52.2710124, "lon": 20.9429410 },
+    { "lat": 52.2710015, "lon": 20.9429605 },
+    { "lat": 52.2709894, "lon": 20.9429864 },
+    { "lat": 52.2709788, "lon": 20.9430116 },
+    { "lat": 52.2709687, "lon": 20.9430389 },
+    { "lat": 52.2709602, "lon": 20.9430627 },
+    { "lat": 52.2709348, "lon": 20.9431508 },
+    { "lat": 52.2709040, "lon": 20.9432734 },
+    { "lat": 52.2708984, "lon": 20.9433005 },
+    { "lat": 52.2708935, "lon": 20.9433289 },
+    { "lat": 52.2708899, "lon": 20.9433611 },
+    { "lat": 52.2708875, "lon": 20.9433965 },
+    { "lat": 52.2708877, "lon": 20.9434285 },
+    { "lat": 52.2708888, "lon": 20.9434590 },
+    { "lat": 52.2708921, "lon": 20.9434907 },
+    { "lat": 52.2708971, "lon": 20.9435172 },
+    { "lat": 52.2709022, "lon": 20.9435426 },
+    { "lat": 52.2709086, "lon": 20.9435661 },
+    { "lat": 52.2709186, "lon": 20.9435940 },
+    { "lat": 52.2709265, "lon": 20.9436152 },
+    { "lat": 52.2709359, "lon": 20.9436367 },
+    { "lat": 52.2709464, "lon": 20.9436556 },
+    { "lat": 52.2709608, "lon": 20.9436774 },
+    { "lat": 52.2709687, "lon": 20.9436882 },
+    { "lat": 52.2709794, "lon": 20.9437001 },
+    { "lat": 52.2710129, "lon": 20.9437284 },
+    { "lat": 52.2710208, "lon": 20.9437344 },
+    { "lat": 52.2712962, "lon": 20.9439438 }
+  ],
+  "tags": {
+    "electrified": "contact_line",
+    "frequency": "0",
+    "gauge": "1435",
+    "oneway": "yes",
+    "operator": "Tramwaje Warszawskie",
+    "railway": "tram",
+    "voltage": "600"
+  }
+},
+{
+  "type": "way",
+  "id": 132570824,
+  "bounds": {
+    "minlat": 52.2713821,
+    "minlon": 20.9440101,
+    "maxlat": 52.2716072,
+    "maxlon": 20.9444355
+  },
+  "geometry": [
+    { "lat": 52.2713821, "lon": 20.9440101 },
+    { "lat": 52.2714451, "lon": 20.9440691 },
+    { "lat": 52.2714798, "lon": 20.9441116 },
+    { "lat": 52.2715079, "lon": 20.9441548 },
+    { "lat": 52.2715507, "lon": 20.9442468 },
+    { "lat": 52.2715541, "lon": 20.9442541 },
+    { "lat": 52.2716072, "lon": 20.9444355 }
+  ],
+  "tags": {
+    "electrified": "contact_line",
+    "frequency": "0",
+    "gauge": "1435",
+    "oneway": "yes",
+    "operator": "Tramwaje Warszawskie",
+    "railway": "tram",
+    "voltage": "600"
+  }
+},
+{
+  "type": "way",
+  "id": 132571406,
+  "bounds": {
+    "minlat": 52.2620341,
+    "minlon": 20.9451590,
+    "maxlat": 52.2716332,
+    "maxlon": 20.9798216
+  },
+  "geometry": [
+    { "lat": 52.2716332, "lon": 20.9451590 },
+    { "lat": 52.2716232, "lon": 20.9451953 },
+    { "lat": 52.2714755, "lon": 20.9457320 },
+    { "lat": 52.2704141, "lon": 20.9495922 },
+    { "lat": 52.2704005, "lon": 20.9496415 },
+    { "lat": 52.2703622, "lon": 20.9497810 },
+    { "lat": 52.2703134, "lon": 20.9499566 },
+    { "lat": 52.2703015, "lon": 20.9499993 },
+    { "lat": 52.2693628, "lon": 20.9533553 },
+    { "lat": 52.2693253, "lon": 20.9534947 },
+    { "lat": 52.2683092, "lon": 20.9571637 },
+    { "lat": 52.2682146, "lon": 20.9575089 },
+    { "lat": 52.2681931, "lon": 20.9575875 },
+    { "lat": 52.2681720, "lon": 20.9576617 },
+    { "lat": 52.2681202, "lon": 20.9578443 },
+    { "lat": 52.2679692, "lon": 20.9583930 },
+    { "lat": 52.2679170, "lon": 20.9585845 },
+    { "lat": 52.2678962, "lon": 20.9586587 },
+    { "lat": 52.2678531, "lon": 20.9588151 },
+    { "lat": 52.2676006, "lon": 20.9597251 },
+    { "lat": 52.2675573, "lon": 20.9598807 },
+    { "lat": 52.2675322, "lon": 20.9599716 },
+    { "lat": 52.2669448, "lon": 20.9621052 },
+    { "lat": 52.2668988, "lon": 20.9622662 },
+    { "lat": 52.2668543, "lon": 20.9624225 },
+    { "lat": 52.2666807, "lon": 20.9630479 },
+    { "lat": 52.2665569, "lon": 20.9634938 },
+    { "lat": 52.2651585, "lon": 20.9685579 },
+    { "lat": 52.2643657, "lon": 20.9714282 },
+    { "lat": 52.2643126, "lon": 20.9716133 },
+    { "lat": 52.2642635, "lon": 20.9717849 },
+    { "lat": 52.2641842, "lon": 20.9720619 },
+    { "lat": 52.2629735, "lon": 20.9764341 },
+    { "lat": 52.2626621, "lon": 20.9775738 },
+    { "lat": 52.2624027, "lon": 20.9784970 },
+    { "lat": 52.2623584, "lon": 20.9786530 },
+    { "lat": 52.2623458, "lon": 20.9787025 },
+    { "lat": 52.2623004, "lon": 20.9788568 },
+    { "lat": 52.2620557, "lon": 20.9797452 },
+    { "lat": 52.2620341, "lon": 20.9798216 }
+  ],
+  "tags": {
+    "electrified": "contact_line",
+    "frequency": "0",
+    "gauge": "1435",
+    "oneway": "yes",
+    "operator": "Tramwaje Warszawskie",
+    "railway": "tram",
+    "voltage": "600"
+  }
+},
+{
+  "type": "way",
+  "id": 132578264,
+  "bounds": {
+    "minlat": 52.2721286,
+    "minlon": 20.9718019,
+    "maxlat": 52.2721680,
+    "maxlon": 20.9719853
+  },
+  "geometry": [
+    { "lat": 52.2721680, "lon": 20.9718019 },
+    { "lat": 52.2721286, "lon": 20.9719853 }
+  ],
+  "tags": {
+    "electrified": "contact_line",
+    "frequency": "0",
+    "gauge": "1435",
+    "maxspeed": "50",
+    "oneway": "yes",
+    "operator": "Tramwaje Warszawskie",
+    "railway": "tram",
+    "voltage": "600"
+  }
+},
+{
+  "type": "way",
+  "id": 132578265,
+  "bounds": {
+    "minlat": 52.2724600,
+    "minlon": 20.9716346,
+    "maxlat": 52.2727857,
+    "maxlon": 20.9723653
+  },
+  "geometry": [
+    { "lat": 52.2724600, "lon": 20.9723395 },
+    { "lat": 52.2725106, "lon": 20.9723574 },
+    { "lat": 52.2725366, "lon": 20.9723632 },
+    { "lat": 52.2725645, "lon": 20.9723653 },
+    { "lat": 52.2725938, "lon": 20.9723591 },
+    { "lat": 52.2726216, "lon": 20.9723488 },
+    { "lat": 52.2726447, "lon": 20.9723357 },
+    { "lat": 52.2726674, "lon": 20.9723189 },
+    { "lat": 52.2726897, "lon": 20.9722971 },
+    { "lat": 52.2727091, "lon": 20.9722722 },
+    { "lat": 52.2727292, "lon": 20.9722415 },
+    { "lat": 52.2727430, "lon": 20.9722130 },
+    { "lat": 52.2727564, "lon": 20.9721776 },
+    { "lat": 52.2727692, "lon": 20.9721324 },
+    { "lat": 52.2727777, "lon": 20.9720866 },
+    { "lat": 52.2727837, "lon": 20.9720389 },
+    { "lat": 52.2727857, "lon": 20.9719875 },
+    { "lat": 52.2727840, "lon": 20.9719347 },
+    { "lat": 52.2727784, "lon": 20.9718895 },
+    { "lat": 52.2727705, "lon": 20.9718479 },
+    { "lat": 52.2727597, "lon": 20.9718101 },
+    { "lat": 52.2727508, "lon": 20.9717876 },
+    { "lat": 52.2727433, "lon": 20.9717693 },
+    { "lat": 52.2727335, "lon": 20.9717452 },
+    { "lat": 52.2727201, "lon": 20.9717196 },
+    { "lat": 52.2727048, "lon": 20.9716965 },
+    { "lat": 52.2726887, "lon": 20.9716757 },
+    { "lat": 52.2726703, "lon": 20.9716565 },
+    { "lat": 52.2726440, "lon": 20.9716346 }
+  ],
+  "tags": {
+    "electrified": "contact_line",
+    "frequency": "0",
+    "gauge": "1435",
+    "maxspeed": "35",
+    "oneway": "yes",
+    "operator": "Tramwaje Warszawskie",
+    "railway": "tram",
+    "voltage": "600"
+  }
+},
+{
+  "type": "way",
+  "id": 132578932,
+  "bounds": {
+    "minlat": 52.2721680,
+    "minlon": 20.9717776,
+    "maxlat": 52.2721731,
+    "maxlon": 20.9718019
+  },
+  "geometry": [
+    { "lat": 52.2721731, "lon": 20.9717776 },
+    { "lat": 52.2721680, "lon": 20.9718019 }
+  ],
+  "tags": {
+    "electrified": "contact_line",
+    "frequency": "0",
+    "gauge": "1435",
+    "oneway": "yes",
+    "operator": "Tramwaje Warszawskie",
+    "railway": "tram",
+    "voltage": "600"
+  }
+},
+{
+  "type": "way",
+  "id": 132578933,
+  "bounds": {
+    "minlat": 52.2721731,
+    "minlon": 20.9715083,
+    "maxlat": 52.2725377,
+    "maxlon": 20.9717776
+  },
+  "geometry": [
+    { "lat": 52.2725377, "lon": 20.9715691 },
+    { "lat": 52.2724985, "lon": 20.9715465 },
+    { "lat": 52.2724594, "lon": 20.9715264 },
+    { "lat": 52.2724358, "lon": 20.9715165 },
+    { "lat": 52.2724148, "lon": 20.9715102 },
+    { "lat": 52.2723940, "lon": 20.9715083 },
+    { "lat": 52.2723704, "lon": 20.9715094 },
+    { "lat": 52.2723463, "lon": 20.9715164 },
+    { "lat": 52.2723193, "lon": 20.9715292 },
+    { "lat": 52.2722931, "lon": 20.9715481 },
+    { "lat": 52.2722718, "lon": 20.9715661 },
+    { "lat": 52.2722537, "lon": 20.9715881 },
+    { "lat": 52.2722385, "lon": 20.9716083 },
+    { "lat": 52.2722229, "lon": 20.9716351 },
+    { "lat": 52.2722090, "lon": 20.9716623 },
+    { "lat": 52.2721940, "lon": 20.9717026 },
+    { "lat": 52.2721731, "lon": 20.9717776 }
+  ],
+  "tags": {
+    "electrified": "contact_line",
+    "frequency": "0",
+    "gauge": "1435",
+    "maxspeed": "35",
+    "oneway": "yes",
+    "operator": "Tramwaje Warszawskie",
+    "railway": "tram",
+    "voltage": "600"
+  }
+},
+{
+  "type": "way",
+  "id": 132578934,
+  "bounds": {
+    "minlat": 52.2723455,
+    "minlon": 20.9708029,
+    "maxlat": 52.2725377,
+    "maxlon": 20.9715691
+  },
+  "geometry": [
+    { "lat": 52.2725377, "lon": 20.9715691 },
+    { "lat": 52.2724989, "lon": 20.9715396 },
+    { "lat": 52.2724663, "lon": 20.9715106 },
+    { "lat": 52.2724491, "lon": 20.9714870 },
+    { "lat": 52.2724303, "lon": 20.9714585 },
+    { "lat": 52.2724103, "lon": 20.9714202 },
+    { "lat": 52.2723943, "lon": 20.9713795 },
+    { "lat": 52.2723802, "lon": 20.9713321 },
+    { "lat": 52.2723689, "lon": 20.9712822 },
+    { "lat": 52.2723606, "lon": 20.9712337 },
+    { "lat": 52.2723539, "lon": 20.9711818 },
+    { "lat": 52.2723492, "lon": 20.9711298 },
+    { "lat": 52.2723472, "lon": 20.9710936 },
+    { "lat": 52.2723455, "lon": 20.9710554 },
+    { "lat": 52.2723468, "lon": 20.9710068 },
+    { "lat": 52.2723495, "lon": 20.9709606 },
+    { "lat": 52.2723542, "lon": 20.9709112 },
+    { "lat": 52.2723615, "lon": 20.9708568 },
+    { "lat": 52.2723725, "lon": 20.9708029 }
+  ],
+  "tags": {
+    "electrified": "contact_line",
+    "frequency": "0",
+    "gauge": "1435",
+    "maxspeed": "35",
+    "oneway": "yes",
+    "operator": "Tramwaje Warszawskie",
+    "railway": "tram",
+    "voltage": "600"
+  }
+},
+{
+  "type": "way",
+  "id": 132578935,
+  "bounds": {
+    "minlat": 52.2724600,
+    "minlon": 20.9716346,
+    "maxlat": 52.2728305,
+    "maxlon": 20.9723907
+  },
+  "geometry": [
+    { "lat": 52.2724600, "lon": 20.9723395 },
+    { "lat": 52.2725197, "lon": 20.9723711 },
+    { "lat": 52.2725441, "lon": 20.9723815 },
+    { "lat": 52.2725649, "lon": 20.9723866 },
+    { "lat": 52.2725861, "lon": 20.9723895 },
+    { "lat": 52.2726064, "lon": 20.9723907 },
+    { "lat": 52.2726316, "lon": 20.9723873 },
+    { "lat": 52.2726566, "lon": 20.9723798 },
+    { "lat": 52.2726802, "lon": 20.9723692 },
+    { "lat": 52.2727045, "lon": 20.9723556 },
+    { "lat": 52.2727290, "lon": 20.9723320 },
+    { "lat": 52.2727518, "lon": 20.9723028 },
+    { "lat": 52.2727772, "lon": 20.9722603 },
+    { "lat": 52.2727950, "lon": 20.9722158 },
+    { "lat": 52.2728085, "lon": 20.9721739 },
+    { "lat": 52.2728206, "lon": 20.9721215 },
+    { "lat": 52.2728276, "lon": 20.9720729 },
+    { "lat": 52.2728305, "lon": 20.9720288 },
+    { "lat": 52.2728298, "lon": 20.9719910 },
+    { "lat": 52.2728268, "lon": 20.9719444 },
+    { "lat": 52.2728203, "lon": 20.9719021 },
+    { "lat": 52.2728127, "lon": 20.9718659 },
+    { "lat": 52.2728028, "lon": 20.9718327 },
+    { "lat": 52.2727893, "lon": 20.9717949 },
+    { "lat": 52.2727728, "lon": 20.9717588 },
+    { "lat": 52.2727686, "lon": 20.9717522 },
+    { "lat": 52.2727554, "lon": 20.9717300 },
+    { "lat": 52.2727384, "lon": 20.9717083 },
+    { "lat": 52.2727211, "lon": 20.9716887 },
+    { "lat": 52.2727008, "lon": 20.9716702 },
+    { "lat": 52.2726804, "lon": 20.9716546 },
+    { "lat": 52.2726440, "lon": 20.9716346 }
+  ],
+  "tags": {
+    "electrified": "contact_line",
+    "frequency": "0",
+    "gauge": "1435",
+    "maxspeed": "35",
+    "oneway": "yes",
+    "operator": "Tramwaje Warszawskie",
+    "railway": "tram",
+    "voltage": "600"
+  }
+},
+{
+  "type": "way",
+  "id": 132578937,
+  "bounds": {
+    "minlat": 52.2729123,
+    "minlon": 20.9658480,
+    "maxlat": 52.2742212,
+    "maxlon": 20.9687967
+  },
+  "geometry": [
+    { "lat": 52.2742212, "lon": 20.9658480 },
+    { "lat": 52.2737793, "lon": 20.9666915 },
+    { "lat": 52.2735958, "lon": 20.9670469 },
+    { "lat": 52.2734176, "lon": 20.9674078 },
+    { "lat": 52.2733308, "lon": 20.9676085 },
+    { "lat": 52.2732406, "lon": 20.9678231 },
+    { "lat": 52.2731782, "lon": 20.9679894 },
+    { "lat": 52.2730961, "lon": 20.9682281 },
+    { "lat": 52.2730059, "lon": 20.9684963 },
+    { "lat": 52.2729123, "lon": 20.9687967 }
+  ],
+  "tags": {
+    "bridge": "yes",
+    "electrified": "contact_line",
+    "frequency": "0",
+    "gauge": "1435",
+    "layer": "1",
+    "oneway": "yes",
+    "operator": "Tramwaje Warszawskie",
+    "railway": "tram",
+    "voltage": "600"
+  }
+},
+{
+  "type": "way",
+  "id": 132578939,
+  "bounds": {
+    "minlat": 52.2721515,
+    "minlon": 20.9718019,
+    "maxlat": 52.2723956,
+    "maxlon": 20.9723009
+  },
+  "geometry": [
+    { "lat": 52.2721680, "lon": 20.9718019 },
+    { "lat": 52.2721567, "lon": 20.9718689 },
+    { "lat": 52.2721522, "lon": 20.9719103 },
+    { "lat": 52.2721515, "lon": 20.9719421 },
+    { "lat": 52.2721525, "lon": 20.9719761 },
+    { "lat": 52.2721562, "lon": 20.9720100 },
+    { "lat": 52.2721617, "lon": 20.9720419 },
+    { "lat": 52.2721688, "lon": 20.9720714 },
+    { "lat": 52.2721774, "lon": 20.9720962 },
+    { "lat": 52.2721884, "lon": 20.9721216 },
+    { "lat": 52.2721996, "lon": 20.9721416 },
+    { "lat": 52.2722073, "lon": 20.9721542 },
+    { "lat": 52.2722229, "lon": 20.9721780 },
+    { "lat": 52.2722285, "lon": 20.9721864 },
+    { "lat": 52.2722441, "lon": 20.9722012 },
+    { "lat": 52.2722596, "lon": 20.9722154 },
+    { "lat": 52.2722843, "lon": 20.9722349 },
+    { "lat": 52.2723208, "lon": 20.9722598 },
+    { "lat": 52.2723956, "lon": 20.9723009 }
+  ],
+  "tags": {
+    "electrified": "contact_line",
+    "frequency": "0",
+    "gauge": "1435",
+    "maxspeed": "35",
+    "oneway": "yes",
+    "operator": "Tramwaje Warszawskie",
+    "railway": "tram",
+    "voltage": "600"
+  }
+},
+{
+  "type": "way",
+  "id": 132578940,
+  "bounds": {
+    "minlat": 52.2721731,
+    "minlon": 20.9687967,
+    "maxlat": 52.2729123,
+    "maxlon": 20.9717776
+  },
+  "geometry": [
+    { "lat": 52.2729123, "lon": 20.9687967 },
+    { "lat": 52.2727892, "lon": 20.9692098 },
+    { "lat": 52.2724612, "lon": 20.9702962 },
+    { "lat": 52.2724171, "lon": 20.9704580 },
+    { "lat": 52.2723538, "lon": 20.9707331 },
+    { "lat": 52.2723149, "lon": 20.9708991 },
+    { "lat": 52.2722933, "lon": 20.9710055 },
+    { "lat": 52.2722791, "lon": 20.9710883 },
+    { "lat": 52.2722721, "lon": 20.9711421 },
+    { "lat": 52.2722654, "lon": 20.9711967 },
+    { "lat": 52.2722617, "lon": 20.9712447 },
+    { "lat": 52.2722571, "lon": 20.9713114 },
+    { "lat": 52.2722505, "lon": 20.9713748 },
+    { "lat": 52.2722427, "lon": 20.9714319 },
+    { "lat": 52.2722320, "lon": 20.9714949 },
+    { "lat": 52.2722217, "lon": 20.9715510 },
+    { "lat": 52.2722028, "lon": 20.9716440 },
+    { "lat": 52.2721731, "lon": 20.9717776 }
+  ],
+  "tags": {
+    "electrified": "contact_line",
+    "frequency": "0",
+    "gauge": "1435",
+    "maxspeed": "50",
+    "oneway": "yes",
+    "operator": "Tramwaje Warszawskie",
+    "railway": "tram",
+    "voltage": "600"
+  }
+},
+{
+  "type": "way",
+  "id": 132578941,
+  "bounds": {
+    "minlat": 52.2725377,
+    "minlon": 20.9715691,
+    "maxlat": 52.2725861,
+    "maxlon": 20.9716009
+  },
+  "geometry": [
+    { "lat": 52.2725861, "lon": 20.9716009 },
+    { "lat": 52.2725377, "lon": 20.9715691 }
+  ],
+  "tags": {
+    "electrified": "contact_line",
+    "frequency": "0",
+    "gauge": "1435",
+    "maxspeed": "35",
+    "oneway": "yes",
+    "operator": "Tramwaje Warszawskie",
+    "railway": "tram",
+    "voltage": "600"
+  }
+},
+{
+  "type": "way",
+  "id": 132578945,
+  "bounds": {
+    "minlat": 52.2725861,
+    "minlon": 20.9716009,
+    "maxlat": 52.2726440,
+    "maxlon": 20.9716346
+  },
+  "geometry": [
+    { "lat": 52.2726440, "lon": 20.9716346 },
+    { "lat": 52.2725861, "lon": 20.9716009 }
+  ],
+  "tags": {
+    "electrified": "contact_line",
+    "frequency": "0",
+    "gauge": "1435",
+    "maxspeed": "35",
+    "oneway": "yes",
+    "operator": "Tramwaje Warszawskie",
+    "railway": "tram",
+    "voltage": "600"
+  }
+},
+{
+  "type": "way",
   "id": 132579272,
   "bounds": {
     "minlat": 52.2851225,
@@ -1636,6 +3842,37 @@
     "electrified": "contact_line",
     "frequency": "0",
     "gauge": "1435",
+    "oneway": "yes",
+    "operator": "Tramwaje Warszawskie",
+    "railway": "tram",
+    "voltage": "600"
+  }
+},
+{
+  "type": "way",
+  "id": 132579409,
+  "bounds": {
+    "minlat": 52.2718236,
+    "minlon": 20.9719853,
+    "maxlat": 52.2721286,
+    "maxlon": 20.9732386
+  },
+  "geometry": [
+    { "lat": 52.2721286, "lon": 20.9719853 },
+    { "lat": 52.2721029, "lon": 20.9720962 },
+    { "lat": 52.2720833, "lon": 20.9721733 },
+    { "lat": 52.2720636, "lon": 20.9722391 },
+    { "lat": 52.2720243, "lon": 20.9723737 },
+    { "lat": 52.2720089, "lon": 20.9724306 },
+    { "lat": 52.2719871, "lon": 20.9725125 },
+    { "lat": 52.2719387, "lon": 20.9727183 },
+    { "lat": 52.2718236, "lon": 20.9732386 }
+  ],
+  "tags": {
+    "electrified": "contact_line",
+    "frequency": "0",
+    "gauge": "1435",
+    "maxspeed": "50",
     "oneway": "yes",
     "operator": "Tramwaje Warszawskie",
     "railway": "tram",
@@ -1813,6 +4050,195 @@
     { "lat": 52.2998638, "lon": 20.9411660 },
     { "lat": 52.3000737, "lon": 20.9410690 },
     { "lat": 52.3010952, "lon": 20.9406668 }
+  ],
+  "tags": {
+    "electrified": "contact_line",
+    "frequency": "0",
+    "gauge": "1435",
+    "oneway": "yes",
+    "operator": "Tramwaje Warszawskie",
+    "railway": "tram",
+    "voltage": "600"
+  }
+},
+{
+  "type": "way",
+  "id": 132763258,
+  "bounds": {
+    "minlat": 52.2748874,
+    "minlon": 20.9795039,
+    "maxlat": 52.2751734,
+    "maxlon": 20.9803545
+  },
+  "geometry": [
+    { "lat": 52.2749399, "lon": 20.9795039 },
+    { "lat": 52.2749124, "lon": 20.9795779 },
+    { "lat": 52.2749064, "lon": 20.9795979 },
+    { "lat": 52.2749008, "lon": 20.9796210 },
+    { "lat": 52.2748958, "lon": 20.9796443 },
+    { "lat": 52.2748919, "lon": 20.9796708 },
+    { "lat": 52.2748891, "lon": 20.9796991 },
+    { "lat": 52.2748876, "lon": 20.9797276 },
+    { "lat": 52.2748874, "lon": 20.9797557 },
+    { "lat": 52.2748887, "lon": 20.9797856 },
+    { "lat": 52.2748912, "lon": 20.9798146 },
+    { "lat": 52.2748951, "lon": 20.9798438 },
+    { "lat": 52.2749003, "lon": 20.9798697 },
+    { "lat": 52.2749061, "lon": 20.9798938 },
+    { "lat": 52.2749116, "lon": 20.9799142 },
+    { "lat": 52.2749193, "lon": 20.9799370 },
+    { "lat": 52.2749290, "lon": 20.9799598 },
+    { "lat": 52.2749388, "lon": 20.9799810 },
+    { "lat": 52.2749484, "lon": 20.9800002 },
+    { "lat": 52.2749584, "lon": 20.9800171 },
+    { "lat": 52.2751734, "lon": 20.9803545 }
+  ],
+  "tags": {
+    "electrified": "contact_line",
+    "frequency": "0",
+    "gauge": "1435",
+    "oneway": "yes",
+    "operator": "Tramwaje Warszawskie",
+    "railway": "tram",
+    "voltage": "600"
+  }
+},
+{
+  "type": "way",
+  "id": 134591119,
+  "bounds": {
+    "minlat": 52.2688544,
+    "minlon": 20.9733164,
+    "maxlat": 52.2719280,
+    "maxlon": 20.9865200
+  },
+  "geometry": [
+    { "lat": 52.2688544, "lon": 20.9865200 },
+    { "lat": 52.2688987, "lon": 20.9864412 },
+    { "lat": 52.2689160, "lon": 20.9864053 },
+    { "lat": 52.2689320, "lon": 20.9863659 },
+    { "lat": 52.2689494, "lon": 20.9863068 },
+    { "lat": 52.2690147, "lon": 20.9860885 },
+    { "lat": 52.2690540, "lon": 20.9859516 },
+    { "lat": 52.2690919, "lon": 20.9858042 },
+    { "lat": 52.2691288, "lon": 20.9856474 },
+    { "lat": 52.2691520, "lon": 20.9855474 },
+    { "lat": 52.2691635, "lon": 20.9854935 },
+    { "lat": 52.2691952, "lon": 20.9853511 },
+    { "lat": 52.2695948, "lon": 20.9835068 },
+    { "lat": 52.2696699, "lon": 20.9831708 },
+    { "lat": 52.2698042, "lon": 20.9825705 },
+    { "lat": 52.2698730, "lon": 20.9822441 },
+    { "lat": 52.2699812, "lon": 20.9816947 },
+    { "lat": 52.2700892, "lon": 20.9811838 },
+    { "lat": 52.2701253, "lon": 20.9810206 },
+    { "lat": 52.2701593, "lon": 20.9808670 },
+    { "lat": 52.2704637, "lon": 20.9794918 },
+    { "lat": 52.2704765, "lon": 20.9794320 },
+    { "lat": 52.2707363, "lon": 20.9782415 },
+    { "lat": 52.2707498, "lon": 20.9781795 },
+    { "lat": 52.2711795, "lon": 20.9762551 },
+    { "lat": 52.2715218, "lon": 20.9747112 },
+    { "lat": 52.2715616, "lon": 20.9745653 },
+    { "lat": 52.2715982, "lon": 20.9744496 },
+    { "lat": 52.2716186, "lon": 20.9743905 },
+    { "lat": 52.2716845, "lon": 20.9741955 },
+    { "lat": 52.2717495, "lon": 20.9740021 },
+    { "lat": 52.2717813, "lon": 20.9739057 },
+    { "lat": 52.2718108, "lon": 20.9738066 },
+    { "lat": 52.2718327, "lon": 20.9737288 },
+    { "lat": 52.2718578, "lon": 20.9736320 },
+    { "lat": 52.2718727, "lon": 20.9735698 },
+    { "lat": 52.2719058, "lon": 20.9734183 },
+    { "lat": 52.2719280, "lon": 20.9733164 }
+  ],
+  "tags": {
+    "electrified": "contact_line",
+    "frequency": "0",
+    "gauge": "1435",
+    "maxspeed": "50",
+    "oneway": "yes",
+    "operator": "Tramwaje Warszawskie",
+    "railway": "tram",
+    "voltage": "600"
+  }
+},
+{
+  "type": "way",
+  "id": 134951257,
+  "bounds": {
+    "minlat": 52.2723725,
+    "minlon": 20.9688207,
+    "maxlat": 52.2729419,
+    "maxlon": 20.9708029
+  },
+  "geometry": [
+    { "lat": 52.2723725, "lon": 20.9708029 },
+    { "lat": 52.2723842, "lon": 20.9707502 },
+    { "lat": 52.2724225, "lon": 20.9705913 },
+    { "lat": 52.2724641, "lon": 20.9704364 },
+    { "lat": 52.2725291, "lon": 20.9702220 },
+    { "lat": 52.2727567, "lon": 20.9694639 },
+    { "lat": 52.2729419, "lon": 20.9688207 }
+  ],
+  "tags": {
+    "electrified": "contact_line",
+    "frequency": "0",
+    "gauge": "1435",
+    "maxspeed": "50",
+    "oneway": "yes",
+    "operator": "Tramwaje Warszawskie",
+    "railway": "tram",
+    "voltage": "600"
+  }
+},
+{
+  "type": "way",
+  "id": 135314365,
+  "bounds": {
+    "minlat": 52.2633059,
+    "minlon": 20.8996282,
+    "maxlat": 52.2637257,
+    "maxlon": 20.9005898
+  },
+  "geometry": [
+    { "lat": 52.2633059, "lon": 20.8996282 },
+    { "lat": 52.2633368, "lon": 20.8996841 },
+    { "lat": 52.2633562, "lon": 20.8997298 },
+    { "lat": 52.2633691, "lon": 20.8997756 },
+    { "lat": 52.2633780, "lon": 20.8998281 },
+    { "lat": 52.2633833, "lon": 20.8998752 },
+    { "lat": 52.2633846, "lon": 20.8999204 },
+    { "lat": 52.2633673, "lon": 20.9002377 },
+    { "lat": 52.2633675, "lon": 20.9003200 },
+    { "lat": 52.2633745, "lon": 20.9003838 },
+    { "lat": 52.2633859, "lon": 20.9004347 },
+    { "lat": 52.2634001, "lon": 20.9004702 },
+    { "lat": 52.2634234, "lon": 20.9005151 },
+    { "lat": 52.2634460, "lon": 20.9005422 },
+    { "lat": 52.2634699, "lon": 20.9005638 },
+    { "lat": 52.2634910, "lon": 20.9005785 },
+    { "lat": 52.2635243, "lon": 20.9005873 },
+    { "lat": 52.2635509, "lon": 20.9005898 },
+    { "lat": 52.2635778, "lon": 20.9005853 },
+    { "lat": 52.2636106, "lon": 20.9005708 },
+    { "lat": 52.2636436, "lon": 20.9005433 },
+    { "lat": 52.2636737, "lon": 20.9005017 },
+    { "lat": 52.2636954, "lon": 20.9004566 },
+    { "lat": 52.2637104, "lon": 20.9004151 },
+    { "lat": 52.2637193, "lon": 20.9003758 },
+    { "lat": 52.2637257, "lon": 20.9003052 },
+    { "lat": 52.2637244, "lon": 20.9002577 },
+    { "lat": 52.2637186, "lon": 20.9002084 },
+    { "lat": 52.2637097, "lon": 20.9001706 },
+    { "lat": 52.2636948, "lon": 20.9001291 },
+    { "lat": 52.2636725, "lon": 20.9000851 },
+    { "lat": 52.2636501, "lon": 20.9000554 },
+    { "lat": 52.2636100, "lon": 20.9000139 },
+    { "lat": 52.2635658, "lon": 20.8999802 },
+    { "lat": 52.2635201, "lon": 20.8999394 },
+    { "lat": 52.2634834, "lon": 20.8998961 },
+    { "lat": 52.2634429, "lon": 20.8998370 }
   ],
   "tags": {
     "electrified": "contact_line",
@@ -2685,6 +5111,71 @@
     "electrified": "contact_line",
     "frequency": "0",
     "gauge": "1435",
+    "oneway": "yes",
+    "operator": "Tramwaje Warszawskie",
+    "railway": "tram",
+    "voltage": "600"
+  }
+},
+{
+  "type": "way",
+  "id": 194712017,
+  "bounds": {
+    "minlat": 52.2721092,
+    "minlon": 20.9716009,
+    "maxlat": 52.2727279,
+    "maxlon": 20.9724858
+  },
+  "geometry": [
+    { "lat": 52.2721092, "lon": 20.9724858 },
+    { "lat": 52.2721322, "lon": 20.9723959 },
+    { "lat": 52.2721510, "lon": 20.9723419 },
+    { "lat": 52.2721670, "lon": 20.9723128 },
+    { "lat": 52.2721865, "lon": 20.9722829 },
+    { "lat": 52.2722051, "lon": 20.9722597 },
+    { "lat": 52.2722231, "lon": 20.9722419 },
+    { "lat": 52.2722429, "lon": 20.9722249 },
+    { "lat": 52.2722596, "lon": 20.9722154 },
+    { "lat": 52.2722794, "lon": 20.9722080 },
+    { "lat": 52.2723015, "lon": 20.9722023 },
+    { "lat": 52.2723211, "lon": 20.9722021 },
+    { "lat": 52.2723417, "lon": 20.9722029 },
+    { "lat": 52.2723595, "lon": 20.9722079 },
+    { "lat": 52.2723817, "lon": 20.9722164 },
+    { "lat": 52.2724069, "lon": 20.9722301 },
+    { "lat": 52.2724640, "lon": 20.9722602 },
+    { "lat": 52.2724884, "lon": 20.9722682 },
+    { "lat": 52.2724992, "lon": 20.9722695 },
+    { "lat": 52.2725114, "lon": 20.9722709 },
+    { "lat": 52.2725340, "lon": 20.9722703 },
+    { "lat": 52.2725530, "lon": 20.9722660 },
+    { "lat": 52.2725838, "lon": 20.9722520 },
+    { "lat": 52.2726118, "lon": 20.9722327 },
+    { "lat": 52.2726315, "lon": 20.9722152 },
+    { "lat": 52.2726553, "lon": 20.9721867 },
+    { "lat": 52.2726756, "lon": 20.9721559 },
+    { "lat": 52.2726910, "lon": 20.9721266 },
+    { "lat": 52.2727069, "lon": 20.9720828 },
+    { "lat": 52.2727174, "lon": 20.9720404 },
+    { "lat": 52.2727242, "lon": 20.9719949 },
+    { "lat": 52.2727279, "lon": 20.9719477 },
+    { "lat": 52.2727268, "lon": 20.9718987 },
+    { "lat": 52.2727265, "lon": 20.9718864 },
+    { "lat": 52.2727216, "lon": 20.9718441 },
+    { "lat": 52.2727151, "lon": 20.9718100 },
+    { "lat": 52.2727053, "lon": 20.9717721 },
+    { "lat": 52.2726934, "lon": 20.9717366 },
+    { "lat": 52.2726816, "lon": 20.9717098 },
+    { "lat": 52.2726668, "lon": 20.9716833 },
+    { "lat": 52.2726483, "lon": 20.9716576 },
+    { "lat": 52.2726263, "lon": 20.9716335 },
+    { "lat": 52.2725861, "lon": 20.9716009 }
+  ],
+  "tags": {
+    "electrified": "contact_line",
+    "frequency": "0",
+    "gauge": "1435",
+    "maxspeed": "35",
     "oneway": "yes",
     "operator": "Tramwaje Warszawskie",
     "railway": "tram",
@@ -5255,6 +7746,248 @@
 },
 {
   "type": "way",
+  "id": 303176651,
+  "bounds": {
+    "minlat": 52.2719047,
+    "minlon": 20.9610866,
+    "maxlat": 52.2764070,
+    "maxlon": 20.9707697
+  },
+  "geometry": [
+    { "lat": 52.2719047, "lon": 20.9707697 },
+    { "lat": 52.2720274, "lon": 20.9702192 },
+    { "lat": 52.2720768, "lon": 20.9700058 },
+    { "lat": 52.2721261, "lon": 20.9697946 },
+    { "lat": 52.2721755, "lon": 20.9695864 },
+    { "lat": 52.2722228, "lon": 20.9693811 },
+    { "lat": 52.2722607, "lon": 20.9692168 },
+    { "lat": 52.2722988, "lon": 20.9690557 },
+    { "lat": 52.2723412, "lon": 20.9688783 },
+    { "lat": 52.2723845, "lon": 20.9687048 },
+    { "lat": 52.2724643, "lon": 20.9684222 },
+    { "lat": 52.2725330, "lon": 20.9681844 },
+    { "lat": 52.2725837, "lon": 20.9680312 },
+    { "lat": 52.2726615, "lon": 20.9677803 },
+    { "lat": 52.2727446, "lon": 20.9675384 },
+    { "lat": 52.2728050, "lon": 20.9673649 },
+    { "lat": 52.2728777, "lon": 20.9671655 },
+    { "lat": 52.2729510, "lon": 20.9669758 },
+    { "lat": 52.2730313, "lon": 20.9667776 },
+    { "lat": 52.2731177, "lon": 20.9665737 },
+    { "lat": 52.2731991, "lon": 20.9663913 },
+    { "lat": 52.2732900, "lon": 20.9661938 },
+    { "lat": 52.2733821, "lon": 20.9660032 },
+    { "lat": 52.2734701, "lon": 20.9658269 },
+    { "lat": 52.2735562, "lon": 20.9656621 },
+    { "lat": 52.2736449, "lon": 20.9654978 },
+    { "lat": 52.2737348, "lon": 20.9653391 },
+    { "lat": 52.2738334, "lon": 20.9651713 },
+    { "lat": 52.2739245, "lon": 20.9650207 },
+    { "lat": 52.2740402, "lon": 20.9648373 },
+    { "lat": 52.2741350, "lon": 20.9646933 },
+    { "lat": 52.2742336, "lon": 20.9645477 },
+    { "lat": 52.2744903, "lon": 20.9641843 },
+    { "lat": 52.2750848, "lon": 20.9633593 },
+    { "lat": 52.2751892, "lon": 20.9632142 },
+    { "lat": 52.2752919, "lon": 20.9630697 },
+    { "lat": 52.2753947, "lon": 20.9629222 },
+    { "lat": 52.2754974, "lon": 20.9627707 },
+    { "lat": 52.2755963, "lon": 20.9626180 },
+    { "lat": 52.2756949, "lon": 20.9624590 },
+    { "lat": 52.2757978, "lon": 20.9622870 },
+    { "lat": 52.2758988, "lon": 20.9621085 },
+    { "lat": 52.2759849, "lon": 20.9619505 },
+    { "lat": 52.2760708, "lon": 20.9617856 },
+    { "lat": 52.2761538, "lon": 20.9616185 },
+    { "lat": 52.2762409, "lon": 20.9614387 },
+    { "lat": 52.2763241, "lon": 20.9612638 },
+    { "lat": 52.2764070, "lon": 20.9610866 }
+  ],
+  "tags": {
+    "electrified": "rail",
+    "electrified:rail": "side",
+    "frequency": "0",
+    "gauge": "1435",
+    "layer": "-3",
+    "level": "-2",
+    "maxspeed": "80",
+    "operator": "Metro Warszawskie",
+    "railway": "subway",
+    "railway:bidirectional": "regular",
+    "railway:preferred_direction": "forward",
+    "railway:sop": "2W",
+    "railway:track_ref": "1",
+    "ref": "M1",
+    "start_date": "2008-04-23",
+    "tunnel": "yes",
+    "voltage": "750",
+    "wikidata": "Q17462780",
+    "wikipedia": "pl:Linia M1 metra w Warszawie"
+  }
+},
+{
+  "type": "way",
+  "id": 306755764,
+  "bounds": {
+    "minlat": 52.2748530,
+    "minlon": 20.9793215,
+    "maxlat": 52.2753680,
+    "maxlon": 20.9815073
+  },
+  "geometry": [
+    { "lat": 52.2748557, "lon": 20.9815073 },
+    { "lat": 52.2749790, "lon": 20.9814057 },
+    { "lat": 52.2750531, "lon": 20.9813478 },
+    { "lat": 52.2751405, "lon": 20.9812796 },
+    { "lat": 52.2751959, "lon": 20.9812358 },
+    { "lat": 52.2752099, "lon": 20.9812246 },
+    { "lat": 52.2752251, "lon": 20.9812091 },
+    { "lat": 52.2752369, "lon": 20.9811961 },
+    { "lat": 52.2752458, "lon": 20.9811845 },
+    { "lat": 52.2752557, "lon": 20.9811701 },
+    { "lat": 52.2752623, "lon": 20.9811609 },
+    { "lat": 52.2752732, "lon": 20.9811410 },
+    { "lat": 52.2752821, "lon": 20.9811227 },
+    { "lat": 52.2752921, "lon": 20.9810994 },
+    { "lat": 52.2753001, "lon": 20.9810762 },
+    { "lat": 52.2753103, "lon": 20.9810442 },
+    { "lat": 52.2753169, "lon": 20.9810160 },
+    { "lat": 52.2753213, "lon": 20.9809913 },
+    { "lat": 52.2753245, "lon": 20.9809700 },
+    { "lat": 52.2753283, "lon": 20.9809365 },
+    { "lat": 52.2753308, "lon": 20.9809131 },
+    { "lat": 52.2753326, "lon": 20.9808849 },
+    { "lat": 52.2753337, "lon": 20.9808557 },
+    { "lat": 52.2753359, "lon": 20.9807788 },
+    { "lat": 52.2753680, "lon": 20.9797621 },
+    { "lat": 52.2753678, "lon": 20.9797331 },
+    { "lat": 52.2753667, "lon": 20.9796999 },
+    { "lat": 52.2753648, "lon": 20.9796652 },
+    { "lat": 52.2753626, "lon": 20.9796312 },
+    { "lat": 52.2753586, "lon": 20.9795975 },
+    { "lat": 52.2753538, "lon": 20.9795695 },
+    { "lat": 52.2753473, "lon": 20.9795439 },
+    { "lat": 52.2753392, "lon": 20.9795152 },
+    { "lat": 52.2753308, "lon": 20.9794908 },
+    { "lat": 52.2753217, "lon": 20.9794675 },
+    { "lat": 52.2753115, "lon": 20.9794467 },
+    { "lat": 52.2753000, "lon": 20.9794271 },
+    { "lat": 52.2752860, "lon": 20.9794091 },
+    { "lat": 52.2752740, "lon": 20.9793941 },
+    { "lat": 52.2752578, "lon": 20.9793762 },
+    { "lat": 52.2752459, "lon": 20.9793656 },
+    { "lat": 52.2752317, "lon": 20.9793533 },
+    { "lat": 52.2752192, "lon": 20.9793451 },
+    { "lat": 52.2752061, "lon": 20.9793375 },
+    { "lat": 52.2751904, "lon": 20.9793301 },
+    { "lat": 52.2751750, "lon": 20.9793259 },
+    { "lat": 52.2751594, "lon": 20.9793229 },
+    { "lat": 52.2751413, "lon": 20.9793215 },
+    { "lat": 52.2751274, "lon": 20.9793218 },
+    { "lat": 52.2751132, "lon": 20.9793233 },
+    { "lat": 52.2750952, "lon": 20.9793297 },
+    { "lat": 52.2750794, "lon": 20.9793368 },
+    { "lat": 52.2750651, "lon": 20.9793448 },
+    { "lat": 52.2750475, "lon": 20.9793571 },
+    { "lat": 52.2750140, "lon": 20.9793865 },
+    { "lat": 52.2749787, "lon": 20.9794382 },
+    { "lat": 52.2749399, "lon": 20.9795039 },
+    { "lat": 52.2749194, "lon": 20.9795394 },
+    { "lat": 52.2749108, "lon": 20.9795561 },
+    { "lat": 52.2749004, "lon": 20.9795775 },
+    { "lat": 52.2748918, "lon": 20.9795970 },
+    { "lat": 52.2748843, "lon": 20.9796160 },
+    { "lat": 52.2748781, "lon": 20.9796340 },
+    { "lat": 52.2748708, "lon": 20.9796587 },
+    { "lat": 52.2748657, "lon": 20.9796806 },
+    { "lat": 52.2748612, "lon": 20.9797062 },
+    { "lat": 52.2748574, "lon": 20.9797319 },
+    { "lat": 52.2748550, "lon": 20.9797589 },
+    { "lat": 52.2748536, "lon": 20.9797841 },
+    { "lat": 52.2748530, "lon": 20.9798059 },
+    { "lat": 52.2748539, "lon": 20.9798297 },
+    { "lat": 52.2748554, "lon": 20.9798516 },
+    { "lat": 52.2748581, "lon": 20.9798758 },
+    { "lat": 52.2748614, "lon": 20.9799002 },
+    { "lat": 52.2748650, "lon": 20.9799195 },
+    { "lat": 52.2748689, "lon": 20.9799382 },
+    { "lat": 52.2748732, "lon": 20.9799556 },
+    { "lat": 52.2748791, "lon": 20.9799752 },
+    { "lat": 52.2748847, "lon": 20.9799914 },
+    { "lat": 52.2748911, "lon": 20.9800088 },
+    { "lat": 52.2749001, "lon": 20.9800284 },
+    { "lat": 52.2749101, "lon": 20.9800473 },
+    { "lat": 52.2749250, "lon": 20.9800725 },
+    { "lat": 52.2751449, "lon": 20.9804200 }
+  ],
+  "tags": {
+    "electrified": "contact_line",
+    "frequency": "0",
+    "gauge": "1435",
+    "oneway": "yes",
+    "operator": "Tramwaje Warszawskie",
+    "railway": "tram",
+    "voltage": "600"
+  }
+},
+{
+  "type": "way",
+  "id": 306755784,
+  "bounds": {
+    "minlat": 52.2618333,
+    "minlon": 20.9732386,
+    "maxlat": 52.2718236,
+    "maxlon": 20.9801292
+  },
+  "geometry": [
+    { "lat": 52.2718236, "lon": 20.9732386 },
+    { "lat": 52.2717985, "lon": 20.9733548 },
+    { "lat": 52.2717885, "lon": 20.9733951 },
+    { "lat": 52.2717787, "lon": 20.9734283 },
+    { "lat": 52.2717678, "lon": 20.9734558 },
+    { "lat": 52.2717583, "lon": 20.9734770 },
+    { "lat": 52.2717482, "lon": 20.9734985 },
+    { "lat": 52.2717325, "lon": 20.9735231 },
+    { "lat": 52.2716991, "lon": 20.9735660 },
+    { "lat": 52.2716628, "lon": 20.9735988 },
+    { "lat": 52.2716273, "lon": 20.9736207 },
+    { "lat": 52.2714398, "lon": 20.9737460 },
+    { "lat": 52.2713754, "lon": 20.9737889 },
+    { "lat": 52.2712253, "lon": 20.9738840 },
+    { "lat": 52.2711873, "lon": 20.9739099 },
+    { "lat": 52.2699445, "lon": 20.9747377 },
+    { "lat": 52.2685627, "lon": 20.9756591 },
+    { "lat": 52.2685391, "lon": 20.9756747 },
+    { "lat": 52.2667401, "lon": 20.9768657 },
+    { "lat": 52.2666669, "lon": 20.9769129 },
+    { "lat": 52.2665228, "lon": 20.9770102 },
+    { "lat": 52.2663019, "lon": 20.9771583 },
+    { "lat": 52.2661336, "lon": 20.9772674 },
+    { "lat": 52.2652659, "lon": 20.9778447 },
+    { "lat": 52.2650489, "lon": 20.9779889 },
+    { "lat": 52.2642868, "lon": 20.9784954 },
+    { "lat": 52.2638098, "lon": 20.9788076 },
+    { "lat": 52.2633584, "lon": 20.9791160 },
+    { "lat": 52.2628607, "lon": 20.9794432 },
+    { "lat": 52.2627439, "lon": 20.9795188 },
+    { "lat": 52.2626996, "lon": 20.9795481 },
+    { "lat": 52.2625829, "lon": 20.9796261 },
+    { "lat": 52.2619724, "lon": 20.9800364 },
+    { "lat": 52.2618333, "lon": 20.9801292 }
+  ],
+  "tags": {
+    "electrified": "contact_line",
+    "frequency": "0",
+    "gauge": "1435",
+    "maxspeed": "50",
+    "oneway": "yes",
+    "operator": "Tramwaje Warszawskie",
+    "railway": "tram",
+    "voltage": "600"
+  }
+},
+{
+  "type": "way",
   "id": 306755795,
   "bounds": {
     "minlat": 52.2929016,
@@ -5277,6 +8010,83 @@
     { "lat": 52.2974182, "lon": 20.9335084 },
     { "lat": 52.2975211, "lon": 20.9335739 },
     { "lat": 52.2976662, "lon": 20.9336684 }
+  ],
+  "tags": {
+    "electrified": "contact_line",
+    "frequency": "0",
+    "gauge": "1435",
+    "oneway": "yes",
+    "operator": "Tramwaje Warszawskie",
+    "railway": "tram",
+    "voltage": "600"
+  }
+},
+{
+  "type": "way",
+  "id": 306755796,
+  "bounds": {
+    "minlat": 52.2716023,
+    "minlon": 20.9451758,
+    "maxlat": 52.2716662,
+    "maxlon": 20.9454055
+  },
+  "geometry": [
+    { "lat": 52.2716023, "lon": 20.9454055 },
+    { "lat": 52.2716535, "lon": 20.9452204 },
+    { "lat": 52.2716662, "lon": 20.9451758 }
+  ],
+  "tags": {
+    "electrified": "contact_line",
+    "frequency": "0",
+    "gauge": "1435",
+    "oneway": "yes",
+    "operator": "Tramwaje Warszawskie",
+    "railway": "tram",
+    "voltage": "600"
+  }
+},
+{
+  "type": "way",
+  "id": 306755797,
+  "bounds": {
+    "minlat": 52.2712962,
+    "minlon": 20.9439438,
+    "maxlat": 52.2713821,
+    "maxlon": 20.9440101
+  },
+  "geometry": [
+    { "lat": 52.2712962, "lon": 20.9439438 },
+    { "lat": 52.2713769, "lon": 20.9440049 },
+    { "lat": 52.2713821, "lon": 20.9440101 }
+  ],
+  "tags": {
+    "electrified": "contact_line",
+    "frequency": "0",
+    "gauge": "1435",
+    "oneway": "yes",
+    "operator": "Tramwaje Warszawskie",
+    "railway": "tram",
+    "voltage": "600"
+  }
+},
+{
+  "type": "way",
+  "id": 306755798,
+  "bounds": {
+    "minlat": 52.2716072,
+    "minlon": 20.9444355,
+    "maxlat": 52.2716697,
+    "maxlon": 20.9451590
+  },
+  "geometry": [
+    { "lat": 52.2716072, "lon": 20.9444355 },
+    { "lat": 52.2716350, "lon": 20.9445927 },
+    { "lat": 52.2716622, "lon": 20.9447681 },
+    { "lat": 52.2716697, "lon": 20.9448277 },
+    { "lat": 52.2716670, "lon": 20.9448926 },
+    { "lat": 52.2716625, "lon": 20.9449916 },
+    { "lat": 52.2716480, "lon": 20.9450755 },
+    { "lat": 52.2716332, "lon": 20.9451590 }
   ],
   "tags": {
     "electrified": "contact_line",
@@ -5362,6 +8172,29 @@
 },
 {
   "type": "way",
+  "id": 306755821,
+  "bounds": {
+    "minlat": 52.2720726,
+    "minlon": 20.9725552,
+    "maxlat": 52.2720942,
+    "maxlon": 20.9726542
+  },
+  "geometry": [
+    { "lat": 52.2720726, "lon": 20.9726542 },
+    { "lat": 52.2720942, "lon": 20.9725552 }
+  ],
+  "tags": {
+    "electrified": "contact_line",
+    "frequency": "0",
+    "gauge": "1435",
+    "oneway": "yes",
+    "operator": "Tramwaje Warszawskie",
+    "railway": "tram",
+    "voltage": "600"
+  }
+},
+{
+  "type": "way",
   "id": 306755824,
   "bounds": {
     "minlat": 52.2912752,
@@ -5410,6 +8243,30 @@
 },
 {
   "type": "way",
+  "id": 306755846,
+  "bounds": {
+    "minlat": 52.2713128,
+    "minlon": 20.9438613,
+    "maxlat": 52.2713939,
+    "maxlon": 20.9439185
+  },
+  "geometry": [
+    { "lat": 52.2713128, "lon": 20.9438613 },
+    { "lat": 52.2713732, "lon": 20.9439034 },
+    { "lat": 52.2713939, "lon": 20.9439185 }
+  ],
+  "tags": {
+    "electrified": "contact_line",
+    "frequency": "0",
+    "gauge": "1435",
+    "oneway": "yes",
+    "operator": "Tramwaje Warszawskie",
+    "railway": "tram",
+    "voltage": "600"
+  }
+},
+{
+  "type": "way",
   "id": 306755847,
   "bounds": {
     "minlat": 52.2916753,
@@ -5420,6 +8277,32 @@
   "geometry": [
     { "lat": 52.2916834, "lon": 20.9287425 },
     { "lat": 52.2916753, "lon": 20.9287601 }
+  ],
+  "tags": {
+    "electrified": "contact_line",
+    "frequency": "0",
+    "gauge": "1435",
+    "oneway": "yes",
+    "operator": "Tramwaje Warszawskie",
+    "railway": "tram",
+    "voltage": "600"
+  }
+},
+{
+  "type": "way",
+  "id": 306755848,
+  "bounds": {
+    "minlat": 52.2713939,
+    "minlon": 20.9439185,
+    "maxlat": 52.2716765,
+    "maxlon": 20.9440674
+  },
+  "geometry": [
+    { "lat": 52.2713939, "lon": 20.9439185 },
+    { "lat": 52.2714809, "lon": 20.9439724 },
+    { "lat": 52.2714980, "lon": 20.9439830 },
+    { "lat": 52.2715702, "lon": 20.9440204 },
+    { "lat": 52.2716765, "lon": 20.9440674 }
   ],
   "tags": {
     "electrified": "contact_line",
@@ -5780,6 +8663,197 @@
 },
 {
   "type": "way",
+  "id": 320862543,
+  "bounds": {
+    "minlat": 52.2874504,
+    "minlon": 20.9029406,
+    "maxlat": 52.2955196,
+    "maxlon": 20.9110259
+  },
+  "geometry": [
+    { "lat": 52.2874629, "lon": 20.9029406 },
+    { "lat": 52.2874552, "lon": 20.9030630 },
+    { "lat": 52.2874521, "lon": 20.9031718 },
+    { "lat": 52.2874504, "lon": 20.9032869 },
+    { "lat": 52.2874531, "lon": 20.9034308 },
+    { "lat": 52.2874600, "lon": 20.9035859 },
+    { "lat": 52.2874708, "lon": 20.9037314 },
+    { "lat": 52.2874917, "lon": 20.9039156 },
+    { "lat": 52.2874960, "lon": 20.9039525 },
+    { "lat": 52.2875155, "lon": 20.9040871 },
+    { "lat": 52.2875172, "lon": 20.9040985 },
+    { "lat": 52.2875470, "lon": 20.9042686 },
+    { "lat": 52.2876091, "lon": 20.9045431 },
+    { "lat": 52.2876838, "lon": 20.9048014 },
+    { "lat": 52.2877654, "lon": 20.9050212 },
+    { "lat": 52.2878508, "lon": 20.9052209 },
+    { "lat": 52.2879333, "lon": 20.9053772 },
+    { "lat": 52.2880342, "lon": 20.9055508 },
+    { "lat": 52.2881394, "lon": 20.9056949 },
+    { "lat": 52.2886338, "lon": 20.9063014 },
+    { "lat": 52.2892718, "lon": 20.9070807 },
+    { "lat": 52.2901509, "lon": 20.9081729 },
+    { "lat": 52.2917456, "lon": 20.9100847 },
+    { "lat": 52.2918788, "lon": 20.9102246 },
+    { "lat": 52.2920317, "lon": 20.9103591 },
+    { "lat": 52.2921915, "lon": 20.9104591 },
+    { "lat": 52.2923733, "lon": 20.9105357 },
+    { "lat": 52.2926117, "lon": 20.9106051 },
+    { "lat": 52.2928232, "lon": 20.9106419 },
+    { "lat": 52.2933746, "lon": 20.9107102 },
+    { "lat": 52.2935228, "lon": 20.9107285 },
+    { "lat": 52.2940662, "lon": 20.9107958 },
+    { "lat": 52.2944332, "lon": 20.9108479 },
+    { "lat": 52.2947275, "lon": 20.9108929 },
+    { "lat": 52.2955196, "lon": 20.9110259 }
+  ],
+  "tags": {
+    "electrified": "no",
+    "gauge": "1435",
+    "operator": "ArcelorMittal Warszawa",
+    "railway": "rail",
+    "railway:track_ref": "101",
+    "service": "spur",
+    "usage": "industrial"
+  }
+},
+{
+  "type": "way",
+  "id": 320862546,
+  "bounds": {
+    "minlat": 52.2874669,
+    "minlon": 20.8928887,
+    "maxlat": 52.2881848,
+    "maxlon": 20.9028890
+  },
+  "geometry": [
+    { "lat": 52.2874669, "lon": 20.9028890 },
+    { "lat": 52.2874764, "lon": 20.9027760 },
+    { "lat": 52.2874879, "lon": 20.9026690 },
+    { "lat": 52.2875014, "lon": 20.9025711 },
+    { "lat": 52.2875721, "lon": 20.9020817 },
+    { "lat": 52.2876258, "lon": 20.9013350 },
+    { "lat": 52.2878558, "lon": 20.8981350 },
+    { "lat": 52.2881182, "lon": 20.8944902 },
+    { "lat": 52.2881633, "lon": 20.8938642 },
+    { "lat": 52.2881697, "lon": 20.8937330 },
+    { "lat": 52.2881723, "lon": 20.8935869 },
+    { "lat": 52.2881731, "lon": 20.8931470 },
+    { "lat": 52.2881772, "lon": 20.8930342 },
+    { "lat": 52.2881848, "lon": 20.8928887 }
+  ],
+  "tags": {
+    "electrified": "no",
+    "gauge": "1435",
+    "operator": "ArcelorMittal Warszawa",
+    "railway": "rail",
+    "railway:track_ref": "4",
+    "service": "spur",
+    "source": "image (Yahoo)",
+    "usage": "industrial"
+  }
+},
+{
+  "type": "way",
+  "id": 320862547,
+  "bounds": {
+    "minlat": 52.2873793,
+    "minlon": 20.8933797,
+    "maxlat": 52.2881018,
+    "maxlon": 20.9034236
+  },
+  "geometry": [
+    { "lat": 52.2873793, "lon": 20.9034236 },
+    { "lat": 52.2873876, "lon": 20.9032785 },
+    { "lat": 52.2873899, "lon": 20.9031860 },
+    { "lat": 52.2873915, "lon": 20.9027481 },
+    { "lat": 52.2873934, "lon": 20.9026207 },
+    { "lat": 52.2874008, "lon": 20.9024806 },
+    { "lat": 52.2874039, "lon": 20.9024378 },
+    { "lat": 52.2876972, "lon": 20.8983397 },
+    { "lat": 52.2879880, "lon": 20.8943112 },
+    { "lat": 52.2880036, "lon": 20.8941493 },
+    { "lat": 52.2880237, "lon": 20.8939833 },
+    { "lat": 52.2880751, "lon": 20.8936424 },
+    { "lat": 52.2880885, "lon": 20.8935215 },
+    { "lat": 52.2881018, "lon": 20.8933797 }
+  ],
+  "tags": {
+    "electrified": "no",
+    "gauge": "1435",
+    "operator": "ArcelorMittal Warszawa",
+    "railway": "rail",
+    "railway:track_ref": "3",
+    "service": "spur",
+    "usage": "industrial"
+  }
+},
+{
+  "type": "way",
+  "id": 320862548,
+  "bounds": {
+    "minlat": 52.2874629,
+    "minlon": 20.8929134,
+    "maxlat": 52.2881346,
+    "maxlon": 20.9029406
+  },
+  "geometry": [
+    { "lat": 52.2881346, "lon": 20.8929134 },
+    { "lat": 52.2881277, "lon": 20.8930317 },
+    { "lat": 52.2881251, "lon": 20.8931343 },
+    { "lat": 52.2881245, "lon": 20.8936014 },
+    { "lat": 52.2881225, "lon": 20.8937118 },
+    { "lat": 52.2881159, "lon": 20.8938399 },
+    { "lat": 52.2880485, "lon": 20.8947793 },
+    { "lat": 52.2875298, "lon": 20.9020114 },
+    { "lat": 52.2874669, "lon": 20.9028890 },
+    { "lat": 52.2874629, "lon": 20.9029406 }
+  ],
+  "tags": {
+    "electrified": "no",
+    "gauge": "1435",
+    "operator": "ArcelorMittal Warszawa",
+    "railway": "rail",
+    "railway:track_ref": "2",
+    "service": "spur",
+    "usage": "industrial"
+  }
+},
+{
+  "type": "way",
+  "id": 320862549,
+  "bounds": {
+    "minlat": 52.2870530,
+    "minlon": 20.9077832,
+    "maxlat": 52.2894155,
+    "maxlon": 20.9123620
+  },
+  "geometry": [
+    { "lat": 52.2894155, "lon": 20.9123620 },
+    { "lat": 52.2876317, "lon": 20.9101498 },
+    { "lat": 52.2875254, "lon": 20.9100152 },
+    { "lat": 52.2874475, "lon": 20.9098978 },
+    { "lat": 52.2873810, "lon": 20.9097905 },
+    { "lat": 52.2873023, "lon": 20.9096136 },
+    { "lat": 52.2872006, "lon": 20.9093601 },
+    { "lat": 52.2871104, "lon": 20.9089834 },
+    { "lat": 52.2870636, "lon": 20.9086683 },
+    { "lat": 52.2870530, "lon": 20.9083666 },
+    { "lat": 52.2870561, "lon": 20.9080728 },
+    { "lat": 52.2870590, "lon": 20.9079354 },
+    { "lat": 52.2870671, "lon": 20.9077832 }
+  ],
+  "tags": {
+    "electrified": "no",
+    "gauge": "1435",
+    "operator": "ArcelorMittal Warszawa",
+    "railway": "rail",
+    "service": "spur",
+    "usage": "industrial"
+  }
+},
+{
+  "type": "way",
   "id": 328686963,
   "bounds": {
     "minlat": 52.2924616,
@@ -5863,6 +8937,59 @@
 },
 {
   "type": "way",
+  "id": 410097413,
+  "bounds": {
+    "minlat": 52.2714786,
+    "minlon": 20.9434926,
+    "maxlat": 52.2715290,
+    "maxlon": 20.9437828
+  },
+  "geometry": [
+    { "lat": 52.2715290, "lon": 20.9437828 },
+    { "lat": 52.2715207, "lon": 20.9437301 },
+    { "lat": 52.2714786, "lon": 20.9434926 }
+  ],
+  "tags": {
+    "electrified": "contact_line",
+    "frequency": "0",
+    "gauge": "1435",
+    "oneway": "yes",
+    "operator": "Tramwaje Warszawskie",
+    "railway": "tram",
+    "voltage": "600"
+  }
+},
+{
+  "type": "way",
+  "id": 410097414,
+  "bounds": {
+    "minlat": 52.2713821,
+    "minlon": 20.9440101,
+    "maxlat": 52.2716765,
+    "maxlon": 20.9440733
+  },
+  "geometry": [
+    { "lat": 52.2713821, "lon": 20.9440101 },
+    { "lat": 52.2714216, "lon": 20.9440353 },
+    { "lat": 52.2714600, "lon": 20.9440562 },
+    { "lat": 52.2715006, "lon": 20.9440712 },
+    { "lat": 52.2715421, "lon": 20.9440733 },
+    { "lat": 52.2715766, "lon": 20.9440678 },
+    { "lat": 52.2716239, "lon": 20.9440617 },
+    { "lat": 52.2716765, "lon": 20.9440674 }
+  ],
+  "tags": {
+    "electrified": "contact_line",
+    "frequency": "0",
+    "gauge": "1435",
+    "oneway": "yes",
+    "operator": "Tramwaje Warszawskie",
+    "railway": "tram",
+    "voltage": "600"
+  }
+},
+{
+  "type": "way",
   "id": 410098032,
   "bounds": {
     "minlat": 52.2919055,
@@ -5882,6 +9009,35 @@
     "operator": "Tramwaje Warszawskie",
     "railway": "tram",
     "voltage": "600"
+  }
+},
+{
+  "type": "way",
+  "id": 443446120,
+  "bounds": {
+    "minlat": 52.2870671,
+    "minlon": 20.9034236,
+    "maxlat": 52.2873793,
+    "maxlon": 20.9077832
+  },
+  "geometry": [
+    { "lat": 52.2870671, "lon": 20.9077832 },
+    { "lat": 52.2871361, "lon": 20.9067780 },
+    { "lat": 52.2871968, "lon": 20.9059826 },
+    { "lat": 52.2872621, "lon": 20.9050342 },
+    { "lat": 52.2872661, "lon": 20.9049792 },
+    { "lat": 52.2873410, "lon": 20.9039500 },
+    { "lat": 52.2873572, "lon": 20.9037266 },
+    { "lat": 52.2873793, "lon": 20.9034236 }
+  ],
+  "tags": {
+    "electrified": "no",
+    "gauge": "1435",
+    "operator": "ArcelorMittal Warszawa",
+    "railway": "rail",
+    "railway:track_ref": "110",
+    "service": "spur",
+    "source": "landsat"
   }
 },
 {
@@ -6332,6 +9488,35 @@
 },
 {
   "type": "way",
+  "id": 458569429,
+  "bounds": {
+    "minlat": 52.2955196,
+    "minlon": 20.9109597,
+    "maxlat": 52.2972179,
+    "maxlon": 20.9111654
+  },
+  "geometry": [
+    { "lat": 52.2972179, "lon": 20.9109597 },
+    { "lat": 52.2970706, "lon": 20.9110233 },
+    { "lat": 52.2969106, "lon": 20.9110765 },
+    { "lat": 52.2968003, "lon": 20.9111155 },
+    { "lat": 52.2966910, "lon": 20.9111491 },
+    { "lat": 52.2965946, "lon": 20.9111615 },
+    { "lat": 52.2965112, "lon": 20.9111654 },
+    { "lat": 52.2962467, "lon": 20.9111547 },
+    { "lat": 52.2955196, "lon": 20.9110259 }
+  ],
+  "tags": {
+    "electrified": "no",
+    "gauge": "1435",
+    "operator": "ArcelorMittal Warszawa",
+    "railway": "rail",
+    "service": "spur",
+    "usage": "industrial"
+  }
+},
+{
+  "type": "way",
   "id": 458573921,
   "bounds": {
     "minlat": 52.2938415,
@@ -6609,6 +9794,41 @@
 },
 {
   "type": "way",
+  "id": 458576351,
+  "bounds": {
+    "minlat": 52.2887178,
+    "minlon": 20.9140054,
+    "maxlat": 52.2901614,
+    "maxlon": 20.9148578
+  },
+  "geometry": [
+    { "lat": 52.2887178, "lon": 20.9140054 },
+    { "lat": 52.2888115, "lon": 20.9140977 },
+    { "lat": 52.2889175, "lon": 20.9141924 },
+    { "lat": 52.2890201, "lon": 20.9142740 },
+    { "lat": 52.2891163, "lon": 20.9143410 },
+    { "lat": 52.2892055, "lon": 20.9143964 },
+    { "lat": 52.2893009, "lon": 20.9144460 },
+    { "lat": 52.2894292, "lon": 20.9144926 },
+    { "lat": 52.2895558, "lon": 20.9145349 },
+    { "lat": 52.2896133, "lon": 20.9145531 },
+    { "lat": 52.2897118, "lon": 20.9145844 },
+    { "lat": 52.2897992, "lon": 20.9146194 },
+    { "lat": 52.2898946, "lon": 20.9146704 },
+    { "lat": 52.2900039, "lon": 20.9147353 },
+    { "lat": 52.2900951, "lon": 20.9147991 },
+    { "lat": 52.2901614, "lon": 20.9148578 }
+  ],
+  "tags": {
+    "electrified": "no",
+    "gauge": "1435",
+    "railway": "rail",
+    "service": "siding",
+    "usage": "industrial"
+  }
+},
+{
+  "type": "way",
   "id": 462291004,
   "bounds": {
     "minlat": 52.2742212,
@@ -6805,6 +10025,69 @@
     "operator": "Tramwaje Warszawskie",
     "railway": "tram",
     "voltage": "600"
+  }
+},
+{
+  "type": "way",
+  "id": 511410460,
+  "bounds": {
+    "minlat": 52.2718982,
+    "minlon": 20.9719853,
+    "maxlat": 52.2721286,
+    "maxlon": 20.9732865
+  },
+  "geometry": [
+    { "lat": 52.2721286, "lon": 20.9719853 },
+    { "lat": 52.2721076, "lon": 20.9720986 },
+    { "lat": 52.2720937, "lon": 20.9721830 },
+    { "lat": 52.2720881, "lon": 20.9722375 },
+    { "lat": 52.2720759, "lon": 20.9723933 },
+    { "lat": 52.2720679, "lon": 20.9724659 },
+    { "lat": 52.2720580, "lon": 20.9725339 },
+    { "lat": 52.2720477, "lon": 20.9725971 },
+    { "lat": 52.2720323, "lon": 20.9726721 },
+    { "lat": 52.2718982, "lon": 20.9732865 }
+  ],
+  "tags": {
+    "electrified": "contact_line",
+    "frequency": "0",
+    "gauge": "1435",
+    "maxspeed": "50",
+    "oneway": "yes",
+    "operator": "Tramwaje Warszawskie",
+    "railway": "tram",
+    "voltage": "600"
+  }
+},
+{
+  "type": "way",
+  "id": 530225830,
+  "bounds": {
+    "minlat": 52.2875721,
+    "minlon": 20.8935869,
+    "maxlat": 52.2881723,
+    "maxlon": 20.9020817
+  },
+  "geometry": [
+    { "lat": 52.2875721, "lon": 20.9020817 },
+    { "lat": 52.2876443, "lon": 20.9015874 },
+    { "lat": 52.2876659, "lon": 20.9014193 },
+    { "lat": 52.2876827, "lon": 20.9012422 },
+    { "lat": 52.2877288, "lon": 20.9005984 },
+    { "lat": 52.2881152, "lon": 20.8952030 },
+    { "lat": 52.2881570, "lon": 20.8946191 },
+    { "lat": 52.2881674, "lon": 20.8944538 },
+    { "lat": 52.2881698, "lon": 20.8942912 },
+    { "lat": 52.2881723, "lon": 20.8935869 }
+  ],
+  "tags": {
+    "electrified": "no",
+    "gauge": "1435",
+    "operator": "ArcelorMittal Warszawa",
+    "railway": "rail",
+    "railway:track_ref": "6",
+    "service": "spur",
+    "usage": "industrial"
   }
 },
 {
@@ -7699,6 +10982,95 @@
 },
 {
   "type": "way",
+  "id": 664926018,
+  "bounds": {
+    "minlat": 52.2894268,
+    "minlon": 20.9057436,
+    "maxlat": 52.2926005,
+    "maxlon": 20.9091619
+  },
+  "geometry": [
+    { "lat": 52.2894268, "lon": 20.9057436 },
+    { "lat": 52.2895408, "lon": 20.9058498 },
+    { "lat": 52.2896765, "lon": 20.9059575 },
+    { "lat": 52.2898262, "lon": 20.9060521 },
+    { "lat": 52.2903472, "lon": 20.9063099 },
+    { "lat": 52.2905049, "lon": 20.9064078 },
+    { "lat": 52.2905296, "lon": 20.9064267 },
+    { "lat": 52.2906546, "lon": 20.9065220 },
+    { "lat": 52.2907983, "lon": 20.9066754 },
+    { "lat": 52.2920018, "lon": 20.9081602 },
+    { "lat": 52.2921096, "lon": 20.9083103 },
+    { "lat": 52.2922373, "lon": 20.9085126 },
+    { "lat": 52.2922891, "lon": 20.9086052 },
+    { "lat": 52.2926005, "lon": 20.9091619 }
+  ],
+  "tags": {
+    "electrified": "no",
+    "gauge": "1435",
+    "railway": "rail",
+    "service": "spur",
+    "usage": "industrial"
+  }
+},
+{
+  "type": "way",
+  "id": 664926032,
+  "bounds": {
+    "minlat": 52.2939866,
+    "minlon": 20.9103718,
+    "maxlat": 52.2955196,
+    "maxlon": 20.9110259
+  },
+  "geometry": [
+    { "lat": 52.2955196, "lon": 20.9110259 },
+    { "lat": 52.2952309, "lon": 20.9109249 },
+    { "lat": 52.2950505, "lon": 20.9108454 },
+    { "lat": 52.2945814, "lon": 20.9106301 },
+    { "lat": 52.2941614, "lon": 20.9104477 },
+    { "lat": 52.2939866, "lon": 20.9103718 }
+  ],
+  "tags": {
+    "electrified": "no",
+    "gauge": "1435",
+    "operator": "ArcelorMittal Warszawa",
+    "railway": "rail",
+    "service": "spur",
+    "usage": "industrial"
+  }
+},
+{
+  "type": "way",
+  "id": 664926033,
+  "bounds": {
+    "minlat": 52.2930219,
+    "minlon": 20.9104883,
+    "maxlat": 52.2945814,
+    "maxlon": 20.9106301
+  },
+  "geometry": [
+    { "lat": 52.2945814, "lon": 20.9106301 },
+    { "lat": 52.2943479, "lon": 20.9105583 },
+    { "lat": 52.2941667, "lon": 20.9105381 },
+    { "lat": 52.2939909, "lon": 20.9105319 },
+    { "lat": 52.2936921, "lon": 20.9105237 },
+    { "lat": 52.2934734, "lon": 20.9105216 },
+    { "lat": 52.2934420, "lon": 20.9105213 },
+    { "lat": 52.2933065, "lon": 20.9105193 },
+    { "lat": 52.2932427, "lon": 20.9105184 },
+    { "lat": 52.2930219, "lon": 20.9104883 }
+  ],
+  "tags": {
+    "electrified": "no",
+    "gauge": "1435",
+    "operator": "ArcelorMittal Warszawa",
+    "railway": "rail",
+    "service": "spur",
+    "usage": "industrial"
+  }
+},
+{
+  "type": "way",
   "id": 706114674,
   "bounds": {
     "minlat": 52.2823649,
@@ -7977,6 +11349,86 @@
 },
 {
   "type": "way",
+  "id": 725681101,
+  "bounds": {
+    "minlat": 52.2695920,
+    "minlon": 20.9796208,
+    "maxlat": 52.2704212,
+    "maxlon": 20.9834244
+  },
+  "geometry": [
+    { "lat": 52.2695920, "lon": 20.9834244 },
+    { "lat": 52.2696077, "lon": 20.9833522 },
+    { "lat": 52.2696228, "lon": 20.9832761 },
+    { "lat": 52.2696368, "lon": 20.9832004 },
+    { "lat": 52.2696489, "lon": 20.9831244 },
+    { "lat": 52.2696838, "lon": 20.9828991 },
+    { "lat": 52.2696962, "lon": 20.9828252 },
+    { "lat": 52.2697107, "lon": 20.9827474 },
+    { "lat": 52.2697262, "lon": 20.9826711 },
+    { "lat": 52.2697416, "lon": 20.9825979 },
+    { "lat": 52.2698739, "lon": 20.9820186 },
+    { "lat": 52.2704212, "lon": 20.9796208 }
+  ],
+  "tags": {
+    "electrified": "rail",
+    "electrified:rail": "side",
+    "frequency": "0",
+    "gauge": "1435",
+    "layer": "-3",
+    "level": "-2",
+    "maxspeed": "15",
+    "operator": "Metro Warszawskie",
+    "railway": "subway",
+    "railway:sop": "2W",
+    "railway:track_ref": "3",
+    "service": "yard",
+    "tunnel": "yes",
+    "voltage": "750"
+  }
+},
+{
+  "type": "way",
+  "id": 725681102,
+  "bounds": {
+    "minlat": 52.2694733,
+    "minlon": 20.9795911,
+    "maxlat": 52.2703723,
+    "maxlon": 20.9833505
+  },
+  "geometry": [
+    { "lat": 52.2694733, "lon": 20.9833505 },
+    { "lat": 52.2694909, "lon": 20.9832781 },
+    { "lat": 52.2695096, "lon": 20.9832061 },
+    { "lat": 52.2695301, "lon": 20.9831328 },
+    { "lat": 52.2695502, "lon": 20.9830646 },
+    { "lat": 52.2696143, "lon": 20.9828569 },
+    { "lat": 52.2696352, "lon": 20.9827848 },
+    { "lat": 52.2696544, "lon": 20.9827145 },
+    { "lat": 52.2696737, "lon": 20.9826399 },
+    { "lat": 52.2696914, "lon": 20.9825674 },
+    { "lat": 52.2698239, "lon": 20.9819883 },
+    { "lat": 52.2703723, "lon": 20.9795911 }
+  ],
+  "tags": {
+    "electrified": "rail",
+    "electrified:rail": "side",
+    "frequency": "0",
+    "gauge": "1435",
+    "layer": "-3",
+    "level": "-2",
+    "maxspeed": "15",
+    "operator": "Metro Warszawskie",
+    "railway": "subway",
+    "railway:sop": "2W",
+    "railway:track_ref": "4",
+    "service": "yard",
+    "tunnel": "yes",
+    "voltage": "750"
+  }
+},
+{
+  "type": "way",
   "id": 745980209,
   "bounds": {
     "minlat": 52.2916045,
@@ -8039,6 +11491,140 @@
 },
 {
   "type": "way",
+  "id": 939491914,
+  "bounds": {
+    "minlat": 52.2890938,
+    "minlon": 20.9053368,
+    "maxlat": 52.2930219,
+    "maxlon": 20.9104883
+  },
+  "geometry": [
+    { "lat": 52.2890938, "lon": 20.9053368 },
+    { "lat": 52.2891812, "lon": 20.9054686 },
+    { "lat": 52.2892003, "lon": 20.9054974 },
+    { "lat": 52.2892881, "lon": 20.9056768 },
+    { "lat": 52.2893839, "lon": 20.9058889 },
+    { "lat": 52.2894817, "lon": 20.9061631 },
+    { "lat": 52.2896953, "lon": 20.9067994 },
+    { "lat": 52.2897146, "lon": 20.9068482 },
+    { "lat": 52.2897511, "lon": 20.9069405 },
+    { "lat": 52.2898042, "lon": 20.9070415 },
+    { "lat": 52.2899257, "lon": 20.9072820 },
+    { "lat": 52.2900402, "lon": 20.9075296 },
+    { "lat": 52.2901594, "lon": 20.9077520 },
+    { "lat": 52.2902823, "lon": 20.9079774 },
+    { "lat": 52.2904102, "lon": 20.9081453 },
+    { "lat": 52.2907396, "lon": 20.9085500 },
+    { "lat": 52.2916893, "lon": 20.9097006 },
+    { "lat": 52.2917890, "lon": 20.9098126 },
+    { "lat": 52.2919011, "lon": 20.9099246 },
+    { "lat": 52.2920318, "lon": 20.9100340 },
+    { "lat": 52.2921719, "lon": 20.9101384 },
+    { "lat": 52.2923183, "lon": 20.9102198 },
+    { "lat": 52.2924926, "lon": 20.9102936 },
+    { "lat": 52.2926700, "lon": 20.9103559 },
+    { "lat": 52.2930219, "lon": 20.9104883 }
+  ],
+  "tags": {
+    "electrified": "no",
+    "gauge": "1435",
+    "operator": "ArcelorMittal Warszawa",
+    "railway": "rail",
+    "service": "spur",
+    "usage": "industrial"
+  }
+},
+{
+  "type": "way",
+  "id": 939491915,
+  "bounds": {
+    "minlat": 52.2880447,
+    "minlon": 20.9040291,
+    "maxlat": 52.2939866,
+    "maxlon": 20.9103718
+  },
+  "geometry": [
+    { "lat": 52.2880447, "lon": 20.9040291 },
+    { "lat": 52.2890938, "lon": 20.9053368 },
+    { "lat": 52.2891878, "lon": 20.9054516 },
+    { "lat": 52.2893415, "lon": 20.9056393 },
+    { "lat": 52.2894268, "lon": 20.9057436 },
+    { "lat": 52.2903320, "lon": 20.9068492 },
+    { "lat": 52.2921030, "lon": 20.9090121 },
+    { "lat": 52.2924554, "lon": 20.9094425 },
+    { "lat": 52.2928274, "lon": 20.9098968 },
+    { "lat": 52.2928730, "lon": 20.9099463 },
+    { "lat": 52.2929207, "lon": 20.9099920 },
+    { "lat": 52.2930408, "lon": 20.9100899 },
+    { "lat": 52.2931841, "lon": 20.9101773 },
+    { "lat": 52.2933055, "lon": 20.9102269 },
+    { "lat": 52.2933954, "lon": 20.9102460 },
+    { "lat": 52.2939866, "lon": 20.9103718 }
+  ],
+  "tags": {
+    "electrified": "no",
+    "gauge": "1435",
+    "operator": "ArcelorMittal Warszawa",
+    "railway": "rail",
+    "service": "spur",
+    "usage": "industrial"
+  }
+},
+{
+  "type": "way",
+  "id": 939491916,
+  "bounds": {
+    "minlat": 52.2902937,
+    "minlon": 20.9063449,
+    "maxlat": 52.2939866,
+    "maxlon": 20.9103718
+  },
+  "geometry": [
+    { "lat": 52.2902937, "lon": 20.9063449 },
+    { "lat": 52.2904630, "lon": 20.9064561 },
+    { "lat": 52.2904962, "lon": 20.9064981 },
+    { "lat": 52.2922420, "lon": 20.9087081 },
+    { "lat": 52.2926005, "lon": 20.9091619 },
+    { "lat": 52.2928501, "lon": 20.9094916 },
+    { "lat": 52.2931375, "lon": 20.9098407 },
+    { "lat": 52.2932652, "lon": 20.9099713 },
+    { "lat": 52.2933850, "lon": 20.9100789 },
+    { "lat": 52.2935207, "lon": 20.9101671 },
+    { "lat": 52.2937043, "lon": 20.9102552 },
+    { "lat": 52.2939866, "lon": 20.9103718 }
+  ],
+  "tags": {
+    "electrified": "no",
+    "gauge": "1435",
+    "operator": "ArcelorMittal Warszawa",
+    "railway": "rail",
+    "service": "spur",
+    "usage": "industrial"
+  }
+},
+{
+  "type": "way",
+  "id": 939491918,
+  "bounds": {
+    "minlat": 52.2903987,
+    "minlon": 20.9133722,
+    "maxlat": 52.2915056,
+    "maxlon": 20.9147358
+  },
+  "geometry": [
+    { "lat": 52.2903987, "lon": 20.9133722 },
+    { "lat": 52.2915056, "lon": 20.9147358 }
+  ],
+  "tags": {
+    "electrified": "no",
+    "gauge": "1435",
+    "railway": "rail",
+    "service": "spur",
+    "usage": "industrial"
+  }
+},
+{
+  "type": "way",
   "id": 939491919,
   "bounds": {
     "minlat": 52.2875308,
@@ -8057,6 +11643,34 @@
     { "lat": 52.2922697, "lon": 20.9164888 },
     { "lat": 52.2922358, "lon": 20.9164386 },
     { "lat": 52.2875308, "lon": 20.9106530 }
+  ],
+  "tags": {
+    "electrified": "no",
+    "gauge": "1435",
+    "operator": "ArcelorMittal Warszawa",
+    "railway": "rail",
+    "service": "spur",
+    "usage": "industrial"
+  }
+},
+{
+  "type": "way",
+  "id": 978797585,
+  "bounds": {
+    "minlat": 52.2872414,
+    "minlon": 20.9050342,
+    "maxlat": 52.2872621,
+    "maxlon": 20.9060099
+  },
+  "geometry": [
+    { "lat": 52.2872621, "lon": 20.9050342 },
+    { "lat": 52.2872567, "lon": 20.9051398 },
+    { "lat": 52.2872528, "lon": 20.9052556 },
+    { "lat": 52.2872506, "lon": 20.9054186 },
+    { "lat": 52.2872525, "lon": 20.9056698 },
+    { "lat": 52.2872515, "lon": 20.9057800 },
+    { "lat": 52.2872493, "lon": 20.9058861 },
+    { "lat": 52.2872414, "lon": 20.9060099 }
   ],
   "tags": {
     "electrified": "no",
@@ -9492,6 +13106,30 @@
 },
 {
   "type": "way",
+  "id": 1043817059,
+  "bounds": {
+    "minlat": 52.2875047,
+    "minlon": 20.9020817,
+    "maxlat": 52.2875721,
+    "maxlon": 20.9030105
+  },
+  "geometry": [
+    { "lat": 52.2875047, "lon": 20.9030105 },
+    { "lat": 52.2875067, "lon": 20.9029834 },
+    { "lat": 52.2875309, "lon": 20.9026511 },
+    { "lat": 52.2875721, "lon": 20.9020817 }
+  ],
+  "tags": {
+    "electrified": "no",
+    "gauge": "1435",
+    "operator": "ArcelorMittal Warszawa",
+    "railway": "rail",
+    "railway:track_ref": "303",
+    "service": "spur"
+  }
+},
+{
+  "type": "way",
   "id": 1051911219,
   "bounds": {
     "minlat": 52.2771674,
@@ -9601,6 +13239,121 @@
 },
 {
   "type": "way",
+  "id": 1051911221,
+  "bounds": {
+    "minlat": 52.2695920,
+    "minlon": 20.9733702,
+    "maxlat": 52.2713447,
+    "maxlon": 20.9834244
+  },
+  "geometry": [
+    { "lat": 52.2695920, "lon": 20.9834244 },
+    { "lat": 52.2704838, "lon": 20.9795181 },
+    { "lat": 52.2707072, "lon": 20.9784825 },
+    { "lat": 52.2707516, "lon": 20.9782753 },
+    { "lat": 52.2707963, "lon": 20.9780597 },
+    { "lat": 52.2709621, "lon": 20.9772541 },
+    { "lat": 52.2710065, "lon": 20.9770343 },
+    { "lat": 52.2710477, "lon": 20.9768235 },
+    { "lat": 52.2710836, "lon": 20.9766123 },
+    { "lat": 52.2711143, "lon": 20.9763943 },
+    { "lat": 52.2711418, "lon": 20.9761748 },
+    { "lat": 52.2711634, "lon": 20.9759570 },
+    { "lat": 52.2711796, "lon": 20.9757435 },
+    { "lat": 52.2711943, "lon": 20.9755201 },
+    { "lat": 52.2712052, "lon": 20.9752983 },
+    { "lat": 52.2712153, "lon": 20.9750856 },
+    { "lat": 52.2712260, "lon": 20.9748656 },
+    { "lat": 52.2712364, "lon": 20.9746449 },
+    { "lat": 52.2712479, "lon": 20.9744247 },
+    { "lat": 52.2712628, "lon": 20.9742090 },
+    { "lat": 52.2712777, "lon": 20.9739863 },
+    { "lat": 52.2712995, "lon": 20.9737646 },
+    { "lat": 52.2713213, "lon": 20.9735665 },
+    { "lat": 52.2713447, "lon": 20.9733702 }
+  ],
+  "tags": {
+    "electrified": "rail",
+    "electrified:rail": "side",
+    "frequency": "0",
+    "gauge": "1435",
+    "layer": "-3",
+    "level": "-2",
+    "maxspeed": "80",
+    "operator": "Metro Warszawskie",
+    "railway": "subway",
+    "railway:bidirectional": "regular",
+    "railway:preferred_direction": "forward",
+    "railway:sop": "2W",
+    "railway:track_ref": "1",
+    "ref": "M1",
+    "start_date": "2006-12-29",
+    "tunnel": "yes",
+    "voltage": "750",
+    "wikidata": "Q17462780",
+    "wikipedia": "pl:Linia M1 metra w Warszawie"
+  }
+},
+{
+  "type": "way",
+  "id": 1051911222,
+  "bounds": {
+    "minlat": 52.2694733,
+    "minlon": 20.9733244,
+    "maxlat": 52.2712329,
+    "maxlon": 20.9833505
+  },
+  "geometry": [
+    { "lat": 52.2712329, "lon": 20.9733244 },
+    { "lat": 52.2712036, "lon": 20.9735421 },
+    { "lat": 52.2711785, "lon": 20.9737549 },
+    { "lat": 52.2711606, "lon": 20.9739750 },
+    { "lat": 52.2711450, "lon": 20.9741940 },
+    { "lat": 52.2711337, "lon": 20.9744133 },
+    { "lat": 52.2711225, "lon": 20.9746278 },
+    { "lat": 52.2711120, "lon": 20.9748430 },
+    { "lat": 52.2711022, "lon": 20.9750482 },
+    { "lat": 52.2710901, "lon": 20.9752697 },
+    { "lat": 52.2710780, "lon": 20.9754881 },
+    { "lat": 52.2710640, "lon": 20.9757022 },
+    { "lat": 52.2710444, "lon": 20.9759330 },
+    { "lat": 52.2710189, "lon": 20.9761728 },
+    { "lat": 52.2709934, "lon": 20.9763557 },
+    { "lat": 52.2709600, "lon": 20.9765607 },
+    { "lat": 52.2709236, "lon": 20.9767723 },
+    { "lat": 52.2708815, "lon": 20.9769890 },
+    { "lat": 52.2708408, "lon": 20.9771906 },
+    { "lat": 52.2706789, "lon": 20.9779900 },
+    { "lat": 52.2706351, "lon": 20.9782049 },
+    { "lat": 52.2705888, "lon": 20.9784183 },
+    { "lat": 52.2703662, "lon": 20.9794469 },
+    { "lat": 52.2696895, "lon": 20.9824055 },
+    { "lat": 52.2694733, "lon": 20.9833505 }
+  ],
+  "tags": {
+    "electrified": "rail",
+    "electrified:rail": "side",
+    "frequency": "0",
+    "gauge": "1435",
+    "layer": "-3",
+    "level": "-2",
+    "maxspeed": "80",
+    "operator": "Metro Warszawskie",
+    "railway": "subway",
+    "railway:bidirectional": "regular",
+    "railway:preferred_direction": "forward",
+    "railway:sop": "2W",
+    "railway:track_ref": "2",
+    "ref": "M1",
+    "start_date": "2006-12-29",
+    "tunnel": "yes",
+    "voltage": "750",
+    "wikidata": "Q17462780",
+    "wikipedia": "pl:Linia M1 metra w Warszawie"
+  }
+},
+{
+  "type": "way",
   "id": 1084208981,
   "bounds": {
     "minlat": 52.2996116,
@@ -9627,6 +13380,85 @@
     "railway": "tram",
     "service": "yard",
     "voltage": "600"
+  }
+},
+{
+  "type": "way",
+  "id": 1131620984,
+  "bounds": {
+    "minlat": 52.2714616,
+    "minlon": 20.9433949,
+    "maxlat": 52.2714786,
+    "maxlon": 20.9434926
+  },
+  "geometry": [
+    { "lat": 52.2714786, "lon": 20.9434926 },
+    { "lat": 52.2714616, "lon": 20.9433949 }
+  ],
+  "tags": {
+    "electrified": "contact_line",
+    "frequency": "0",
+    "gauge": "1435",
+    "oneway": "yes",
+    "operator": "Tramwaje Warszawskie",
+    "railway": "tram",
+    "voltage": "600"
+  }
+},
+{
+  "type": "way",
+  "id": 1131620985,
+  "bounds": {
+    "minlat": 52.2716662,
+    "minlon": 20.9439254,
+    "maxlat": 52.2720127,
+    "maxlon": 20.9451758
+  },
+  "geometry": [
+    { "lat": 52.2716662, "lon": 20.9451758 },
+    { "lat": 52.2717269, "lon": 20.9449493 },
+    { "lat": 52.2717718, "lon": 20.9447901 },
+    { "lat": 52.2717854, "lon": 20.9447406 },
+    { "lat": 52.2718080, "lon": 20.9446581 },
+    { "lat": 52.2718860, "lon": 20.9443738 },
+    { "lat": 52.2720127, "lon": 20.9439254 }
+  ],
+  "tags": {
+    "electrified": "contact_line",
+    "frequency": "0",
+    "gauge": "1435",
+    "oneway": "yes",
+    "operator": "Tramwaje Warszawskie",
+    "railway": "tram",
+    "voltage": "600"
+  }
+},
+{
+  "type": "way",
+  "id": 1148211513,
+  "bounds": {
+    "minlat": 52.2872661,
+    "minlon": 20.9040305,
+    "maxlat": 52.2873837,
+    "maxlon": 20.9049792
+  },
+  "geometry": [
+    { "lat": 52.2873837, "lon": 20.9040305 },
+    { "lat": 52.2873725, "lon": 20.9041448 },
+    { "lat": 52.2873605, "lon": 20.9042455 },
+    { "lat": 52.2873408, "lon": 20.9043794 },
+    { "lat": 52.2873070, "lon": 20.9046200 },
+    { "lat": 52.2872923, "lon": 20.9047296 },
+    { "lat": 52.2872792, "lon": 20.9048355 },
+    { "lat": 52.2872661, "lon": 20.9049792 }
+  ],
+  "tags": {
+    "electrified": "no",
+    "gauge": "1435",
+    "operator": "ArcelorMittal Warszawa",
+    "railway": "rail",
+    "service": "spur",
+    "usage": "industrial"
   }
 },
 {
@@ -9867,6 +13699,103 @@
 },
 {
   "type": "way",
+  "id": 1225259188,
+  "bounds": {
+    "minlat": 52.2873793,
+    "minlon": 20.8905716,
+    "maxlat": 52.2883022,
+    "maxlon": 20.9034236
+  },
+  "geometry": [
+    { "lat": 52.2873793, "lon": 20.9034236 },
+    { "lat": 52.2874313, "lon": 20.9027014 },
+    { "lat": 52.2874492, "lon": 20.9024523 },
+    { "lat": 52.2880018, "lon": 20.8947704 },
+    { "lat": 52.2881018, "lon": 20.8933797 },
+    { "lat": 52.2881346, "lon": 20.8929134 },
+    { "lat": 52.2883022, "lon": 20.8905716 }
+  ],
+  "tags": {
+    "electrified": "no",
+    "gauge": "1435",
+    "historic:ref": "938",
+    "maxspeed": "20",
+    "operator": "ArcelorMittal Warszawa",
+    "railway": "rail",
+    "railway:track_ref": "1",
+    "ref": "938",
+    "service": "spur",
+    "source": "landsat",
+    "usage": "industrial"
+  }
+},
+{
+  "type": "way",
+  "id": 1225259189,
+  "bounds": {
+    "minlat": 52.2869223,
+    "minlon": 20.9077832,
+    "maxlat": 52.2870671,
+    "maxlon": 20.9097191
+  },
+  "geometry": [
+    { "lat": 52.2869223, "lon": 20.9097191 },
+    { "lat": 52.2870671, "lon": 20.9077832 }
+  ],
+  "tags": {
+    "electrified": "no",
+    "gauge": "1435",
+    "operator": "ArcelorMittal Warszawa",
+    "railway": "rail",
+    "service": "spur",
+    "source": "landsat"
+  }
+},
+{
+  "type": "way",
+  "id": 1225259190,
+  "bounds": {
+    "minlat": 52.2871199,
+    "minlon": 20.9029406,
+    "maxlat": 52.2903987,
+    "maxlon": 20.9133722
+  },
+  "geometry": [
+    { "lat": 52.2874629, "lon": 20.9029406 },
+    { "lat": 52.2874048, "lon": 20.9037285 },
+    { "lat": 52.2873894, "lon": 20.9039508 },
+    { "lat": 52.2873837, "lon": 20.9040305 },
+    { "lat": 52.2872414, "lon": 20.9060099 },
+    { "lat": 52.2872233, "lon": 20.9062511 },
+    { "lat": 52.2871393, "lon": 20.9074365 },
+    { "lat": 52.2871276, "lon": 20.9076216 },
+    { "lat": 52.2871219, "lon": 20.9078195 },
+    { "lat": 52.2871199, "lon": 20.9080261 },
+    { "lat": 52.2871317, "lon": 20.9082415 },
+    { "lat": 52.2871506, "lon": 20.9084336 },
+    { "lat": 52.2871825, "lon": 20.9086803 },
+    { "lat": 52.2872629, "lon": 20.9090464 },
+    { "lat": 52.2873474, "lon": 20.9093333 },
+    { "lat": 52.2874598, "lon": 20.9096001 },
+    { "lat": 52.2875566, "lon": 20.9098040 },
+    { "lat": 52.2875931, "lon": 20.9098665 },
+    { "lat": 52.2876574, "lon": 20.9099768 },
+    { "lat": 52.2877644, "lon": 20.9101236 },
+    { "lat": 52.2898958, "lon": 20.9127521 },
+    { "lat": 52.2903987, "lon": 20.9133722 }
+  ],
+  "tags": {
+    "electrified": "no",
+    "gauge": "1435",
+    "operator": "ArcelorMittal Warszawa",
+    "railway": "rail",
+    "railway:track_ref": "100",
+    "service": "spur",
+    "usage": "industrial"
+  }
+},
+{
+  "type": "way",
   "id": 1271821565,
   "bounds": {
     "minlat": 52.2851962,
@@ -9984,6 +13913,29 @@
     { "lat": 52.2743435, "lon": 20.9396489 },
     { "lat": 52.2745993, "lon": 20.9393128 },
     { "lat": 52.2750416, "lon": 20.9387241 }
+  ],
+  "tags": {
+    "electrified": "contact_line",
+    "frequency": "0",
+    "gauge": "1435",
+    "oneway": "yes",
+    "operator": "Tramwaje Warszawskie",
+    "railway": "tram",
+    "voltage": "600"
+  }
+},
+{
+  "type": "way",
+  "id": 1272867809,
+  "bounds": {
+    "minlat": 52.2724111,
+    "minlon": 20.9425462,
+    "maxlat": 52.2724480,
+    "maxlon": 20.9426322
+  },
+  "geometry": [
+    { "lat": 52.2724480, "lon": 20.9425462 },
+    { "lat": 52.2724111, "lon": 20.9426322 }
   ],
   "tags": {
     "electrified": "contact_line",
@@ -10407,6 +14359,170 @@
     "operator": "Tramwaje Warszawskie",
     "railway": "tram",
     "voltage": "600"
+  }
+},
+{
+  "type": "way",
+  "id": 1339779472,
+  "bounds": {
+    "minlat": 52.2714106,
+    "minlon": 20.9454055,
+    "maxlat": 52.2716023,
+    "maxlon": 20.9461131
+  },
+  "geometry": [
+    { "lat": 52.2714106, "lon": 20.9461131 },
+    { "lat": 52.2716023, "lon": 20.9454055 }
+  ],
+  "tags": {
+    "electrified": "contact_line",
+    "frequency": "0",
+    "gauge": "1435",
+    "oneway": "yes",
+    "operator": "Tramwaje Warszawskie",
+    "railway": "tram",
+    "voltage": "600"
+  }
+},
+{
+  "type": "way",
+  "id": 1370247792,
+  "bounds": {
+    "minlat": 52.2618481,
+    "minlon": 20.9797906,
+    "maxlat": 52.2620794,
+    "maxlon": 20.9801701
+  },
+  "geometry": [
+    { "lat": 52.2618481, "lon": 20.9801701 },
+    { "lat": 52.2619222, "lon": 20.9800968 },
+    { "lat": 52.2619724, "lon": 20.9800364 },
+    { "lat": 52.2620216, "lon": 20.9799531 },
+    { "lat": 52.2620531, "lon": 20.9798787 },
+    { "lat": 52.2620794, "lon": 20.9797906 }
+  ],
+  "tags": {
+    "electrified": "contact_line",
+    "frequency": "0",
+    "gauge": "1435",
+    "oneway": "yes",
+    "operator": "Tramwaje Warszawskie",
+    "railway": "tram",
+    "voltage": "600"
+  }
+},
+{
+  "type": "way",
+  "id": 1370247794,
+  "bounds": {
+    "minlat": 52.2618333,
+    "minlon": 20.9798216,
+    "maxlat": 52.2620341,
+    "maxlon": 20.9801292
+  },
+  "geometry": [
+    { "lat": 52.2620341, "lon": 20.9798216 },
+    { "lat": 52.2619901, "lon": 20.9799368 },
+    { "lat": 52.2619520, "lon": 20.9800028 },
+    { "lat": 52.2619105, "lon": 20.9800529 },
+    { "lat": 52.2618333, "lon": 20.9801292 }
+  ],
+  "tags": {
+    "electrified": "contact_line",
+    "frequency": "0",
+    "gauge": "1435",
+    "oneway": "yes",
+    "operator": "Tramwaje Warszawskie",
+    "railway": "tram",
+    "voltage": "600"
+  }
+},
+{
+  "type": "way",
+  "id": 1424893620,
+  "bounds": {
+    "minlat": 52.2712329,
+    "minlon": 20.9707035,
+    "maxlat": 52.2717955,
+    "maxlon": 20.9733244
+  },
+  "geometry": [
+    { "lat": 52.2717955, "lon": 20.9707035 },
+    { "lat": 52.2717271, "lon": 20.9710038 },
+    { "lat": 52.2717092, "lon": 20.9710826 },
+    { "lat": 52.2715725, "lon": 20.9716826 },
+    { "lat": 52.2713900, "lon": 20.9724837 },
+    { "lat": 52.2713518, "lon": 20.9726593 },
+    { "lat": 52.2713352, "lon": 20.9727414 },
+    { "lat": 52.2713160, "lon": 20.9728363 },
+    { "lat": 52.2712880, "lon": 20.9729821 },
+    { "lat": 52.2712611, "lon": 20.9731340 },
+    { "lat": 52.2712329, "lon": 20.9733244 }
+  ],
+  "tags": {
+    "electrified": "rail",
+    "electrified:rail": "side",
+    "frequency": "0",
+    "gauge": "1435",
+    "layer": "-3",
+    "level": "-3",
+    "maxspeed": "80",
+    "operator": "Metro Warszawskie",
+    "railway": "subway",
+    "railway:bidirectional": "regular",
+    "railway:preferred_direction": "forward",
+    "railway:sop": "2W",
+    "railway:track_ref": "2",
+    "ref": "M1",
+    "start_date": "2006-12-29",
+    "tunnel": "yes",
+    "voltage": "750",
+    "wikidata": "Q17462780",
+    "wikipedia": "pl:Linia M1 metra w Warszawie"
+  }
+},
+{
+  "type": "way",
+  "id": 1424893621,
+  "bounds": {
+    "minlat": 52.2713447,
+    "minlon": 20.9707697,
+    "maxlat": 52.2719047,
+    "maxlon": 20.9733702
+  },
+  "geometry": [
+    { "lat": 52.2713447, "lon": 20.9733702 },
+    { "lat": 52.2713728, "lon": 20.9731812 },
+    { "lat": 52.2713985, "lon": 20.9730364 },
+    { "lat": 52.2714263, "lon": 20.9728916 },
+    { "lat": 52.2714448, "lon": 20.9728003 },
+    { "lat": 52.2714609, "lon": 20.9727208 },
+    { "lat": 52.2714977, "lon": 20.9725513 },
+    { "lat": 52.2716879, "lon": 20.9717186 },
+    { "lat": 52.2718181, "lon": 20.9711486 },
+    { "lat": 52.2718361, "lon": 20.9710699 },
+    { "lat": 52.2719047, "lon": 20.9707697 }
+  ],
+  "tags": {
+    "electrified": "rail",
+    "electrified:rail": "side",
+    "frequency": "0",
+    "gauge": "1435",
+    "layer": "-3",
+    "level": "-3",
+    "maxspeed": "80",
+    "operator": "Metro Warszawskie",
+    "railway": "subway",
+    "railway:bidirectional": "regular",
+    "railway:preferred_direction": "forward",
+    "railway:sop": "2W",
+    "railway:track_ref": "1",
+    "ref": "M1",
+    "start_date": "2006-12-29",
+    "tunnel": "yes",
+    "voltage": "750",
+    "wikidata": "Q17462780",
+    "wikipedia": "pl:Linia M1 metra w Warszawie"
   }
 },
 {
