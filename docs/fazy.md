@@ -99,6 +99,8 @@ napisy słowne na pojazdach służb bez insygniów, najpierw teren). Gałąź fa
 - [x] 3.5 Strażnik Miejski (2026-10-25, sesja równoległa, scalone): js/guard.js, js/guard-car.js; zgłoszenia trawnik,
   śmieci, hałas, wybór pouczenie / mandat / laweta. Sprawdzam: 3 zgłoszenia, wybór zmienia ocenę.
 - [x] Tabliczki ulic w stylu warszawskim (MSI, z backlogu; sesja równoległa, scalone 2026-10-25).
+- [x] Zwierzęta w lasach: dziki (locha z warchlakami, odyńce), sarny, wiewiórki; js/wildlife.js (prośba użytkownika,
+  sesja równoległa, zaakceptowane w Edge, scalone 2026-10-25).
 - [x] 3.6 Strażak (2026-10-25, sesja równoległa, scalone): js/firefighter.js, js/fire-engine.js; pożar, zalana piwnica,
   kot na drzewie (G na miejscu). Sprawdzam: każde zdarzenie do ukończenia.
 - [x] 3.7 Policjant (2026-10-25, sesja równoległa, scalone): js/police.js, js/patrol-car.js, polecenia dla auta AI w

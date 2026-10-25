@@ -51,3 +51,5 @@ Pomysł z 2026-10-25, do decyzji i osobnego planu.
   krawędzi mapy); most stoi wyżej niż w rzeczywistości (ok. 23 m nad wodą: zachodni przyczółek na krawędzi skarpy).
 - Wiadukty na płaskowyżu: płaskowyż jest spłaszczony do 0, więc nasypy pod najazdami zniknęły; pomosty nad innymi
   drogami wznoszą się do 12% od ulicy i ich profil faluje (np. nad Marymoncką przy Trasie Mostu Północnego).
+- Wydajność (przed bramką Fazy 3): w Chrome na M4 pieszo przy Kamedułach 52-56 fps (wcześniej 60), także bez zwierząt;
+  na Starych Bielanach 60. Sprawdzić, co kosztuje (wiadukty S8, większa mapa, las), razem z testem na Windows.
