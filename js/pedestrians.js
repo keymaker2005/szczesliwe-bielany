@@ -1495,4 +1495,151 @@ class PersonRig {
   }
 }
 
-export { BONE as PERSON_BONES, buildPersonGeometry, createPersonMaterial, PersonCrowd, PersonRig };
+// ============================================================================
+// 6. RAGDOLL: A STRUCK PEDESTRIAN FALLS LIMP (only with PEDESTRIAN_CONTACT, js/city-config.js)
+// ============================================================================
+// Verlet particles at the joints of the rig's last pose (pelvis, chest, neck, crown, shoulders, elbows, wrists, hips,
+// knees, ankles, toes), kept at their lengths by distance constraints (with a few cross braces so the torso stays a
+// torso), pushed by the impact, pulled down by gravity, stopped by the ground with friction. Every frame the bones are
+// rebuilt from the particles (the same writeBone/basis as the walking rig), so the skinned body itself falls.
+const RAG = {
+  gravity: 9.8,
+  damping: 0.985,
+  friction: 0.6, // share of the sideways speed lost on touching the ground
+  iterations: 8,
+  floor: 0.035, // m above the ground for a joint's centre
+};
+const RAG_JOINTS = ['pelvis', 'chest', 'neck', 'crown', 'shL', 'elL', 'wrL', 'shR', 'elR', 'wrR', 'hipL', 'knL', 'anL', 'toL', 'hipR', 'knR', 'anR', 'toR'];
+const RJ = Object.fromEntries(RAG_JOINTS.map((n, i) => [n, i]));
+const RAG_LINKS = [
+  ['pelvis', 'chest'], ['chest', 'neck'], ['neck', 'crown'], ['chest', 'shL'], ['chest', 'shR'], ['shL', 'shR'],
+  ['shL', 'elL'], ['elL', 'wrL'], ['shR', 'elR'], ['elR', 'wrR'], ['pelvis', 'hipL'], ['pelvis', 'hipR'], ['hipL', 'hipR'],
+  ['hipL', 'knL'], ['knL', 'anL'], ['anL', 'toL'], ['hipR', 'knR'], ['knR', 'anR'], ['anR', 'toR'],
+  // braces: the torso box, the head on the shoulders, the feet
+  ['chest', 'hipL'], ['chest', 'hipR'], ['shL', 'pelvis'], ['shR', 'pelvis'], ['shL', 'hipL'], ['shR', 'hipR'],
+  ['neck', 'shL'], ['neck', 'shR'], ['crown', 'chest'], ['knL', 'toL'], ['knR', 'toR'],
+];
+
+class PersonRagdoll {
+  /**
+   * rig: the PersonRig struck (its pose is taken over); impulse: { x, y, z } m/s given to the body (more to the
+   * pelvis & chest, the hit's height); ground(x, z): the surface height
+   */
+  constructor(rig, impulse, ground) {
+    this.rig = rig;
+    this.ground = ground;
+    this.time = 0;
+    const s = rig.s, a = rig.pose, j = rig.bind;
+    const world = (b, local, out) => {
+      const o = b * 8;
+      _q.set(a[o], a[o + 1], a[o + 2], a[o + 3]);
+      return out.copy(local).multiplyScalar(a[o + 7] || s).applyQuaternion(_q).add(_v.set(a[o + 4], a[o + 5], a[o + 6]));
+    };
+    const at = (b, local) => world(b, local, new THREE.Vector3());
+    const wristOf = (k) => {
+      const side = SIDES[k];
+      return _v2.copy(j[LIMB.forearm[k]]).add(new THREE.Vector3(side * Math.sin(ARM_BIND_ABDUCTION) * FOREARM, -Math.cos(ARM_BIND_ABDUCTION) * FOREARM, 0));
+    };
+    const pts = [
+      at(BONE.PELVIS, j[BONE.PELVIS]), at(BONE.CHEST, j[BONE.CHEST]), at(BONE.HEAD, j[BONE.HEAD]),
+      at(BONE.HEAD, _v2.copy(j[BONE.HEAD]).add(new THREE.Vector3(0, 0.24, 0))),
+      at(LIMB.upperArm[0], j[LIMB.upperArm[0]]), at(LIMB.forearm[0], j[LIMB.forearm[0]]), at(LIMB.forearm[0], wristOf(0)),
+      at(LIMB.upperArm[1], j[LIMB.upperArm[1]]), at(LIMB.forearm[1], j[LIMB.forearm[1]]), at(LIMB.forearm[1], wristOf(1)),
+      at(LIMB.thigh[0], j[LIMB.thigh[0]]), at(LIMB.shin[0], j[LIMB.shin[0]]), at(LIMB.foot[0], j[LIMB.foot[0]]), at(LIMB.toe[0], j[LIMB.toe[0]]),
+      at(LIMB.thigh[1], j[LIMB.thigh[1]]), at(LIMB.shin[1], j[LIMB.shin[1]]), at(LIMB.foot[1], j[LIMB.foot[1]]), at(LIMB.toe[1], j[LIMB.toe[1]]),
+    ];
+    this.p = pts;
+    // previous positions set back by the impulse: the body flies off with it (the upper body a bit faster: it tips)
+    const dt0 = 1 / 60;
+    this.prev = pts.map((v, i) => {
+      const k = i <= RJ.wrR ? 1.15 : i >= RJ.hipL && i <= RJ.hipR ? 1 : 0.8;
+      return v.clone().addScaledVector(_v.set(impulse.x, impulse.y, impulse.z), -k * dt0);
+    });
+    this.links = RAG_LINKS.map(([a2, b2]) => [RJ[a2], RJ[b2], pts[RJ[a2]].distanceTo(pts[RJ[b2]])]);
+    this.dt0 = dt0;
+    this.rest = 0; // s nearly still
+  }
+
+  get x() { return this.p[RJ.pelvis].x; }
+  get z() { return this.p[RJ.pelvis].z; }
+
+  step(dt) {
+    dt = Math.min(dt, 1 / 30);
+    this.time += dt;
+    const p = this.p, prev = this.prev;
+    let motion = 0;
+    for (let i = 0; i < p.length; i++) {
+      const c = p[i], o = prev[i];
+      const vx = (c.x - o.x) * RAG.damping, vy = (c.y - o.y) * RAG.damping, vz = (c.z - o.z) * RAG.damping;
+      o.copy(c);
+      c.x += vx * (dt / this.dt0);
+      c.y += vy * (dt / this.dt0) - RAG.gravity * dt * dt;
+      c.z += vz * (dt / this.dt0);
+      motion += Math.abs(vx) + Math.abs(vy) + Math.abs(vz);
+    }
+    this.dt0 = dt;
+    for (let it = 0; it < RAG.iterations; it++) {
+      for (const [a, b, len] of this.links) {
+        const pa = p[a], pb = p[b];
+        _v.subVectors(pb, pa);
+        const d = _v.length() || 1e-6;
+        _v.multiplyScalar(((d - len) / d) * 0.5);
+        pa.add(_v);
+        pb.sub(_v);
+      }
+      for (let i = 0; i < p.length; i++) {
+        const c = p[i];
+        const g = this.ground(c.x, c.z) + RAG.floor;
+        if (c.y < g) {
+          c.y = g;
+          // friction: the previous position follows sideways
+          const o = prev[i];
+          o.x += (c.x - o.x) * RAG.friction;
+          o.z += (c.z - o.z) * RAG.friction;
+          if (o.y < g) o.y = g;
+        }
+      }
+    }
+    this.rest = motion < 0.02 ? this.rest + dt : 0;
+    this.pose();
+  }
+
+  // Bones from the particles
+  pose() {
+    const r = this.rig, p = this.p;
+    const P = (n) => p[RJ[n]];
+    const basisXY = (x, y, out) => {
+      _by.copy(y).normalize();
+      _bx.copy(x).addScaledVector(_by, -x.dot(_by)).normalize();
+      _bz.crossVectors(_bx, _by);
+      _m.makeBasis(_bx, _by, _bz);
+      return out.setFromRotationMatrix(_m);
+    };
+    basisXY(_v.subVectors(P('hipL'), P('hipR')), _v2.subVectors(P('chest'), P('pelvis')), _qPelvis);
+    r.writeBone(BONE.PELVIS, _qPelvis, P('pelvis'));
+    basisXY(_v.subVectors(P('shL'), P('shR')), _v2.subVectors(P('neck'), P('chest')), _qChest);
+    r.writeBone(BONE.CHEST, _qChest, P('chest'));
+    basisXY(_v.subVectors(P('shL'), P('shR')), _v2.subVectors(P('crown'), P('neck')), _qa);
+    r.writeBone(BONE.HEAD, _qa, P('neck'));
+    const chestFront = _fwd.set(0, 0, 1).applyQuaternion(_qChest);
+    const pelvisFront = _front.set(0, 0, 1).applyQuaternion(_qPelvis);
+    const arms = [['shL', 'elL', 'wrL'], ['shR', 'elR', 'wrR']];
+    const legs = [['hipL', 'knL', 'anL', 'toL'], ['hipR', 'knR', 'anR', 'toR']];
+    for (let i = 0; i < 2; i++) {
+      const side = SIDES[i];
+      const [sh, el, wr] = arms[i].map(P);
+      r.basis(_v.subVectors(sh, el), chestFront, _qUpper).multiply(qZ(_q, -side * ARM_BIND_ABDUCTION));
+      r.writeBone(LIMB.upperArm[i], _qUpper, sh);
+      r.basis(_v.subVectors(el, wr), chestFront, _q2).multiply(qZ(_q, -side * ARM_BIND_ABDUCTION));
+      r.writeBone(LIMB.forearm[i], _q2, el);
+      const [hip, kn, an, to] = legs[i].map(P);
+      r.writeBone(LIMB.thigh[i], r.basis(_v.subVectors(hip, kn), pelvisFront, _q), hip);
+      r.writeBone(LIMB.shin[i], r.basis(_v.subVectors(kn, an), pelvisFront, _q), kn);
+      r.basis(_v.subVectors(kn, an), _v2.subVectors(to, an), _qa);
+      r.writeBone(LIMB.foot[i], _qa, an);
+      r.writeBone(LIMB.toe[i], _qa, to);
+    }
+  }
+}
+
+export { BONE as PERSON_BONES, buildPersonGeometry, createPersonMaterial, PersonCrowd, PersonRig, PersonRagdoll };

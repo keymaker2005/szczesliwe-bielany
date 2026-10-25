@@ -1,7 +1,7 @@
 import * as THREE from 'three/webgpu';
 import { buildRoadNetwork } from './road-network.js';
 import { createPedestrianRoutes } from './pedestrian-routes.js';
-import { signalPhase, walkSignal, blockAt, ISLAND_BOUNDS } from './city-config.js';
+import { signalPhase, walkSignal, blockAt, ISLAND_BOUNDS, PEDESTRIAN_CONTACT } from './city-config.js';
 import { cityUniforms, createContactShadowMaterial, createCarFlareMaterial } from './tsl-materials.js';
 import { HEADLIGHTS, createVehicleHeadlight, placeVehicleHeadlight } from './vehicle-lights.js';
 import {
@@ -19,7 +19,7 @@ import {
   createBusWheelMaterial,
   createLoftedBusMaterial
 } from './actor-models.js';
-import { PersonCrowd, PersonRig } from './pedestrians.js';
+import { PersonCrowd, PersonRig, PersonRagdoll } from './pedestrians.js';
 
 // js/traffic.js
 // Manhattan traffic and pedestrians on the road graph road-network.js derives from the city as built:
@@ -31,9 +31,9 @@ import { PersonCrowd, PersonRig } from './pedestrians.js';
 // - Fixed-size local populations replenish distant roads and sidewalks in every direction, protecting the near view.
 // - The player's vehicle or character pushes and is pushed by the traffic (SAT contact, impulses, sparks).
 
-const NUM_CARS = 200;
-const NUM_BUSES = 12;
-const NUM_PEDS = 340;
+const NUM_CARS = 120; // fewer since step 2.6 (the streets felt crowded)
+const NUM_BUSES = 8;
+const NUM_PEDS = 190;
 
 // Intelligent Driver Model: max acceleration, comfortable braking, time headway, standstill gap; and the sideways
 // acceleration drivers accept in bends, which sets how fast they take each turn or lane shift
@@ -1950,6 +1950,55 @@ function createTrafficSystem(scene, sidewalks, obstacles) {
     pedCrowd.add(p.rig, Math.hypot(p.x - focusX, p.z - focusZ));
   }
 
+  // Contact with the player (PEDESTRIAN_CONTACT): a slow touch pushes the player off the pedestrian; a car or bike
+  // hitting one at over KNOCK_SPEED knocks them down (ragdoll) — they get up elsewhere RAGDOLL_TIME later
+  const KNOCK_SPEED = 3.5; // m/s
+  const RAGDOLL_TIME = 7; // s
+  const PED_R = 0.32;
+  function touchPed(p) {
+    const pe = player.entity;
+    const dx = p.x - player.x, dz = p.z - player.z;
+    if (Math.abs(dx) > 4 || Math.abs(dz) > 4) return false;
+    const h = pe.heading || 0, fx = Math.sin(h), fz = Math.cos(h);
+    const ahead = dx * fx + dz * fz, right = dz * fx - dx * fz;
+    const ox = Math.abs(right) - player.halfW - PED_R, oz = Math.abs(ahead) - player.halfL - PED_R;
+    if (ox > 0 || oz > 0) return false; // not touching
+    const speed = Math.hypot(player.vx, player.vz);
+    if (speed > KNOCK_SPEED && player.halfL > 0.5) { // a car or a bike
+      p.ragdoll = new PersonRagdoll(p.rig, { x: player.vx * 1.05, y: 2 + speed * 0.18, z: player.vz * 1.05 }, (x, z) => pedGround(p, x, z));
+      p.ragdollTime = 0;
+      if (p.conversation) endConversation(p.conversation);
+      pe.speed *= 0.8;
+      fallPed(p, 0);
+      return true;
+    }
+    // push the player back out along the axis of the smaller overlap (ox, oz < 0: the overlaps); right is (-fz, fx)
+    if (ox > oz) {
+      const s = Math.sign(right) || 1;
+      pe.position.x += -fz * s * ox;
+      pe.position.z += fx * s * ox;
+    } else {
+      const s = Math.sign(ahead) || 1;
+      pe.position.x += fx * s * oz;
+      pe.position.z += fz * s * oz;
+    }
+    if (player.halfL > 0.5) pe.speed *= 0.5;
+    return false;
+  }
+  function fallPed(p, dt) {
+    p.ragdoll.step(dt);
+    p.ragdollTime += dt;
+    p.x = p.ragdoll.x;
+    p.z = p.ragdoll.z;
+    if (p.ragdollTime > RAGDOLL_TIME) {
+      p.ragdoll = null;
+      p.rig.placed = false;
+      p.placed = false; // respawned out of sight by the spawner
+      return;
+    }
+    if (!hasView || visible(p.x, p.z, 7)) pedCrowd.add(p.rig, Math.hypot(p.x - focusX, p.z - focusZ));
+  }
+
   function updateSparks(dt) {
     let count = 0;
     for (let s = 0; s < MAX_SPARKS; s++) {
@@ -2120,6 +2169,8 @@ function createTrafficSystem(scene, sidewalks, obstacles) {
     for (let i = 0; i < NUM_PEDS; i++) {
       const p = peds[i];
       if (!p.placed) continue;
+      if (p.ragdoll) { fallPed(p, dt); continue; }
+      if (PEDESTRIAN_CONTACT && player.active && touchPed(p)) continue;
       walk(p, dt);
       renderPed(p, dt);
     }

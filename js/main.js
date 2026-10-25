@@ -763,7 +763,7 @@ async function initApp() {
     }
   });
 
-  globalThis.bielany = { missions, testDelivery, abandon: () => missions.abandon(), teleport: (x, z, heading) => teleportTo(x, z, heading), marker: missionMarker, phone, courier, guide, scene, renderer, lightingSystem, trams, taxi, medic, ambulance, controllerManager, photo, postcards, fallingLeaves };
+  globalThis.bielany = { missions, testDelivery, abandon: () => missions.abandon(), teleport: (x, z, heading) => teleportTo(x, z, heading), marker: missionMarker, phone, courier, guide, scene, renderer, lightingSystem, trams, taxi, medic, ambulance, controllerManager, photo, postcards, fallingLeaves, trafficSystem };
 
   // Initialize the UI and chase camera around the restored player, or the default taxi on a first visit.
   selectMode(controllerManager.activeMode);

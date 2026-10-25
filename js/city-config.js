@@ -203,6 +203,10 @@ function isTypingInField(e) {
 // walker to get across the widest road.
 const SIGNAL_TIMING = { cycle: 60, avenueAmber: 26, avenueRed: 30, streetAmber: 56, walk: 7 };
 
+// Pedestrians are solid: the player bumps into them, and a car or bike hitting one fast enough knocks them down
+// (ragdoll, js/pedestrians.js). Off for the district office's version (decision of 2026-10-26): one switch.
+const PEDESTRIAN_CONTACT = true;
+
 // 'green', 'amber' or 'red' for main-road (isAvenue) or crossing-road traffic at a given time
 function signalPhase(time, isAvenue) {
   const { cycle, avenueAmber, avenueRed, streetAmber } = SIGNAL_TIMING;
@@ -219,6 +223,7 @@ function walkSignal(time, isAvenue) {
 }
 
 export {
+  PEDESTRIAN_CONTACT,
   ISLAND_BOUNDS,
   CENTRAL_PARK_BOUNDS,
   NJ_SHORELINE_POLYGON,
