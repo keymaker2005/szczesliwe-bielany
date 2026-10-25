@@ -5,6 +5,7 @@ import { texture, positionWorld, vec2, vec3, float, color, mix, fract, sin, dot,
 import { createRoadSurfaceMaterial, createParkLawnMaterial, createSidewalkMaterial, createCurbMaterial } from './tsl-materials.js';
 import { GEO } from './bielany-geodata.js';
 import { drapeGeometry, groundTiles } from './terrain.js';
+import { withForestFloor, withForestPaths } from './forest.js';
 
 // js/city-grid.js
 // Builds the ground of Bielany: the roadway is everything between the blocks, so the MVP area is one asphalt plate
@@ -135,7 +136,8 @@ function buildCityGrid(scene) {
     g.dispose();
   }
   if (tops.length) {
-    const lawn = new THREE.Mesh(drapeGeometry(merge(tops)), withLeaves(createParkLawnMaterial(false), leaves, 1.0, 0.35));
+    // in the woods the lawn is a forest floor with paths (js/forest.js)
+    const lawn = new THREE.Mesh(drapeGeometry(merge(tops)), withForestPaths(withLeaves(withForestFloor(createParkLawnMaterial(false)), leaves, 1.0, 0.35)));
     lawn.name = 'BlockTops';
     lawn.receiveShadow = true;
     const curb = new THREE.Mesh(drapeGeometry(merge(curbs)), createCurbMaterial());

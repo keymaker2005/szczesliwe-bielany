@@ -6,7 +6,9 @@
 - Faza 2 (większy obszar, wydajność, tramwaje, taksówkarz, ratownik, Aparat, liście) zrobiona i opublikowana; bramka
   (60 fps na laptopie z Windows) czeka na test według docs/test-1.8b.md.
 - Faza 3 (gałąź faza-3, plan docs/plan-fazy-3.md zaakceptowany 2026-10-25): 3.1 dane terenu i 3.2a teren w świecie
-  zrobione (lokalnie, bez deployu); następny 3.2b Las Bielański, potem 3.3 Wisła i most (poszerzenie mapy).
+  i 3.2b Las Bielański zrobione (lokalnie, bez deployu); następny 3.3 Wisła i most (poszerzenie mapy).
+- Uwaga: filtr (blur) na dużym płótnie 2D wysypuje proces GPU przeglądarki razem z WebGPU gry (3.2b); po takiej awarii
+  panel przeglądarki w aplikacji nie ma grafiki do restartu aplikacji. Nie używać ctx.filter w teksturach.
 - Teren: js/terrain.js (groundY, drapeGeometry, groundPose), dane js/bielany-terrain.bin z tools/terrain-bielany.mjs;
   każdy nowy obiekt na ziemi musi brać wysokość z groundY. ?plaski w adresie = płaska mapa do porównań.
 - Gałęzie: faza-0, faza-1, faza-1.5, faza-2, faza-3 (bieżąca). main = oryginał mrdooba (tag nyc-original); scalenie do main

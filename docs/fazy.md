@@ -84,7 +84,9 @@ napisy słowne na pojazdach służb bez insygniów, najpierw teren). Gałąź fa
   budynki, landmarki, drzewa, sygnalizatory, auta, autobusy, tramwaje, piesi, gracz, kamera i helikopter na gruncie.
   Porównanie z płaską mapą: adres z ?plaski. Poprawki po uwagach (2026-10-25): dźwięk pojazdów, pieszych i helikoptera
   liczony od gruntu (audio-sources.js za zgodą), tory i tramwaje na zielonym pasie Marymonckiej z torowiskiem. Sprawdzam: zejście i zjazd ze skarpy, widok z krawędzi, Kameduły na wzgórzu, 60 fps.
-- [ ] 3.2b Las Bielański: leśne dno zamiast trawnika, ścieżki, gęstsze poszycie (granice lasu z OSM). Sprawdzam: las wygląda jak las.
+- [x] 3.2b Las Bielański (2026-10-25): granice lasów i 384 leśne ścieżki z OSM (GEO.woods, GEO.paths), ściółka z mchem
+  i wydeptane ścieżki na trawnikach w lasach (maska w js/forest.js), ok. 64 tys. krzewów rysowanych do 170 m od kamery
+  jedną siatką. Sprawdzone w Edge: 60 fps. Sprawdzam: las wygląda jak las.
 - [ ] 3.3 Wisła, nabrzeże i most Marii Skłodowskiej-Curie (poszerzona mapa). Sprawdzam: dojazd Wisłostradą na most, spacer nabrzeżem.
 - [ ] 3.4 Wspólna dyspozytornia służb w telefonie. Sprawdzam: ratownik bez zmian, nowa zakładka „Służby”.
 - [ ] 3.5 Strażnik Miejski. Sprawdzam: 3 zgłoszenia (trawnik, śmieci, hałas), wybór pouczenie lub mandat zmienia ocenę.

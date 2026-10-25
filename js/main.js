@@ -21,6 +21,7 @@ import { setupSceneCulling, updateSceneCulling } from './scene-culling.js';
 import { CityAudioSystem } from './audio-system.js';
 import { GEO } from './bielany-geodata.js';
 import { loadTerrain, groundY } from './terrain.js';
+import { buildForest } from './forest.js';
 import { MissionEngine, ARRIVE_RADIUS } from './missions.js';
 import { createMissionMarker } from './mission-marker.js';
 import { findRoute, limitAt } from './gps-route.js';
@@ -103,6 +104,7 @@ async function initApp() {
   const allColliders = [...cityBlocks.colliders, ...landmarks.colliders, ...(cityGrid.colliders || [])];
 
   const streetDetails = buildStreetDetails(scene);
+  const forest = buildForest(scene); // the undergrowth of the woods
   // Mission goal pillar: in the scene (far below the ground) from the start, so the warm-up frame compiles it
   const missionMarker = createMissionMarker(ARRIVE_RADIUS);
   missionMarker.group.position.set(0, -500, 0);
@@ -917,6 +919,7 @@ async function initApp() {
       nextPlayerSave = now + 5000;
     }
     if (streetDetails.update) streetDetails.update(cameraSystem.camera);
+    forest.update(cameraSystem.camera);
     lightingSystem.update(cameraSystem.currentPos);
     mapSystem.update();
     {

@@ -413,30 +413,33 @@ function buildBlocks(graph) {
 //    heights above the ground, and the newer buildings LoD1 misses from OpenStreetMap; outer rings counter-clockwise
 //    in x/z, simplified to 0.2 m
 // =====================================================================================================================
+// Member ways of a multipolygon relation with this role joined end to end into rings (world frame)
+function memberRings(rel, role) {
+  const key = (p) => `${p.lon.toFixed(7)},${p.lat.toFixed(7)}`;
+  const pieces = (rel.members || []).filter((m) => m.role === role && m.geometry).map((m) => m.geometry.slice());
+  const rings = [];
+  while (pieces.length) {
+    const ring = pieces.pop();
+    for (let joined = true; joined && key(ring[0]) !== key(ring[ring.length - 1]);) {
+      joined = false;
+      for (let k = 0; k < pieces.length; k++) {
+        const p = pieces[k], end = key(ring[ring.length - 1]);
+        if (key(p[0]) === end) ring.push(...p.slice(1));
+        else if (key(p[p.length - 1]) === end) ring.push(...p.slice(0, -1).reverse());
+        else continue;
+        pieces.splice(k, 1);
+        joined = true;
+        break;
+      }
+    }
+    rings.push(ring.map((g) => toWorld(g.lon, g.lat)));
+  }
+  return rings;
+}
+
 // District outlines (OSM MSI areas): their outer member ways joined end to end into rings
 function districtRings() {
-  const key = (p) => `${p.lon.toFixed(7)},${p.lat.toFixed(7)}`;
-  return osm('districts').map((rel) => {
-    const pieces = (rel.members || []).filter((m) => m.role === 'outer' && m.geometry).map((m) => m.geometry.slice());
-    const rings = [];
-    while (pieces.length) {
-      const ring = pieces.pop();
-      for (let joined = true; joined && key(ring[0]) !== key(ring[ring.length - 1]);) {
-        joined = false;
-        for (let k = 0; k < pieces.length; k++) {
-          const p = pieces[k], end = key(ring[ring.length - 1]);
-          if (key(p[0]) === end) ring.push(...p.slice(1));
-          else if (key(p[p.length - 1]) === end) ring.push(...p.slice(0, -1).reverse());
-          else continue;
-          pieces.splice(k, 1);
-          joined = true;
-          break;
-        }
-      }
-      rings.push(ring.map((g) => toWorld(g.lon, g.lat)));
-    }
-    return { name: rel.tags.name, rings };
-  });
+  return osm('districts').map((rel) => ({ name: rel.tags.name, rings: memberRings(rel, 'outer') }));
 }
 
 function buildBuildings() {
@@ -851,12 +854,68 @@ function buildTrams() {
 }
 
 // =====================================================================================================================
+// 9b. WOODS: forests & woods (OSM natural=wood, landuse=forest) reaching into the area, outer rings with their holes,
+//     simplified to 1 m; and the forest paths: paths, tracks, footways, bridleways & steps that run inside them (the
+//     footways elsewhere are sidewalks, drawn from the curbs)
+// =====================================================================================================================
+function buildWoods() {
+  const data = osm('woods');
+  const isWood = (t) => t && (t.natural === 'wood' || t.landuse === 'forest');
+  const polys = [];
+  for (const e of data) {
+    if (!isWood(e.tags)) continue;
+    let outers, holes;
+    if (e.type === 'way' && e.geometry?.length > 3) {
+      outers = [e.geometry.map((g) => toWorld(g.lon, g.lat))];
+      holes = [];
+    } else if (e.type === 'relation') {
+      outers = memberRings(e, 'outer');
+      holes = memberRings(e, 'inner');
+    } else continue;
+    const open = (r) => (r.length > 1 && r[0][0] === r[r.length - 1][0] && r[0][1] === r[r.length - 1][1] ? r.slice(0, -1) : r);
+    outers = outers.map(open);
+    holes = holes.map(open);
+    for (const ring of outers) {
+      if (ring.length < 3) continue;
+      let x0 = Infinity, z0 = Infinity, x1 = -Infinity, z1 = -Infinity;
+      for (const [x, z] of ring) { x0 = Math.min(x0, x); z0 = Math.min(z0, z); x1 = Math.max(x1, x); z1 = Math.max(z1, z); }
+      if (x1 < X0 || x0 > X1 || z1 < Z0 || z0 > Z1) continue;
+      const own = holes.filter((h) => h.every(([x, z]) => x >= x0 && x <= x1 && z >= z0 && z <= z1));
+      polys.push({ outer: rdpRing(ring, 1), holes: own.map((h) => rdpRing(h, 1)).filter((h) => h.length >= 3), box: [x0, z0, x1, z1] });
+    }
+  }
+  const inPoly = (r, x, z) => {
+    let c = false;
+    for (let k = 0, m = r.length - 1; k < r.length; m = k++) {
+      const [xi, zi] = r[k], [xj, zj] = r[m];
+      if ((zi > z) !== (zj > z) && x < ((xj - xi) * (z - zi)) / (zj - zi) + xi) c = !c;
+    }
+    return c;
+  };
+  const inWood = (x, z) => polys.some(({ outer, holes, box }) => x >= box[0] && x <= box[2] && z >= box[1] && z <= box[3]
+    && inPoly(outer, x, z) && !holes.some((h) => inPoly(h, x, z)));
+  const WIDTH = { track: 3, path: 1.6, footway: 2, bridleway: 2, steps: 1.6 };
+  const paths = [];
+  for (const e of data) {
+    const w = WIDTH[e.tags?.highway];
+    if (!w || !e.geometry || e.tags.footway === 'sidewalk' || e.tags.footway === 'crossing') continue;
+    const pts = e.geometry.map((g) => toWorld(g.lon, g.lat));
+    const inside = pts.filter(([x, z]) => inWood(x, z)).length;
+    if (inside < pts.length / 2) continue;
+    for (const piece of clipLine(pts.map((p, k) => ({ p, key: `${e.id}:${k}` })))) paths.push([w, flat(rdp(piece.map((o) => o.p), 0.5))]);
+  }
+  log(`woods: ${polys.length} rings, ${paths.length} forest paths`);
+  return { woods: polys.map(({ outer, holes }) => [flat(outer), holes.map(flat)]), paths };
+}
+
+// =====================================================================================================================
 // 10. OUTPUT
 // =====================================================================================================================
 const roadGraph = buildRoadGraph();
 const { blocks, sidewalks, isWalk } = buildBlocks(roadGraph);
 const addresses = buildAddresses(roadGraph, isWalk, sidewalks);
 const trams = buildTrams();
+const { woods, paths } = buildWoods();
 
 const GEO = {
   version: 1,
@@ -891,6 +950,10 @@ const GEO = {
   trams,
   // Addresses (OpenStreetMap): streets [name, ...] and list [street index, number, building x, z, sidewalk spot x, z]
   addresses,
+  // Woods (OpenStreetMap natural=wood, landuse=forest) reaching into the area: [outer ring, holes]; forest paths
+  // [width m, flat points]
+  woods,
+  paths,
 };
 
 const json = JSON.stringify(GEO);
