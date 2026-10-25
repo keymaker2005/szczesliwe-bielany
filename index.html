@@ -24,6 +24,7 @@
   <link rel="modulepreload" href="./js/gps-route.js" />
   <link rel="modulepreload" href="./js/missions.js" />
   <link rel="modulepreload" href="./js/mission-marker.js" />
+  <link rel="modulepreload" href="./js/phone.js" />
   <link rel="modulepreload" href="./js/tsl-materials.js" />
   <link rel="modulepreload" href="./js/actor-models.js" />
   <link rel="modulepreload" href="./js/vehicle-lights.js" />
@@ -86,6 +87,7 @@
       <symbol id="i-locate" viewBox="0 0 24 24"><circle cx="12" cy="12" r="6.4"/><circle cx="12" cy="12" r="1.7" fill="currentColor"/><path d="M12 2.5v3.1M12 18.4v3.1M2.5 12h3.1M18.4 12h3.1"/></symbol>
       <symbol id="i-fit" viewBox="0 0 24 24"><path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5"/></symbol>
       <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.8" cy="10.8" r="6.3"/><path d="m20 20-4.6-4.6"/></symbol>
+      <symbol id="i-phone" viewBox="0 0 24 24"><rect x="6.5" y="2.8" width="11" height="18.4" rx="2.4"/><path d="M10.5 5.6h3M11 18h2"/></symbol>
       <symbol id="i-close" viewBox="0 0 24 24"><path d="m6.5 6.5 11 11M17.5 6.5l-11 11"/></symbol>
     </defs>
   </svg>
@@ -127,6 +129,9 @@
     <div id="mission-result" class="panel mission-result hidden" role="status" aria-live="polite"></div>
   </div>
 
+  <!-- The player's phone (js/phone.js) -->
+  <div id="phone" class="phone hidden" aria-label="Telefon"></div>
+
   <!-- Top-Right Toolbar: Time of Day, Teleport, Map & Clean View -->
   <div class="hud hud-top-right">
     <div id="hud-toolbar" class="panel toolbar">
@@ -153,6 +158,9 @@
       </button>
       <button id="btn-open-map" class="tool-btn" type="button" title="Atlas ulic Bielan [M]">
         <svg class="icon" aria-hidden="true"><use href="#i-map"/></svg><span class="tool-label">Mapa</span><kbd>M</kbd>
+      </button>
+      <button id="btn-phone" class="tool-btn phone-open-btn" type="button" title="Telefon: zlecenia, SMS [P]" aria-pressed="false">
+        <svg class="icon" aria-hidden="true"><use href="#i-phone"/></svg><span class="tool-label">Telefon</span><kbd>P</kbd>
       </button>
       <span class="toolbar-divider" aria-hidden="true"></span>
       <button id="btn-sound" class="tool-btn icon-only" type="button" title="Wycisz dźwięk [N]" aria-label="Wycisz dźwięk" aria-pressed="true">

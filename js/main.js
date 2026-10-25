@@ -21,6 +21,7 @@ import { GEO } from './bielany-geodata.js';
 import { MissionEngine, ARRIVE_RADIUS } from './missions.js';
 import { createMissionMarker } from './mission-marker.js';
 import { findRoute } from './gps-route.js';
+import { Phone } from './phone.js';
 
 // js/main.js
 // Main entry point for Szczęśliwe Bielany (Warsaw, along the M1 metro line) in Three.js WebGPURenderer & TSL (three.js dev @ fae8734, pinned in index.html)
@@ -627,7 +628,21 @@ async function initApp() {
     }
     return null;
   }
-  globalThis.bielany = { missions, testDelivery, abandon: () => missions.abandon(), teleport: (x, z, heading) => teleportTo(x, z, heading), marker: missionMarker };
+  // 5d. The phone (js/phone.js): errands, the map, text messages. Until the courier (1.5.5), one test parcel on offer.
+  const phone = new Phone({
+    root: document.getElementById('phone'),
+    button: document.getElementById('btn-phone'),
+    missions,
+    jobs: () => [{
+      id: 'test', title: 'Paczka (test)', from: 'Tu, gdzie stoisz', to: 'losowy adres w okolicy', distance: 600, par: 120,
+      reward: 30, vehicles: 'pieszo, rowerem, autem', accept: () => testDelivery(),
+    }],
+    onOpenMap: () => mapSystem.toggleFullMap(true),
+    status: () => (missions.active ? `W drodze: ${missions.goal().name}` : 'Złota jesień na Bielanach'),
+  });
+  phone.addSms({ id: 'hello', from: 'Szczęśliwe Bielany', text: 'Witaj na Bielanach! Zlecenia znajdziesz w telefonie (P). Jedź do żółtego słupka i zatrzymaj się w kręgu.' });
+
+  globalThis.bielany = { missions, testDelivery, abandon: () => missions.abandon(), teleport: (x, z, heading) => teleportTo(x, z, heading), marker: missionMarker, phone };
 
   // Initialize the UI and chase camera around the restored player, or the default taxi on a first visit.
   selectMode(controllerManager.activeMode);
