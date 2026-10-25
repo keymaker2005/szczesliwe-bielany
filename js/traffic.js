@@ -604,6 +604,15 @@ function createTrafficSystem(scene, sidewalks, obstacles) {
     return Math.max(0, ahead - v.half - along);
   }
 
+  // The player on lights and siren (js/ambulance.js): vehicles with it close behind them, going their way, pull up to
+  // let it by. { active, heading }
+  const yieldTo = { active: false, heading: 0 };
+  function yieldsToSiren(v) {
+    if (!yieldTo.active || !player.active || v.pAhead > -3 || v.pAhead < -45) return false;
+    if (Math.abs(v.pRight) > 6) return false;
+    return Math.cos(yieldTo.heading - v.yaw) > 0.5;
+  }
+
   // Gap to the player if it is ahead in the lane whose centre is `off` metres to the right of v
   function playerGap(v, off) {
     if (v.pAhead < 0 || v.pAhead > LOOKAHEAD) return Infinity;
@@ -1032,6 +1041,7 @@ function createTrafficSystem(scene, sidewalks, obstacles) {
         v.leaderSpeed = v.pSpeed;
       }
     }
+    if (yieldsToSiren(v)) worst = Math.min(worst, stopAt(v, Math.max(0.5, v.speed * 0.8)));
     for (let k = 0; k < blockers.length; k++) {
       const o = blockers[k];
       const bg = blockerGap(v, o);
@@ -2128,7 +2138,8 @@ function createTrafficSystem(scene, sidewalks, obstacles) {
     buses,
     peds,
     network,
-    blockers
+    blockers,
+    yieldTo
   };
 }
 

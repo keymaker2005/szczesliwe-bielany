@@ -28,6 +28,8 @@ import { Courier, COMPANY } from './courier.js';
 import { Guide } from './guide.js';
 import { Taxi, BRAND as TAXI_BRAND } from './taxi.js';
 import { createPassenger } from './passenger.js';
+import { Medic, DISPATCH } from './medic.js';
+import { createAmbulance } from './ambulance.js';
 import { nearestOnStreet } from './gps-route.js';
 
 // js/main.js
@@ -556,6 +558,11 @@ async function initApp() {
       case 'KeyH':
         if (hudToggleBtn) hudToggleBtn.click();
         break;
+      case 'KeyK': { // the ambulance's siren (set up further down, after the missions)
+        const amb = globalThis.bielany?.ambulance;
+        if (!e.repeat && amb?.active) amb.setSiren(!amb.siren, audioSystem.enabled);
+        break;
+      }
       case 'KeyN':
         if (!e.repeat && !e.metaKey && !e.ctrlKey && !e.altKey) audioSystem.setEnabled(!audioSystem.enabled);
         break;
@@ -614,7 +621,8 @@ async function initApp() {
     const route = mapSystem.route;
     const dist = route ? route.length : Math.hypot(goal.x - controllerManager.getActiveEntity().position.x, goal.z - controllerManager.getActiveEntity().position.z);
     elMissionTitle.textContent = m.title;
-    elMissionClock.textContent = m.state === 'enRoute' ? `${clock(m.time)} / ${clock(m.par)}` : 'odbiór';
+    elMissionClock.textContent = m.state === 'enRoute' ? `${clock(m.time)} / ${clock(m.par)}`
+      : m.role === 'medic' ? `dojazd ${clock(medic.response)} / ${clock(m.responsePar || 0)}` : 'odbiór';
     elMissionClock.classList.toggle('is-late', m.time > m.limit);
     elMissionGoal.textContent = `${m.state === 'accepted' ? 'Odbierz' : 'Dostarcz'}: ${goal.name} · ${dist < 1000 ? `${Math.round(dist / 10) * 10} m` : `${(dist / 1000).toFixed(1)} km`}`;
     const comfort = m.role === 'taxi' && m.state === 'enRoute' && taxi.ride ? ` · komfort ${Math.max(0, Math.round(taxi.ride.comfort))}/100` : '';
@@ -661,11 +669,15 @@ async function initApp() {
   const passenger = createPassenger();
   scene.add(passenger.group);
   let taxiNote = null, taxiNoteUntil = 0;
+  // 5d''. The paramedic (js/medic.js): calls from the dispatcher, the ambulance (js/ambulance.js) on the player's car
+  const medic = new Medic(missions);
+  medic.near = () => controllerManager.getActiveEntity().position;
+  const ambulance = createAmbulance();
   const phone = new Phone({
     root: document.getElementById('phone'),
     button: document.getElementById('btn-phone'),
     missions,
-    jobs: () => [...taxi.jobs(), ...courier.jobs()],
+    jobs: () => [...medic.jobs(), ...taxi.jobs(), ...courier.jobs()],
     onOpenMap: () => mapSystem.toggleFullMap(true),
     status: () => (missions.active ? `W drodze: ${missions.goal().name}` : controllerManager.activeMode === 'car' ? taxi.statusLine() : courier.statusLine()),
   });
@@ -676,6 +688,27 @@ async function initApp() {
   // 5e. The guide's messages at the landmarks, the mayor's at the start and after deliveries
   const guide = new Guide(phone);
   guide.start();
+  missions.on('state', (m) => {
+    if (m.role !== 'medic') return;
+    if (m.state === 'accepted') {
+      if (controllerManager.activeMode !== 'car') selectMode('car');
+      ambulance.attach(controllerManager.entities.car);
+      ambulance.setSiren(true, audioSystem.enabled);
+      if (elMode) elMode.textContent = controllerManager.getActiveEntity().label;
+      phone.addSms({ id: `${m.id}-call`, from: DISPATCH, text: `Wezwanie: ${m.start.name.replace(/^pacjent, /, '')} — ${m.reason || 'pacjent potrzebuje pomocy'}. Jedź na sygnale (K włącza i wyłącza syrenę).` });
+    } else if (m.state === 'enRoute') {
+      phone.addSms({ id: `${m.id}-picked`, from: DISPATCH, text: `Pacjent w karetce. Dojazd w ${clock(m.responseTime || 0)}. Teraz SOR Szpitala Bielańskiego.` });
+    } else if (['delivered', 'late', 'abandoned'].includes(m.state)) {
+      ambulance.detach();
+      if (elMode) elMode.textContent = controllerManager.getActiveEntity().label;
+      if (m.state !== 'abandoned') {
+        phone.addSms({
+          id: `${m.id}-done`, from: DISPATCH,
+          text: `Pacjent przekazany na SOR. Dojazd ${clock(m.responseTime || 0)} (${'★'.repeat(m.responseStars) || 'za długo'}), transport ${clock(m.time)} (${'★'.repeat(m.transportStars) || 'za długo'}). ${m.paid} zł. Dziękujemy.`,
+        });
+      }
+    }
+  });
   const COMFORT_NOTES = { brake: 'ostre hamowanie', crash: 'stłuczka', red: 'czerwone światło' };
   missions.on('state', (m) => {
     if (m.role !== 'taxi') return;
@@ -711,7 +744,7 @@ async function initApp() {
     }
   });
 
-  globalThis.bielany = { missions, testDelivery, abandon: () => missions.abandon(), teleport: (x, z, heading) => teleportTo(x, z, heading), marker: missionMarker, phone, courier, guide, scene, renderer, lightingSystem, trams, taxi, controllerManager };
+  globalThis.bielany = { missions, testDelivery, abandon: () => missions.abandon(), teleport: (x, z, heading) => teleportTo(x, z, heading), marker: missionMarker, phone, courier, guide, scene, renderer, lightingSystem, trams, taxi, medic, ambulance, controllerManager };
 
   // Initialize the UI and chase camera around the restored player, or the default taxi on a first visit.
   selectMode(controllerManager.activeMode);
@@ -838,7 +871,7 @@ async function initApp() {
         const l = limitAt(car.position.x, car.position.z);
         if (l) speedLimit = l;
       }
-      const cap = speedLimit / 3.6;
+      const cap = (ambulance.siren ? Math.min(90, speedLimit + 30) : speedLimit) / 3.6; // on lights: +30 km/h
       if (car.speed > cap) car.speed = cap;
     }
     cameraSystem.update(dt, elapsed);
@@ -868,6 +901,10 @@ async function initApp() {
       const note = taxi.update(dt, { x: ent.position.x, z: ent.position.z, speed: ent.speed, mode: controllerManager.activeMode, heading: ent.heading }, elapsed);
       if (note) { taxiNote = note; taxiNoteUntil = performance.now() + 2500; }
       passenger.update(elapsed);
+      medic.update(dt);
+      ambulance.update(elapsed);
+      trafficSystem.yieldTo.active = ambulance.siren && controllerManager.activeMode === 'car';
+      trafficSystem.yieldTo.heading = controllerManager.entities.car.heading;
       missionMarker.update(elapsed);
     }
     audioSystem.update(dt, elapsed, cameraSystem.camera, lightingSystem.activePresetId === 'midnight');

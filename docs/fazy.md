@@ -63,7 +63,7 @@ Bramka: 60 fps na laptopie. Plan: docs/plan-fazy-2.md (zaakceptowany 2026-10-26)
 - [x] 2.1 Większy obszar 52.262,20.900 – 52.300,20.980 (Słodowiec, Piaski, Kaskada, Chomiczówka, Las Bielański). Sprawdzam: nowe osiedla na mapie, dojazd na Słodowiec, Piaski i Kaskadę.
 - [x] 2.2 Wydajność pod większy obszar. Sprawdzam: 60 fps na ziemi, płynny przelot helikopterem.
 - [x] 2.3 Tramwaje na torach z OSM. Sprawdzam: tramwaj z Marymontu do pętli Młociny, postoje na przystankach.
-- [ ] 2.4 Taksówkarz. Sprawdzam: 3 kursy, ocena reaguje na styl jazdy.
+- [x] 2.4 Taksówkarz. Sprawdzam: 3 kursy, ocena reaguje na styl jazdy.
 - [ ] 2.5 Ratownik medyczny. Sprawdzam: wezwanie, dojazd na sygnale, przewóz do szpitala.
 - [ ] 2.6 Aparat i spadające liście. Sprawdzam: zdjęcie w Pocztówkach, zapis do pliku.
 - [ ] 2.7 Deploy i bramka. Sprawdzam: 60 fps, pełna pętla wszystkich ról na publicznym linku.
