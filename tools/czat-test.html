@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Test czatu (krok 4.1)</title>
+<!-- Local check of the chat Worker (sh tools/czat-dev.sh) before the phone app from step 4.2 exists:
+     http://localhost:8080/tools/czat-test.html -->
+<style>
+  body { font: 16px/1.4 system-ui, sans-serif; max-width: 640px; margin: 24px auto; padding: 0 16px; background: #f6f1e7; color: #222; }
+  #log { background: #fff; border-radius: 8px; padding: 12px; min-height: 200px; white-space: pre-wrap; }
+  .me { color: #555; } .bot { color: #0b5; } .err { color: #c30; }
+  form { display: flex; gap: 8px; margin: 12px 0; } input { flex: 1; font: inherit; padding: 8px; } button { font: inherit; padding: 8px 12px; }
+</style>
+</head>
+<body>
+<h1>Test czatu (krok 4.1)</h1>
+<p>Worker lokalny: <code>http://localhost:8787</code>. Odpowiedzi są testowe.</p>
+<p id="stan">Sprawdzam stan…</p>
+<form id="f"><input id="q" maxlength="300" placeholder="Zadaj pytanie przewodnikowi" autocomplete="off"><button>Wyślij</button></form>
+<button id="burst">Wyślij 21 pytań naraz</button>
+<div id="ts"></div>
+<div id="log"></div>
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
+<script type="module">
+const URL_CZAT = 'http://localhost:8787/api/czat';
+const log = (cls, text) => { const p = document.createElement('div'); p.className = cls; p.textContent = text; document.getElementById('log').prepend(p); };
+let session = '';
+let siteKey = '1x00000000000000000000AA';
+
+try {
+  const stan = await (await fetch(`${URL_CZAT}/stan`)).json();
+  siteKey = stan.turnstileSiteKey;
+  document.getElementById('stan').textContent = stan.enabled ? 'Czat włączony.' : 'Czat odpoczywa albo jest wyłączony.';
+} catch {
+  document.getElementById('stan').textContent = 'Worker nie odpowiada (uruchom sh tools/czat-dev.sh).';
+}
+
+function turnstileToken() {
+  return new Promise((resolve) => {
+    const wait = () => (window.turnstile ? go() : setTimeout(wait, 100));
+    const go = () => {
+      const el = document.getElementById('ts');
+      el.innerHTML = '';
+      window.turnstile.render(el, { sitekey: siteKey, appearance: 'interaction-only', callback: resolve, 'error-callback': () => resolve('') });
+    };
+    wait();
+  });
+}
+
+async function ask(question) {
+  const body = { chat: 'przewodnik', question, history: [], session };
+  if (!session) body.turnstile = await turnstileToken();
+  try {
+    const d = await (await fetch(URL_CZAT, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })).json();
+    if (d.ok) { session = d.session; log('bot', `Przewodnik: ${d.answer}`); } else log('err', `${d.reason}: ${d.message}${d.retryAfter ? ` (za ${d.retryAfter} s)` : ''}`);
+  } catch {
+    log('err', 'Brak odpowiedzi Workera.');
+  }
+}
+
+document.getElementById('f').onsubmit = (e) => {
+  e.preventDefault();
+  const q = document.getElementById('q').value.trim();
+  if (!q) return;
+  log('me', `Ty: ${q}`);
+  document.getElementById('q').value = '';
+  ask(q);
+};
+document.getElementById('burst').onclick = async () => {
+  for (let i = 1; i <= 21; i++) { log('me', `Ty: pytanie ${i}`); await ask(`pytanie ${i}`); }
+};
+</script>
+</body>
+</html>

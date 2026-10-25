@@ -120,3 +120,8 @@ potrącania pieszych, bez zapisu rozmów; SMS-y od „Burmistrz Bielan” bez na
 
 - [x] 4.0 Plan Fazy 4 (zaakceptowany 2026-10-25): czat z przewodnikiem i burmistrzem przez Cloudflare Worker, limity i koszty,
   tryb bez czatu, warunki dla burmistrza, wersja dla urzędu, patronat. Sprawdzam: akceptuję plan i odpowiadam na decyzje.
+- [ ] 4.1 Worker i bezpieczniki (bez modelu): worker/ (Cloudflare Worker bielany-czat, trasa bielany.zbigniew.ai/api/*,
+  jeszcze nieopublikowany), umowa z grą docs/api-czat.md, limity 20 pytań / 10 min z adresu, 300 znaków, 6 wymian,
+  1000 pytań dziennie, 30 USD miesięcznie, Turnstile + sesja na 1 h, tylko adresy gry, wyłącznik CHAT_OFF, liczniki bez
+  treści i bez adresów IP (skrót z solą). Lokalnie: sh tools/czat-dev.sh, strona tools/czat-test.html.
+  Sprawdzam: na localhost pytanie dostaje odpowiedź testową, 21. pytanie w 10 minut dostaje „zwolnij”.

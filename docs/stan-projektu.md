@@ -1,4 +1,8 @@
-# Stan projektu (przekazanie sesji, 2026-10-25 wieczór)
+# Stan projektu (przekazanie sesji, 2026-10-26)
+
+- Faza 4 w toku na gałęzi faza-4; koordynator: sesja „Faza 4 koordynator”. Krok 4.1 (Worker bez modelu) zrobiony,
+  czeka na sprawdzenie; 4.2, 4.3, 4.6, 4.9 jako karty sesji do uruchomienia przez użytkownika. Worker lokalnie:
+  sh tools/czat-dev.sh (port 8787), umowa docs/api-czat.md. Worker nieopublikowany (deploy w 4.5).
 
 ## Gdzie jesteśmy
 - Faza 0 zamknięta. Faza 1 zrobiona poza bramką (odłożone: test 1.8b na Windows, pakiet dla urzędu — docs/pakiet-urzad.md).

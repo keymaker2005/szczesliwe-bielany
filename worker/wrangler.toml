@@ -1,0 +1,19 @@
+# Cloudflare Worker for the in-game chat (docs/api-czat.md). Deploy only on the author's command (step 4.5), with
+# wrangler 3.114.15 run from outside the repo: npx --yes wrangler@3.114.15 deploy --config <repo>/worker/wrangler.toml
+name = "bielany-czat"
+main = "src/index.js"
+compatibility_date = "2025-07-18"
+workers_dev = false
+routes = [{ pattern = "bielany.zbigniew.ai/api/*", zone_name = "zbigniew.ai" }]
+
+[vars]
+# Production Turnstile site key goes here in step 4.5 (the secret: wrangler secret put TURNSTILE_SECRET)
+TURNSTILE_SITE_KEY = "1x00000000000000000000AA"
+
+[[durable_objects.bindings]]
+name = "COUNTERS"
+class_name = "Counters"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["Counters"]

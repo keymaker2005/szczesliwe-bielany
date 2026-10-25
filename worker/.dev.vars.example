@@ -1,0 +1,4 @@
+# Local only (wrangler dev): Cloudflare's public Turnstile test secret (always passes) and localhost origins.
+# Never put a real key here; real secrets live only in Cloudflare (wrangler secret put).
+DEV=1
+TURNSTILE_SECRET=1x0000000000000000000000000000000AA

@@ -4,6 +4,16 @@ Historia prac nad projektem: fazy, kroki, gałęzie, ważne decyzje i poprawki, 
 Publiczne wersje (to, co było na bielany.zbigniew.ai): CHANGELOG.md. Plany faz: docs/plan-fazy-*.md, lista kroków:
 docs/fazy.md, otwarte sprawy: docs/backlog.md, przekazanie sesji: docs/stan-projektu.md.
 
+## Faza 4: Czaty LLM i patronat (gałąź faza-4, 2026-10-26)
+
+Plan: docs/plan-fazy-4.md (zaakceptowany ze wszystkimi decyzjami). Praca równoległa jak w Fazie 3: koordynator robi 4.1,
+4.4, 4.5, 4.7, 4.8, 4.10, 4.11; 4.2, 4.3, 4.6, 4.9 w osobnych sesjach na własnych gałęziach.
+
+- `6d9426b` 4.0 plan Fazy 4.
+- `3a62dee` 4.1 umowa API czatu (docs/api-czat.md) przed startem sesji równoległych.
+- 4.1 Worker bez modelu (worker/: limity, Turnstile, sesja, wyłącznik CHAT_OFF, Durable Object z licznikami),
+  tests/worker.test.mjs, tools/czat-dev.sh, tools/czat-test.html. Czeka na sprawdzenie.
+
 ## Faza 3: Służby i teren (gałąź faza-3, 2026-10-25)
 
 Plan: docs/plan-fazy-3.md (decyzje: mapa do Wisły i mostu, zgoda na zmiany w controllers.js / pedestrians.js /
