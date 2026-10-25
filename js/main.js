@@ -30,6 +30,9 @@ import { Taxi, BRAND as TAXI_BRAND } from './taxi.js';
 import { createPassenger } from './passenger.js';
 import { Medic, DISPATCH } from './medic.js';
 import { createAmbulance } from './ambulance.js';
+import { PhotoMode } from './photo-mode.js';
+import { Postcards } from './postcards.js';
+import { createFallingLeaves } from './falling-leaves.js';
 import { nearestOnStreet } from './gps-route.js';
 
 // js/main.js
@@ -99,6 +102,7 @@ async function initApp() {
   const missionMarker = createMissionMarker(ARRIVE_RADIUS);
   missionMarker.group.position.set(0, -500, 0);
   scene.add(missionMarker.group);
+  const fallingLeaves = createFallingLeaves(scene);
   markInit('streetDetails');
   // Oriented colliders (buildings along the streets) reach past their footprints with their world bounds: they stay
   // inside the property line anyway, so the road network (lanes & sidewalks) doesn't need them.
@@ -558,6 +562,11 @@ async function initApp() {
       case 'KeyH':
         if (hudToggleBtn) hudToggleBtn.click();
         break;
+      case 'KeyF': { // the camera app (photo mode handles F itself while it is on)
+        const ph = globalThis.bielany?.photo;
+        if (!e.repeat && ph && !ph.active && !mapSystem.isFullMapOpen) ph.enter();
+        break;
+      }
       case 'KeyK': { // the ambulance's siren (set up further down, after the missions)
         const amb = globalThis.bielany?.ambulance;
         if (!e.repeat && amb?.active) amb.setSiren(!amb.siren, audioSystem.enabled);
@@ -673,7 +682,17 @@ async function initApp() {
   const medic = new Medic(missions);
   medic.near = () => controllerManager.getActiveEntity().position;
   const ambulance = createAmbulance();
+  // 5f. The camera app (js/photo-mode.js) and the postcards album (js/postcards.js)
+  const postcards = new Postcards();
+  const photo = new PhotoMode({
+    canvas: renderer.domElement,
+    camera: cameraSystem.camera,
+    place: () => getLocationLabel(cameraSystem.camera.position.x, cameraSystem.camera.position.z),
+    onShot: (blob, meta) => postcards.add(blob, meta).then((p) => phone.addSms({ id: `photo-${p.id}`, from: 'Aparat', text: `Zapisano pocztówkę: ${p.place} (${p.filter}). Zobacz w Pocztówkach.` })),
+  });
   const phone = new Phone({
+    onCamera: () => photo.enter(),
+    postcards,
     root: document.getElementById('phone'),
     button: document.getElementById('btn-phone'),
     missions,
@@ -744,7 +763,7 @@ async function initApp() {
     }
   });
 
-  globalThis.bielany = { missions, testDelivery, abandon: () => missions.abandon(), teleport: (x, z, heading) => teleportTo(x, z, heading), marker: missionMarker, phone, courier, guide, scene, renderer, lightingSystem, trams, taxi, medic, ambulance, controllerManager };
+  globalThis.bielany = { missions, testDelivery, abandon: () => missions.abandon(), teleport: (x, z, heading) => teleportTo(x, z, heading), marker: missionMarker, phone, courier, guide, scene, renderer, lightingSystem, trams, taxi, medic, ambulance, controllerManager, photo, postcards, fallingLeaves };
 
   // Initialize the UI and chase camera around the restored player, or the default taxi on a first visit.
   selectMode(controllerManager.activeMode);
@@ -861,7 +880,7 @@ async function initApp() {
 
     // Update 3rd-person controllers, camera, signals, traffic & vehicle collisions, building LODs, and dynamic shadow focus
     gamepadControls.update(dt);
-    controllerManager.update(dt, elapsed);
+    if (!photo.active) controllerManager.update(dt, elapsed); // photo mode freezes the player
     // the cab keeps to the street's speed limit (OpenStreetMap maxspeed, else the urban default), unless boosting
     if (controllerManager.activeMode === 'car') {
       const car = controllerManager.getActiveEntity();
@@ -874,7 +893,9 @@ async function initApp() {
       const cap = (ambulance.siren ? Math.min(90, speedLimit + 30) : speedLimit) / 3.6; // on lights: +30 km/h
       if (car.speed > cap && !controllerManager.keys.boost) car.speed = cap; // Shift (boost) ignores the limit
     }
-    cameraSystem.update(dt, elapsed);
+    if (!photo.active) cameraSystem.update(dt, elapsed);
+    photo.update(dt);
+    fallingLeaves.update(dt, elapsed, cameraSystem.camera.position);
     streetDetails.signalClock.value = elapsed;
     trafficSystem.update(
       dt,
@@ -931,6 +952,7 @@ async function initApp() {
       markInit('warmup');
     }
     renderPipeline.render();
+    photo.afterRender();
     if (!warmedUp) {
       warmedUp = true;
       markInit('firstFrame');

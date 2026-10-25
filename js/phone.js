@@ -1,14 +1,15 @@
 // js/phone.js
-// The player's smartphone: an HTML overlay (P or the phone button) with four apps: Zlecenia (offered and active
-// errands, from js/missions.js), Mapa (the full map), SMS (messages from the guide, the mayor, the dispatcher) and
-// Pocztówki (empty until the camera app). A fictional handset: no maker's name or logo. The game keeps running under
-// it; keys still drive the player, the phone only takes clicks.
+// The player's smartphone: an HTML overlay (P or the phone button) with five apps: Zlecenia (offered and active
+// errands, from js/missions.js), Mapa (the full map), SMS (messages from the guide, the mayor, the dispatchers),
+// Pocztówki (the photos, js/postcards.js) and Aparat (photo mode, js/photo-mode.js). A fictional handset: no maker's
+// name or logo. The game keeps running under it; keys still drive the player, the phone only takes clicks.
 
 const APPS = [
   { id: 'jobs', name: 'Zlecenia', glyph: '📦' },
   { id: 'map', name: 'Mapa', glyph: '🗺️' },
   { id: 'sms', name: 'SMS', glyph: '💬' },
   { id: 'cards', name: 'Pocztówki', glyph: '🖼️' },
+  { id: 'camera', name: 'Aparat', glyph: '📷' },
 ];
 
 const esc = (t) => String(t ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
@@ -20,7 +21,10 @@ class Phone {
    * options: { root (element), button (element), missions (MissionEngine), jobs: () => [{ id, title, from, to,
    * distance, par, reward, vehicles }] offered now, onOpenMap(), status: () => line under the clock, time: '12:40' }
    */
-  constructor({ root, button, missions, jobs, onOpenMap, status, time = '12:40' }) {
+  constructor({ root, button, missions, jobs, onOpenMap, onCamera, postcards, status, time = '12:40' }) {
+    this.onCamera = onCamera;
+    this.postcards = postcards || null;
+    this.openCard = null;
     this.root = root;
     this.button = button;
     this.missions = missions;
@@ -59,7 +63,8 @@ class Phone {
       else if (e.code === 'Escape' && this.isOpen) this.toggle(false);
     });
     // the lists change while the phone is open (offers, the active clock)
-    setInterval(() => { if (this.isOpen && this.app !== 'sms') this.render(); }, 500);
+    setInterval(() => { if (this.isOpen && this.app === 'jobs') this.render(); }, 500);
+    if (this.postcards) this.postcards.onChange(() => { if (this.isOpen && this.app === 'cards') this.render(); });
     missions.on('state', () => { if (this.isOpen) this.render(); this.renderBadge(); });
     this.render();
   }
@@ -80,12 +85,14 @@ class Phone {
   show(app) {
     this.app = app;
     this.openSms = null;
-    if (app === 'map') {
+    if (app === 'map' || app === 'camera') {
       this.app = 'home';
       this.toggle(false);
-      if (this.onOpenMap) this.onOpenMap();
+      if (app === 'map' && this.onOpenMap) this.onOpenMap();
+      if (app === 'camera' && this.onCamera) this.onCamera();
       return;
     }
+    this.openCard = null;
     this.render();
   }
 
@@ -132,8 +139,20 @@ class Phone {
       if (this.openSms) this.openSms.read = true;
       this.renderBadge();
       this.render();
+    } else if (act === 'card') {
+      this.openCard = id;
+      this.render();
+    } else if (act === 'card-save') {
+      this.postcards?.save(id);
+    } else if (act === 'card-share') {
+      this.postcards?.share(id);
+    } else if (act === 'card-delete') {
+      this.postcards?.remove(id);
+      this.openCard = null;
+      this.render();
     } else if (act === 'back') {
-      if (this.openSms) this.openSms = null;
+      if (this.openCard) this.openCard = null;
+      else if (this.openSms) this.openSms = null;
       else this.app = 'home';
       this.render();
     }
@@ -151,7 +170,7 @@ class Phone {
             <span class="phone-icon phone-icon-${a.id}" aria-hidden="true">${a.glyph}</span>${badge(a.id)}<span>${a.name}</span>
           </button>`).join('')}
         </div>
-        <div class="phone-hint">P / Esc zamyka telefon</div>`;
+        <div class="phone-hint">P / Esc zamyka telefon · F: Aparat</div>`;
       return;
     }
     const head = (title) => `<div class="phone-head"><button type="button" class="phone-back" data-act="back" aria-label="Wstecz">‹</button><h2>${esc(title)}</h2></div>`;
@@ -187,7 +206,21 @@ class Phone {
       return;
     }
     if (this.app === 'cards') {
-      s.innerHTML = `${head('Pocztówki')}<p class="phone-empty">Tu trafią zdjęcia z Aparatu (wkrótce).</p>`;
+      const pc = this.postcards;
+      const open = this.openCard && pc?.get(this.openCard);
+      if (open) {
+        s.innerHTML = `${head(open.place || 'Pocztówka')}<div class="phone-list">
+          <img class="phone-photo" src="${open.thumb}" alt="${esc(open.place)}">
+          <div class="phone-card-line is-dim">${esc(open.filter)} · ${esc(new Date(open.at).toLocaleString('pl-PL'))}</div>
+          <button type="button" class="phone-btn" data-act="card-share" data-id="${esc(open.id)}">Udostępnij na X</button>
+          <button type="button" class="phone-btn is-quiet" data-act="card-save" data-id="${esc(open.id)}">Zapisz do pliku</button>
+          <button type="button" class="phone-btn is-quiet" data-act="card-delete" data-id="${esc(open.id)}">Usuń</button></div>`;
+        return;
+      }
+      const items = pc ? pc.items : [];
+      s.innerHTML = `${head('Pocztówki')}${items.length ? `<div class="phone-grid">${items.map((p) => `
+        <button type="button" class="phone-thumb" data-act="card" data-id="${esc(p.id)}"><img src="${p.thumb}" alt="${esc(p.place)}"></button>`).join('')}</div>`
+        : '<p class="phone-empty">Brak zdjęć. Otwórz Aparat w telefonie albo naciśnij F, ustaw kadr i naciśnij Spację.</p>'}`;
     }
   }
 }

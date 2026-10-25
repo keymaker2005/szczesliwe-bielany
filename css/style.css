@@ -279,6 +279,26 @@ body::after {
   gap: 8px;
 }
 
+/* Phone: postcards */
+.phone-apps { grid-template-columns: repeat(4, 1fr); }
+.phone-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; }
+.phone-thumb img, .phone-photo { width: 100%; border-radius: 10px; display: block; }
+.phone-thumb { padding: 0; border-radius: 10px; overflow: hidden; }
+
+/* Photo mode (js/photo-mode.js): the interface hidden, a thin frame, the bar with the filter and the shutter */
+body.photo-mode .hud, body.photo-mode .phone, body.photo-mode .phone-toast, body.photo-mode #attribution { display: none !important; }
+.photo-ui.hidden { display: none; }
+.photo-frame { position: fixed; inset: 18px; border: 1px solid rgba(255, 255, 255, 0.55); pointer-events: none; z-index: 30; }
+.photo-bar {
+  position: fixed; left: 50%; bottom: 26px; transform: translateX(-50%); z-index: 31;
+  display: flex; align-items: center; gap: 16px; padding: 8px 16px; font-size: 12px; color: var(--text-2);
+}
+.photo-filter { font-weight: 700; color: var(--taxi); min-width: 130px; }
+.photo-shutter { width: 46px; height: 46px; border-radius: 50%; background: #fff; border: 4px solid rgba(0, 0, 0, 0.35); }
+.photo-flash { position: fixed; inset: 0; background: #fff; opacity: 0; pointer-events: none; z-index: 32; }
+.photo-flash.go { animation: photo-flash 0.35s ease-out; }
+@keyframes photo-flash { from { opacity: 0.85; } to { opacity: 0; } }
+
 /* Speed limit of the street under the cab: a round sign beside the speed */
 .speed-limit {
   display: inline-grid;
