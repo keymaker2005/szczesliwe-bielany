@@ -7,7 +7,7 @@
   razem z dodatkami: tabliczki MSI, zwierzęta w lasach, Stadion Hutnika, aplikacja Przewodnik. Bramka czeka na test na
   Windows; otwarte przed bramką: 52-56 fps pieszo przy Kamedułach (Chrome, M4), 30 fps zgłoszone w Edge (docs/backlog.md).
 - Następny krok (decyzja użytkownika 2026-10-25): plan Fazy 4 (czaty LLM z przewodnikiem i burmistrzem, patronat;
-  opis w docs/backlog.md) jako docs/plan-fazy-4.md do akceptacji, w nowej sesji.
+  opis w docs/backlog.md): docs/plan-fazy-4.md gotowy (krok 4.0, commit d6bf11e), czeka na akceptację i 7 decyzji.
 - Historia: CHANGELOG.md (publiczne wersje 0.1-0.6 według publikacji na Cloudflare), docs/changelog-wewnetrzny.md
   (kroki i commity). Praca równoległa: docs/praca-rownolegla.md (koordynator + osobne sesje na gałęziach, modele:
   Haiku proste, Sonnet powtarzalne, Opus myślenie; scalanie do gałęzi fazy tylko na polecenie użytkownika).
@@ -42,7 +42,8 @@
 ## Ważne decyzje użytkownika
 - Oficjalne nazwy zostają (Galeria Młociny itd.); oficjalny znak „M” metra; bez logo firm i insygniów służb.
 - Burmistrz Grzegorz Pietruczuk: prawdziwa osoba, SMS-y w tonie z publicznych wypowiedzi, opublikowane (z dopiskiem
-  „wiadomość w grze”).
+  „wiadomość w grze”). Decyzja z 2026-10-25: nadawca SMS-ów to „Burmistrz Bielan”, bez imienia i nazwiska, do czasu
+  pisemnej zgody (js/guide.js, stała MAYOR).
 - Wygląd ze zdjęć (Commons, Mapillary, ortofoto); Google Maps/Street View tylko do porównań.
 - Piesi materialni + ragdoll (zgoda na zmianę pedestrians.js); do wersji dla urzędu: PEDESTRIAN_CONTACT = false
   w js/city-config.js.

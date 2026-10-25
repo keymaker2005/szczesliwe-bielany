@@ -10,7 +10,7 @@ import { GUIDE_TEXTS } from './guide-texts.js';
 const SEEN_KEY = 'bielany-guide-seen';
 const CHECK_EVERY = 0.5; // s
 const GUIDE = 'Przewodnik po Bielanach';
-const MAYOR = 'Grzegorz Pietruczuk, burmistrz Bielan';
+const MAYOR = 'Burmistrz Bielan';
 const MAYOR_NOTE = ' (wiadomość w grze, nie oficjalne stanowisko urzędu)';
 
 // Where each landmark's message comes: world x, z (js/bielany-geodata.js frame) and the radius it rings in
