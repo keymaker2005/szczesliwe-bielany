@@ -66,5 +66,6 @@ Bramka: 60 fps na laptopie. Plan: docs/plan-fazy-2.md (zaakceptowany 2026-10-26)
 - [x] 2.4 Taksówkarz. Sprawdzam: 3 kursy, ocena reaguje na styl jazdy.
 - [x] 2.5 Ratownik medyczny. Sprawdzam: wezwanie, dojazd na sygnale, przewóz do szpitala.
 - [x] 2.6 Aparat i spadające liście. Sprawdzam: zdjęcie w Pocztówkach, zapis do pliku.
-- [ ] 2.7 Deploy i bramka. Sprawdzam: 60 fps, pełna pętla wszystkich ról na publicznym linku.
+- [x] 2.7 Deploy na bielany.zbigniew.ai (2026-10-26): wszystkie role (kurier, taksówkarz, ratownik), tramwaje, Aparat, większy obszar. Sprawdzam: 60 fps, pełna pętla wszystkich ról na publicznym linku.
+- [ ] Bramka Fazy 2: 60 fps na zwykłym laptopie z Windows (test według docs/test-1.8b.md, punkty 6a i 6b). Na MacBooku M4: 54–60 fps z helikoptera, 60 na ziemi.
 
