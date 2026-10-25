@@ -43,7 +43,7 @@ Bramka: publiczny link na Cloudflare Pages + pakiet dla urzędu.
 Poza zakresem Fazy 1: tramwaje, teren, Wisła, noc, landmarki poza AWF, gameplay, smartfon. Wszystko to jest w docs/backlog.md.
 
 ## Faza 1.5: Smartfon i kurier
-Bramka: pierwsza grywalna pętla. Plan: docs/plan-fazy-1.5.md (zaakceptowany 2026-10-25).
+Bramka: pierwsza grywalna pętla. Plan: docs/plan-fazy-1.5.md (zaakceptowany 2026-10-25). Kroki 1.5.4–1.5.8 zrobione w nocy 2026-10-25/26 bez sprawdzania po każdym kroku (decyzja z 2026-10-25); pętla kuriera działa na bielany.zbigniew.ai, do Twojego sprawdzenia.
 
 - [x] 1.5.0 Plan Fazy 1.5 (pliki, kolejność, ryzyka). Sprawdzam: akceptuję plan.
 - [x] 1.5.1 Adresy z OSM jako punkty dostawy przy chodniku, w wyszukiwarce mapy. Sprawdzam: mapa znajduje „Żeromskiego 29” i pokazuje pinezkę.
@@ -53,4 +53,4 @@ Bramka: pierwsza grywalna pętla. Plan: docs/plan-fazy-1.5.md (zaakceptowany 202
 - [x] 1.5.5 Rola kuriera (rower, auto, gwiazdki, bonus za skrót). Sprawdzam: 3 dostawy pod rząd, ocena ma sens.
 - [x] 1.5.6 Landmarki ze zdjęć, każdy osobno. Sprawdzam: każdy landmark porównany ze zdjęciem.
 - [x] 1.5.7 Przewodnik i burmistrz w SMS-ach (burmistrz publicznie po akceptacji). Sprawdzam: SMS-y przy landmarkach, poprawne teksty.
-- [ ] 1.5.8 Deploy i test pętli. Sprawdzam: pełna pętla na publicznym linku.
+- [x] 1.5.8 Deploy i test pętli. Sprawdzam: pełna pętla na publicznym linku.
