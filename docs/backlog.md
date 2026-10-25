@@ -35,3 +35,4 @@ Bramka: wersja 1.0 z patronatem.
 - Znak metra: w grze uproszczone białe „M” na granatowym kwadracie zamiast oficjalnego znaku Metra Warszawskiego; do decyzji, czy użyć oryginału (zgoda operatora).
 - SMS-y burmistrza (docs/teksty-przewodnika.md, wersja robocza): działają tylko na localhost, na publicznej stronie po akceptacji burmistrza lub urzędu (wtedy usunąć --public w tools/build-dist.mjs).
 - Raz podczas testu ponowne wczytanie bielany.zbigniew.ai zatrzymało się na ekranie ładowania („Failed to resolve module specifier three/webgpu”) po moich ręcznych wstrzyknięciach skryptów; kolejne wczytania działały. Obserwować przy teście 1.8b.
+- Tramwaje: linia Marymoncką według danych OSM kończy się przy Cmentarzu Włoskim (tory nie łączą się z pętlą Młociny w obszarze); gracz przenika przez tramwaj (tramwaj hamuje przed graczem, ale nie ma kolizji); brak dźwięku dzwonka i rozjazdów na ekranie.

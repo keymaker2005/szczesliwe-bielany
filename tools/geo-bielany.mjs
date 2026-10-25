@@ -736,11 +736,122 @@ function buildAddresses(graph, isWalk, sidewalks) {
 }
 
 // =====================================================================================================================
+// 9b. TRAMS (OpenStreetMap railway=tram): every track for the rails on the street, and the tram routes the game runs:
+//     from a stop at one end to a stop at the other along the tracks (depot tracks left out), the way back on the other
+//     track (its edges cost four times as much, so it takes the parallel one), the stops on each track in order
+// =====================================================================================================================
+// each route: its stops to pass, in order (the line along Marymoncka, the one from Bemowo along Wólczyńska, the one
+// from Żoliborz through Piaski)
+const TRAM_ROUTES = [
+  ['Metro Marymont', 'AWF', 'UKSW', 'Cmentarz Włoski'], // its tracks do not join the Młociny loop (OSM)
+  ['Piastów Śląskich', 'Metro Młociny'],
+  ['Plac Grunwaldzki', 'Piaski', 'Metro Młociny'],
+];
+function buildTrams() {
+  const rail = osm('rail');
+  const nearArea = (p) => p[0] >= X0 - 800 && p[0] <= X1 + 800 && p[1] >= Z0 - 800 && p[1] <= Z1 + 800;
+  const key = (g) => `${g.lon.toFixed(7)},${g.lat.toFixed(7)}`;
+  const ids = new Map(), pos = [], adj = [];
+  const nodeOf = (g) => {
+    const k = key(g);
+    if (!ids.has(k)) {
+      ids.set(k, pos.length);
+      pos.push(toWorld(g.lon, g.lat));
+      adj.push([]);
+    }
+    return ids.get(k);
+  };
+  const tracks = [];
+  for (const w of rail) {
+    if (w.type !== 'way' || w.tags?.railway !== 'tram' || !w.geometry) continue;
+    const pts = w.geometry.map((g) => toWorld(g.lon, g.lat));
+    const inPts = pts.filter((p) => inside(p));
+    if (inPts.length >= 2) tracks.push(flat(rdp(inPts, 0.15)));
+    if (w.tags.service) continue; // yards and sidings: rails only
+    for (let i = 1; i < w.geometry.length; i++) {
+      const a = nodeOf(w.geometry[i - 1]), b = nodeOf(w.geometry[i]);
+      // a line may leave the area and come back (Marymoncka round the north edge): js/trams.js hides trams out there
+      if (!nearArea(pos[a]) || !nearArea(pos[b])) continue;
+      const d = Math.hypot(pos[a][0] - pos[b][0], pos[a][1] - pos[b][1]);
+      adj[a].push([b, d]);
+      adj[b].push([a, d]);
+    }
+  }
+  const stops = rail.filter((e) => e.type === 'node' && e.tags?.railway === 'tram_stop' && e.tags.name && ids.has(key(e)))
+    .map((e) => ({ name: e.tags.name.replace(/\s+\d+$/, ''), node: ids.get(key(e)) }));
+  const ekey = (a, b) => (a < b ? `${a}-${b}` : `${b}-${a}`);
+  function dijkstra(from, to, penal) {
+    const dist = new Float64Array(pos.length).fill(Infinity), prev = new Int32Array(pos.length).fill(-1);
+    dist[from] = 0;
+    const heap = [[0, from]];
+    while (heap.length) {
+      let bi = 0;
+      for (let i = 1; i < heap.length; i++) if (heap[i][0] < heap[bi][0]) bi = i;
+      const [d, n] = heap.splice(bi, 1)[0];
+      if (d > dist[n]) continue;
+      if (n === to) break;
+      for (const [m, w] of adj[n]) {
+        const c = d + w * (penal.has(ekey(n, m)) ? 4 : 1);
+        if (c < dist[m]) { dist[m] = c; prev[m] = n; heap.push([c, m]); }
+      }
+    }
+    if (!Number.isFinite(dist[to])) return null;
+    const path = [];
+    for (let n = to; n >= 0; n = prev[n]) path.push(n);
+    return path.reverse();
+  }
+  const routes = [];
+  // A path through the waypoints in order: from the start's stops, at each waypoint the stop nearest along the track
+  function chain(names, penal) {
+    let best = null;
+    for (const start of stops.filter((s) => s.name === names[0])) {
+      let path = [start.node], ok = true;
+      for (let k = 1; k < names.length && ok; k++) {
+        let leg = null;
+        for (const t of stops.filter((s) => s.name === names[k])) {
+          const p = dijkstra(path[path.length - 1], t.node, penal);
+          if (p && (!leg || pathLen(p) < pathLen(leg))) leg = p;
+        }
+        if (!leg) ok = false;
+        else path = path.concat(leg.slice(1));
+      }
+      if (ok && (!best || pathLen(path) < pathLen(best))) best = path;
+    }
+    return best;
+  }
+  for (const names of TRAM_ROUTES) {
+    const there = chain(names, new Set());
+    if (!there) { log(`tram route ${names.join(' - ')}: no path`); continue; }
+    const used = new Set();
+    for (let i = 1; i < there.length; i++) used.add(ekey(there[i - 1], there[i]));
+    const back = chain(names.slice().reverse(), used); // on the other track
+    const a = names[0], b = names[names.length - 1];
+    for (const [name, path] of [[`${a} – ${b}`, there], [`${b} – ${a}`, back]]) {
+      if (!path) continue;
+      const onPath = new Map(path.map((n, i) => [n, i]));
+      const cum = [0];
+      for (let i = 1; i < path.length; i++) cum.push(cum[i - 1] + Math.hypot(pos[path[i]][0] - pos[path[i - 1]][0], pos[path[i]][1] - pos[path[i - 1]][1]));
+      const routeStops = stops.filter((s) => onPath.has(s.node)).map((s) => [q(cum[onPath.get(s.node)]), s.name])
+        .sort((x, y) => x[0] - y[0]);
+      routes.push({ name, pts: flat(path.map((n) => pos[n])), stops: routeStops, length: q(cum[cum.length - 1]) });
+    }
+  }
+  function pathLen(p) {
+    let l = 0;
+    for (let i = 1; i < p.length; i++) l += Math.hypot(pos[p[i]][0] - pos[p[i - 1]][0], pos[p[i]][1] - pos[p[i - 1]][1]);
+    return l;
+  }
+  for (const r of routes) log(`tram ${r.name}: ${(r.length / 1000).toFixed(1)} km, ${r.stops.length} stops (${r.stops.map((x) => x[1]).join(', ')})`);
+  return { tracks, routes };
+}
+
+// =====================================================================================================================
 // 10. OUTPUT
 // =====================================================================================================================
 const roadGraph = buildRoadGraph();
 const { blocks, sidewalks, isWalk } = buildBlocks(roadGraph);
 const addresses = buildAddresses(roadGraph, isWalk, sidewalks);
+const trams = buildTrams();
 
 const GEO = {
   version: 1,
@@ -769,6 +880,9 @@ const GEO = {
   // 2: nowe osiedle, 3: pawilon, 4: wysoka płyta, 5: blok z lat 50.), palette (0: pastel, 1: bold)]
   buildings: buildBuildings(),
   stations,
+  // Trams (OpenStreetMap): tracks [flat points, ...] for the rails, routes [{ name, pts flat, stops [[s, name], ...],
+  // length }] (each direction its own route, on its own track)
+  trams,
   // Addresses (OpenStreetMap): streets [name, ...] and list [street index, number, building x, z, sidewalk spot x, z]
   addresses,
 };

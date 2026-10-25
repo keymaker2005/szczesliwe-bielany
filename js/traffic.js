@@ -589,6 +589,21 @@ function createTrafficSystem(scene, sidewalks, obstacles) {
     v.pSpeed = Math.max(0, player.vx * fx + player.vz * fz);
   }
 
+  // Other vehicles outside the road graph (trams, js/trams.js): oriented boxes { x, z, yaw, halfW, halfL, vx, vz }
+  // that drivers stop short of when one is in their lane ahead
+  const blockers = [];
+  function blockerGap(v, o) {
+    const dx = o.x - v.x, dz = o.z - v.z;
+    if (Math.abs(dx) > LOOKAHEAD + 20 || Math.abs(dz) > LOOKAHEAD + 20) return Infinity;
+    const fx = Math.sin(v.yaw), fz = Math.cos(v.yaw);
+    const ahead = dx * fx + dz * fz, right = dz * fx - dx * fz;
+    const a = o.yaw - v.yaw, c = Math.abs(Math.cos(a)), sn = Math.abs(Math.sin(a));
+    const across = c * o.halfW + sn * o.halfL, along = sn * o.halfW + c * o.halfL;
+    if (ahead + along < 0 || ahead - along > LOOKAHEAD) return Infinity;
+    if (Math.abs(right) > v.halfWidth + across + 0.4) return Infinity;
+    return Math.max(0, ahead - v.half - along);
+  }
+
   // Gap to the player if it is ahead in the lane whose centre is `off` metres to the right of v
   function playerGap(v, off) {
     if (v.pAhead < 0 || v.pAhead > LOOKAHEAD) return Infinity;
@@ -1015,6 +1030,17 @@ function createTrafficSystem(scene, sidewalks, obstacles) {
       if (pg < v.gap) {
         v.gap = pg;
         v.leaderSpeed = v.pSpeed;
+      }
+    }
+    for (let k = 0; k < blockers.length; k++) {
+      const o = blockers[k];
+      const bg = blockerGap(v, o);
+      if (bg >= LOOKAHEAD) continue;
+      const along = Math.max(0, o.vx * Math.sin(v.yaw) + o.vz * Math.cos(v.yaw));
+      worst = Math.min(worst, brake(v, bg, along));
+      if (bg < v.gap) {
+        v.gap = bg;
+        v.leaderSpeed = along;
       }
     }
     const acc = Math.min(freeAcc(v) + worst, (cap - v.speed) * 2);
@@ -2101,7 +2127,8 @@ function createTrafficSystem(scene, sidewalks, obstacles) {
     cars,
     buses,
     peds,
-    network
+    network,
+    blockers
   };
 }
 
