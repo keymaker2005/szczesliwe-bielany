@@ -1,7 +1,7 @@
 // js/phone.js
-// The player's smartphone: an HTML overlay (P or the phone button) with six apps: Zlecenia (offered and active
+// The player's smartphone: an HTML overlay (P or the phone button) with seven apps: Zlecenia (offered and active
 // errands, from js/missions.js), Służby (the emergency services and their calls, js/dispatch.js), Mapa (the full map),
-// SMS (messages from the guide, the mayor, the dispatchers),
+// Przewodnik (the landmarks: visited, navigate, read more), SMS (messages from the guide, the mayor, the dispatchers),
 // Pocztówki (the photos, js/postcards.js) and Aparat (photo mode, js/photo-mode.js). A fictional handset: no maker's
 // name or logo. The game keeps running under it; keys still drive the player, the phone only takes clicks.
 
@@ -9,6 +9,7 @@ const APPS = [
   { id: 'jobs', name: 'Zlecenia', glyph: '📦' },
   { id: 'services', name: 'Służby', glyph: '🚨' },
   { id: 'map', name: 'Mapa', glyph: '🗺️' },
+  { id: 'guide', name: 'Przewodnik', glyph: '🧭' },
   { id: 'sms', name: 'SMS', glyph: '💬' },
   { id: 'cards', name: 'Pocztówki', glyph: '🖼️' },
   { id: 'camera', name: 'Aparat', glyph: '📷' },
@@ -24,9 +25,13 @@ class Phone {
    * distance, par, reward, vehicles }] offered now, services: () => [{ role, name, glyph, status, jobs }] (the
    * dispatch), onOpenMap(), status: () => line under the clock, time: '12:40' }
    */
-  constructor({ root, button, missions, jobs, services, onOpenMap, onCamera, postcards, status, time = '12:40' }) {
+  constructor({ root, button, missions, jobs, services, onOpenMap, onCamera, postcards, landmarks, onNavigate, status, time = '12:40' }) {
     this.services = services || (() => []);
     this.onCamera = onCamera;
+    this.landmarks = landmarks || (() => []); // [{ id, name, seen, x, z, sms, more }]
+    this.onNavigate = onNavigate;
+    this.openSite = null;
+    this.navigating = null;
     this.postcards = postcards || null;
     this.openCard = null;
     this.root = root;
@@ -89,6 +94,7 @@ class Phone {
   show(app) {
     this.app = app;
     this.openSms = null;
+    this.openSite = null;
     if (app === 'map' || app === 'camera') {
       this.app = 'home';
       this.toggle(false);
@@ -143,6 +149,16 @@ class Phone {
       if (this.openSms) this.openSms.read = true;
       this.renderBadge();
       this.render();
+    } else if (act === 'site') {
+      this.openSite = id;
+      this.render();
+    } else if (act === 'navigate') {
+      const site = this.landmarks().find((l) => l.id === id);
+      if (site && this.onNavigate) {
+        this.onNavigate(site);
+        this.navigating = site.id;
+      }
+      this.render();
     } else if (act === 'card') {
       this.openCard = id;
       this.render();
@@ -156,6 +172,7 @@ class Phone {
       this.render();
     } else if (act === 'back') {
       if (this.openCard) this.openCard = null;
+      else if (this.openSite) this.openSite = null;
       else if (this.openSms) this.openSms = null;
       else this.app = 'home';
       this.render();
@@ -231,6 +248,24 @@ class Phone {
         <button type="button" class="phone-sms${m.read ? '' : ' is-unread'}" data-act="sms" data-id="${esc(m.id)}">
           <b>${esc(m.from)}</b><span>${esc(m.text)}</span>
         </button>`).join('') : '<p class="phone-empty">Brak wiadomości.</p>'}</div>`;
+      return;
+    }
+    if (this.app === 'guide') {
+      const list = this.landmarks();
+      const site = this.openSite && list.find((l) => l.id === this.openSite);
+      if (site) {
+        s.innerHTML = `${head(site.name)}<div class="phone-list">
+          <div class="phone-card-line is-dim">${site.seen ? '✓ Odwiedzone' : 'Jeszcze nie odwiedzone'}</div>
+          <div class="phone-bubble">${esc(site.sms)}</div>
+          <button type="button" class="phone-btn" data-act="navigate" data-id="${esc(site.id)}">${this.navigating === site.id ? 'Trasa wyznaczona na mapie' : 'Nawiguj'}</button>
+          ${site.more ? `<div class="phone-more"><h3>Czytaj więcej</h3><p>${esc(site.more)}</p></div>` : ''}</div>`;
+        return;
+      }
+      const seen = list.filter((l) => l.seen).length;
+      s.innerHTML = `${head('Przewodnik')}<div class="phone-list">
+        <div class="phone-card-line is-dim">Odwiedzone: ${seen} z ${list.length}</div>${list.map((l) => `
+        <button type="button" class="phone-sms${l.seen ? '' : ' is-unread'}" data-act="site" data-id="${esc(l.id)}">
+          <b>${l.seen ? '✓' : '○'} ${esc(l.name)}</b></button>`).join('') || '<p class="phone-empty">Brak miejsc.</p>'}</div>`;
       return;
     }
     if (this.app === 'cards') {

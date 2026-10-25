@@ -1,0 +1,4612 @@
+{
+  "version": 0.6,
+  "generator": "Overpass API 0.7.62.11 87bfad18",
+  "osm3s": {
+    "timestamp_osm_base": "2026-10-25T20:06:06Z",
+    "copyright": "The data included in this document is from www.openstreetmap.org. The data is made available under ODbL."
+  },
+  "elements": [
+
+{
+  "type": "way",
+  "id": 4844117,
+  "bounds": {
+    "minlat": 52.2971029,
+    "minlon": 20.9394859,
+    "maxlat": 52.2975421,
+    "maxlon": 20.9414081
+  },
+  "geometry": [
+    { "lat": 52.2973486, "lon": 20.9414081 },
+    { "lat": 52.2974260, "lon": 20.9411473 },
+    { "lat": 52.2974758, "lon": 20.9409672 },
+    { "lat": 52.2975186, "lon": 20.9408124 },
+    { "lat": 52.2975370, "lon": 20.9407296 },
+    { "lat": 52.2975421, "lon": 20.9406242 },
+    { "lat": 52.2975330, "lon": 20.9405209 },
+    { "lat": 52.2975047, "lon": 20.9404101 },
+    { "lat": 52.2974606, "lon": 20.9402913 },
+    { "lat": 52.2973738, "lon": 20.9400573 },
+    { "lat": 52.2972801, "lon": 20.9398026 },
+    { "lat": 52.2972253, "lon": 20.9396537 },
+    { "lat": 52.2971666, "lon": 20.9395409 },
+    { "lat": 52.2971029, "lon": 20.9394859 }
+  ],
+  "tags": {
+    "highway": "residential",
+    "lane_markings": "no",
+    "name": "Dorycka",
+    "oneway": "yes",
+    "oneway:bicycle": "no",
+    "sidewalk": "separate",
+    "surface": "asphalt",
+    "wikidata": "Q110225475"
+  }
+},
+{
+  "type": "way",
+  "id": 23309516,
+  "bounds": {
+    "minlat": 52.3035719,
+    "minlon": 20.9408191,
+    "maxlat": 52.3038887,
+    "maxlon": 20.9408798
+  },
+  "geometry": [
+    { "lat": 52.3035719, "lon": 20.9408191 },
+    { "lat": 52.3038887, "lon": 20.9408798 }
+  ],
+  "tags": {
+    "bicycle": "use_sidepath",
+    "highway": "residential",
+    "lanes": "2",
+    "lit": "yes",
+    "maxspeed": "50",
+    "name": "Prozy",
+    "sidewalk:left": "separate",
+    "sidewalk:right": "no",
+    "source:maxspeed": "PL:urban",
+    "surface": "asphalt",
+    "wikidata": "Q114271330"
+  }
+},
+{
+  "type": "way",
+  "id": 23309523,
+  "bounds": {
+    "minlat": 52.3033596,
+    "minlon": 20.9386332,
+    "maxlat": 52.3034631,
+    "maxlon": 20.9392481
+  },
+  "geometry": [
+    { "lat": 52.3033596, "lon": 20.9392481 },
+    { "lat": 52.3033958, "lon": 20.9390026 },
+    { "lat": 52.3034302, "lon": 20.9388127 },
+    { "lat": 52.3034631, "lon": 20.9386332 }
+  ],
+  "tags": {
+    "cycleway:right": "no",
+    "expressway": "yes",
+    "foot": "no",
+    "highway": "trunk",
+    "highway:category:pl": "1",
+    "int_ref": "E 77",
+    "lanes": "2",
+    "lit": "yes",
+    "maxaxleload": "11.5",
+    "maxspeed": "60",
+    "name": "Wybrzeże Gdyńskie",
+    "oneway": "yes",
+    "placement": "left_of:2",
+    "ref": "7",
+    "sidewalk": "no",
+    "smoothness": "excellent",
+    "source:maxaxleload": "Dz.U. 2011 nr 222 poz. 1321 Art. 2 pkt. 11",
+    "source:maxspeed": "sign",
+    "surface": "asphalt",
+    "turn:lanes": "none|none|merge_to_left",
+    "wikidata": "Q9366242",
+    "wikipedia": "pl:Ulica Wybrzeże Gdyńskie w Warszawie"
+  }
+},
+{
+  "type": "way",
+  "id": 23309524,
+  "bounds": {
+    "minlat": 52.3030026,
+    "minlon": 20.9405063,
+    "maxlat": 52.3030710,
+    "maxlon": 20.9409684
+  },
+  "geometry": [
+    { "lat": 52.3030710, "lon": 20.9405063 },
+    { "lat": 52.3030026, "lon": 20.9409684 }
+  ],
+  "tags": {
+    "bridge": "yes",
+    "cycleway:right": "no",
+    "expressway": "yes",
+    "foot": "no",
+    "highway": "trunk",
+    "highway:category:pl": "1",
+    "highway:class:pl": "GP",
+    "int_ref": "E 77",
+    "lanes": "1",
+    "layer": "1",
+    "lit": "yes",
+    "maxaxleload": "11.5",
+    "maxspeed": "80",
+    "name": "Wybrzeże Gdyńskie",
+    "oneway": "yes",
+    "placement": "right_of:1",
+    "ref": "7",
+    "sidewalk": "no",
+    "source:maxaxleload": "Dz.U. 2011 nr 222 poz. 1321 Art. 2 pkt. 11",
+    "surface": "asphalt",
+    "wikidata": "Q9366242",
+    "wikipedia": "pl:Ulica Wybrzeże Gdyńskie w Warszawie"
+  }
+},
+{
+  "type": "way",
+  "id": 23309525,
+  "bounds": {
+    "minlat": 52.3018278,
+    "minlon": 20.9467964,
+    "maxlat": 52.3020328,
+    "maxlon": 20.9477662
+  },
+  "geometry": [
+    { "lat": 52.3020328, "lon": 20.9467964 },
+    { "lat": 52.3019863, "lon": 20.9470388 },
+    { "lat": 52.3019245, "lon": 20.9473276 },
+    { "lat": 52.3018773, "lon": 20.9475427 },
+    { "lat": 52.3018278, "lon": 20.9477662 }
+  ],
+  "tags": {
+    "cycleway:right": "no",
+    "expressway": "yes",
+    "foot": "no",
+    "highway": "trunk",
+    "highway:category:pl": "1",
+    "int_ref": "E 77",
+    "lanes": "4",
+    "lit": "yes",
+    "maxaxleload": "11.5",
+    "maxheight": "default",
+    "maxspeed": "80",
+    "name": "Wybrzeże Gdyńskie",
+    "oneway": "yes",
+    "placement": "middle_of:2",
+    "ref": "7",
+    "shoulder": "no",
+    "sidewalk:left": "no",
+    "sidewalk:right": "separate",
+    "source:maxaxleload": "Dz.U. 2011 nr 222 poz. 1321 Art. 2 pkt. 11",
+    "source:maxspeed": "sign",
+    "surface": "asphalt",
+    "turn:lanes": "none|none|none|merge_to_left",
+    "wikidata": "Q9366242",
+    "wikipedia": "pl:Ulica Wybrzeże Gdyńskie w Warszawie"
+  }
+},
+{
+  "type": "way",
+  "id": 23309526,
+  "bounds": {
+    "minlat": 52.3030902,
+    "minlon": 20.9405443,
+    "maxlat": 52.3031602,
+    "maxlon": 20.9410036
+  },
+  "geometry": [
+    { "lat": 52.3030902, "lon": 20.9410036 },
+    { "lat": 52.3031602, "lon": 20.9405443 }
+  ],
+  "tags": {
+    "bridge": "yes",
+    "cycleway:right": "no",
+    "expressway": "yes",
+    "foot": "no",
+    "highway": "trunk",
+    "highway:category:pl": "1",
+    "highway:class:pl": "GP",
+    "int_ref": "E 77",
+    "lanes": "2",
+    "layer": "1",
+    "lit": "yes",
+    "maxaxleload": "11.5",
+    "maxspeed": "80",
+    "name": "Wybrzeże Gdyńskie",
+    "oneway": "yes",
+    "ref": "7",
+    "sidewalk": "no",
+    "smoothness": "excellent",
+    "source:maxaxleload": "Dz.U. 2011 nr 222 poz. 1321 Art. 2 pkt. 11",
+    "source:maxspeed": "sign",
+    "surface": "asphalt",
+    "wikidata": "Q9366242",
+    "wikipedia": "pl:Ulica Wybrzeże Gdyńskie w Warszawie"
+  }
+},
+{
+  "type": "way",
+  "id": 29919950,
+  "bounds": {
+    "minlat": 52.3005976,
+    "minlon": 20.9495107,
+    "maxlat": 52.3015503,
+    "maxlon": 20.9532973
+  },
+  "geometry": [
+    { "lat": 52.3005976, "lon": 20.9532973 },
+    { "lat": 52.3010322, "lon": 20.9515903 },
+    { "lat": 52.3012093, "lon": 20.9508184 },
+    { "lat": 52.3014340, "lon": 20.9499288 },
+    { "lat": 52.3015503, "lon": 20.9495107 }
+  ],
+  "tags": {
+    "cycleway:right": "no",
+    "expressway": "yes",
+    "highway": "trunk",
+    "highway:category:pl": "1",
+    "int_ref": "E 77",
+    "lanes": "3",
+    "layer": "1",
+    "maxaxleload": "11.5",
+    "maxspeed": "80",
+    "name": "Wybrzeże Gdyńskie",
+    "oneway": "yes",
+    "placement": "left_of:2",
+    "ref": "7",
+    "shoulder": "no",
+    "sidewalk:left": "no",
+    "sidewalk:right": "separate",
+    "source:maxaxleload": "Dz.U. 2011 nr 222 poz. 1321 Art. 2 pkt. 11",
+    "surface": "asphalt",
+    "wikidata": "Q9366242",
+    "wikipedia": "pl:Ulica Wybrzeże Gdyńskie w Warszawie"
+  }
+},
+{
+  "type": "way",
+  "id": 48148934,
+  "bounds": {
+    "minlat": 52.3035260,
+    "minlon": 20.9461860,
+    "maxlat": 52.3037539,
+    "maxlon": 20.9475317
+  },
+  "geometry": [
+    { "lat": 52.3035260, "lon": 20.9475317 },
+    { "lat": 52.3035898, "lon": 20.9472349 },
+    { "lat": 52.3036555, "lon": 20.9468730 },
+    { "lat": 52.3037006, "lon": 20.9465796 },
+    { "lat": 52.3037380, "lon": 20.9462812 },
+    { "lat": 52.3037539, "lon": 20.9461860 }
+  ],
+  "tags": {
+    "bicycle": "use_sidepath",
+    "highway": "service",
+    "lane_markings": "no",
+    "lit": "yes",
+    "name": "Farysa",
+    "sidewalk:left": "separate",
+    "sidewalk:right": "no",
+    "surface": "asphalt",
+    "wikidata": "Q110101465"
+  }
+},
+{
+  "type": "way",
+  "id": 104031613,
+  "bounds": {
+    "minlat": 52.3022098,
+    "minlon": 20.9379079,
+    "maxlat": 52.3028392,
+    "maxlon": 20.9384410
+  },
+  "geometry": [
+    { "lat": 52.3028392, "lon": 20.9379079 },
+    { "lat": 52.3027552, "lon": 20.9379975 },
+    { "lat": 52.3026752, "lon": 20.9380759 },
+    { "lat": 52.3026011, "lon": 20.9381413 },
+    { "lat": 52.3025088, "lon": 20.9382189 },
+    { "lat": 52.3024434, "lon": 20.9382708 },
+    { "lat": 52.3023729, "lon": 20.9383267 },
+    { "lat": 52.3022901, "lon": 20.9383873 },
+    { "lat": 52.3022098, "lon": 20.9384410 }
+  ],
+  "tags": {
+    "bicycle": "use_sidepath",
+    "highway": "trunk_link",
+    "highway:category:pl": "1",
+    "lanes": "3",
+    "lit": "yes",
+    "maxaxleload": "11.5",
+    "maxspeed": "60",
+    "name": "Pułkowa",
+    "oneway": "yes",
+    "sidewalk:left": "no",
+    "sidewalk:right": "separate",
+    "source:maxaxleload": "Dz.U. 2011 nr 222 poz. 1321 Art. 2 pkt. 11",
+    "source:maxspeed": "sign",
+    "surface": "asphalt",
+    "wikidata": "Q9365876",
+    "wikipedia": "pl:Ulica Pułkowa w Warszawie"
+  }
+},
+{
+  "type": "way",
+  "id": 104031671,
+  "bounds": {
+    "minlat": 52.3028022,
+    "minlon": 20.9379223,
+    "maxlat": 52.3033685,
+    "maxlon": 20.9383340
+  },
+  "geometry": [
+    { "lat": 52.3028022, "lon": 20.9383340 },
+    { "lat": 52.3033685, "lon": 20.9379223 }
+  ],
+  "tags": {
+    "cycleway:right": "no",
+    "highway": "trunk_link",
+    "lanes": "2",
+    "name": "Pułkowa",
+    "old_ref": "637",
+    "oneway": "yes",
+    "sidewalk:left": "no",
+    "sidewalk:right": "separate",
+    "surface": "asphalt",
+    "wikidata": "Q9365876",
+    "wikipedia": "pl:Ulica Pułkowa w Warszawie"
+  }
+},
+{
+  "type": "way",
+  "id": 119695284,
+  "bounds": {
+    "minlat": 52.3004985,
+    "minlon": 20.9371203,
+    "maxlat": 52.3009903,
+    "maxlon": 20.9382069
+  },
+  "geometry": [
+    { "lat": 52.3004985, "lon": 20.9371203 },
+    { "lat": 52.3007000, "lon": 20.9375278 },
+    { "lat": 52.3007729, "lon": 20.9376863 },
+    { "lat": 52.3009903, "lon": 20.9382069 }
+  ],
+  "tags": {
+    "bicycle": "use_sidepath",
+    "highway": "residential",
+    "lanes": "2",
+    "lit": "yes",
+    "maxspeed": "50",
+    "name": "Zgrupowania AK „Kampinos”",
+    "name:etymology:wikidata": "Q9281262",
+    "old_name": "Wincentego Pstrowskiego",
+    "sidewalk:left": "separate",
+    "sidewalk:right": "no",
+    "source:maxspeed": "PL:urban",
+    "surface": "asphalt",
+    "wikidata": "Q106913691"
+  }
+},
+{
+  "type": "way",
+  "id": 125241612,
+  "bounds": {
+    "minlat": 52.3006898,
+    "minlon": 20.9387655,
+    "maxlat": 52.3013907,
+    "maxlon": 20.9402365
+  },
+  "geometry": [
+    { "lat": 52.3013907, "lon": 20.9402365 },
+    { "lat": 52.3006898, "lon": 20.9387655 }
+  ],
+  "tags": {
+    "alt_name": "Trasa Mostu Marii Skłodowskiej-Curie (Północnego)",
+    "bridge": "yes",
+    "cycleway:right": "no",
+    "expressway": "yes",
+    "foot": "no",
+    "highway": "secondary",
+    "lanes": "2",
+    "layer": "1",
+    "maxspeed": "80",
+    "maxweight:signed": "no",
+    "name": "Aleja Generał Marii Wittek",
+    "name:etymology:wikidata": "Q6761660",
+    "oneway": "yes",
+    "short_name": "al. gen. Marii Wittek",
+    "shoulder": "no",
+    "sidewalk": "no",
+    "smoothness": "excellent",
+    "source:maxspeed": "sign",
+    "surface": "asphalt",
+    "wikidata": "Q114327277"
+  }
+},
+{
+  "type": "way",
+  "id": 125241614,
+  "bounds": {
+    "minlat": 52.3006020,
+    "minlon": 20.9388472,
+    "maxlat": 52.3013068,
+    "maxlon": 20.9403344
+  },
+  "geometry": [
+    { "lat": 52.3006020, "lon": 20.9388472 },
+    { "lat": 52.3013068, "lon": 20.9403344 }
+  ],
+  "tags": {
+    "alt_name": "Trasa Mostu Marii Skłodowskiej-Curie (Północnego)",
+    "bridge": "yes",
+    "cycleway:right": "no",
+    "expressway": "yes",
+    "foot": "no",
+    "highway": "secondary",
+    "lanes": "2",
+    "layer": "1",
+    "maxspeed": "80",
+    "maxweight:signed": "no",
+    "name": "Aleja Generał Marii Wittek",
+    "name:etymology:wikidata": "Q6761660",
+    "oneway": "yes",
+    "short_name": "al. gen. Marii Wittek",
+    "shoulder": "no",
+    "sidewalk": "no",
+    "source:maxspeed": "sign",
+    "surface": "asphalt",
+    "wikidata": "Q114327277"
+  }
+},
+{
+  "type": "way",
+  "id": 125241616,
+  "bounds": {
+    "minlat": 52.2988872,
+    "minlon": 20.9356949,
+    "maxlat": 52.3006020,
+    "maxlon": 20.9388472
+  },
+  "geometry": [
+    { "lat": 52.2988872, "lon": 20.9356949 },
+    { "lat": 52.2992050, "lon": 20.9361920 },
+    { "lat": 52.2995374, "lon": 20.9367702 },
+    { "lat": 52.2998601, "lon": 20.9373605 },
+    { "lat": 52.3006020, "lon": 20.9388472 }
+  ],
+  "tags": {
+    "alt_name": "Trasa Mostu Marii Skłodowskiej-Curie (Północnego)",
+    "cycleway:right": "no",
+    "expressway": "yes",
+    "foot": "no",
+    "highway": "secondary",
+    "lanes": "2",
+    "maxspeed": "80",
+    "name": "Aleja Generał Marii Wittek",
+    "name:etymology:wikidata": "Q6761660",
+    "oneway": "yes",
+    "short_name": "al. gen. Marii Wittek",
+    "shoulder": "no",
+    "sidewalk": "no",
+    "source:maxspeed": "sign",
+    "surface": "asphalt",
+    "wikidata": "Q114327277"
+  }
+},
+{
+  "type": "way",
+  "id": 125241617,
+  "bounds": {
+    "minlat": 52.2999381,
+    "minlon": 20.9372596,
+    "maxlat": 52.3006898,
+    "maxlon": 20.9387655
+  },
+  "geometry": [
+    { "lat": 52.3006898, "lon": 20.9387655 },
+    { "lat": 52.2999381, "lon": 20.9372596 }
+  ],
+  "tags": {
+    "alt_name": "Trasa Mostu Marii Skłodowskiej-Curie (Północnego)",
+    "cycleway:right": "no",
+    "expressway": "yes",
+    "foot": "no",
+    "highway": "secondary",
+    "lanes": "2",
+    "maxspeed": "80",
+    "name": "Aleja Generał Marii Wittek",
+    "name:etymology:wikidata": "Q6761660",
+    "oneway": "yes",
+    "short_name": "al. gen. Marii Wittek",
+    "shoulder": "no",
+    "sidewalk": "no",
+    "source:maxspeed": "sign",
+    "surface": "asphalt",
+    "wikidata": "Q114327277"
+  }
+},
+{
+  "type": "way",
+  "id": 125241622,
+  "bounds": {
+    "minlat": 52.3004538,
+    "minlon": 20.9515815,
+    "maxlat": 52.3008668,
+    "maxlon": 20.9532000
+  },
+  "geometry": [
+    { "lat": 52.3008668, "lon": 20.9515815 },
+    { "lat": 52.3007635, "lon": 20.9519829 },
+    { "lat": 52.3004538, "lon": 20.9532000 }
+  ],
+  "tags": {
+    "cycleway:right": "no",
+    "expressway": "yes",
+    "highway": "trunk",
+    "highway:category:pl": "1",
+    "int_ref": "E 77",
+    "lanes": "3",
+    "layer": "1",
+    "maxaxleload": "11.5",
+    "maxspeed": "80",
+    "name": "Wybrzeże Gdyńskie",
+    "oneway": "yes",
+    "ref": "7",
+    "shoulder": "no",
+    "sidewalk:left": "no",
+    "sidewalk:right": "separate",
+    "source:maxaxleload": "Dz.U. 2011 nr 222 poz. 1321 Art. 2 pkt. 11",
+    "source:maxspeed": "sign",
+    "surface": "asphalt",
+    "wikidata": "Q9366242",
+    "wikipedia": "pl:Ulica Wybrzeże Gdyńskie w Warszawie"
+  }
+},
+{
+  "type": "way",
+  "id": 125241623,
+  "bounds": {
+    "minlat": 52.3034631,
+    "minlon": 20.9371549,
+    "maxlat": 52.3038764,
+    "maxlon": 20.9386332
+  },
+  "geometry": [
+    { "lat": 52.3034631, "lon": 20.9386332 },
+    { "lat": 52.3035029, "lon": 20.9384455 },
+    { "lat": 52.3035446, "lon": 20.9382620 },
+    { "lat": 52.3036003, "lon": 20.9380403 },
+    { "lat": 52.3036664, "lon": 20.9377943 },
+    { "lat": 52.3037208, "lon": 20.9376107 },
+    { "lat": 52.3037602, "lon": 20.9374912 },
+    { "lat": 52.3038030, "lon": 20.9373641 },
+    { "lat": 52.3038386, "lon": 20.9372607 },
+    { "lat": 52.3038764, "lon": 20.9371549 }
+  ],
+  "tags": {
+    "cycleway:right": "no",
+    "expressway": "yes",
+    "foot": "no",
+    "highway": "trunk",
+    "highway:category:pl": "1",
+    "int_ref": "E 77",
+    "lanes": "2",
+    "lit": "yes",
+    "maxaxleload": "11.5",
+    "maxspeed": "60",
+    "name": "Wybrzeże Gdyńskie",
+    "oneway": "yes",
+    "placement": "left_of:2",
+    "ref": "7",
+    "sidewalk": "no",
+    "smoothness": "excellent",
+    "source:maxaxleload": "Dz.U. 2011 nr 222 poz. 1321 Art. 2 pkt. 11",
+    "surface": "asphalt",
+    "turn:lanes": "none|none|merge_to_left",
+    "wikidata": "Q9366242",
+    "wikipedia": "pl:Ulica Wybrzeże Gdyńskie w Warszawie"
+  }
+},
+{
+  "type": "way",
+  "id": 125241624,
+  "bounds": {
+    "minlat": 52.3015503,
+    "minlon": 20.9465867,
+    "maxlat": 52.3022250,
+    "maxlon": 20.9495107
+  },
+  "geometry": [
+    { "lat": 52.3015503, "lon": 20.9495107 },
+    { "lat": 52.3017020, "lon": 20.9489733 },
+    { "lat": 52.3018104, "lon": 20.9485229 },
+    { "lat": 52.3019362, "lon": 20.9479951 },
+    { "lat": 52.3020438, "lon": 20.9474984 },
+    { "lat": 52.3021368, "lon": 20.9470471 },
+    { "lat": 52.3022250, "lon": 20.9465867 }
+  ],
+  "tags": {
+    "cycleway:right": "no",
+    "expressway": "yes",
+    "foot": "no",
+    "highway": "trunk",
+    "highway:category:pl": "1",
+    "int_ref": "E 77",
+    "lanes": "4",
+    "lit": "yes",
+    "maxaxleload": "11.5",
+    "maxheight": "default",
+    "maxspeed": "80",
+    "name": "Wybrzeże Gdyńskie",
+    "oneway": "yes",
+    "placement": "left_of:2",
+    "ref": "7",
+    "shoulder": "no",
+    "sidewalk:left": "no",
+    "sidewalk:right": "separate",
+    "source:maxaxleload": "Dz.U. 2011 nr 222 poz. 1321 Art. 2 pkt. 11",
+    "source:maxspeed": "sign",
+    "surface": "asphalt",
+    "turn:lanes": "none|none|none|slight_right",
+    "wikidata": "Q9366242",
+    "wikipedia": "pl:Ulica Wybrzeże Gdyńskie w Warszawie"
+  }
+},
+{
+  "type": "way",
+  "id": 125241628,
+  "bounds": {
+    "minlat": 52.3014861,
+    "minlon": 20.9393108,
+    "maxlat": 52.3016596,
+    "maxlon": 20.9395269
+  },
+  "geometry": [
+    { "lat": 52.3014861, "lon": 20.9395269 },
+    { "lat": 52.3016596, "lon": 20.9393108 }
+  ],
+  "tags": {
+    "bridge": "yes",
+    "cycleway:left": "no",
+    "cycleway:right": "separate",
+    "highway": "trunk_link",
+    "lanes": "3",
+    "layer": "1",
+    "maxweight:signed": "no",
+    "name": "Marymoncka",
+    "old_ref": "637",
+    "oneway": "yes",
+    "sidewalk:left": "no",
+    "sidewalk:right": "separate",
+    "surface": "asphalt",
+    "turn:lanes": "||merge_to_left",
+    "wikidata": "Q9365625",
+    "wikipedia": "pl:Ulica Marymoncka w Warszawie"
+  }
+},
+{
+  "type": "way",
+  "id": 125241635,
+  "bounds": {
+    "minlat": 52.2981688,
+    "minlon": 20.9405431,
+    "maxlat": 52.3001190,
+    "maxlon": 20.9423554
+  },
+  "geometry": [
+    { "lat": 52.2981688, "lon": 20.9423554 },
+    { "lat": 52.2986860, "lon": 20.9418723 },
+    { "lat": 52.2990329, "lon": 20.9415159 },
+    { "lat": 52.2993865, "lon": 20.9412056 },
+    { "lat": 52.2997344, "lon": 20.9408672 },
+    { "lat": 52.3000235, "lon": 20.9406158 },
+    { "lat": 52.3001190, "lon": 20.9405431 }
+  ],
+  "tags": {
+    "cycleway:right": "no",
+    "foot": "use_sidepath",
+    "highway": "secondary",
+    "lanes": "2",
+    "lit": "yes",
+    "maxspeed": "50",
+    "name": "Marymoncka",
+    "old_ref": "637",
+    "oneway": "yes",
+    "sidewalk:left": "no",
+    "sidewalk:right": "separate",
+    "source:maxspeed": "PL:urban",
+    "surface": "asphalt",
+    "wikidata": "Q9365625",
+    "wikipedia": "pl:Ulica Marymoncka w Warszawie"
+  }
+},
+{
+  "type": "way",
+  "id": 125241636,
+  "bounds": {
+    "minlat": 52.3009903,
+    "minlon": 20.9382069,
+    "maxlat": 52.3035719,
+    "maxlon": 20.9408191
+  },
+  "geometry": [
+    { "lat": 52.3009903, "lon": 20.9382069 },
+    { "lat": 52.3014853, "lon": 20.9391688 },
+    { "lat": 52.3017506, "lon": 20.9396849 },
+    { "lat": 52.3019110, "lon": 20.9399344 },
+    { "lat": 52.3020513, "lon": 20.9401033 },
+    { "lat": 52.3022329, "lon": 20.9402669 },
+    { "lat": 52.3023367, "lon": 20.9403362 },
+    { "lat": 52.3024387, "lon": 20.9403887 },
+    { "lat": 52.3026054, "lon": 20.9404587 },
+    { "lat": 52.3032340, "lon": 20.9406995 },
+    { "lat": 52.3035719, "lon": 20.9408191 }
+  ],
+  "tags": {
+    "bicycle": "use_sidepath",
+    "highway": "residential",
+    "lanes": "2",
+    "lit": "yes",
+    "maxheight": "below_default",
+    "maxspeed": "50",
+    "name": "Prozy",
+    "sidewalk:left": "separate",
+    "sidewalk:right": "no",
+    "source:maxspeed": "PL:urban",
+    "surface": "asphalt",
+    "wikidata": "Q114271330"
+  }
+},
+{
+  "type": "way",
+  "id": 125241643,
+  "bounds": {
+    "minlat": 52.3030710,
+    "minlon": 20.9377813,
+    "maxlat": 52.3035371,
+    "maxlon": 20.9405063
+  },
+  "geometry": [
+    { "lat": 52.3035371, "lon": 20.9377813 },
+    { "lat": 52.3035000, "lon": 20.9379250 },
+    { "lat": 52.3034669, "lon": 20.9380533 },
+    { "lat": 52.3034379, "lon": 20.9381686 },
+    { "lat": 52.3034150, "lon": 20.9382690 },
+    { "lat": 52.3033924, "lon": 20.9383730 },
+    { "lat": 52.3033576, "lon": 20.9385560 },
+    { "lat": 52.3033292, "lon": 20.9387224 },
+    { "lat": 52.3033054, "lon": 20.9388739 },
+    { "lat": 52.3032473, "lon": 20.9392762 },
+    { "lat": 52.3030710, "lon": 20.9405063 }
+  ],
+  "tags": {
+    "cycleway:right": "no",
+    "expressway": "yes",
+    "foot": "no",
+    "highway": "trunk",
+    "highway:category:pl": "1",
+    "highway:class:pl": "GP",
+    "int_ref": "E 77",
+    "lanes": "2",
+    "lit": "yes",
+    "maxaxleload": "11.5",
+    "maxspeed": "60",
+    "name": "Wybrzeże Gdyńskie",
+    "oneway": "yes",
+    "ref": "7",
+    "sidewalk": "no",
+    "source:maxaxleload": "Dz.U. 2011 nr 222 poz. 1321 Art. 2 pkt. 11",
+    "surface": "asphalt",
+    "turn:lanes": "|merge_to_left",
+    "wikidata": "Q9366242",
+    "wikipedia": "pl:Ulica Wybrzeże Gdyńskie w Warszawie"
+  }
+},
+{
+  "type": "way",
+  "id": 125520751,
+  "bounds": {
+    "minlat": 52.2950203,
+    "minlon": 20.9405297,
+    "maxlat": 52.2997736,
+    "maxlon": 20.9450269
+  },
+  "geometry": [
+    { "lat": 52.2997736, "lon": 20.9405297 },
+    { "lat": 52.2993093, "lon": 20.9409650 },
+    { "lat": 52.2985764, "lon": 20.9416675 },
+    { "lat": 52.2983322, "lon": 20.9418913 },
+    { "lat": 52.2980966, "lon": 20.9421226 },
+    { "lat": 52.2977115, "lon": 20.9424880 },
+    { "lat": 52.2976674, "lon": 20.9425319 },
+    { "lat": 52.2951665, "lon": 20.9448932 },
+    { "lat": 52.2950203, "lon": 20.9450269 }
+  ],
+  "tags": {
+    "bicycle": "use_sidepath",
+    "highway": "secondary",
+    "lanes": "2",
+    "lit": "yes",
+    "maxspeed": "50",
+    "name": "Marymoncka",
+    "old_ref": "637",
+    "oneway": "yes",
+    "sidewalk:left": "no",
+    "sidewalk:right": "separate",
+    "source:maxspeed": "PL:urban",
+    "surface": "asphalt",
+    "wikidata": "Q9365625",
+    "wikipedia": "pl:Ulica Marymoncka w Warszawie"
+  }
+},
+{
+  "type": "way",
+  "id": 125520752,
+  "bounds": {
+    "minlat": 52.3018807,
+    "minlon": 20.9383340,
+    "maxlat": 52.3028022,
+    "maxlon": 20.9390600
+  },
+  "geometry": [
+    { "lat": 52.3018807, "lon": 20.9390600 },
+    { "lat": 52.3021416, "lon": 20.9388187 },
+    { "lat": 52.3022422, "lon": 20.9387424 },
+    { "lat": 52.3028022, "lon": 20.9383340 }
+  ],
+  "tags": {
+    "cycleway:right": "no",
+    "highway": "trunk_link",
+    "lanes": "2",
+    "name": "Pułkowa",
+    "old_ref": "637",
+    "oneway": "yes",
+    "sidewalk:left": "no",
+    "sidewalk:right": "separate",
+    "surface": "asphalt",
+    "wikidata": "Q9365876",
+    "wikipedia": "pl:Ulica Pułkowa w Warszawie"
+  }
+},
+{
+  "type": "way",
+  "id": 130187295,
+  "bounds": {
+    "minlat": 52.2980966,
+    "minlon": 20.9421226,
+    "maxlat": 52.2981688,
+    "maxlon": 20.9423554
+  },
+  "geometry": [
+    { "lat": 52.2981688, "lon": 20.9423554 },
+    { "lat": 52.2980966, "lon": 20.9421226 }
+  ],
+  "tags": {
+    "cycleway:both": "no",
+    "highway": "residential",
+    "lit": "yes",
+    "name": "Dorycka",
+    "oneway": "no",
+    "sidewalk": "no",
+    "source": "bing",
+    "surface": "asphalt",
+    "wikidata": "Q110225475"
+  }
+},
+{
+  "type": "way",
+  "id": 146610434,
+  "bounds": {
+    "minlat": 52.2965611,
+    "minlon": 20.9424669,
+    "maxlat": 52.2967740,
+    "maxlon": 20.9429514
+  },
+  "geometry": [
+    { "lat": 52.2967740, "lon": 20.9425398 },
+    { "lat": 52.2966559, "lon": 20.9429514 },
+    { "lat": 52.2965611, "lon": 20.9428783 },
+    { "lat": 52.2966785, "lon": 20.9424669 },
+    { "lat": 52.2967740, "lon": 20.9425398 }
+  ],
+  "tags": {
+    "addr:city": "Warszawa",
+    "addr:city:simc": "0918123",
+    "addr:housenumber": "153",
+    "addr:postcode": "01-946",
+    "addr:street": "Marymoncka",
+    "building": "apartments",
+    "building:levels": "4",
+    "source": "www.geoportal.gov.pl",
+    "source:addr": "gugik.gov.pl"
+  }
+},
+{
+  "type": "way",
+  "id": 146610435,
+  "bounds": {
+    "minlat": 52.2976044,
+    "minlon": 20.9405143,
+    "maxlat": 52.2979833,
+    "maxlon": 20.9409809
+  },
+  "geometry": [
+    { "lat": 52.2976701, "lon": 20.9405143 },
+    { "lat": 52.2979833, "lon": 20.9407517 },
+    { "lat": 52.2979181, "lon": 20.9409809 },
+    { "lat": 52.2976044, "lon": 20.9407432 },
+    { "lat": 52.2976701, "lon": 20.9405143 }
+  ],
+  "tags": {
+    "addr:city": "Warszawa",
+    "addr:city:simc": "0918123",
+    "addr:housenumber": "9",
+    "addr:postcode": "01-947",
+    "addr:street": "Dorycka",
+    "building": "apartments",
+    "building:levels": "11",
+    "source": "www.geoportal.gov.pl",
+    "source:addr": "gugik.gov.pl"
+  }
+},
+{
+  "type": "way",
+  "id": 146610436,
+  "bounds": {
+    "minlat": 52.2973871,
+    "minlon": 20.9395834,
+    "maxlat": 52.2977647,
+    "maxlon": 20.9400477
+  },
+  "geometry": [
+    { "lat": 52.2977647, "lon": 20.9398226 },
+    { "lat": 52.2977000, "lon": 20.9400477 },
+    { "lat": 52.2973871, "lon": 20.9398097 },
+    { "lat": 52.2974513, "lon": 20.9395834 },
+    { "lat": 52.2977647, "lon": 20.9398226 }
+  ],
+  "tags": {
+    "addr:city": "Warszawa",
+    "addr:city:simc": "0918123",
+    "addr:housenumber": "7",
+    "addr:postcode": "01-947",
+    "addr:street": "Dorycka",
+    "building": "apartments",
+    "building:levels": "11",
+    "source": "www.geoportal.gov.pl",
+    "source:addr": "gugik.gov.pl"
+  }
+},
+{
+  "type": "way",
+  "id": 146610437,
+  "bounds": {
+    "minlat": 52.2971465,
+    "minlon": 20.9419159,
+    "maxlat": 52.2973594,
+    "maxlon": 20.9423999
+  },
+  "geometry": [
+    { "lat": 52.2973594, "lon": 20.9419877 },
+    { "lat": 52.2972417, "lon": 20.9423999 },
+    { "lat": 52.2971465, "lon": 20.9423268 },
+    { "lat": 52.2972643, "lon": 20.9419159 },
+    { "lat": 52.2973594, "lon": 20.9419877 }
+  ],
+  "tags": {
+    "addr:city": "Warszawa",
+    "addr:city:simc": "0918123",
+    "addr:housenumber": "157",
+    "addr:postcode": "01-946",
+    "addr:street": "Marymoncka",
+    "building": "apartments",
+    "building:levels": "4",
+    "source": "www.geoportal.gov.pl",
+    "source:addr": "gugik.gov.pl"
+  }
+},
+{
+  "type": "way",
+  "id": 146610438,
+  "bounds": {
+    "minlat": 52.2978137,
+    "minlon": 20.9412055,
+    "maxlat": 52.2980264,
+    "maxlon": 20.9416861
+  },
+  "geometry": [
+    { "lat": 52.2980264, "lon": 20.9412766 },
+    { "lat": 52.2979099, "lon": 20.9416861 },
+    { "lat": 52.2978137, "lon": 20.9416136 },
+    { "lat": 52.2979309, "lon": 20.9412055 },
+    { "lat": 52.2980264, "lon": 20.9412766 }
+  ],
+  "tags": {
+    "addr:city": "Warszawa",
+    "addr:city:simc": "0918123",
+    "addr:housenumber": "161",
+    "addr:postcode": "01-946",
+    "addr:street": "Marymoncka",
+    "building": "apartments",
+    "building:levels": "4",
+    "source": "www.geoportal.gov.pl",
+    "source:addr": "gugik.gov.pl"
+  }
+},
+{
+  "type": "way",
+  "id": 146610440,
+  "bounds": {
+    "minlat": 52.2965311,
+    "minlon": 20.9419559,
+    "maxlat": 52.2971291,
+    "maxlon": 20.9425285
+  },
+  "geometry": [
+    { "lat": 52.2971291, "lon": 20.9423810 },
+    { "lat": 52.2970861, "lon": 20.9425285 },
+    { "lat": 52.2965311, "lon": 20.9421041 },
+    { "lat": 52.2965730, "lon": 20.9419559 },
+    { "lat": 52.2971291, "lon": 20.9423810 }
+  ],
+  "tags": {
+    "addr:city": "Warszawa",
+    "addr:city:simc": "0918123",
+    "addr:housenumber": "155",
+    "addr:postcode": "01-946",
+    "addr:street": "Marymoncka",
+    "building": "apartments",
+    "building:levels": "10",
+    "source": "www.geoportal.gov.pl",
+    "source:addr": "gugik.gov.pl"
+  }
+},
+{
+  "type": "way",
+  "id": 146610441,
+  "bounds": {
+    "minlat": 52.2968063,
+    "minlon": 20.9395894,
+    "maxlat": 52.2971839,
+    "maxlon": 20.9400552
+  },
+  "geometry": [
+    { "lat": 52.2968710, "lon": 20.9395894 },
+    { "lat": 52.2971839, "lon": 20.9398286 },
+    { "lat": 52.2971194, "lon": 20.9400552 },
+    { "lat": 52.2968063, "lon": 20.9398176 },
+    { "lat": 52.2968710, "lon": 20.9395894 }
+  ],
+  "tags": {
+    "addr:city": "Warszawa",
+    "addr:city:simc": "0918123",
+    "addr:housenumber": "4",
+    "addr:postcode": "01-964",
+    "addr:street": "Dorycka",
+    "building": "apartments",
+    "building:levels": "11",
+    "source": "www.geoportal.gov.pl",
+    "source:addr": "gugik.gov.pl"
+  }
+},
+{
+  "type": "way",
+  "id": 146610442,
+  "bounds": {
+    "minlat": 52.2967341,
+    "minlon": 20.9412254,
+    "maxlat": 52.2969281,
+    "maxlon": 20.9415621
+  },
+  "geometry": [
+    { "lat": 52.2969281, "lon": 20.9413229 },
+    { "lat": 52.2968598, "lon": 20.9415621 },
+    { "lat": 52.2968100, "lon": 20.9415242 },
+    { "lat": 52.2968093, "lon": 20.9415269 },
+    { "lat": 52.2967341, "lon": 20.9414700 },
+    { "lat": 52.2968036, "lon": 20.9412254 },
+    { "lat": 52.2968790, "lon": 20.9412827 },
+    { "lat": 52.2968782, "lon": 20.9412855 },
+    { "lat": 52.2969281, "lon": 20.9413229 }
+  ],
+  "tags": {
+    "addr:city": "Warszawa",
+    "addr:city:simc": "0918123",
+    "addr:housenumber": "45A",
+    "addr:postcode": "01-950",
+    "addr:street": "Wrzeciono",
+    "building": "apartments",
+    "building:levels": "5",
+    "source": "www.geoportal.gov.pl",
+    "source:addr": "gugik.gov.pl"
+  }
+},
+{
+  "type": "way",
+  "id": 146610443,
+  "bounds": {
+    "minlat": 52.2962109,
+    "minlon": 20.9412130,
+    "maxlat": 52.2967077,
+    "maxlon": 20.9417346
+  },
+  "geometry": [
+    { "lat": 52.2967077, "lon": 20.9415519 },
+    { "lat": 52.2966558, "lon": 20.9417346 },
+    { "lat": 52.2962109, "lon": 20.9413959 },
+    { "lat": 52.2962621, "lon": 20.9412130 },
+    { "lat": 52.2967077, "lon": 20.9415519 }
+  ],
+  "tags": {
+    "addr:city": "Warszawa",
+    "addr:city:simc": "0918123",
+    "addr:housenumber": "45",
+    "addr:postcode": "01-950",
+    "addr:street": "Wrzeciono",
+    "building": "apartments",
+    "building:levels": "5",
+    "source": "www.geoportal.gov.pl",
+    "source:addr": "gugik.gov.pl"
+  }
+},
+{
+  "type": "way",
+  "id": 146610446,
+  "bounds": {
+    "minlat": 52.2971144,
+    "minlon": 20.9414041,
+    "maxlat": 52.2977109,
+    "maxlon": 20.9419743
+  },
+  "geometry": [
+    { "lat": 52.2977109, "lon": 20.9418264 },
+    { "lat": 52.2976686, "lon": 20.9419743 },
+    { "lat": 52.2971144, "lon": 20.9415538 },
+    { "lat": 52.2971559, "lon": 20.9414041 },
+    { "lat": 52.2977109, "lon": 20.9418264 }
+  ],
+  "tags": {
+    "addr:city": "Warszawa",
+    "addr:city:simc": "0918123",
+    "addr:housenumber": "159",
+    "addr:postcode": "01-946",
+    "addr:street": "Marymoncka",
+    "building": "apartments",
+    "building:levels": "10",
+    "source": "www.geoportal.gov.pl",
+    "source:addr": "gugik.gov.pl"
+  }
+},
+{
+  "type": "way",
+  "id": 146610447,
+  "bounds": {
+    "minlat": 52.2966921,
+    "minlon": 20.9384861,
+    "maxlat": 52.2970717,
+    "maxlon": 20.9389532
+  },
+  "geometry": [
+    { "lat": 52.2970717, "lon": 20.9387227 },
+    { "lat": 52.2970065, "lon": 20.9389532 },
+    { "lat": 52.2968720, "lon": 20.9388514 },
+    { "lat": 52.2968556, "lon": 20.9388390 },
+    { "lat": 52.2967434, "lon": 20.9387540 },
+    { "lat": 52.2966921, "lon": 20.9387152 },
+    { "lat": 52.2967578, "lon": 20.9384861 },
+    { "lat": 52.2969349, "lon": 20.9386196 },
+    { "lat": 52.2970717, "lon": 20.9387227 }
+  ],
+  "tags": {
+    "addr:city": "Warszawa",
+    "addr:city:simc": "0918123",
+    "addr:housenumber": "5",
+    "addr:postcode": "01-947",
+    "addr:street": "Dorycka",
+    "building": "apartments",
+    "building:levels": "11",
+    "source": "www.geoportal.gov.pl",
+    "source:addr": "gugik.gov.pl"
+  }
+},
+{
+  "type": "way",
+  "id": 146610448,
+  "bounds": {
+    "minlat": 52.2959456,
+    "minlon": 20.9425070,
+    "maxlat": 52.2965432,
+    "maxlon": 20.9430794
+  },
+  "geometry": [
+    { "lat": 52.2965003, "lon": 20.9430794 },
+    { "lat": 52.2959456, "lon": 20.9426568 },
+    { "lat": 52.2959885, "lon": 20.9425070 },
+    { "lat": 52.2965432, "lon": 20.9429296 },
+    { "lat": 52.2965003, "lon": 20.9430794 }
+  ],
+  "tags": {
+    "addr:city": "Warszawa",
+    "addr:city:simc": "0918123",
+    "addr:housenumber": "151",
+    "addr:postcode": "01-946",
+    "addr:street": "Marymoncka",
+    "building": "apartments",
+    "building:levels": "10",
+    "operator": "Spółdzielnia Mieszkaniowa \"DOMHUT\"",
+    "operator:short": "SM \"DOMHUT\"",
+    "operator:type": "cooperative",
+    "operator:website": "https://domhut.com.pl/",
+    "source:addr": "gugik.gov.pl"
+  }
+},
+{
+  "type": "way",
+  "id": 146797692,
+  "bounds": {
+    "minlat": 52.2964530,
+    "minlon": 20.9397844,
+    "maxlat": 52.2972977,
+    "maxlon": 20.9411796
+  },
+  "geometry": [
+    { "lat": 52.2965394, "lon": 20.9397844 },
+    { "lat": 52.2968499, "lon": 20.9406575 },
+    { "lat": 52.2972977, "lon": 20.9409963 },
+    { "lat": 52.2972455, "lon": 20.9411796 },
+    { "lat": 52.2968009, "lon": 20.9408433 },
+    { "lat": 52.2964530, "lon": 20.9398663 },
+    { "lat": 52.2965394, "lon": 20.9397844 }
+  ],
+  "tags": {
+    "addr:city": "Warszawa",
+    "addr:city:simc": "0918123",
+    "addr:housenumber": "6",
+    "addr:postcode": "01-964",
+    "addr:street": "Dorycka",
+    "building": "apartments",
+    "building:levels": "5",
+    "source": "www.geoportal.gov.pl",
+    "source:addr": "gugik.gov.pl"
+  }
+},
+{
+  "type": "way",
+  "id": 156784710,
+  "bounds": {
+    "minlat": 52.2994278,
+    "minlon": 20.9430437,
+    "maxlat": 52.3005519,
+    "maxlon": 20.9446728
+  },
+  "geometry": [
+    { "lat": 52.2994278, "lon": 20.9438064 },
+    { "lat": 52.3002498, "lon": 20.9430437 },
+    { "lat": 52.3005519, "lon": 20.9439101 },
+    { "lat": 52.2997300, "lon": 20.9446728 },
+    { "lat": 52.2994278, "lon": 20.9438064 }
+  ],
+  "tags": {
+    "access": "customers",
+    "addr:city": "Warszawa",
+    "addr:housenumber": "42",
+    "addr:postcode": "01-977",
+    "addr:street": "Marymoncka",
+    "leisure": "pitch",
+    "lit": "yes",
+    "operator": "Stołeczne Centrum Sportu AKTYWNA WARSZAWA",
+    "ref": "A",
+    "source": "https://sport.um.warszawa.pl/waw/aktywna-warszawa/-/boisko-glowne-osrodek-hutnik",
+    "sport": "soccer",
+    "surface": "grass"
+  }
+},
+{
+  "type": "way",
+  "id": 156976736,
+  "bounds": {
+    "minlat": 52.3013068,
+    "minlon": 20.9403344,
+    "maxlat": 52.3025002,
+    "maxlon": 20.9428748
+  },
+  "geometry": [
+    { "lat": 52.3013068, "lon": 20.9403344 },
+    { "lat": 52.3021504, "lon": 20.9421560 },
+    { "lat": 52.3022865, "lon": 20.9424368 },
+    { "lat": 52.3025002, "lon": 20.9428748 }
+  ],
+  "tags": {
+    "alt_name": "Trasa Mostu Marii Skłodowskiej-Curie (Północnego)",
+    "cycleway:right": "no",
+    "expressway": "yes",
+    "foot": "no",
+    "highway": "secondary",
+    "lanes": "2",
+    "lit": "yes",
+    "maxspeed": "80",
+    "name": "Aleja Generał Marii Wittek",
+    "name:etymology:wikidata": "Q6761660",
+    "oneway": "yes",
+    "short_name": "al. gen. Marii Wittek",
+    "shoulder": "no",
+    "sidewalk": "no",
+    "source:maxspeed": "sign",
+    "surface": "asphalt",
+    "wikidata": "Q114327277"
+  }
+},
+{
+  "type": "way",
+  "id": 157029789,
+  "bounds": {
+    "minlat": 52.3025882,
+    "minlon": 20.9427771,
+    "maxlat": 52.3028538,
+    "maxlon": 20.9433326
+  },
+  "geometry": [
+    { "lat": 52.3028538, "lon": 20.9433326 },
+    { "lat": 52.3025882, "lon": 20.9427771 }
+  ],
+  "tags": {
+    "alt_name": "Trasa Mostu Marii Skłodowskiej-Curie (Północnego)",
+    "bridge": "yes",
+    "cycleway:right": "no",
+    "expressway": "yes",
+    "foot": "no",
+    "highway": "secondary",
+    "lanes": "2",
+    "layer": "1",
+    "lit": "yes",
+    "maxspeed": "80",
+    "maxweight:signed": "no",
+    "name": "Aleja Generał Marii Wittek",
+    "name:etymology:wikidata": "Q6761660",
+    "oneway": "yes",
+    "short_name": "al. gen. Marii Wittek",
+    "shoulder": "no",
+    "sidewalk": "no",
+    "source:maxspeed": "sign",
+    "surface": "asphalt",
+    "wikidata": "Q114327277"
+  }
+},
+{
+  "type": "way",
+  "id": 157029791,
+  "bounds": {
+    "minlat": 52.3013907,
+    "minlon": 20.9402365,
+    "maxlat": 52.3025882,
+    "maxlon": 20.9427771
+  },
+  "geometry": [
+    { "lat": 52.3025882, "lon": 20.9427771 },
+    { "lat": 52.3013907, "lon": 20.9402365 }
+  ],
+  "tags": {
+    "alt_name": "Trasa Mostu Marii Skłodowskiej-Curie (Północnego)",
+    "cycleway:right": "no",
+    "expressway": "yes",
+    "foot": "no",
+    "highway": "secondary",
+    "lanes": "2",
+    "lit": "yes",
+    "maxspeed": "80",
+    "name": "Aleja Generał Marii Wittek",
+    "name:etymology:wikidata": "Q6761660",
+    "oneway": "yes",
+    "short_name": "al. gen. Marii Wittek",
+    "shoulder": "no",
+    "sidewalk": "no",
+    "source:maxspeed": "sign",
+    "surface": "asphalt",
+    "wikidata": "Q114327277"
+  }
+},
+{
+  "type": "way",
+  "id": 157029792,
+  "bounds": {
+    "minlat": 52.3025602,
+    "minlon": 20.9429976,
+    "maxlat": 52.3028141,
+    "maxlon": 20.9435581
+  },
+  "geometry": [
+    { "lat": 52.3025602, "lon": 20.9429976 },
+    { "lat": 52.3028141, "lon": 20.9435581 }
+  ],
+  "tags": {
+    "alt_name": "Trasa Mostu Marii Skłodowskiej-Curie (Północnego)",
+    "bridge": "yes",
+    "cycleway:right": "no",
+    "expressway": "yes",
+    "foot": "no",
+    "highway": "primary",
+    "highway:category:pl": "1",
+    "lanes": "4",
+    "layer": "1",
+    "lit": "yes",
+    "maxaxleload": "11.5",
+    "name": "Aleja Generał Marii Wittek",
+    "name:etymology:wikidata": "Q6761660",
+    "oneway": "yes",
+    "placement": "left_of:2",
+    "ref": "61",
+    "short_name": "al. gen. Marii Wittek",
+    "shoulder": "no",
+    "sidewalk": "no",
+    "source:maxaxleload": "Dz.U. 2011 nr 222 poz. 1321 Art. 2 pkt. 11",
+    "source:maxspeed": "PL:urban",
+    "surface": "asphalt",
+    "wikidata": "Q114327277"
+  }
+},
+{
+  "type": "way",
+  "id": 157029793,
+  "bounds": {
+    "minlat": 52.3028141,
+    "minlon": 20.9435581,
+    "maxlat": 52.3038383,
+    "maxlon": 20.9457041
+  },
+  "geometry": [
+    { "lat": 52.3028141, "lon": 20.9435581 },
+    { "lat": 52.3031373, "lon": 20.9442465 },
+    { "lat": 52.3037753, "lon": 20.9455694 },
+    { "lat": 52.3038383, "lon": 20.9457041 }
+  ],
+  "tags": {
+    "alt_name": "Trasa Mostu Marii Skłodowskiej-Curie (Północnego)",
+    "cycleway:right": "no",
+    "expressway": "yes",
+    "foot": "no",
+    "highway": "primary",
+    "highway:category:pl": "1",
+    "lanes": "4",
+    "lit": "yes",
+    "maxaxleload": "11.5",
+    "maxspeed": "80",
+    "name": "Aleja Generał Marii Wittek",
+    "name:etymology:wikidata": "Q6761660",
+    "oneway": "yes",
+    "placement": "middle_of:2",
+    "ref": "61",
+    "short_name": "al. gen. Marii Wittek",
+    "shoulder": "no",
+    "sidewalk": "no",
+    "source:maxaxleload": "Dz.U. 2011 nr 222 poz. 1321 Art. 2 pkt. 11",
+    "surface": "asphalt",
+    "turn:lanes": "|||merge_to_left",
+    "wikidata": "Q114327277"
+  }
+},
+{
+  "type": "way",
+  "id": 157281669,
+  "bounds": {
+    "minlat": 52.3037786,
+    "minlon": 20.9450549,
+    "maxlat": 52.3040224,
+    "maxlon": 20.9460618
+  },
+  "geometry": [
+    { "lat": 52.3037786, "lon": 20.9460618 },
+    { "lat": 52.3040224, "lon": 20.9450549 }
+  ],
+  "tags": {
+    "bicycle": "use_sidepath",
+    "highway": "service",
+    "lanes": "2",
+    "layer": "-1",
+    "lit": "yes",
+    "maxheight": "default",
+    "maxspeed": "50",
+    "name": "Farysa",
+    "sidewalk:left": "separate",
+    "sidewalk:right": "no",
+    "source:maxspeed": "PL:urban",
+    "surface": "asphalt",
+    "tunnel": "yes",
+    "wikidata": "Q110101465"
+  }
+},
+{
+  "type": "way",
+  "id": 157689842,
+  "bounds": {
+    "minlat": 52.3028538,
+    "minlon": 20.9433326,
+    "maxlat": 52.3042453,
+    "maxlon": 20.9462319
+  },
+  "geometry": [
+    { "lat": 52.3042453, "lon": 20.9462319 },
+    { "lat": 52.3042076, "lon": 20.9461598 },
+    { "lat": 52.3041590, "lon": 20.9460609 },
+    { "lat": 52.3038732, "lon": 20.9454664 },
+    { "lat": 52.3035561, "lon": 20.9447946 },
+    { "lat": 52.3028538, "lon": 20.9433326 }
+  ],
+  "tags": {
+    "alt_name": "Trasa Mostu Marii Skłodowskiej-Curie (Północnego)",
+    "cycleway:right": "no",
+    "destination": "P+R Parking;Młociny;Bemowo",
+    "expressway": "yes",
+    "foot": "no",
+    "highway": "secondary",
+    "lanes": "2",
+    "lit": "yes",
+    "maxspeed": "80",
+    "name": "Aleja Generał Marii Wittek",
+    "name:etymology:wikidata": "Q6761660",
+    "oneway": "yes",
+    "short_name": "al. gen. Marii Wittek",
+    "shoulder": "no",
+    "sidewalk": "no",
+    "source:maxspeed": "sign",
+    "surface": "asphalt",
+    "wikidata": "Q114327277"
+  }
+},
+{
+  "type": "way",
+  "id": 166478450,
+  "bounds": {
+    "minlat": 52.2997736,
+    "minlon": 20.9394062,
+    "maxlat": 52.3006429,
+    "maxlon": 20.9405297
+  },
+  "geometry": [
+    { "lat": 52.3006429, "lon": 20.9394062 },
+    { "lat": 52.3005422, "lon": 20.9395087 },
+    { "lat": 52.3005124, "lon": 20.9395500 },
+    { "lat": 52.3004812, "lon": 20.9395934 },
+    { "lat": 52.3004145, "lon": 20.9396860 },
+    { "lat": 52.3002922, "lon": 20.9398674 },
+    { "lat": 52.3001126, "lon": 20.9401308 },
+    { "lat": 52.2997736, "lon": 20.9405297 }
+  ],
+  "tags": {
+    "bicycle": "use_sidepath",
+    "highway": "secondary",
+    "lanes": "3",
+    "lit": "yes",
+    "maxspeed": "50",
+    "maxweight": "10",
+    "name": "Marymoncka",
+    "old_ref": "637",
+    "oneway": "yes",
+    "sidewalk:left": "no",
+    "sidewalk:right": "separate",
+    "source:maxspeed": "PL:urban",
+    "source:maxweight": "sign",
+    "surface": "asphalt",
+    "turn:lanes": "merge_to_right|none|none",
+    "wikidata": "Q9365625",
+    "wikipedia": "pl:Ulica Marymoncka w Warszawie"
+  }
+},
+{
+  "type": "way",
+  "id": 166478451,
+  "bounds": {
+    "minlat": 52.3009186,
+    "minlon": 20.9396587,
+    "maxlat": 52.3013583,
+    "maxlon": 20.9400743
+  },
+  "geometry": [
+    { "lat": 52.3009186, "lon": 20.9400743 },
+    { "lat": 52.3009937, "lon": 20.9400157 },
+    { "lat": 52.3010988, "lon": 20.9399324 },
+    { "lat": 52.3012357, "lon": 20.9397989 },
+    { "lat": 52.3012650, "lon": 20.9397654 },
+    { "lat": 52.3013583, "lon": 20.9396587 }
+  ],
+  "tags": {
+    "cycleway:left": "no",
+    "cycleway:right": "separate",
+    "highway": "secondary",
+    "lanes": "4",
+    "lit": "yes",
+    "maxheight": "default",
+    "maxspeed": "50",
+    "name": "Marymoncka",
+    "old_ref": "637",
+    "oneway": "yes",
+    "sidewalk:left": "no",
+    "sidewalk:right": "separate",
+    "source:maxspeed": "PL:urban",
+    "surface": "asphalt",
+    "turn:lanes": "left|left;through|through|through",
+    "wikidata": "Q9365625",
+    "wikipedia": "pl:Ulica Marymoncka w Warszawie"
+  }
+},
+{
+  "type": "way",
+  "id": 173131946,
+  "bounds": {
+    "minlat": 52.2973486,
+    "minlon": 20.9414081,
+    "maxlat": 52.2979997,
+    "maxlon": 20.9419096
+  },
+  "geometry": [
+    { "lat": 52.2973486, "lon": 20.9414081 },
+    { "lat": 52.2978257, "lon": 20.9417756 },
+    { "lat": 52.2979314, "lon": 20.9418570 },
+    { "lat": 52.2979997, "lon": 20.9419096 }
+  ],
+  "tags": {
+    "highway": "residential",
+    "name": "Dorycka",
+    "oneway": "no",
+    "sidewalk": "separate",
+    "surface": "asphalt",
+    "wikidata": "Q110225475"
+  }
+},
+{
+  "type": "way",
+  "id": 173870819,
+  "bounds": {
+    "minlat": 52.3022250,
+    "minlon": 20.9429169,
+    "maxlat": 52.3027996,
+    "maxlon": 20.9465867
+  },
+  "geometry": [
+    { "lat": 52.3022250, "lon": 20.9465867 },
+    { "lat": 52.3023305, "lon": 20.9459938 },
+    { "lat": 52.3024031, "lon": 20.9455602 },
+    { "lat": 52.3025830, "lon": 20.9443846 },
+    { "lat": 52.3027996, "lon": 20.9429169 }
+  ],
+  "tags": {
+    "cycleway:right": "no",
+    "destination": "Gdańsk",
+    "destination:colour:back": "green",
+    "destination:colour:ref": "red",
+    "destination:colour:text": "white",
+    "destination:ref": "7",
+    "destination:symbol": "airport",
+    "expressway": "yes",
+    "foot": "no",
+    "highway": "trunk",
+    "highway:category:pl": "1",
+    "int_ref": "E 77",
+    "lanes": "3",
+    "lit": "yes",
+    "maxaxleload": "11.5",
+    "maxheight": "default",
+    "maxspeed": "80",
+    "name": "Wybrzeże Gdyńskie",
+    "oneway": "yes",
+    "placement": "left_of:2",
+    "ref": "7",
+    "shoulder": "no",
+    "sidewalk": "no",
+    "source:maxaxleload": "Dz.U. 2011 nr 222 poz. 1321 Art. 2 pkt. 11",
+    "source:maxspeed": "sign",
+    "surface": "asphalt",
+    "turn:lanes": "none|none|slight_right",
+    "wikidata": "Q9366242",
+    "wikipedia": "pl:Ulica Wybrzeże Gdyńskie w Warszawie"
+  }
+},
+{
+  "type": "way",
+  "id": 187017302,
+  "bounds": {
+    "minlat": 52.3006429,
+    "minlon": 20.9390451,
+    "maxlat": 52.3010728,
+    "maxlon": 20.9394062
+  },
+  "geometry": [
+    { "lat": 52.3010728, "lon": 20.9390451 },
+    { "lat": 52.3007537, "lon": 20.9392807 },
+    { "lat": 52.3007241, "lon": 20.9393140 },
+    { "lat": 52.3006429, "lon": 20.9394062 }
+  ],
+  "tags": {
+    "bicycle": "use_sidepath",
+    "highway": "primary",
+    "highway:category:pl": "1",
+    "lanes": "4",
+    "lit": "yes",
+    "maxaxleload": "11.5",
+    "maxheight": "default",
+    "maxspeed": "50",
+    "name": "Marymoncka",
+    "oneway": "yes",
+    "sidewalk:left": "no",
+    "sidewalk:right": "separate",
+    "source:maxaxleload": "Dz.U. 2011 nr 222 poz. 1321 Art. 2 pkt. 11",
+    "source:maxspeed": "PL:urban",
+    "surface": "asphalt",
+    "turn:lanes": "left|left;through|through|through",
+    "wikidata": "Q9365625",
+    "wikipedia": "pl:Ulica Marymoncka w Warszawie"
+  }
+},
+{
+  "type": "way",
+  "id": 194287935,
+  "bounds": {
+    "minlat": 52.2960439,
+    "minlon": 20.9376685,
+    "maxlat": 52.2966146,
+    "maxlon": 20.9384383
+  },
+  "geometry": [
+    { "lat": 52.2966146, "lon": 20.9382798 },
+    { "lat": 52.2965428, "lon": 20.9384383 },
+    { "lat": 52.2965370, "lon": 20.9384314 },
+    { "lat": 52.2965381, "lon": 20.9384290 },
+    { "lat": 52.2964416, "lon": 20.9383111 },
+    { "lat": 52.2963774, "lon": 20.9382324 },
+    { "lat": 52.2960837, "lon": 20.9378728 },
+    { "lat": 52.2960507, "lon": 20.9378325 },
+    { "lat": 52.2960488, "lon": 20.9378362 },
+    { "lat": 52.2960439, "lon": 20.9378301 },
+    { "lat": 52.2961181, "lon": 20.9376685 },
+    { "lat": 52.2961226, "lon": 20.9376740 },
+    { "lat": 52.2961201, "lon": 20.9376794 },
+    { "lat": 52.2961993, "lon": 20.9377737 },
+    { "lat": 52.2962093, "lon": 20.9377515 },
+    { "lat": 52.2962131, "lon": 20.9377560 },
+    { "lat": 52.2962107, "lon": 20.9377613 },
+    { "lat": 52.2962375, "lon": 20.9377931 },
+    { "lat": 52.2962392, "lon": 20.9377892 },
+    { "lat": 52.2962418, "lon": 20.9377923 },
+    { "lat": 52.2962312, "lon": 20.9378162 },
+    { "lat": 52.2966097, "lon": 20.9382794 },
+    { "lat": 52.2966112, "lon": 20.9382759 },
+    { "lat": 52.2966146, "lon": 20.9382798 }
+  ],
+  "tags": {
+    "addr:city": "Warszawa",
+    "addr:city:simc": "0918123",
+    "addr:housenumber": "7",
+    "addr:postcode": "01-948",
+    "addr:street": "Tomasza Nocznickiego",
+    "building": "school",
+    "building:levels": "3",
+    "source": "www.geoportal.gov.pl",
+    "source:addr": "gugik.gov.pl"
+  }
+},
+{
+  "type": "way",
+  "id": 211147991,
+  "bounds": {
+    "minlat": 52.3012331,
+    "minlon": 20.9388543,
+    "maxlat": 52.3014280,
+    "maxlon": 20.9389532
+  },
+  "geometry": [
+    { "lat": 52.3014280, "lon": 20.9388543 },
+    { "lat": 52.3012540, "lon": 20.9389428 },
+    { "lat": 52.3012331, "lon": 20.9389532 }
+  ],
+  "tags": {
+    "bicycle": "use_sidepath",
+    "bridge": "yes",
+    "highway": "trunk_link",
+    "highway:category:pl": "1",
+    "lanes": "4",
+    "layer": "1",
+    "lit": "yes",
+    "maxaxleload": "11.5",
+    "maxspeed": "60",
+    "name": "Pułkowa",
+    "oneway": "yes",
+    "sidewalk:left": "no",
+    "sidewalk:right": "separate",
+    "source:maxaxleload": "Dz.U. 2011 nr 222 poz. 1321 Art. 2 pkt. 11",
+    "source:maxspeed": "sign",
+    "surface": "asphalt",
+    "turn:lanes": "left|left;through|through|right",
+    "wikidata": "Q9365876",
+    "wikipedia": "pl:Ulica Pułkowa w Warszawie"
+  }
+},
+{
+  "type": "way",
+  "id": 211147992,
+  "bounds": {
+    "minlat": 52.3010728,
+    "minlon": 20.9389786,
+    "maxlat": 52.3011824,
+    "maxlon": 20.9390451
+  },
+  "geometry": [
+    { "lat": 52.3011824, "lon": 20.9389786 },
+    { "lat": 52.3011751, "lon": 20.9389831 },
+    { "lat": 52.3010728, "lon": 20.9390451 }
+  ],
+  "tags": {
+    "bicycle": "use_sidepath",
+    "highway": "trunk_link",
+    "highway:category:pl": "1",
+    "lanes": "4",
+    "lit": "yes",
+    "maxaxleload": "11.5",
+    "maxspeed": "60",
+    "name": "Pułkowa",
+    "oneway": "yes",
+    "sidewalk:left": "no",
+    "sidewalk:right": "separate",
+    "source:maxaxleload": "Dz.U. 2011 nr 222 poz. 1321 Art. 2 pkt. 11",
+    "source:maxspeed": "sign",
+    "surface": "asphalt",
+    "turn:lanes": "left|left;through|through|right",
+    "wikidata": "Q9365876",
+    "wikipedia": "pl:Ulica Pułkowa w Warszawie"
+  }
+},
+{
+  "type": "way",
+  "id": 240055919,
+  "bounds": {
+    "minlat": 52.3014280,
+    "minlon": 20.9384410,
+    "maxlat": 52.3022098,
+    "maxlon": 20.9388543
+  },
+  "geometry": [
+    { "lat": 52.3022098, "lon": 20.9384410 },
+    { "lat": 52.3020902, "lon": 20.9385144 },
+    { "lat": 52.3019987, "lon": 20.9385655 },
+    { "lat": 52.3018790, "lon": 20.9386281 },
+    { "lat": 52.3014280, "lon": 20.9388543 }
+  ],
+  "tags": {
+    "bicycle": "use_sidepath",
+    "highway": "trunk_link",
+    "highway:category:pl": "1",
+    "lanes": "4",
+    "lit": "yes",
+    "maxaxleload": "11.5",
+    "maxspeed": "60",
+    "name": "Pułkowa",
+    "oneway": "yes",
+    "sidewalk:left": "no",
+    "sidewalk:right": "separate",
+    "source:maxaxleload": "Dz.U. 2011 nr 222 poz. 1321 Art. 2 pkt. 11",
+    "source:maxspeed": "sign",
+    "surface": "asphalt",
+    "turn:lanes": "left|left;through|through|right",
+    "wikidata": "Q9365876",
+    "wikipedia": "pl:Ulica Pułkowa w Warszawie"
+  }
+},
+{
+  "type": "way",
+  "id": 240397481,
+  "bounds": {
+    "minlat": 52.3032398,
+    "minlon": 20.9467943,
+    "maxlat": 52.3034340,
+    "maxlon": 20.9471735
+  },
+  "geometry": [
+    { "lat": 52.3033071, "lon": 20.9471735 },
+    { "lat": 52.3032516, "lon": 20.9471319 },
+    { "lat": 52.3032694, "lon": 20.9470664 },
+    { "lat": 52.3032531, "lon": 20.9470369 },
+    { "lat": 52.3032412, "lon": 20.9469905 },
+    { "lat": 52.3032398, "lon": 20.9469272 },
+    { "lat": 52.3032497, "lon": 20.9468819 },
+    { "lat": 52.3032673, "lon": 20.9468408 },
+    { "lat": 52.3032893, "lon": 20.9468139 },
+    { "lat": 52.3033118, "lon": 20.9468001 },
+    { "lat": 52.3033373, "lon": 20.9467943 },
+    { "lat": 52.3033631, "lon": 20.9468011 },
+    { "lat": 52.3033887, "lon": 20.9468187 },
+    { "lat": 52.3034080, "lon": 20.9468458 },
+    { "lat": 52.3034232, "lon": 20.9468788 },
+    { "lat": 52.3034313, "lon": 20.9469196 },
+    { "lat": 52.3034340, "lon": 20.9469578 },
+    { "lat": 52.3034298, "lon": 20.9470027 },
+    { "lat": 52.3034168, "lon": 20.9470442 },
+    { "lat": 52.3034053, "lon": 20.9470657 },
+    { "lat": 52.3033992, "lon": 20.9470755 },
+    { "lat": 52.3033917, "lon": 20.9470836 },
+    { "lat": 52.3033752, "lon": 20.9471002 },
+    { "lat": 52.3033527, "lon": 20.9471102 },
+    { "lat": 52.3033229, "lon": 20.9471123 },
+    { "lat": 52.3033071, "lon": 20.9471735 }
+  ],
+  "tags": {
+    "building": "industrial",
+    "building:levels": "1",
+    "source:building": "BDOT",
+    "source:geometry": "EGiB"
+  }
+},
+{
+  "type": "way",
+  "id": 240397484,
+  "bounds": {
+    "minlat": 52.3026298,
+    "minlon": 20.9463545,
+    "maxlat": 52.3031832,
+    "maxlon": 20.9470332
+  },
+  "geometry": [
+    { "lat": 52.3031606, "lon": 20.9465710 },
+    { "lat": 52.3031146, "lon": 20.9465455 },
+    { "lat": 52.3031062, "lon": 20.9465409 },
+    { "lat": 52.3030978, "lon": 20.9465362 },
+    { "lat": 52.3029272, "lon": 20.9464420 },
+    { "lat": 52.3028938, "lon": 20.9464235 },
+    { "lat": 52.3028708, "lon": 20.9464108 },
+    { "lat": 52.3028528, "lon": 20.9464008 },
+    { "lat": 52.3028320, "lon": 20.9463893 },
+    { "lat": 52.3028234, "lon": 20.9463846 },
+    { "lat": 52.3028148, "lon": 20.9463798 },
+    { "lat": 52.3027977, "lon": 20.9463704 },
+    { "lat": 52.3027896, "lon": 20.9463659 },
+    { "lat": 52.3027816, "lon": 20.9463614 },
+    { "lat": 52.3027690, "lon": 20.9463545 },
+    { "lat": 52.3027672, "lon": 20.9463627 },
+    { "lat": 52.3027613, "lon": 20.9463908 },
+    { "lat": 52.3027476, "lon": 20.9463832 },
+    { "lat": 52.3027448, "lon": 20.9463976 },
+    { "lat": 52.3026767, "lon": 20.9463603 },
+    { "lat": 52.3026334, "lon": 20.9465680 },
+    { "lat": 52.3026298, "lon": 20.9465854 },
+    { "lat": 52.3026981, "lon": 20.9466230 },
+    { "lat": 52.3026951, "lon": 20.9466375 },
+    { "lat": 52.3027085, "lon": 20.9466454 },
+    { "lat": 52.3027010, "lon": 20.9466815 },
+    { "lat": 52.3027482, "lon": 20.9467076 },
+    { "lat": 52.3027552, "lon": 20.9467114 },
+    { "lat": 52.3027621, "lon": 20.9467152 },
+    { "lat": 52.3028250, "lon": 20.9467500 },
+    { "lat": 52.3028593, "lon": 20.9467689 },
+    { "lat": 52.3028893, "lon": 20.9467855 },
+    { "lat": 52.3028741, "lon": 20.9468583 },
+    { "lat": 52.3028535, "lon": 20.9469565 },
+    { "lat": 52.3028477, "lon": 20.9469841 },
+    { "lat": 52.3029376, "lon": 20.9470332 },
+    { "lat": 52.3029430, "lon": 20.9470071 },
+    { "lat": 52.3029638, "lon": 20.9469073 },
+    { "lat": 52.3029789, "lon": 20.9468349 },
+    { "lat": 52.3030302, "lon": 20.9468633 },
+    { "lat": 52.3030384, "lon": 20.9468679 },
+    { "lat": 52.3030466, "lon": 20.9468724 },
+    { "lat": 52.3030929, "lon": 20.9468980 },
+    { "lat": 52.3031077, "lon": 20.9468264 },
+    { "lat": 52.3031162, "lon": 20.9468311 },
+    { "lat": 52.3031301, "lon": 20.9468387 },
+    { "lat": 52.3031448, "lon": 20.9468468 },
+    { "lat": 52.3031832, "lon": 20.9466633 },
+    { "lat": 52.3031458, "lon": 20.9466422 },
+    { "lat": 52.3031606, "lon": 20.9465710 }
+  ],
+  "tags": {
+    "addr:city": "Warszawa",
+    "addr:housenumber": "1",
+    "addr:postcode": "01-971",
+    "addr:street": "Farysa",
+    "building": "industrial",
+    "building:levels": "1",
+    "source:addr": "mapa.um.warszawa.pl",
+    "source:building": "BDOT",
+    "source:geometry": "EGiB"
+  }
+},
+{
+  "type": "way",
+  "id": 277059581,
+  "bounds": {
+    "minlat": 52.2986243,
+    "minlon": 20.9425897,
+    "maxlat": 52.2987230,
+    "maxlon": 20.9427456
+  },
+  "geometry": [
+    { "lat": 52.2987230, "lon": 20.9426835 },
+    { "lat": 52.2986580, "lon": 20.9427456 },
+    { "lat": 52.2986243, "lon": 20.9426517 },
+    { "lat": 52.2986893, "lon": 20.9425897 },
+    { "lat": 52.2987230, "lon": 20.9426835 }
+  ],
+  "tags": {
+    "addr:city": "Warszawa",
+    "addr:city:simc": "0918123",
+    "addr:housenumber": "40",
+    "addr:postcode": "01-977",
+    "addr:street": "Marymoncka",
+    "building": "detached",
+    "building:levels": "1",
+    "historic": "yes",
+    "source": "www.geoportal.gov.pl",
+    "source:addr": "gugik.gov.pl"
+  }
+},
+{
+  "type": "way",
+  "id": 277110263,
+  "bounds": {
+    "minlat": 52.3010489,
+    "minlon": 20.9465223,
+    "maxlat": 52.3013598,
+    "maxlon": 20.9470783
+  },
+  "geometry": [
+    { "lat": 52.3013598, "lon": 20.9469424 },
+    { "lat": 52.3012574, "lon": 20.9470783 },
+    { "lat": 52.3010489, "lon": 20.9466582 },
+    { "lat": 52.3011514, "lon": 20.9465223 },
+    { "lat": 52.3013598, "lon": 20.9469424 }
+  ],
+  "tags": {
+    "access": "customers",
+    "leisure": "pitch",
+    "source": "https://sport.um.warszawa.pl/waw/aktywna-warszawa/-/korty-tenisowe-osrodek-hutnik",
+    "sport": "tennis",
+    "surface": "clay"
+  }
+},
+{
+  "type": "way",
+  "id": 277110264,
+  "bounds": {
+    "minlat": 52.3002914,
+    "minlon": 20.9467695,
+    "maxlat": 52.3013518,
+    "maxlon": 20.9484171
+  },
+  "geometry": [
+    { "lat": 52.3009934, "lon": 20.9467695 },
+    { "lat": 52.3013518, "lon": 20.9474973 },
+    { "lat": 52.3006498, "lon": 20.9484171 },
+    { "lat": 52.3002914, "lon": 20.9476892 },
+    { "lat": 52.3009934, "lon": 20.9467695 }
+  ],
+  "tags": {
+    "access": "customers",
+    "leisure": "pitch",
+    "lit": "yes",
+    "ref": "C",
+    "source": "https://sport.um.warszawa.pl/waw/aktywna-warszawa/-/boiska-treningowe-osrodka-hutnik",
+    "sport": "soccer",
+    "surface": "artificial_turf"
+  }
+},
+{
+  "type": "way",
+  "id": 277122545,
+  "bounds": {
+    "minlat": 52.2997420,
+    "minlon": 20.9416693,
+    "maxlat": 52.3000916,
+    "maxlon": 20.9420693
+  },
+  "geometry": [
+    { "lat": 52.3000578, "lon": 20.9416898 },
+    { "lat": 52.3000916, "lon": 20.9417860 },
+    { "lat": 52.2999349, "lon": 20.9419295 },
+    { "lat": 52.2997822, "lon": 20.9420693 },
+    { "lat": 52.2997420, "lon": 20.9419547 },
+    { "lat": 52.2998625, "lon": 20.9418435 },
+    { "lat": 52.2999703, "lon": 20.9417441 },
+    { "lat": 52.3000513, "lon": 20.9416693 },
+    { "lat": 52.3000578, "lon": 20.9416898 }
+  ],
+  "tags": {
+    "building": "yes",
+    "building:levels": "1",
+    "source": "www.geoportal.gov.pl"
+  }
+},
+{
+  "type": "way",
+  "id": 288514724,
+  "bounds": {
+    "minlat": 52.2973370,
+    "minlon": 20.9384146,
+    "maxlat": 52.2973702,
+    "maxlon": 20.9385114
+  },
+  "geometry": [
+    { "lat": 52.2973702, "lon": 20.9385114 },
+    { "lat": 52.2973370, "lon": 20.9384146 }
+  ],
+  "tags": {
+    "access": "no",
+    "highway": "service",
+    "lanes": "2",
+    "name": "Tomasza Nocznickiego",
+    "oneway": "yes",
+    "surface": "asphalt",
+    "wikidata": "Q106913939"
+  }
+},
+{
+  "type": "way",
+  "id": 296931903,
+  "bounds": {
+    "minlat": 52.2979997,
+    "minlon": 20.9419096,
+    "maxlat": 52.2980966,
+    "maxlon": 20.9421226
+  },
+  "geometry": [
+    { "lat": 52.2980966, "lon": 20.9421226 },
+    { "lat": 52.2980565, "lon": 20.9420059 },
+    { "lat": 52.2980431, "lon": 20.9419706 },
+    { "lat": 52.2979997, "lon": 20.9419096 }
+  ],
+  "tags": {
+    "highway": "residential",
+    "name": "Dorycka",
+    "oneway": "no",
+    "source": "bing",
+    "surface": "asphalt",
+    "wikidata": "Q110225475"
+  }
+},
+{
+  "type": "way",
+  "id": 296931925,
+  "bounds": {
+    "minlat": 52.3001190,
+    "minlon": 20.9400743,
+    "maxlat": 52.3009186,
+    "maxlon": 20.9405431
+  },
+  "geometry": [
+    { "lat": 52.3001190, "lon": 20.9405431 },
+    { "lat": 52.3002130, "lon": 20.9404794 },
+    { "lat": 52.3005177, "lon": 20.9402935 },
+    { "lat": 52.3005935, "lon": 20.9402553 },
+    { "lat": 52.3007237, "lon": 20.9401897 },
+    { "lat": 52.3007815, "lon": 20.9401619 },
+    { "lat": 52.3008169, "lon": 20.9401430 },
+    { "lat": 52.3009186, "lon": 20.9400743 }
+  ],
+  "tags": {
+    "cycleway:right": "no",
+    "destination:lanes": "Gdańsk|Gdańsk|Gdańsk|Augustów;Kraków;Wisłostrada;Białołęka;Centrum",
+    "destination:ref:lanes": "7|7|7|61;7",
+    "highway": "secondary",
+    "lanes": "4",
+    "lit": "yes",
+    "maxspeed": "50",
+    "name": "Marymoncka",
+    "old_ref": "637",
+    "oneway": "yes",
+    "sidewalk:left": "no",
+    "sidewalk:right": "separate",
+    "source:maxspeed": "PL:urban",
+    "surface": "asphalt",
+    "turn:lanes": "through;left|through|through|right",
+    "wikidata": "Q9365625",
+    "wikipedia": "pl:Ulica Marymoncka w Warszawie"
+  }
+},
+{
+  "type": "way",
+  "id": 379679433,
+  "bounds": {
+    "minlat": 52.3034853,
+    "minlon": 20.9466022,
+    "maxlat": 52.3035493,
+    "maxlon": 20.9467381
+  },
+  "geometry": [
+    { "lat": 52.3035493, "lon": 20.9466248 },
+    { "lat": 52.3035092, "lon": 20.9466022 },
+    { "lat": 52.3034853, "lon": 20.9467156 },
+    { "lat": 52.3035253, "lon": 20.9467381 },
+    { "lat": 52.3035265, "lon": 20.9467326 },
+    { "lat": 52.3035485, "lon": 20.9466287 },
+    { "lat": 52.3035493, "lon": 20.9466248 }
+  ],
+  "tags": {
+    "building": "service",
+    "building:levels": "1",
+    "frequency": "50",
+    "location": "indoor",
+    "operator": "Stoen Operator",
+    "operator:wikidata": "Q11833155",
+    "power": "substation",
+    "ref": "11193",
+    "source:building": "EGiB",
+    "substation": "minor_distribution",
+    "voltage": "15000;400"
+  }
+},
+{
+  "type": "way",
+  "id": 379679435,
+  "bounds": {
+    "minlat": 52.3034418,
+    "minlon": 20.9466004,
+    "maxlat": 52.3034835,
+    "maxlon": 20.9466907
+  },
+  "geometry": [
+    { "lat": 52.3034835, "lon": 20.9466148 },
+    { "lat": 52.3034677, "lon": 20.9466907 },
+    { "lat": 52.3034418, "lon": 20.9466763 },
+    { "lat": 52.3034576, "lon": 20.9466004 },
+    { "lat": 52.3034835, "lon": 20.9466148 }
+  ],
+  "tags": {
+    "building": "service"
+  }
+},
+{
+  "type": "way",
+  "id": 379685657,
+  "bounds": {
+    "minlat": 52.2972347,
+    "minlon": 20.9393864,
+    "maxlat": 52.2973087,
+    "maxlon": 20.9395057
+  },
+  "geometry": [
+    { "lat": 52.2973087, "lon": 20.9394520 },
+    { "lat": 52.2972644, "lon": 20.9395057 },
+    { "lat": 52.2972347, "lon": 20.9394401 },
+    { "lat": 52.2972789, "lon": 20.9393864 },
+    { "lat": 52.2973087, "lon": 20.9394520 }
+  ],
+  "tags": {
+    "building": "service",
+    "frequency": "50",
+    "location": "indoor",
+    "operator": "Stoen Operator",
+    "operator:wikidata": "Q11833155",
+    "power": "substation",
+    "ref": "7059",
+    "substation": "minor_distribution",
+    "voltage": "15000;400"
+  }
+},
+{
+  "type": "way",
+  "id": 381731756,
+  "bounds": {
+    "minlat": 52.3026818,
+    "minlon": 20.9409684,
+    "maxlat": 52.3030026,
+    "maxlon": 20.9429246
+  },
+  "geometry": [
+    { "lat": 52.3030026, "lon": 20.9409684 },
+    { "lat": 52.3028905, "lon": 20.9416767 },
+    { "lat": 52.3027919, "lon": 20.9423230 },
+    { "lat": 52.3027447, "lon": 20.9426036 },
+    { "lat": 52.3026818, "lon": 20.9429246 }
+  ],
+  "tags": {
+    "cycleway:right": "no",
+    "expressway": "yes",
+    "foot": "no",
+    "highway": "trunk",
+    "highway:category:pl": "1",
+    "highway:class:pl": "GP",
+    "int_ref": "E 77",
+    "lanes": "1",
+    "lit": "yes",
+    "maxaxleload": "11.5",
+    "maxheight": "default",
+    "maxspeed": "60",
+    "name": "Wybrzeże Gdyńskie",
+    "oneway": "yes",
+    "placement": "right_of:1",
+    "ref": "7",
+    "sidewalk": "no",
+    "source:maxaxleload": "Dz.U. 2011 nr 222 poz. 1321 Art. 2 pkt. 11",
+    "surface": "asphalt",
+    "wikidata": "Q9366242",
+    "wikipedia": "pl:Ulica Wybrzeże Gdyńskie w Warszawie"
+  }
+},
+{
+  "type": "way",
+  "id": 381731758,
+  "bounds": {
+    "minlat": 52.3027996,
+    "minlon": 20.9410036,
+    "maxlat": 52.3030902,
+    "maxlon": 20.9429169
+  },
+  "geometry": [
+    { "lat": 52.3027996, "lon": 20.9429169 },
+    { "lat": 52.3029209, "lon": 20.9421002 },
+    { "lat": 52.3030902, "lon": 20.9410036 }
+  ],
+  "tags": {
+    "cycleway:right": "no",
+    "destination": "Gdańsk",
+    "destination:colour:back": "green",
+    "destination:colour:ref": "red",
+    "destination:colour:text": "white",
+    "destination:ref": "7",
+    "expressway": "yes",
+    "foot": "no",
+    "highway": "trunk",
+    "highway:category:pl": "1",
+    "highway:class:pl": "GP",
+    "int_ref": "E 77",
+    "lanes": "3",
+    "lit": "yes",
+    "maxaxleload": "11.5",
+    "maxspeed": "80",
+    "name": "Wybrzeże Gdyńskie",
+    "oneway": "yes",
+    "ref": "7",
+    "sidewalk": "no",
+    "smoothness": "excellent",
+    "source:maxaxleload": "Dz.U. 2011 nr 222 poz. 1321 Art. 2 pkt. 11",
+    "surface": "asphalt",
+    "wikidata": "Q9366242",
+    "wikipedia": "pl:Ulica Wybrzeże Gdyńskie w Warszawie"
+  }
+},
+{
+  "type": "way",
+  "id": 443040367,
+  "bounds": {
+    "minlat": 52.3013583,
+    "minlon": 20.9395269,
+    "maxlat": 52.3014861,
+    "maxlon": 20.9396587
+  },
+  "geometry": [
+    { "lat": 52.3013583, "lon": 20.9396587 },
+    { "lat": 52.3014410, "lon": 20.9395774 },
+    { "lat": 52.3014707, "lon": 20.9395446 },
+    { "lat": 52.3014861, "lon": 20.9395269 }
+  ],
+  "tags": {
+    "cycleway:left": "no",
+    "cycleway:right": "separate",
+    "highway": "trunk_link",
+    "lanes": "3",
+    "name": "Marymoncka",
+    "old_ref": "637",
+    "oneway": "yes",
+    "sidewalk:left": "no",
+    "sidewalk:right": "separate",
+    "surface": "asphalt",
+    "wikidata": "Q9365625",
+    "wikipedia": "pl:Ulica Marymoncka w Warszawie"
+  }
+},
+{
+  "type": "way",
+  "id": 443040371,
+  "bounds": {
+    "minlat": 52.3016596,
+    "minlon": 20.9390600,
+    "maxlat": 52.3018807,
+    "maxlon": 20.9393108
+  },
+  "geometry": [
+    { "lat": 52.3016596, "lon": 20.9393108 },
+    { "lat": 52.3017908, "lon": 20.9391621 },
+    { "lat": 52.3018807, "lon": 20.9390600 }
+  ],
+  "tags": {
+    "cycleway:left": "no",
+    "cycleway:right": "separate",
+    "highway": "trunk_link",
+    "lanes": "3",
+    "name": "Pułkowa",
+    "old_ref": "637",
+    "oneway": "yes",
+    "sidewalk:left": "no",
+    "sidewalk:right": "separate",
+    "surface": "asphalt",
+    "turn:lanes": "||merge_to_left",
+    "wikidata": "Q9365876",
+    "wikipedia": "pl:Ulica Pułkowa w Warszawie"
+  }
+},
+{
+  "type": "way",
+  "id": 498256646,
+  "bounds": {
+    "minlat": 52.3038887,
+    "minlon": 20.9408798,
+    "maxlat": 52.3048302,
+    "maxlon": 20.9413838
+  },
+  "geometry": [
+    { "lat": 52.3038887, "lon": 20.9408798 },
+    { "lat": 52.3039287, "lon": 20.9408905 },
+    { "lat": 52.3040117, "lon": 20.9409132 },
+    { "lat": 52.3040447, "lon": 20.9409264 },
+    { "lat": 52.3041028, "lon": 20.9409497 },
+    { "lat": 52.3041700, "lon": 20.9409832 },
+    { "lat": 52.3042471, "lon": 20.9410217 },
+    { "lat": 52.3043000, "lon": 20.9410481 },
+    { "lat": 52.3043525, "lon": 20.9410805 },
+    { "lat": 52.3048302, "lon": 20.9413838 }
+  ],
+  "tags": {
+    "highway": "residential",
+    "lanes": "2",
+    "lit": "yes",
+    "maxspeed": "50",
+    "name": "Prozy",
+    "source:maxspeed": "PL:urban",
+    "surface": "asphalt",
+    "wikidata": "Q114271330"
+  }
+},
+{
+  "type": "way",
+  "id": 689891919,
+  "bounds": {
+    "minlat": 52.3015001,
+    "minlon": 20.9505086,
+    "maxlat": 52.3015459,
+    "maxlon": 20.9505992
+  },
+  "geometry": [
+    { "lat": 52.3015001, "lon": 20.9505803 },
+    { "lat": 52.3015189, "lon": 20.9505086 },
+    { "lat": 52.3015459, "lon": 20.9505275 },
+    { "lat": 52.3015271, "lon": 20.9505992 },
+    { "lat": 52.3015001, "lon": 20.9505803 }
+  ],
+  "tags": {
+    "building": "service",
+    "building:levels": "1",
+    "frequency": "50",
+    "location": "indoor",
+    "operator": "Stoen Operator",
+    "operator:wikidata": "Q11833155",
+    "power": "substation",
+    "ref": "11273",
+    "substation": "minor_distribution",
+    "voltage": "15000;400"
+  }
+},
+{
+  "type": "way",
+  "id": 734936715,
+  "bounds": {
+    "minlat": 52.3007927,
+    "minlon": 20.9484467,
+    "maxlat": 52.3008663,
+    "maxlon": 20.9485648
+  },
+  "geometry": [
+    { "lat": 52.3008663, "lon": 20.9485167 },
+    { "lat": 52.3008198, "lon": 20.9485648 },
+    { "lat": 52.3007927, "lon": 20.9484949 },
+    { "lat": 52.3008393, "lon": 20.9484467 },
+    { "lat": 52.3008663, "lon": 20.9485167 }
+  ],
+  "tags": {
+    "building": "outbuilding",
+    "building:levels": "1",
+    "power": "transformer"
+  }
+},
+{
+  "type": "way",
+  "id": 769275241,
+  "bounds": {
+    "minlat": 52.2977894,
+    "minlon": 20.9416149,
+    "maxlat": 52.2978592,
+    "maxlon": 20.9417166
+  },
+  "geometry": [
+    { "lat": 52.2977894, "lon": 20.9416768 },
+    { "lat": 52.2978070, "lon": 20.9416149 },
+    { "lat": 52.2978592, "lon": 20.9416548 },
+    { "lat": 52.2978415, "lon": 20.9417166 },
+    { "lat": 52.2977894, "lon": 20.9416768 }
+  ],
+  "tags": {
+    "addr:city": "Warszawa",
+    "addr:city:simc": "0918123",
+    "addr:housenumber": "161A",
+    "addr:street": "Marymoncka",
+    "building": "apartments",
+    "building:levels": "4",
+    "source": "www.geoportal.gov.pl",
+    "source:addr": "gugik.gov.pl"
+  }
+},
+{
+  "type": "way",
+  "id": 772985848,
+  "bounds": {
+    "minlat": 52.2968210,
+    "minlon": 20.9391892,
+    "maxlat": 52.2968696,
+    "maxlon": 20.9392673
+  },
+  "geometry": [
+    { "lat": 52.2968210, "lon": 20.9392310 },
+    { "lat": 52.2968405, "lon": 20.9391892 },
+    { "lat": 52.2968696, "lon": 20.9392254 },
+    { "lat": 52.2968500, "lon": 20.9392673 },
+    { "lat": 52.2968210, "lon": 20.9392310 }
+  ],
+  "tags": {
+    "building": "yes"
+  }
+},
+{
+  "type": "way",
+  "id": 772985852,
+  "bounds": {
+    "minlat": 52.2962660,
+    "minlon": 20.9401592,
+    "maxlat": 52.2965350,
+    "maxlon": 20.9406872
+  },
+  "geometry": [
+    { "lat": 52.2964027, "lon": 20.9401592 },
+    { "lat": 52.2963903, "lon": 20.9401708 },
+    { "lat": 52.2963818, "lon": 20.9401788 },
+    { "lat": 52.2963735, "lon": 20.9401866 },
+    { "lat": 52.2962660, "lon": 20.9403020 },
+    { "lat": 52.2963926, "lon": 20.9406872 },
+    { "lat": 52.2964855, "lon": 20.9405841 },
+    { "lat": 52.2964930, "lon": 20.9405766 },
+    { "lat": 52.2965350, "lon": 20.9405347 },
+    { "lat": 52.2964027, "lon": 20.9401592 }
+  ],
+  "tags": {
+    "barrier": "fence",
+    "leisure": "playground"
+  }
+},
+{
+  "type": "way",
+  "id": 894559499,
+  "bounds": {
+    "minlat": 52.3037539,
+    "minlon": 20.9460618,
+    "maxlat": 52.3037786,
+    "maxlon": 20.9461860
+  },
+  "geometry": [
+    { "lat": 52.3037539, "lon": 20.9461860 },
+    { "lat": 52.3037786, "lon": 20.9460618 }
+  ],
+  "tags": {
+    "bicycle": "use_sidepath",
+    "highway": "service",
+    "lane_markings": "no",
+    "lit": "yes",
+    "name": "Farysa",
+    "sidewalk:left": "separate",
+    "sidewalk:right": "no",
+    "surface": "asphalt",
+    "wikidata": "Q110101465"
+  }
+},
+{
+  "type": "way",
+  "id": 976738068,
+  "bounds": {
+    "minlat": 52.3031602,
+    "minlon": 20.9392481,
+    "maxlat": 52.3033596,
+    "maxlon": 20.9405443
+  },
+  "geometry": [
+    { "lat": 52.3031602, "lon": 20.9405443 },
+    { "lat": 52.3032144, "lon": 20.9401921 },
+    { "lat": 52.3033596, "lon": 20.9392481 }
+  ],
+  "tags": {
+    "cycleway:right": "no",
+    "expressway": "yes",
+    "foot": "no",
+    "highway": "trunk",
+    "highway:category:pl": "1",
+    "highway:class:pl": "GP",
+    "int_ref": "E 77",
+    "lanes": "2",
+    "lit": "yes",
+    "maxaxleload": "11.5",
+    "maxspeed": "80",
+    "name": "Wybrzeże Gdyńskie",
+    "oneway": "yes",
+    "ref": "7",
+    "sidewalk": "no",
+    "smoothness": "excellent",
+    "source:maxaxleload": "Dz.U. 2011 nr 222 poz. 1321 Art. 2 pkt. 11",
+    "source:maxspeed": "sign",
+    "surface": "asphalt",
+    "wikidata": "Q9366242",
+    "wikipedia": "pl:Ulica Wybrzeże Gdyńskie w Warszawie"
+  }
+},
+{
+  "type": "way",
+  "id": 1063125027,
+  "bounds": {
+    "minlat": 52.3022806,
+    "minlon": 20.9429246,
+    "maxlat": 52.3026818,
+    "maxlon": 20.9454281
+  },
+  "geometry": [
+    { "lat": 52.3026818, "lon": 20.9429246 },
+    { "lat": 52.3025655, "lon": 20.9436246 },
+    { "lat": 52.3024332, "lon": 20.9444671 },
+    { "lat": 52.3022806, "lon": 20.9454281 }
+  ],
+  "tags": {
+    "cycleway:right": "no",
+    "expressway": "yes",
+    "foot": "no",
+    "highway": "trunk",
+    "highway:category:pl": "1",
+    "int_ref": "E 77",
+    "lanes": "3",
+    "lit": "yes",
+    "maxaxleload": "11.5",
+    "maxheight": "default",
+    "maxspeed": "80",
+    "name": "Wybrzeże Gdyńskie",
+    "oneway": "yes",
+    "ref": "7",
+    "shoulder": "no",
+    "sidewalk": "no",
+    "source:maxaxleload": "Dz.U. 2011 nr 222 poz. 1321 Art. 2 pkt. 11",
+    "surface": "asphalt",
+    "wikidata": "Q9366242",
+    "wikipedia": "pl:Ulica Wybrzeże Gdyńskie w Warszawie"
+  }
+},
+{
+  "type": "way",
+  "id": 1073539039,
+  "bounds": {
+    "minlat": 52.3017537,
+    "minlon": 20.9477662,
+    "maxlat": 52.3018278,
+    "maxlon": 20.9480736
+  },
+  "geometry": [
+    { "lat": 52.3018278, "lon": 20.9477662 },
+    { "lat": 52.3017537, "lon": 20.9480736 }
+  ],
+  "tags": {
+    "cycleway:right": "no",
+    "expressway": "yes",
+    "foot": "no",
+    "highway": "trunk",
+    "highway:category:pl": "1",
+    "int_ref": "E 77",
+    "lanes": "4",
+    "lit": "yes",
+    "maxaxleload": "11.5",
+    "maxheight": "default",
+    "maxspeed": "80",
+    "name": "Wybrzeże Gdyńskie",
+    "oneway": "yes",
+    "placement": "middle_of:2",
+    "ref": "7",
+    "shoulder": "no",
+    "sidewalk:left": "no",
+    "sidewalk:right": "separate",
+    "source:maxaxleload": "Dz.U. 2011 nr 222 poz. 1321 Art. 2 pkt. 11",
+    "source:maxspeed": "sign",
+    "surface": "asphalt",
+    "turn:lanes": "|||slight_right",
+    "wikidata": "Q9366242",
+    "wikipedia": "pl:Ulica Wybrzeże Gdyńskie w Warszawie"
+  }
+},
+{
+  "type": "way",
+  "id": 1073539040,
+  "bounds": {
+    "minlat": 52.3008668,
+    "minlon": 20.9480736,
+    "maxlat": 52.3017537,
+    "maxlon": 20.9515815
+  },
+  "geometry": [
+    { "lat": 52.3017537, "lon": 20.9480736 },
+    { "lat": 52.3017152, "lon": 20.9482427 },
+    { "lat": 52.3016397, "lon": 20.9485528 },
+    { "lat": 52.3015445, "lon": 20.9489379 },
+    { "lat": 52.3013470, "lon": 20.9497083 },
+    { "lat": 52.3008668, "lon": 20.9515815 }
+  ],
+  "tags": {
+    "cycleway:right": "no",
+    "expressway": "yes",
+    "foot": "no",
+    "highway": "trunk",
+    "highway:category:pl": "1",
+    "int_ref": "E 77",
+    "lanes": "3",
+    "lit": "yes",
+    "maxaxleload": "11.5",
+    "maxheight": "default",
+    "maxspeed": "80",
+    "name": "Wybrzeże Gdyńskie",
+    "oneway": "yes",
+    "placement": "middle_of:2",
+    "ref": "7",
+    "sidewalk:left": "no",
+    "sidewalk:right": "separate",
+    "source:maxaxleload": "Dz.U. 2011 nr 222 poz. 1321 Art. 2 pkt. 11",
+    "source:maxspeed": "sign",
+    "surface": "asphalt",
+    "wikidata": "Q9366242",
+    "wikipedia": "pl:Ulica Wybrzeże Gdyńskie w Warszawie"
+  }
+},
+{
+  "type": "way",
+  "id": 1073539041,
+  "bounds": {
+    "minlat": 52.3020328,
+    "minlon": 20.9454281,
+    "maxlat": 52.3022806,
+    "maxlon": 20.9467964
+  },
+  "geometry": [
+    { "lat": 52.3022806, "lon": 20.9454281 },
+    { "lat": 52.3022130, "lon": 20.9458326 },
+    { "lat": 52.3021542, "lon": 20.9461654 },
+    { "lat": 52.3021084, "lon": 20.9464149 },
+    { "lat": 52.3020328, "lon": 20.9467964 }
+  ],
+  "tags": {
+    "cycleway:right": "no",
+    "expressway": "yes",
+    "foot": "no",
+    "highway": "trunk",
+    "highway:category:pl": "1",
+    "int_ref": "E 77",
+    "lanes": "3",
+    "lit": "yes",
+    "maxaxleload": "11.5",
+    "maxheight": "default",
+    "maxspeed": "80",
+    "name": "Wybrzeże Gdyńskie",
+    "oneway": "yes",
+    "ref": "7",
+    "sidewalk": "no",
+    "source:maxaxleload": "Dz.U. 2011 nr 222 poz. 1321 Art. 2 pkt. 11",
+    "source:maxspeed": "sign",
+    "surface": "asphalt",
+    "wikidata": "Q9366242",
+    "wikipedia": "pl:Ulica Wybrzeże Gdyńskie w Warszawie"
+  }
+},
+{
+  "type": "way",
+  "id": 1083810988,
+  "bounds": {
+    "minlat": 52.3000578,
+    "minlon": 20.9415289,
+    "maxlat": 52.3003140,
+    "maxlon": 20.9417986
+  },
+  "geometry": [
+    { "lat": 52.3003140, "lon": 20.9415934 },
+    { "lat": 52.3000961, "lon": 20.9417986 },
+    { "lat": 52.3000916, "lon": 20.9417860 },
+    { "lat": 52.3000578, "lon": 20.9416898 },
+    { "lat": 52.3000995, "lon": 20.9416506 },
+    { "lat": 52.3001151, "lon": 20.9416949 },
+    { "lat": 52.3002913, "lon": 20.9415289 },
+    { "lat": 52.3003140, "lon": 20.9415934 }
+  ],
+  "tags": {
+    "building": "outbuilding",
+    "building:levels": "1"
+  }
+},
+{
+  "type": "way",
+  "id": 1083811004,
+  "bounds": {
+    "minlat": 52.2991904,
+    "minlon": 20.9410874,
+    "maxlat": 52.3013756,
+    "maxlon": 20.9431937
+  },
+  "geometry": [
+    { "lat": 52.2999709, "lon": 20.9428199 },
+    { "lat": 52.3001755, "lon": 20.9426319 },
+    { "lat": 52.3003321, "lon": 20.9424881 },
+    { "lat": 52.3005807, "lon": 20.9422597 },
+    { "lat": 52.3007441, "lon": 20.9421095 },
+    { "lat": 52.3009336, "lon": 20.9419354 },
+    { "lat": 52.3009951, "lon": 20.9418789 },
+    { "lat": 52.3010520, "lon": 20.9418266 },
+    { "lat": 52.3011143, "lon": 20.9417694 },
+    { "lat": 52.3011699, "lon": 20.9417183 },
+    { "lat": 52.3012339, "lon": 20.9416595 },
+    { "lat": 52.3012903, "lon": 20.9416077 },
+    { "lat": 52.3013756, "lon": 20.9415293 },
+    { "lat": 52.3012481, "lon": 20.9411895 },
+    { "lat": 52.3011606, "lon": 20.9410874 },
+    { "lat": 52.3007774, "lon": 20.9412316 },
+    { "lat": 52.3007463, "lon": 20.9411392 },
+    { "lat": 52.3007105, "lon": 20.9411688 },
+    { "lat": 52.3000169, "lon": 20.9413558 },
+    { "lat": 52.3000024, "lon": 20.9413706 },
+    { "lat": 52.2997014, "lon": 20.9416755 },
+    { "lat": 52.2996531, "lon": 20.9417245 },
+    { "lat": 52.2991904, "lon": 20.9421641 },
+    { "lat": 52.2995198, "lon": 20.9430677 },
+    { "lat": 52.2995376, "lon": 20.9431180 },
+    { "lat": 52.2995635, "lon": 20.9431937 },
+    { "lat": 52.2999709, "lon": 20.9428199 }
+  ],
+  "tags": {
+    "access": "customers",
+    "addr:city": "Warszawa",
+    "addr:housenumber": "42",
+    "addr:postcode": "01-977",
+    "addr:street": "Marymoncka",
+    "hazard": "shooting_range",
+    "leisure": "sports_centre",
+    "name": "Strzelnica ZKS",
+    "opening_hours": "Mo-Su 09:00-19:00",
+    "phone": "+48228344108",
+    "shooting": "range",
+    "sport": "shooting",
+    "website": "https://zks.waw.pl"
+  }
+},
+{
+  "type": "way",
+  "id": 1083811005,
+  "bounds": {
+    "minlat": 52.3007751,
+    "minlon": 20.9411454,
+    "maxlat": 52.3011346,
+    "maxlon": 20.9415435
+  },
+  "geometry": [
+    { "lat": 52.3010981, "lon": 20.9411454 },
+    { "lat": 52.3011154, "lon": 20.9411967 },
+    { "lat": 52.3011346, "lon": 20.9412535 },
+    { "lat": 52.3011015, "lon": 20.9412829 },
+    { "lat": 52.3010391, "lon": 20.9413390 },
+    { "lat": 52.3009839, "lon": 20.9413887 },
+    { "lat": 52.3009202, "lon": 20.9414460 },
+    { "lat": 52.3008116, "lon": 20.9415435 },
+    { "lat": 52.3007933, "lon": 20.9414894 },
+    { "lat": 52.3007751, "lon": 20.9414354 },
+    { "lat": 52.3007946, "lon": 20.9414179 },
+    { "lat": 52.3010981, "lon": 20.9411454 }
+  ],
+  "tags": {
+    "building": "outbuilding",
+    "building:levels": "1",
+    "source": "www.geoportal.gov.pl"
+  }
+},
+{
+  "type": "way",
+  "id": 1083811006,
+  "bounds": {
+    "minlat": 52.3007955,
+    "minlon": 20.9421952,
+    "maxlat": 52.3009609,
+    "maxlon": 20.9423891
+  },
+  "geometry": [
+    { "lat": 52.3007955, "lon": 20.9423091 },
+    { "lat": 52.3009354, "lon": 20.9421952 },
+    { "lat": 52.3009609, "lon": 20.9422723 },
+    { "lat": 52.3008196, "lon": 20.9423891 },
+    { "lat": 52.3007955, "lon": 20.9423091 }
+  ],
+  "tags": {
+    "building": "outbuilding",
+    "building:levels": "1",
+    "source": "www.geoportal.gov.pl"
+  }
+},
+{
+  "type": "way",
+  "id": 1083811007,
+  "bounds": {
+    "minlat": 52.2988075,
+    "minlon": 20.9428673,
+    "maxlat": 52.2989121,
+    "maxlon": 20.9430753
+  },
+  "geometry": [
+    { "lat": 52.2988075, "lon": 20.9429099 },
+    { "lat": 52.2988517, "lon": 20.9428673 },
+    { "lat": 52.2989121, "lon": 20.9430344 },
+    { "lat": 52.2988675, "lon": 20.9430753 },
+    { "lat": 52.2988075, "lon": 20.9429099 }
+  ],
+  "tags": {
+    "building": "outbuilding",
+    "building:levels": "1",
+    "source": "www.geoportal.gov.pl"
+  }
+},
+{
+  "type": "way",
+  "id": 1083811008,
+  "bounds": {
+    "minlat": 52.2993926,
+    "minlon": 20.9430677,
+    "maxlat": 52.2995376,
+    "maxlon": 20.9432356
+  },
+  "geometry": [
+    { "lat": 52.2995198, "lon": 20.9430677 },
+    { "lat": 52.2995376, "lon": 20.9431180 },
+    { "lat": 52.2994106, "lon": 20.9432356 },
+    { "lat": 52.2993926, "lon": 20.9431862 },
+    { "lat": 52.2995198, "lon": 20.9430677 }
+  ],
+  "tags": {
+    "addr:city": "Warszawa",
+    "addr:city:simc": "0918123",
+    "addr:housenumber": "42",
+    "addr:postcode": "01-977",
+    "addr:street": "Marymoncka",
+    "building": "outbuilding",
+    "building:levels": "1",
+    "source": "www.geoportal.gov.pl",
+    "source:addr": "gugik.gov.pl"
+  }
+},
+{
+  "type": "way",
+  "id": 1083811009,
+  "bounds": {
+    "minlat": 52.3004946,
+    "minlon": 20.9411392,
+    "maxlat": 52.3007946,
+    "maxlon": 20.9415246
+  },
+  "geometry": [
+    { "lat": 52.3007946, "lon": 20.9414179 },
+    { "lat": 52.3007751, "lon": 20.9414354 },
+    { "lat": 52.3007933, "lon": 20.9414894 },
+    { "lat": 52.3007541, "lon": 20.9415246 },
+    { "lat": 52.3006690, "lon": 20.9412720 },
+    { "lat": 52.3006204, "lon": 20.9413157 },
+    { "lat": 52.3006302, "lon": 20.9413445 },
+    { "lat": 52.3005518, "lon": 20.9414148 },
+    { "lat": 52.3005329, "lon": 20.9414318 },
+    { "lat": 52.3005207, "lon": 20.9414428 },
+    { "lat": 52.3005070, "lon": 20.9414021 },
+    { "lat": 52.3004989, "lon": 20.9413780 },
+    { "lat": 52.3004946, "lon": 20.9413652 },
+    { "lat": 52.3007463, "lon": 20.9411392 },
+    { "lat": 52.3007774, "lon": 20.9412316 },
+    { "lat": 52.3007429, "lon": 20.9412626 },
+    { "lat": 52.3007946, "lon": 20.9414179 }
+  ],
+  "tags": {
+    "building": "outbuilding",
+    "building:levels": "1",
+    "source": "www.geoportal.gov.pl"
+  }
+},
+{
+  "type": "way",
+  "id": 1083811010,
+  "bounds": {
+    "minlat": 52.3006475,
+    "minlon": 20.9423091,
+    "maxlat": 52.3008318,
+    "maxlon": 20.9425495
+  },
+  "geometry": [
+    { "lat": 52.3008196, "lon": 20.9423891 },
+    { "lat": 52.3008318, "lon": 20.9424294 },
+    { "lat": 52.3006843, "lon": 20.9425495 },
+    { "lat": 52.3006475, "lon": 20.9424295 },
+    { "lat": 52.3007955, "lon": 20.9423091 },
+    { "lat": 52.3008196, "lon": 20.9423891 }
+  ],
+  "tags": {
+    "building": "outbuilding",
+    "building:levels": "1",
+    "source": "www.geoportal.gov.pl"
+  }
+},
+{
+  "type": "way",
+  "id": 1083811011,
+  "bounds": {
+    "minlat": 52.2999410,
+    "minlon": 20.9414749,
+    "maxlat": 52.3000995,
+    "maxlon": 20.9417441
+  },
+  "geometry": [
+    { "lat": 52.3000379, "lon": 20.9414749 },
+    { "lat": 52.3000916, "lon": 20.9416281 },
+    { "lat": 52.3000995, "lon": 20.9416506 },
+    { "lat": 52.3000578, "lon": 20.9416898 },
+    { "lat": 52.3000513, "lon": 20.9416693 },
+    { "lat": 52.2999703, "lon": 20.9417441 },
+    { "lat": 52.2999548, "lon": 20.9416954 },
+    { "lat": 52.2999784, "lon": 20.9416745 },
+    { "lat": 52.2999410, "lon": 20.9415651 },
+    { "lat": 52.3000379, "lon": 20.9414749 }
+  ],
+  "tags": {
+    "building": "yes",
+    "building:levels": "1",
+    "source": "www.geoportal.gov.pl"
+  }
+},
+{
+  "type": "way",
+  "id": 1083811026,
+  "bounds": {
+    "minlat": 52.2981394,
+    "minlon": 20.9414187,
+    "maxlat": 52.3020424,
+    "maxlon": 20.9487935
+  },
+  "geometry": [
+    { "lat": 52.2987846, "lon": 20.9426551 },
+    { "lat": 52.2988260, "lon": 20.9426134 },
+    { "lat": 52.2988750, "lon": 20.9425577 },
+    { "lat": 52.2988906, "lon": 20.9425402 },
+    { "lat": 52.2989162, "lon": 20.9425101 },
+    { "lat": 52.2989263, "lon": 20.9424982 },
+    { "lat": 52.2989640, "lon": 20.9424600 },
+    { "lat": 52.2989882, "lon": 20.9424372 },
+    { "lat": 52.2990085, "lon": 20.9424134 },
+    { "lat": 52.2989970, "lon": 20.9423808 },
+    { "lat": 52.2991904, "lon": 20.9421641 },
+    { "lat": 52.2995198, "lon": 20.9430677 },
+    { "lat": 52.2995376, "lon": 20.9431180 },
+    { "lat": 52.2995635, "lon": 20.9431937 },
+    { "lat": 52.2999709, "lon": 20.9428199 },
+    { "lat": 52.3001755, "lon": 20.9426319 },
+    { "lat": 52.3003321, "lon": 20.9424881 },
+    { "lat": 52.3005807, "lon": 20.9422597 },
+    { "lat": 52.3007441, "lon": 20.9421095 },
+    { "lat": 52.3009336, "lon": 20.9419354 },
+    { "lat": 52.3009951, "lon": 20.9418789 },
+    { "lat": 52.3010520, "lon": 20.9418266 },
+    { "lat": 52.3011143, "lon": 20.9417694 },
+    { "lat": 52.3011699, "lon": 20.9417183 },
+    { "lat": 52.3012339, "lon": 20.9416595 },
+    { "lat": 52.3012903, "lon": 20.9416077 },
+    { "lat": 52.3013756, "lon": 20.9415293 },
+    { "lat": 52.3013824, "lon": 20.9415232 },
+    { "lat": 52.3013868, "lon": 20.9415192 },
+    { "lat": 52.3013964, "lon": 20.9415105 },
+    { "lat": 52.3014207, "lon": 20.9414884 },
+    { "lat": 52.3014240, "lon": 20.9414854 },
+    { "lat": 52.3014978, "lon": 20.9414187 },
+    { "lat": 52.3018207, "lon": 20.9420617 },
+    { "lat": 52.3019927, "lon": 20.9425651 },
+    { "lat": 52.3020424, "lon": 20.9430535 },
+    { "lat": 52.3020093, "lon": 20.9435829 },
+    { "lat": 52.3019591, "lon": 20.9444214 },
+    { "lat": 52.3019487, "lon": 20.9445942 },
+    { "lat": 52.3019129, "lon": 20.9448862 },
+    { "lat": 52.3018318, "lon": 20.9455462 },
+    { "lat": 52.3017207, "lon": 20.9465448 },
+    { "lat": 52.3017218, "lon": 20.9465886 },
+    { "lat": 52.3017026, "lon": 20.9466936 },
+    { "lat": 52.3014275, "lon": 20.9474751 },
+    { "lat": 52.3011195, "lon": 20.9483025 },
+    { "lat": 52.3009670, "lon": 20.9487291 },
+    { "lat": 52.3008705, "lon": 20.9485226 },
+    { "lat": 52.3008149, "lon": 20.9485745 },
+    { "lat": 52.3007741, "lon": 20.9484728 },
+    { "lat": 52.3005884, "lon": 20.9487935 },
+    { "lat": 52.3002837, "lon": 20.9479334 },
+    { "lat": 52.3001585, "lon": 20.9475824 },
+    { "lat": 52.3001591, "lon": 20.9475538 },
+    { "lat": 52.3001621, "lon": 20.9474519 },
+    { "lat": 52.3001915, "lon": 20.9473064 },
+    { "lat": 52.3000400, "lon": 20.9467870 },
+    { "lat": 52.2999594, "lon": 20.9465189 },
+    { "lat": 52.2998386, "lon": 20.9462195 },
+    { "lat": 52.2996462, "lon": 20.9461262 },
+    { "lat": 52.2995050, "lon": 20.9461161 },
+    { "lat": 52.2993794, "lon": 20.9460122 },
+    { "lat": 52.2992273, "lon": 20.9458853 },
+    { "lat": 52.2990027, "lon": 20.9456978 },
+    { "lat": 52.2984888, "lon": 20.9451842 },
+    { "lat": 52.2982462, "lon": 20.9449213 },
+    { "lat": 52.2981394, "lon": 20.9445401 },
+    { "lat": 52.2982150, "lon": 20.9443603 },
+    { "lat": 52.2984688, "lon": 20.9440834 },
+    { "lat": 52.2984368, "lon": 20.9439987 },
+    { "lat": 52.2986795, "lon": 20.9437719 },
+    { "lat": 52.2988984, "lon": 20.9435536 },
+    { "lat": 52.2990499, "lon": 20.9434077 },
+    { "lat": 52.2987846, "lon": 20.9426551 }
+  ],
+  "tags": {
+    "addr:city": "Warszawa",
+    "addr:housenumber": "42",
+    "addr:postcode": "01-977",
+    "addr:street": "Marymoncka",
+    "fee": "yes",
+    "leisure": "sports_centre",
+    "name": "Ośrodek sportowy Hutnik",
+    "opening_hours": "Mo-Sa 08:00-23:00",
+    "operator": "Stołeczne Centrum Sportu AKTYWNA WARSZAWA",
+    "operator:type": "public",
+    "sport": "soccer;tennis",
+    "website": "https://sport.um.warszawa.pl/waw/aktywna-warszawa/osrodek-hutnik"
+  }
+},
+{
+  "type": "way",
+  "id": 1083811032,
+  "bounds": {
+    "minlat": 52.3007975,
+    "minlon": 20.9432404,
+    "maxlat": 52.3019088,
+    "maxlon": 20.9448401
+  },
+  "geometry": [
+    { "lat": 52.3007975, "lon": 20.9439855 },
+    { "lat": 52.3016167, "lon": 20.9432404 },
+    { "lat": 52.3019088, "lon": 20.9440950 },
+    { "lat": 52.3010896, "lon": 20.9448401 },
+    { "lat": 52.3007975, "lon": 20.9439855 }
+  ],
+  "tags": {
+    "access": "customers",
+    "leisure": "pitch",
+    "lit": "yes",
+    "ref": "B",
+    "source": "https://sport.um.warszawa.pl/waw/aktywna-warszawa/-/boiska-treningowe-osrodka-hutnik",
+    "sport": "soccer",
+    "surface": "artificial_turf"
+  }
+},
+{
+  "type": "way",
+  "id": 1083811035,
+  "bounds": {
+    "minlat": 52.3013216,
+    "minlon": 20.9468776,
+    "maxlat": 52.3015254,
+    "maxlon": 20.9471774
+  },
+  "geometry": [
+    { "lat": 52.3013650, "lon": 20.9471774 },
+    { "lat": 52.3015254, "lon": 20.9469645 },
+    { "lat": 52.3014821, "lon": 20.9468776 },
+    { "lat": 52.3013216, "lon": 20.9470906 },
+    { "lat": 52.3013650, "lon": 20.9471774 }
+  ],
+  "tags": {
+    "amenity": "dressing_room",
+    "building": "outbuilding",
+    "building:levels": "2",
+    "source:building": "BDOT",
+    "source:geometry": "EGiB"
+  }
+},
+{
+  "type": "way",
+  "id": 1135759036,
+  "bounds": {
+    "minlat": 52.2970678,
+    "minlon": 20.9380887,
+    "maxlat": 52.2973370,
+    "maxlon": 20.9384146
+  },
+  "geometry": [
+    { "lat": 52.2973370, "lon": 20.9384146 },
+    { "lat": 52.2972361, "lon": 20.9382702 },
+    { "lat": 52.2972102, "lon": 20.9382326 },
+    { "lat": 52.2971849, "lon": 20.9381968 },
+    { "lat": 52.2971531, "lon": 20.9381512 },
+    { "lat": 52.2971333, "lon": 20.9381228 },
+    { "lat": 52.2971114, "lon": 20.9381043 },
+    { "lat": 52.2970678, "lon": 20.9380887 }
+  ],
+  "tags": {
+    "access": "no",
+    "highway": "service",
+    "name": "Tomasza Nocznickiego",
+    "oneway": "yes",
+    "wikidata": "Q106913939"
+  }
+},
+{
+  "type": "way",
+  "id": 1135759037,
+  "bounds": {
+    "minlat": 52.2970678,
+    "minlon": 20.9380887,
+    "maxlat": 52.2973702,
+    "maxlon": 20.9385114
+  },
+  "geometry": [
+    { "lat": 52.2970678, "lon": 20.9380887 },
+    { "lat": 52.2970782, "lon": 20.9381363 },
+    { "lat": 52.2970968, "lon": 20.9381893 },
+    { "lat": 52.2971498, "lon": 20.9382670 },
+    { "lat": 52.2971765, "lon": 20.9383030 },
+    { "lat": 52.2973091, "lon": 20.9384848 },
+    { "lat": 52.2973702, "lon": 20.9385114 }
+  ],
+  "tags": {
+    "access": "no",
+    "highway": "service",
+    "name": "Tomasza Nocznickiego",
+    "oneway": "yes",
+    "wikidata": "Q106913939"
+  }
+},
+{
+  "type": "way",
+  "id": 1135787156,
+  "bounds": {
+    "minlat": 52.2974981,
+    "minlon": 20.9413037,
+    "maxlat": 52.2975688,
+    "maxlon": 20.9414143
+  },
+  "geometry": [
+    { "lat": 52.2974981, "lon": 20.9413746 },
+    { "lat": 52.2975190, "lon": 20.9413037 },
+    { "lat": 52.2975688, "lon": 20.9413408 },
+    { "lat": 52.2975495, "lon": 20.9414143 },
+    { "lat": 52.2974981, "lon": 20.9413746 }
+  ],
+  "tags": {
+    "building": "service",
+    "building:levels": "1",
+    "source": "www.geoportal.gov.pl"
+  }
+},
+{
+  "type": "way",
+  "id": 1149652066,
+  "bounds": {
+    "minlat": 52.3013633,
+    "minlon": 20.9429176,
+    "maxlat": 52.3015045,
+    "maxlon": 20.9431003
+  },
+  "geometry": [
+    { "lat": 52.3013901, "lon": 20.9431003 },
+    { "lat": 52.3013633, "lon": 20.9430232 },
+    { "lat": 52.3014777, "lon": 20.9429176 },
+    { "lat": 52.3015045, "lon": 20.9429946 },
+    { "lat": 52.3013901, "lon": 20.9431003 }
+  ],
+  "tags": {
+    "amenity": "dressing_room",
+    "building": "outbuilding",
+    "building:levels": "1",
+    "source": "www.geoportal.gov.pl",
+    "wheelchair": "yes"
+  }
+},
+{
+  "type": "way",
+  "id": 1149652067,
+  "bounds": {
+    "minlat": 52.3013738,
+    "minlon": 20.9430571,
+    "maxlat": 52.3015530,
+    "maxlon": 20.9432750
+  },
+  "geometry": [
+    { "lat": 52.3014006, "lon": 20.9432750 },
+    { "lat": 52.3013738, "lon": 20.9431980 },
+    { "lat": 52.3015262, "lon": 20.9430571 },
+    { "lat": 52.3015530, "lon": 20.9431341 },
+    { "lat": 52.3014006, "lon": 20.9432750 }
+  ],
+  "tags": {
+    "amenity": "dressing_room",
+    "building": "outbuilding",
+    "building:levels": "1",
+    "source": "www.geoportal.gov.pl",
+    "wheelchair": "yes"
+  }
+},
+{
+  "type": "way",
+  "id": 1182858213,
+  "bounds": {
+    "minlat": 52.3011824,
+    "minlon": 20.9389532,
+    "maxlat": 52.3012331,
+    "maxlon": 20.9389786
+  },
+  "geometry": [
+    { "lat": 52.3012331, "lon": 20.9389532 },
+    { "lat": 52.3012084, "lon": 20.9389656 },
+    { "lat": 52.3011824, "lon": 20.9389786 }
+  ],
+  "tags": {
+    "bicycle": "use_sidepath",
+    "highway": "trunk_link",
+    "highway:category:pl": "1",
+    "lanes": "4",
+    "lit": "yes",
+    "maxaxleload": "11.5",
+    "maxspeed": "60",
+    "name": "Pułkowa",
+    "oneway": "yes",
+    "sidewalk:left": "no",
+    "sidewalk:right": "separate",
+    "source:maxaxleload": "Dz.U. 2011 nr 222 poz. 1321 Art. 2 pkt. 11",
+    "source:maxspeed": "sign",
+    "surface": "asphalt",
+    "turn:lanes": "left|left;through|through|right",
+    "wikidata": "Q9365876",
+    "wikipedia": "pl:Ulica Pułkowa w Warszawie"
+  }
+},
+{
+  "type": "way",
+  "id": 1218325011,
+  "bounds": {
+    "minlat": 52.3004020,
+    "minlon": 20.9427532,
+    "maxlat": 52.3009560,
+    "maxlon": 20.9438576
+  },
+  "geometry": [
+    { "lat": 52.3006558, "lon": 20.9427532 },
+    { "lat": 52.3009560, "lon": 20.9436252 },
+    { "lat": 52.3007022, "lon": 20.9438576 },
+    { "lat": 52.3004020, "lon": 20.9429856 },
+    { "lat": 52.3006558, "lon": 20.9427532 }
+  ],
+  "tags": {
+    "access": "yes",
+    "leisure": "pitch",
+    "lit": "no",
+    "ref": "D",
+    "source": "https://sport.um.warszawa.pl/waw/aktywna-warszawa/-/boisko-pilkarskie-osrodek-hutnik",
+    "sport": "soccer",
+    "surface": "grass"
+  }
+},
+{
+  "type": "way",
+  "id": 1218325012,
+  "bounds": {
+    "minlat": 52.2992694,
+    "minlon": 20.9427573,
+    "maxlat": 52.3006826,
+    "maxlon": 20.9449799
+  },
+  "geometry": [
+    { "lat": 52.2994769, "lon": 20.9434504 },
+    { "lat": 52.2992694, "lon": 20.9436473 },
+    { "lat": 52.2997166, "lon": 20.9449469 },
+    { "lat": 52.2997801, "lon": 20.9449799 },
+    { "lat": 52.3005143, "lon": 20.9443053 },
+    { "lat": 52.3004693, "lon": 20.9441722 },
+    { "lat": 52.3006826, "lon": 20.9439762 },
+    { "lat": 52.3002621, "lon": 20.9427573 },
+    { "lat": 52.3000485, "lon": 20.9429546 },
+    { "lat": 52.3000298, "lon": 20.9429014 },
+    { "lat": 52.2994667, "lon": 20.9434208 },
+    { "lat": 52.2994769, "lon": 20.9434504 }
+  ],
+  "tags": {
+    "addr:city": "Warszawa",
+    "addr:housenumber": "42",
+    "addr:postcode": "01-977",
+    "addr:street": "Marymoncka",
+    "leisure": "stadium",
+    "operator": "Stołeczne Centrum Sportu AKTYWNA WARSZAWA",
+    "source": "https://sport.um.warszawa.pl/waw/aktywna-warszawa/-/boisko-glowne-osrodek-hutnik",
+    "sport": "soccer"
+  }
+},
+{
+  "type": "way",
+  "id": 1239190581,
+  "bounds": {
+    "minlat": 52.2999010,
+    "minlon": 20.9441272,
+    "maxlat": 52.3004865,
+    "maxlon": 20.9447666
+  },
+  "geometry": [
+    { "lat": 52.3004865, "lon": 20.9442745 },
+    { "lat": 52.3004355, "lon": 20.9441272 },
+    { "lat": 52.2999010, "lon": 20.9446193 },
+    { "lat": 52.2999519, "lon": 20.9447666 },
+    { "lat": 52.3004865, "lon": 20.9442745 }
+  ],
+  "tags": {
+    "building": "grandstand"
+  }
+},
+{
+  "type": "way",
+  "id": 1239190582,
+  "bounds": {
+    "minlat": 52.2994926,
+    "minlon": 20.9429428,
+    "maxlat": 52.3000778,
+    "maxlon": 20.9435907
+  },
+  "geometry": [
+    { "lat": 52.3000778, "lon": 20.9430892 },
+    { "lat": 52.3000277, "lon": 20.9429428 },
+    { "lat": 52.2994926, "lon": 20.9434356 },
+    { "lat": 52.2995475, "lon": 20.9435907 },
+    { "lat": 52.3000778, "lon": 20.9430892 }
+  ],
+  "tags": {
+    "building": "grandstand"
+  }
+},
+{
+  "type": "way",
+  "id": 1241858308,
+  "bounds": {
+    "minlat": 52.2956015,
+    "minlon": 20.9394586,
+    "maxlat": 52.2971029,
+    "maxlon": 20.9400986
+  },
+  "geometry": [
+    { "lat": 52.2971029, "lon": 20.9394859 },
+    { "lat": 52.2970371, "lon": 20.9394586 },
+    { "lat": 52.2969663, "lon": 20.9394725 },
+    { "lat": 52.2968936, "lon": 20.9394979 },
+    { "lat": 52.2967225, "lon": 20.9395783 },
+    { "lat": 52.2964705, "lon": 20.9396950 },
+    { "lat": 52.2959995, "lon": 20.9399131 },
+    { "lat": 52.2958494, "lon": 20.9399826 },
+    { "lat": 52.2956952, "lon": 20.9400540 },
+    { "lat": 52.2956015, "lon": 20.9400986 }
+  ],
+  "tags": {
+    "highway": "residential",
+    "name": "Dorycka",
+    "oneway": "yes",
+    "oneway:bicycle": "no",
+    "sidewalk": "separate",
+    "surface": "asphalt",
+    "wikidata": "Q110225475"
+  }
+},
+{
+  "type": "way",
+  "id": 1241858309,
+  "bounds": {
+    "minlat": 52.2955334,
+    "minlon": 20.9409049,
+    "maxlat": 52.2965917,
+    "maxlon": 20.9412700
+  },
+  "geometry": [
+    { "lat": 52.2955334, "lon": 20.9410252 },
+    { "lat": 52.2956093, "lon": 20.9410817 },
+    { "lat": 52.2957199, "lon": 20.9411642 },
+    { "lat": 52.2958601, "lon": 20.9412481 },
+    { "lat": 52.2959351, "lon": 20.9412685 },
+    { "lat": 52.2960103, "lon": 20.9412700 },
+    { "lat": 52.2960680, "lon": 20.9412567 },
+    { "lat": 52.2960946, "lon": 20.9412398 },
+    { "lat": 52.2961291, "lon": 20.9412180 },
+    { "lat": 52.2961557, "lon": 20.9411939 },
+    { "lat": 52.2963666, "lon": 20.9410029 },
+    { "lat": 52.2964203, "lon": 20.9409566 },
+    { "lat": 52.2964770, "lon": 20.9409208 },
+    { "lat": 52.2965917, "lon": 20.9409049 }
+  ],
+  "tags": {
+    "highway": "residential",
+    "name": "Dorycka",
+    "oneway": "yes",
+    "oneway:bicycle": "no",
+    "sidewalk": "separate",
+    "surface": "concrete:plates",
+    "wikidata": "Q110225475"
+  }
+},
+{
+  "type": "way",
+  "id": 1246023431,
+  "bounds": {
+    "minlat": 52.3011514,
+    "minlon": 20.9463875,
+    "maxlat": 52.3014614,
+    "maxlon": 20.9469424
+  },
+  "geometry": [
+    { "lat": 52.3014614, "lon": 20.9468076 },
+    { "lat": 52.3013598, "lon": 20.9469424 },
+    { "lat": 52.3011514, "lon": 20.9465223 },
+    { "lat": 52.3012529, "lon": 20.9463875 },
+    { "lat": 52.3014614, "lon": 20.9468076 }
+  ],
+  "tags": {
+    "access": "customers",
+    "leisure": "pitch",
+    "source": "https://sport.um.warszawa.pl/waw/aktywna-warszawa/-/korty-tenisowe-osrodek-hutnik",
+    "sport": "tennis",
+    "surface": "clay"
+  }
+},
+{
+  "type": "way",
+  "id": 1246023432,
+  "bounds": {
+    "minlat": 52.3012529,
+    "minlon": 20.9462510,
+    "maxlat": 52.3015641,
+    "maxlon": 20.9468067
+  },
+  "geometry": [
+    { "lat": 52.3015641, "lon": 20.9466702 },
+    { "lat": 52.3014616, "lon": 20.9468067 },
+    { "lat": 52.3012529, "lon": 20.9463875 },
+    { "lat": 52.3013555, "lon": 20.9462510 },
+    { "lat": 52.3015641, "lon": 20.9466702 }
+  ],
+  "tags": {
+    "access": "customers",
+    "leisure": "pitch",
+    "source": "https://sport.um.warszawa.pl/waw/aktywna-warszawa/-/korty-tenisowe-osrodek-hutnik",
+    "sport": "tennis",
+    "surface": "clay"
+  }
+},
+{
+  "type": "way",
+  "id": 1246023433,
+  "bounds": {
+    "minlat": 52.3013555,
+    "minlon": 20.9461130,
+    "maxlat": 52.3016655,
+    "maxlon": 20.9466702
+  },
+  "geometry": [
+    { "lat": 52.3016655, "lon": 20.9465281 },
+    { "lat": 52.3015641, "lon": 20.9466702 },
+    { "lat": 52.3013555, "lon": 20.9462510 },
+    { "lat": 52.3014613, "lon": 20.9461130 },
+    { "lat": 52.3016655, "lon": 20.9465281 }
+  ],
+  "tags": {
+    "access": "customers",
+    "leisure": "pitch",
+    "source": "https://sport.um.warszawa.pl/waw/aktywna-warszawa/-/korty-tenisowe-osrodek-hutnik",
+    "sport": "tennis",
+    "surface": "clay"
+  }
+},
+{
+  "type": "way",
+  "id": 1246023434,
+  "bounds": {
+    "minlat": 52.3003117,
+    "minlon": 20.9424111,
+    "maxlat": 52.3006808,
+    "maxlon": 20.9428909
+  },
+  "geometry": [
+    { "lat": 52.3006091, "lon": 20.9424111 },
+    { "lat": 52.3003117, "lon": 20.9426737 },
+    { "lat": 52.3003835, "lon": 20.9428909 },
+    { "lat": 52.3006808, "lon": 20.9426282 },
+    { "lat": 52.3006091, "lon": 20.9424111 }
+  ],
+  "tags": {
+    "building": "yes"
+  }
+},
+{
+  "type": "way",
+  "id": 1318522415,
+  "bounds": {
+    "minlat": 52.2965917,
+    "minlon": 20.9409049,
+    "maxlat": 52.2973486,
+    "maxlon": 20.9414081
+  },
+  "geometry": [
+    { "lat": 52.2965917, "lon": 20.9409049 },
+    { "lat": 52.2966324, "lon": 20.9409157 },
+    { "lat": 52.2967048, "lon": 20.9409392 },
+    { "lat": 52.2967749, "lon": 20.9409849 },
+    { "lat": 52.2971911, "lon": 20.9412919 },
+    { "lat": 52.2973486, "lon": 20.9414081 }
+  ],
+  "tags": {
+    "highway": "residential",
+    "name": "Dorycka",
+    "oneway": "yes",
+    "oneway:bicycle": "no",
+    "sidewalk": "separate",
+    "surface": "asphalt",
+    "wikidata": "Q110225475"
+  }
+},
+{
+  "type": "way",
+  "id": 1354458038,
+  "bounds": {
+    "minlat": 52.3014787,
+    "minlon": 20.9505854,
+    "maxlat": 52.3015257,
+    "maxlon": 20.9506806
+  },
+  "geometry": [
+    { "lat": 52.3015257, "lon": 20.9506043 },
+    { "lat": 52.3015057, "lon": 20.9506806 },
+    { "lat": 52.3014787, "lon": 20.9506618 },
+    { "lat": 52.3014987, "lon": 20.9505854 },
+    { "lat": 52.3015257, "lon": 20.9506043 }
+  ],
+  "tags": {
+    "building": "service",
+    "building:levels": "1"
+  }
+},
+{
+  "type": "way",
+  "id": 1374824499,
+  "bounds": {
+    "minlat": 52.2970678,
+    "minlon": 20.9372294,
+    "maxlat": 52.2976583,
+    "maxlon": 20.9380887
+  },
+  "geometry": [
+    { "lat": 52.2976583, "lon": 20.9372294 },
+    { "lat": 52.2971154, "lon": 20.9380606 },
+    { "lat": 52.2971031, "lon": 20.9380740 },
+    { "lat": 52.2970793, "lon": 20.9380874 },
+    { "lat": 52.2970678, "lon": 20.9380887 }
+  ],
+  "tags": {
+    "highway": "unclassified",
+    "lanes": "2",
+    "name": "Książąt Mazowieckich",
+    "oneway": "no",
+    "surface": "asphalt",
+    "wikidata": "Q107207744"
+  }
+},
+{
+  "type": "way",
+  "id": 1374824500,
+  "bounds": {
+    "minlat": 52.2967690,
+    "minlon": 20.9377651,
+    "maxlat": 52.2970678,
+    "maxlon": 20.9380887
+  },
+  "geometry": [
+    { "lat": 52.2970678, "lon": 20.9380887 },
+    { "lat": 52.2970429, "lon": 20.9380843 },
+    { "lat": 52.2970207, "lon": 20.9380722 },
+    { "lat": 52.2967690, "lon": 20.9377651 }
+  ],
+  "tags": {
+    "highway": "unclassified",
+    "lanes": "2",
+    "name": "Tomasza Nocznickiego",
+    "oneway": "no",
+    "surface": "asphalt",
+    "wikidata": "Q106913939"
+  }
+},
+{
+  "type": "way",
+  "id": 1389472375,
+  "bounds": {
+    "minlat": 52.2973702,
+    "minlon": 20.9385114,
+    "maxlat": 52.2978801,
+    "maxlon": 20.9394370
+  },
+  "geometry": [
+    { "lat": 52.2973702, "lon": 20.9385114 },
+    { "lat": 52.2974212, "lon": 20.9386055 },
+    { "lat": 52.2977027, "lon": 20.9390636 },
+    { "lat": 52.2978801, "lon": 20.9394370 }
+  ],
+  "tags": {
+    "highway": "proposed",
+    "name": "Tomasza Nocznickiego",
+    "proposed": "unclassified",
+    "wikidata": "Q106913939"
+  }
+},
+{
+  "type": "way",
+  "id": 1389472376,
+  "bounds": {
+    "minlat": 52.2978801,
+    "minlon": 20.9394370,
+    "maxlat": 52.2986719,
+    "maxlon": 20.9414754
+  },
+  "geometry": [
+    { "lat": 52.2978801, "lon": 20.9394370 },
+    { "lat": 52.2982532, "lon": 20.9403092 },
+    { "lat": 52.2985178, "lon": 20.9410053 },
+    { "lat": 52.2985846, "lon": 20.9411915 },
+    { "lat": 52.2986719, "lon": 20.9414754 }
+  ],
+  "tags": {
+    "highway": "proposed",
+    "name": "Tomasza Nocznickiego",
+    "proposed": "unclassified",
+    "wikidata": "Q106913939"
+  }
+},
+{
+  "type": "way",
+  "id": 1428101846,
+  "bounds": {
+    "minlat": 52.3004741,
+    "minlon": 20.9413780,
+    "maxlat": 52.3005070,
+    "maxlon": 20.9414240
+  },
+  "geometry": [
+    { "lat": 52.3005070, "lon": 20.9414021 },
+    { "lat": 52.3004823, "lon": 20.9414240 },
+    { "lat": 52.3004741, "lon": 20.9414000 },
+    { "lat": 52.3004989, "lon": 20.9413780 },
+    { "lat": 52.3005070, "lon": 20.9414021 }
+  ],
+  "tags": {
+    "building": "yes"
+  }
+},
+{
+  "type": "way",
+  "id": 1428101847,
+  "bounds": {
+    "minlat": 52.3003481,
+    "minlon": 20.9415404,
+    "maxlat": 52.3003832,
+    "maxlon": 20.9415932
+  },
+  "geometry": [
+    { "lat": 52.3003723, "lon": 20.9415404 },
+    { "lat": 52.3003481, "lon": 20.9415624 },
+    { "lat": 52.3003580, "lon": 20.9415932 },
+    { "lat": 52.3003832, "lon": 20.9415714 },
+    { "lat": 52.3003723, "lon": 20.9415404 }
+  ],
+  "tags": {
+    "building": "yes"
+  }
+},
+{
+  "type": "way",
+  "id": 1436561979,
+  "bounds": {
+    "minlat": 52.3034496,
+    "minlon": 20.9463728,
+    "maxlat": 52.3035385,
+    "maxlon": 20.9465745
+  },
+  "geometry": [
+    { "lat": 52.3034496, "lon": 20.9465451 },
+    { "lat": 52.3034849, "lon": 20.9463728 },
+    { "lat": 52.3035385, "lon": 20.9464022 },
+    { "lat": 52.3035031, "lon": 20.9465745 },
+    { "lat": 52.3034496, "lon": 20.9465451 }
+  ],
+  "tags": {
+    "building": "industrial"
+  }
+},
+{
+  "type": "way",
+  "id": 1436562007,
+  "bounds": {
+    "minlat": 52.3027193,
+    "minlon": 20.9461564,
+    "maxlat": 52.3028131,
+    "maxlon": 20.9463282
+  },
+  "geometry": [
+    { "lat": 52.3027857, "lon": 20.9463282 },
+    { "lat": 52.3027193, "lon": 20.9462912 },
+    { "lat": 52.3027473, "lon": 20.9461564 },
+    { "lat": 52.3028131, "lon": 20.9461931 },
+    { "lat": 52.3028124, "lon": 20.9461965 },
+    { "lat": 52.3027857, "lon": 20.9463282 }
+  ],
+  "tags": {
+    "building": "industrial"
+  }
+},
+{
+  "type": "way",
+  "id": 1436562008,
+  "bounds": {
+    "minlat": 52.3028121,
+    "minlon": 20.9462073,
+    "maxlat": 52.3029085,
+    "maxlon": 20.9463799
+  },
+  "geometry": [
+    { "lat": 52.3028121, "lon": 20.9463427 },
+    { "lat": 52.3028810, "lon": 20.9463799 },
+    { "lat": 52.3029085, "lon": 20.9462442 },
+    { "lat": 52.3028403, "lon": 20.9462073 },
+    { "lat": 52.3028394, "lon": 20.9462117 },
+    { "lat": 52.3028121, "lon": 20.9463427 }
+  ],
+  "tags": {
+    "building": "industrial"
+  }
+},
+{
+  "type": "way",
+  "id": 1436562010,
+  "bounds": {
+    "minlat": 52.3034008,
+    "minlon": 20.9465789,
+    "maxlat": 52.3034399,
+    "maxlon": 20.9466763
+  },
+  "geometry": [
+    { "lat": 52.3034218, "lon": 20.9466763 },
+    { "lat": 52.3034008, "lon": 20.9466650 },
+    { "lat": 52.3034183, "lon": 20.9465789 },
+    { "lat": 52.3034399, "lon": 20.9465906 },
+    { "lat": 52.3034218, "lon": 20.9466763 }
+  ],
+  "tags": {
+    "building": "container"
+  }
+},
+{
+  "type": "way",
+  "id": 1436562011,
+  "bounds": {
+    "minlat": 52.3033286,
+    "minlon": 20.9478985,
+    "maxlat": 52.3033452,
+    "maxlon": 20.9479371
+  },
+  "geometry": [
+    { "lat": 52.3033452, "lon": 20.9479038 },
+    { "lat": 52.3033353, "lon": 20.9478985 },
+    { "lat": 52.3033286, "lon": 20.9479318 },
+    { "lat": 52.3033385, "lon": 20.9479371 },
+    { "lat": 52.3033452, "lon": 20.9479038 }
+  ],
+  "tags": {
+    "building": "service"
+  }
+},
+{
+  "type": "way",
+  "id": 1436562012,
+  "bounds": {
+    "minlat": 52.3033382,
+    "minlon": 20.9478508,
+    "maxlat": 52.3033551,
+    "maxlon": 20.9478895
+  },
+  "geometry": [
+    { "lat": 52.3033481, "lon": 20.9478895 },
+    { "lat": 52.3033382, "lon": 20.9478840 },
+    { "lat": 52.3033452, "lon": 20.9478508 },
+    { "lat": 52.3033551, "lon": 20.9478563 },
+    { "lat": 52.3033481, "lon": 20.9478895 }
+  ],
+  "tags": {
+    "building": "service"
+  }
+},
+{
+  "type": "way",
+  "id": 1436562060,
+  "bounds": {
+    "minlat": 52.3032220,
+    "minlon": 20.9478310,
+    "maxlat": 52.3032886,
+    "maxlon": 20.9478981
+  },
+  "geometry": [
+    { "lat": 52.3032815, "lon": 20.9478981 },
+    { "lat": 52.3032220, "lon": 20.9478656 },
+    { "lat": 52.3032291, "lon": 20.9478310 },
+    { "lat": 52.3032886, "lon": 20.9478635 },
+    { "lat": 52.3032815, "lon": 20.9478981 }
+  ],
+  "tags": {
+    "building": "service"
+  }
+},
+{
+  "type": "way",
+  "id": 1436562061,
+  "bounds": {
+    "minlat": 52.3031793,
+    "minlon": 20.9478865,
+    "maxlat": 52.3032775,
+    "maxlon": 20.9481028
+  },
+  "geometry": [
+    { "lat": 52.3032404, "lon": 20.9481028 },
+    { "lat": 52.3031793, "lon": 20.9480698 },
+    { "lat": 52.3032164, "lon": 20.9478865 },
+    { "lat": 52.3032775, "lon": 20.9479195 },
+    { "lat": 52.3032458, "lon": 20.9480760 },
+    { "lat": 52.3032404, "lon": 20.9481028 }
+  ],
+  "tags": {
+    "building": "service"
+  }
+},
+{
+  "type": "way",
+  "id": 1436562063,
+  "bounds": {
+    "minlat": 52.3029047,
+    "minlon": 20.9481179,
+    "maxlat": 52.3030241,
+    "maxlon": 20.9482205
+  },
+  "geometry": [
+    { "lat": 52.3029369, "lon": 20.9481308 },
+    { "lat": 52.3029133, "lon": 20.9481179 },
+    { "lat": 52.3029047, "lon": 20.9481600 },
+    { "lat": 52.3029826, "lon": 20.9482026 },
+    { "lat": 52.3030155, "lon": 20.9482205 },
+    { "lat": 52.3030241, "lon": 20.9481785 },
+    { "lat": 52.3030132, "lon": 20.9481725 },
+    { "lat": 52.3029369, "lon": 20.9481308 }
+  ],
+  "tags": {
+    "building": "service",
+    "location": "indoor",
+    "power": "switchgear"
+  }
+},
+{
+  "type": "way",
+  "id": 1436562066,
+  "bounds": {
+    "minlat": 52.3026115,
+    "minlon": 20.9476045,
+    "maxlat": 52.3027288,
+    "maxlon": 20.9478583
+  },
+  "geometry": [
+    { "lat": 52.3026857, "lon": 20.9478583 },
+    { "lat": 52.3026115, "lon": 20.9478183 },
+    { "lat": 52.3026546, "lon": 20.9476045 },
+    { "lat": 52.3027288, "lon": 20.9476445 },
+    { "lat": 52.3026857, "lon": 20.9478583 }
+  ],
+  "tags": {
+    "building": "service"
+  }
+},
+{
+  "type": "way",
+  "id": 1436562067,
+  "bounds": {
+    "minlat": 52.3026006,
+    "minlon": 20.9471602,
+    "maxlat": 52.3026323,
+    "maxlon": 20.9472331
+  },
+  "geometry": [
+    { "lat": 52.3026323, "lon": 20.9472234 },
+    { "lat": 52.3026117, "lon": 20.9472331 },
+    { "lat": 52.3026006, "lon": 20.9471699 },
+    { "lat": 52.3026212, "lon": 20.9471602 },
+    { "lat": 52.3026323, "lon": 20.9472234 }
+  ],
+  "tags": {
+    "building": "service"
+  }
+},
+{
+  "type": "way",
+  "id": 1436562071,
+  "bounds": {
+    "minlat": 52.3033576,
+    "minlon": 20.9462770,
+    "maxlat": 52.3034618,
+    "maxlon": 20.9465320
+  },
+  "geometry": [
+    { "lat": 52.3033576, "lon": 20.9464998 },
+    { "lat": 52.3034034, "lon": 20.9462770 },
+    { "lat": 52.3034618, "lon": 20.9463091 },
+    { "lat": 52.3034160, "lon": 20.9465320 },
+    { "lat": 52.3033582, "lon": 20.9465002 },
+    { "lat": 52.3033576, "lon": 20.9464998 }
+  ],
+  "tags": {
+    "building": "industrial"
+  }
+},
+{
+  "type": "way",
+  "id": 1436732265,
+  "bounds": {
+    "minlat": 52.3004998,
+    "minlon": 20.9397558,
+    "maxlat": 52.3005378,
+    "maxlon": 20.9398403
+  },
+  "geometry": [
+    { "lat": 52.3005208, "lon": 20.9398403 },
+    { "lat": 52.3005043, "lon": 20.9397943 },
+    { "lat": 52.3005022, "lon": 20.9397845 },
+    { "lat": 52.3004998, "lon": 20.9397796 },
+    { "lat": 52.3005076, "lon": 20.9397687 },
+    { "lat": 52.3005142, "lon": 20.9397609 },
+    { "lat": 52.3005207, "lon": 20.9397565 },
+    { "lat": 52.3005242, "lon": 20.9397558 },
+    { "lat": 52.3005290, "lon": 20.9397574 },
+    { "lat": 52.3005328, "lon": 20.9397611 },
+    { "lat": 52.3005350, "lon": 20.9397647 },
+    { "lat": 52.3005369, "lon": 20.9397706 },
+    { "lat": 52.3005378, "lon": 20.9397787 },
+    { "lat": 52.3005375, "lon": 20.9397870 },
+    { "lat": 52.3005356, "lon": 20.9398028 },
+    { "lat": 52.3005346, "lon": 20.9398110 },
+    { "lat": 52.3005334, "lon": 20.9398176 },
+    { "lat": 52.3005312, "lon": 20.9398254 },
+    { "lat": 52.3005290, "lon": 20.9398309 },
+    { "lat": 52.3005262, "lon": 20.9398353 },
+    { "lat": 52.3005208, "lon": 20.9398403 }
+  ],
+  "tags": {
+    "building": "service"
+  }
+},
+{
+  "type": "way",
+  "id": 1436732266,
+  "bounds": {
+    "minlat": 52.3005356,
+    "minlon": 20.9397762,
+    "maxlat": 52.3005846,
+    "maxlon": 20.9398625
+  },
+  "geometry": [
+    { "lat": 52.3005356, "lon": 20.9398028 },
+    { "lat": 52.3005634, "lon": 20.9397762 },
+    { "lat": 52.3005846, "lon": 20.9398353 },
+    { "lat": 52.3005754, "lon": 20.9398451 },
+    { "lat": 52.3005572, "lon": 20.9398625 },
+    { "lat": 52.3005356, "lon": 20.9398028 }
+  ],
+  "tags": {
+    "building": "service",
+    "operator": "Zakład \"Czajka\" MPWiK Warszawa"
+  }
+},
+{
+  "type": "way",
+  "id": 1445846792,
+  "bounds": {
+    "minlat": 52.3025002,
+    "minlon": 20.9428748,
+    "maxlat": 52.3025602,
+    "maxlon": 20.9429976
+  },
+  "geometry": [
+    { "lat": 52.3025002, "lon": 20.9428748 },
+    { "lat": 52.3025602, "lon": 20.9429976 }
+  ],
+  "tags": {
+    "alt_name": "Trasa Mostu Marii Skłodowskiej-Curie (Północnego)",
+    "cycleway:right": "no",
+    "expressway": "yes",
+    "foot": "no",
+    "highway": "primary",
+    "lanes": "4",
+    "lit": "yes",
+    "maxspeed": "80",
+    "name": "Aleja Generał Marii Wittek",
+    "name:etymology:wikidata": "Q6761660",
+    "oneway": "yes",
+    "placement": "left_of:2",
+    "ref": "61",
+    "short_name": "al. gen. Marii Wittek",
+    "shoulder": "no",
+    "sidewalk": "no",
+    "source:maxspeed": "sign",
+    "surface": "asphalt",
+    "wikidata": "Q114327277"
+  }
+},
+{
+  "type": "way",
+  "id": 1446716842,
+  "bounds": {
+    "minlat": 52.3008306,
+    "minlon": 20.9415779,
+    "maxlat": 52.3009951,
+    "maxlon": 20.9419354
+  },
+  "geometry": [
+    { "lat": 52.3008908, "lon": 20.9415779 },
+    { "lat": 52.3009951, "lon": 20.9418789 },
+    { "lat": 52.3009336, "lon": 20.9419354 },
+    { "lat": 52.3008306, "lon": 20.9416331 },
+    { "lat": 52.3008908, "lon": 20.9415779 }
+  ],
+  "tags": {
+    "leisure": "sports_centre",
+    "name": "dyn. F",
+    "sport": "shooting"
+  }
+},
+{
+  "type": "way",
+  "id": 1446716843,
+  "bounds": {
+    "minlat": 52.3008908,
+    "minlon": 20.9415276,
+    "maxlat": 52.3010520,
+    "maxlon": 20.9418789
+  },
+  "geometry": [
+    { "lat": 52.3008908, "lon": 20.9415779 },
+    { "lat": 52.3009485, "lon": 20.9415276 },
+    { "lat": 52.3010520, "lon": 20.9418266 },
+    { "lat": 52.3009951, "lon": 20.9418789 },
+    { "lat": 52.3008908, "lon": 20.9415779 }
+  ],
+  "tags": {
+    "leisure": "sports_centre",
+    "name": "dyn. E",
+    "sport": "shooting"
+  }
+},
+{
+  "type": "way",
+  "id": 1446717062,
+  "bounds": {
+    "minlat": 52.3012752,
+    "minlon": 20.9413553,
+    "maxlat": 52.3013251,
+    "maxlon": 20.9414540
+  },
+  "geometry": [
+    { "lat": 52.3012969, "lon": 20.9413553 },
+    { "lat": 52.3013251, "lon": 20.9414330 },
+    { "lat": 52.3013034, "lon": 20.9414540 },
+    { "lat": 52.3012752, "lon": 20.9413763 },
+    { "lat": 52.3012969, "lon": 20.9413553 }
+  ],
+  "tags": {
+    "amenity": "toilets",
+    "building": "yes"
+  }
+},
+{
+  "type": "way",
+  "id": 1446717286,
+  "bounds": {
+    "minlat": 52.3013068,
+    "minlon": 20.9414405,
+    "maxlat": 52.3013568,
+    "maxlon": 20.9415397
+  },
+  "geometry": [
+    { "lat": 52.3013068, "lon": 20.9414617 },
+    { "lat": 52.3013295, "lon": 20.9414405 },
+    { "lat": 52.3013568, "lon": 20.9415185 },
+    { "lat": 52.3013341, "lon": 20.9415397 },
+    { "lat": 52.3013068, "lon": 20.9414617 }
+  ],
+  "tags": {
+    "building": "yes"
+  }
+},
+{
+  "type": "way",
+  "id": 1446717287,
+  "bounds": {
+    "minlat": 52.3011604,
+    "minlon": 20.9412020,
+    "maxlat": 52.3012039,
+    "maxlon": 20.9412956
+  },
+  "geometry": [
+    { "lat": 52.3011788, "lon": 20.9412020 },
+    { "lat": 52.3012039, "lon": 20.9412796 },
+    { "lat": 52.3011855, "lon": 20.9412956 },
+    { "lat": 52.3011604, "lon": 20.9412179 },
+    { "lat": 52.3011788, "lon": 20.9412020 }
+  ],
+  "tags": {
+    "building": "yes"
+  }
+},
+{
+  "type": "way",
+  "id": 1446717288,
+  "bounds": {
+    "minlat": 52.3012006,
+    "minlon": 20.9413148,
+    "maxlat": 52.3012396,
+    "maxlon": 20.9414025
+  },
+  "geometry": [
+    { "lat": 52.3012006, "lon": 20.9413278 },
+    { "lat": 52.3012242, "lon": 20.9414025 },
+    { "lat": 52.3012396, "lon": 20.9413895 },
+    { "lat": 52.3012160, "lon": 20.9413148 },
+    { "lat": 52.3012006, "lon": 20.9413278 }
+  ],
+  "tags": {
+    "building": "yes"
+  }
+},
+{
+  "type": "way",
+  "id": 1446722411,
+  "bounds": {
+    "minlat": 52.2998329,
+    "minlon": 20.9416582,
+    "maxlat": 52.2999703,
+    "maxlon": 20.9418435
+  },
+  "geometry": [
+    { "lat": 52.2999703, "lon": 20.9417441 },
+    { "lat": 52.2999368, "lon": 20.9416582 },
+    { "lat": 52.2998329, "lon": 20.9417609 },
+    { "lat": 52.2998625, "lon": 20.9418435 },
+    { "lat": 52.2999703, "lon": 20.9417441 }
+  ],
+  "tags": {
+    "building": "yes"
+  }
+},
+{
+  "type": "way",
+  "id": 1446874538,
+  "bounds": {
+    "minlat": 52.3015099,
+    "minlon": 20.9420340,
+    "maxlat": 52.3015646,
+    "maxlon": 20.9421316
+  },
+  "geometry": [
+    { "lat": 52.3015646, "lon": 20.9421041 },
+    { "lat": 52.3015409, "lon": 20.9421316 },
+    { "lat": 52.3015142, "lon": 20.9420716 },
+    { "lat": 52.3015099, "lon": 20.9420584 },
+    { "lat": 52.3015130, "lon": 20.9420401 },
+    { "lat": 52.3015223, "lon": 20.9420340 },
+    { "lat": 52.3015310, "lon": 20.9420381 },
+    { "lat": 52.3015391, "lon": 20.9420472 },
+    { "lat": 52.3015646, "lon": 20.9421041 }
+  ],
+  "tags": {
+    "building": "yes"
+  }
+},
+{
+  "type": "way",
+  "id": 1446874789,
+  "bounds": {
+    "minlat": 52.3018051,
+    "minlon": 20.9430099,
+    "maxlat": 52.3018468,
+    "maxlon": 20.9430959
+  },
+  "geometry": [
+    { "lat": 52.3018264, "lon": 20.9430099 },
+    { "lat": 52.3018468, "lon": 20.9430790 },
+    { "lat": 52.3018255, "lon": 20.9430959 },
+    { "lat": 52.3018051, "lon": 20.9430268 },
+    { "lat": 52.3018264, "lon": 20.9430099 }
+  ],
+  "tags": {
+    "building": "yes"
+  }
+},
+{
+  "type": "way",
+  "id": 1453041663,
+  "bounds": {
+    "minlat": 52.3000967,
+    "minlon": 20.9415741,
+    "maxlat": 52.3005795,
+    "maxlon": 20.9424861
+  },
+  "geometry": [
+    { "lat": 52.3003363, "lon": 20.9415741 },
+    { "lat": 52.3005795, "lon": 20.9422592 },
+    { "lat": 52.3003324, "lon": 20.9424861 },
+    { "lat": 52.3000967, "lon": 20.9417988 },
+    { "lat": 52.3003363, "lon": 20.9415741 }
+  ],
+  "tags": {
+    "area": "yes",
+    "leisure": "sports_centre",
+    "name": "biatlon",
+    "sport": "shooting"
+  }
+},
+{
+  "type": "way",
+  "id": 1453042390,
+  "bounds": {
+    "minlat": 52.2999355,
+    "minlon": 20.9418260,
+    "maxlat": 52.3002890,
+    "maxlon": 20.9426302
+  },
+  "geometry": [
+    { "lat": 52.3002890, "lon": 20.9425262 },
+    { "lat": 52.3001758, "lon": 20.9426302 },
+    { "lat": 52.2999355, "lon": 20.9419298 },
+    { "lat": 52.3000488, "lon": 20.9418260 },
+    { "lat": 52.3002890, "lon": 20.9425262 }
+  ],
+  "tags": {
+    "area": "yes",
+    "leisure": "sports_centre",
+    "name": "c.p.",
+    "sport": "shooting"
+  }
+},
+{
+  "type": "way",
+  "id": 1487702850,
+  "bounds": {
+    "minlat": 52.2958717,
+    "minlon": 20.9427519,
+    "maxlat": 52.2977439,
+    "maxlon": 20.9445217
+  },
+  "geometry": [
+    { "lat": 52.2958717, "lon": 20.9445217 },
+    { "lat": 52.2960826, "lon": 20.9443225 },
+    { "lat": 52.2977078, "lon": 20.9427860 },
+    { "lat": 52.2977439, "lon": 20.9427519 }
+  ],
+  "tags": {
+    "cycleway:right": "no",
+    "foot": "no",
+    "highway": "secondary",
+    "lanes": "2",
+    "lit": "yes",
+    "maxspeed": "50",
+    "name": "Marymoncka",
+    "old_ref": "637",
+    "oneway": "yes",
+    "sidewalk": "no",
+    "source:maxspeed": "PL:urban",
+    "surface": "asphalt",
+    "wikidata": "Q9365625",
+    "wikipedia": "pl:Ulica Marymoncka w Warszawie"
+  }
+},
+{
+  "type": "way",
+  "id": 1487702851,
+  "bounds": {
+    "minlat": 52.2977439,
+    "minlon": 20.9423554,
+    "maxlat": 52.2981688,
+    "maxlon": 20.9427519
+  },
+  "geometry": [
+    { "lat": 52.2977439, "lon": 20.9427519 },
+    { "lat": 52.2979791, "lon": 20.9425289 },
+    { "lat": 52.2981688, "lon": 20.9423554 }
+  ],
+  "tags": {
+    "cycleway:right": "no",
+    "highway": "secondary",
+    "lanes": "2",
+    "lit": "yes",
+    "maxspeed": "50",
+    "name": "Marymoncka",
+    "old_ref": "637",
+    "oneway": "yes",
+    "sidewalk:left": "no",
+    "sidewalk:right": "separate",
+    "source:maxspeed": "PL:urban",
+    "surface": "asphalt",
+    "wikidata": "Q9365625",
+    "wikipedia": "pl:Ulica Marymoncka w Warszawie"
+  }
+},
+{
+  "type": "way",
+  "id": 1498061493,
+  "bounds": {
+    "minlat": 52.3038383,
+    "minlon": 20.9457041,
+    "maxlat": 52.3040883,
+    "maxlon": 20.9462210
+  },
+  "geometry": [
+    { "lat": 52.3038383, "lon": 20.9457041 },
+    { "lat": 52.3040883, "lon": 20.9462210 }
+  ],
+  "tags": {
+    "alt_name": "Trasa Mostu Marii Skłodowskiej-Curie (Północnego)",
+    "cycleway:right": "no",
+    "expressway": "yes",
+    "foot": "no",
+    "highway": "primary",
+    "highway:category:pl": "1",
+    "lanes": "3",
+    "lit": "yes",
+    "maxaxleload": "11.5",
+    "maxspeed": "80",
+    "name": "Aleja Generał Marii Wittek",
+    "name:etymology:wikidata": "Q6761660",
+    "oneway": "yes",
+    "placement": "middle_of:2",
+    "ref": "61",
+    "short_name": "al. gen. Marii Wittek",
+    "shoulder": "no",
+    "sidewalk": "no",
+    "source:maxaxleload": "Dz.U. 2011 nr 222 poz. 1321 Art. 2 pkt. 11",
+    "surface": "asphalt",
+    "wikidata": "Q114327277"
+  }
+},
+{
+  "type": "way",
+  "id": 1498067374,
+  "bounds": {
+    "minlat": 52.3011026,
+    "minlon": 20.9412332,
+    "maxlat": 52.3012894,
+    "maxlon": 20.9416579
+  },
+  "geometry": [
+    { "lat": 52.3012894, "lon": 20.9416072 },
+    { "lat": 52.3012340, "lon": 20.9416579 },
+    { "lat": 52.3011026, "lon": 20.9412836 },
+    { "lat": 52.3011583, "lon": 20.9412332 },
+    { "lat": 52.3012894, "lon": 20.9416072 }
+  ],
+  "tags": {
+    "area": "yes",
+    "leisure": "sports_centre",
+    "name": "oś. A",
+    "sport": "shooting"
+  }
+},
+{
+  "type": "way",
+  "id": 1525607520,
+  "bounds": {
+    "minlat": 52.3000496,
+    "minlon": 20.9417877,
+    "maxlat": 52.3003310,
+    "maxlon": 20.9425256
+  },
+  "geometry": [
+    { "lat": 52.3000912, "lon": 20.9417877 },
+    { "lat": 52.3003310, "lon": 20.9424877 },
+    { "lat": 52.3002897, "lon": 20.9425256 },
+    { "lat": 52.3000496, "lon": 20.9418255 },
+    { "lat": 52.3000912, "lon": 20.9417877 }
+  ],
+  "tags": {
+    "area": "yes",
+    "leisure": "sports_centre",
+    "name": "Neo Dzik",
+    "sport": "shooting"
+  }
+},
+{
+  "type": "way",
+  "id": 1553291727,
+  "bounds": {
+    "minlat": 52.3010414,
+    "minlon": 20.9412805,
+    "maxlat": 52.3012282,
+    "maxlon": 20.9417052
+  },
+  "geometry": [
+    { "lat": 52.3012282, "lon": 20.9416545 },
+    { "lat": 52.3011728, "lon": 20.9417052 },
+    { "lat": 52.3010414, "lon": 20.9413309 },
+    { "lat": 52.3010971, "lon": 20.9412805 },
+    { "lat": 52.3012282, "lon": 20.9416545 }
+  ],
+  "tags": {
+    "area": "yes",
+    "leisure": "sports_centre",
+    "name": "oś. B",
+    "sport": "shooting"
+  }
+},
+{
+  "type": "way",
+  "id": 1553291728,
+  "bounds": {
+    "minlat": 52.3009824,
+    "minlon": 20.9413395,
+    "maxlat": 52.3011692,
+    "maxlon": 20.9417642
+  },
+  "geometry": [
+    { "lat": 52.3011692, "lon": 20.9417135 },
+    { "lat": 52.3011138, "lon": 20.9417642 },
+    { "lat": 52.3009824, "lon": 20.9413899 },
+    { "lat": 52.3010381, "lon": 20.9413395 },
+    { "lat": 52.3011692, "lon": 20.9417135 }
+  ],
+  "tags": {
+    "area": "yes",
+    "leisure": "sports_centre",
+    "name": "oś. C",
+    "sport": "shooting"
+  }
+},
+{
+  "type": "way",
+  "id": 1553291729,
+  "bounds": {
+    "minlat": 52.3009217,
+    "minlon": 20.9413959,
+    "maxlat": 52.3011085,
+    "maxlon": 20.9418206
+  },
+  "geometry": [
+    { "lat": 52.3011085, "lon": 20.9417699 },
+    { "lat": 52.3010531, "lon": 20.9418206 },
+    { "lat": 52.3009217, "lon": 20.9414463 },
+    { "lat": 52.3009774, "lon": 20.9413959 },
+    { "lat": 52.3011085, "lon": 20.9417699 }
+  ],
+  "tags": {
+    "area": "yes",
+    "leisure": "sports_centre",
+    "name": "oś. D",
+    "sport": "shooting"
+  }
+}
+
+  ]
+}

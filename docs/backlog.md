@@ -53,3 +53,5 @@ Pomysł z 2026-10-25, do decyzji i osobnego planu.
   drogami wznoszą się do 12% od ulicy i ich profil faluje (np. nad Marymoncką przy Trasie Mostu Północnego).
 - Wydajność (przed bramką Fazy 3): w Chrome na M4 pieszo przy Kamedułach 52-56 fps (wcześniej 60), także bez zwierząt;
   na Starych Bielanach 60. Sprawdzić, co kosztuje (wiadukty S8, większa mapa, las), razem z testem na Windows.
+## Przewodnik jako lista landmarków w telefonie (prośba z 2026-10-25, przy Stadionie Hutnika)
+- Nowa aplikacja „Przewodnik” w telefonie (js/phone.js): lista wszystkich landmarków (SITES z js/guide.js, wraz ze stadionem), odhaczanie odwiedzonych (stan „seen” z localStorage), „Nawiguj” wyznacza trasę GPS do landmarku (js/gps-route.js, jak przy zleceniach), „Czytaj więcej” otwiera tekst z guide-texts.js. Do zrobienia osobnym krokiem, nie w zadaniu Stadion Hutnika.

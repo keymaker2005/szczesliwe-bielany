@@ -26,6 +26,23 @@ const SITES = {
   'galeria-mlociny': { x: -1287, z: -1454, r: 120 },
   'sw-zygmunt': { x: -200, z: 283, r: 60 },
   'maria-magdalena': { x: -1387, z: 120, r: 50 },
+  hutnik: { x: -374.5, z: -2020.8, r: 90 },
+};
+
+// Player-facing names for the phone's Przewodnik app
+const NAMES = {
+  kameduly: 'Klasztor Kamedułów',
+  'las-bielanski': 'Las Bielański',
+  awf: 'AWF',
+  uksw: 'UKSW, kampus Dewajtis',
+  'stare-bielany': 'Metro Stare Bielany',
+  wawrzyszew: 'Metro Wawrzyszew',
+  mlociny: 'Metro Młociny',
+  'szpital-bielanski': 'Szpital Bielański',
+  'galeria-mlociny': 'Galeria Młociny',
+  'sw-zygmunt': 'Kościół św. Zygmunta',
+  'maria-magdalena': 'Kościół św. Marii Magdaleny',
+  hutnik: 'Stadion Hutnika',
 };
 
 class Guide {
@@ -58,6 +75,18 @@ class Guide {
     });
   }
 
+  // Every landmark for the phone's Przewodnik app: its name, whether the player has been there, the text, the spot
+  landmarks() {
+    return this.guide.map((t) => {
+      const s = SITES[t.landmark];
+      return {
+        id: t.landmark, name: NAMES[t.landmark] || t.landmark, seen: this.seen.has(t.id),
+        x: s.x, z: s.z, sms: t.sms,
+        more: t.more ? `${t.more}${t.sources?.length ? `\n\nŹródła: ${t.sources.join(', ')}` : ''}` : '',
+      };
+    });
+  }
+
   // The mayor's welcome once the game is on screen
   start() {
     const hello = this.mayorTexts.find((t) => t.trigger === 'start') || this.mayorTexts[0];
@@ -82,4 +111,4 @@ class Guide {
   }
 }
 
-export { Guide, SITES, MAYOR, GUIDE };
+export { Guide, SITES, NAMES, MAYOR, GUIDE };
