@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "source": "Numeryczny model terenu, GUGiK, geoportal.gov.pl (WCS NMT GRID1, wysokości PL-KRON86-NH), dane otwarte",
+  "frame": "tools/bielany-frame.mjs (x = wschód, z = południe, początek przy stacji Stare Bielany)",
+  "bbox": {
+    "s": 52.262,
+    "w": 20.9,
+    "n": 52.311,
+    "e": 20.995
+  },
+  "cell": 4,
+  "x0": -3372,
+  "z0": -3248,
+  "nx": 1623,
+  "nz": 1365,
+  "base": 74,
+  "encoding": "uint16 LE, cm above base, row-major z then x",
+  "stats": {
+    "min": 75.17,
+    "max": 111.78,
+    "median": 98.57,
+    "station": 101.42,
+    "filled": 0
+  }
+}

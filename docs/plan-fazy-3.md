@@ -1,7 +1,7 @@
 # Plan Fazy 3: Służby i teren
 
-Bramka: cała dzielnica grywalna (kryteria na końcu). Gałąź faza-3 (z faza-2), założę po akceptacji planu.
-Wersja robocza do akceptacji (2026-10-25).
+Bramka: cała dzielnica grywalna (kryteria na końcu). Gałąź faza-3 (z faza-2).
+Zaakceptowany 2026-10-25 ze wszystkimi czterema propozycjami decyzji.
 
 ## Co mamy na wejściu
 - Świat płaski (y = 0), wysokość gruntu liczy `getGroundHeight` w js/controllers.js (moduł przenośny).

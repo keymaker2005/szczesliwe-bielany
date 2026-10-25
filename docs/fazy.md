@@ -71,6 +71,18 @@ Bramka: 60 fps na laptopie. Plan: docs/plan-fazy-2.md (zaakceptowany 2026-10-26)
 
 
 ## Faza 3: Służby i teren
-Bramka: cała dzielnica grywalna. Plan: docs/plan-fazy-3.md (do akceptacji). Gałąź faza-3 po akceptacji planu.
+Bramka: cała dzielnica grywalna. Plan: docs/plan-fazy-3.md (zaakceptowany 2026-10-25 ze wszystkimi 4 decyzjami:
+mapa do 20.995 na wschód i 52.311 na północ, zgoda na zmiany w controllers.js, pedestrians.js i cameras.js pod teren,
+napisy słowne na pojazdach służb bez insygniów, najpierw teren). Gałąź faza-3.
 
-- [ ] 3.0 Plan Fazy 3 (pliki, kolejność, ryzyka, 4 decyzje). Sprawdzam: akceptuję plan i odpowiadam na decyzje.
+- [x] 3.0 Plan Fazy 3 (pliki, kolejność, ryzyka, 4 decyzje). Sprawdzam: akceptuję plan i odpowiadam na decyzje.
+- [x] 3.1 Dane terenu: NMT GUGiK (WCS, 2 m) na siatce 4 m w układzie świata, data/bielany_nmt_4m.bin i .json,
+  podgląd data/podglad_terenu.png z urwiskami OSM (tools/terrain-bielany.mjs). Sprawdzam: na podglądzie widać skarpę,
+  dolinę Wisły i Las Bielański tam, gdzie są.
+- [ ] 3.2 Skarpa i Las Bielański w świecie. Sprawdzam: zejście i zjazd ze skarpy, widok z krawędzi, Kameduły na wzgórzu, 60 fps.
+- [ ] 3.3 Wisła, nabrzeże i most Marii Skłodowskiej-Curie (poszerzona mapa). Sprawdzam: dojazd Wisłostradą na most, spacer nabrzeżem.
+- [ ] 3.4 Wspólna dyspozytornia służb w telefonie. Sprawdzam: ratownik bez zmian, nowa zakładka „Służby”.
+- [ ] 3.5 Strażnik Miejski. Sprawdzam: 3 zgłoszenia (trawnik, śmieci, hałas), wybór pouczenie lub mandat zmienia ocenę.
+- [ ] 3.6 Strażak. Sprawdzam: pożar, zalana piwnica i kot na drzewie do ukończenia.
+- [ ] 3.7 Policjant. Sprawdzam: 2 kontrole drogowe i 1 pościg bez taranowania.
+- [ ] 3.8 Deploy i bramka. Sprawdzam: pełna pętla wszystkich ról na bielany.zbigniew.ai, 60 fps.

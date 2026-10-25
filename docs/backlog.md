@@ -7,12 +7,7 @@ Przeniesiona do docs/fazy.md (bieżąca faza).
 Przeniesiona do docs/fazy.md (bieżąca faza).
 
 ## Faza 3: Służby i teren
-Bramka: cała dzielnica grywalna.
-- Strażnik Miejski: parkowanie na trawniku, śmieci, hałas; wybór pouczenie lub mandat.
-- Strażak: pożar, zalana piwnica, kot na drzewie.
-- Policjant: kontrola drogowa, pościg bez broni.
-- Służby: generyczne oznaczenia, bez oficjalnych logo i insygniów, bez broni i przemocy.
-- Teren: skarpa wiślana z NMT, Las Bielański, nabrzeże Wisły, Młociny z mostem, klasztor Kamedułów.
+Przeniesiona do docs/fazy.md (bieżąca faza).
 
 ## Faza 4: Czaty LLM i patronat
 Bramka: wersja 1.0 z patronatem.

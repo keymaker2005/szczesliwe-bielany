@@ -20,6 +20,7 @@ Pełna dokumentacja: https://claude.ai/artifact/4wjHwfUPzV9NmL6BudsRnL
   Gotowy wycinek MVP: data/bielany_lod1_2024.geojson (2296 budynków, WGS84, pola height_m, ground_z), skrypt: data/extract_bielany_lod1.py.
   Dla Warszawy istnieje też LoD2 2017 z dachami (https://opendata.geoportal.gov.pl/InneDane/Budynki3D/LOD2/1465_gml.zip), ale jest starsze niż nowe osiedla.
 - Drzewa: modele 3D drzew GUGiK dla Warszawy (LoD1 2023), od kroku 1.7.
+- Teren: NMT GUGiK (WCS), siatka 4 m w układzie świata: data/bielany_nmt_4m.bin, skrypt tools/terrain-bielany.mjs (krok 3.1).
 - Granice obszaru (bbox WGS84): 52.262,20.900,52.300,20.980 od kroku 2.1 (MVP: 52.274,20.915,52.300,20.960, krok 0.2).
 
 ## Układ świata
