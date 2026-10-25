@@ -188,3 +188,10 @@ Wspólne dla trzech stacji: stacje płytkie, podziemne (otwarte 2008), na powier
 - Adres starego kościoła na Wawrzyszewie (ulica i numer).
 - Dokładny tekst szyldu nad wejściem do Szpitala Bielańskiego i lokalizacja skrzydła z 2022 r.
 - Wycinek LoD1 MVP (lon ≤ 20.9602) nie obejmuje Kamedułów, większości UKSW i wschodnich skrzydeł AWF. Zapisane wyżej wysokości pochodzą z pełnej paczki.
+
+## Tabliczki z nazwami ulic (Miejski System Informacji)
+- Wygląd: niebieskie pole (ok. #1d4fa0), biały krój bezszeryfowy; u góry małe „ulica/aleja/plac” po lewej i imię małą czcionką nad nazwiskiem; na dole czerwony pasek (ok. #d02a35) z nazwą dzielnicy; skośne rogi niewielkie. Bez herbu.
+- Zdjęcia (Wikimedia Commons, CC BY-SA 4.0):
+  - https://commons.wikimedia.org/wiki/File:Street_signs_Ciszewskiego_and_Cynamonowa,_Warsaw.jpg
+  - https://commons.wikimedia.org/wiki/File:Modzelewskiego_and_Wilanowska_street_signs_in_Warsaw.jpg
+  - kategoria: Street signs in Warsaw (City Information System)

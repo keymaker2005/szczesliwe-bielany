@@ -430,10 +430,38 @@ async function initApp() {
     if (btn && e.detail > 0) btn.blur();
   });
 
-  // Where you are: the place's name over its street corner, drawn as a pair of NYC street-name signs
+  // Where you are: the place's name over its street corner, drawn as a pair of Warsaw (Miejski System Informacji) street-name plates
   const roadNames = new Set(ROADS.map((r) => r.name));
   const placeNames = new Set(LANDMARKS.map((l) => l.name));
   let locationText = '';
+  // Warsaw plate: blue field, white lettering, type word (ulica, aleja...) small top-left, given names small above the
+  // surname, red strip with the district underneath
+  const SIGN_TYPES = { Aleja: 'aleja', Plac: 'plac', Rondo: 'rondo', Most: 'most', Pętla: 'pętla' };
+  const SIGN_NOT_GIVEN = new Set(['Przy', 'Ku', 'Starej', 'Kalinowej', 'Zgrupowania', 'Bitwy', 'Obrońców', 'Żołnierzy', 'Piastów', 'Powstańców', 'Braci', 'Książąt', 'Rodziny', 'Księgarzy', 'Sady']);
+  function makeStreetSign(name) {
+    const words = name.split(' ');
+    let type = 'ulica';
+    if (SIGN_TYPES[words[0]] && words.length > 1) type = SIGN_TYPES[words.shift()];
+    let given = '';
+    if (words.length >= 2 && words.length <= 4 && !SIGN_NOT_GIVEN.has(words[0])) given = words.slice(0, -1).join(' ');
+    const main = given ? words[words.length - 1] : words.join(' ');
+    const sign = document.createElement('span');
+    sign.className = 'street-sign';
+    const add = (cls, text) => {
+      const el = document.createElement('span');
+      el.className = cls;
+      el.textContent = text;
+      sign.appendChild(el);
+      return el;
+    };
+    add('street-sign-type', type);
+    if (given) add('street-sign-given', given);
+    const mainEl = add('street-sign-name', main);
+    if (main.length > 12) mainEl.style.fontSize = `${Math.max(11, Math.round(19 * 12 / main.length))}px`;
+    add('street-sign-district', 'Bielany');
+    return sign;
+  }
+
   function renderLocation(label) {
     if (!elLocation || label === locationText) return;
     locationText = label;
@@ -465,10 +493,7 @@ async function initApp() {
         row.appendChild(near);
       }
       for (const name of streets.split(' & ')) {
-        const sign = document.createElement('span');
-        sign.className = 'street-sign';
-        sign.textContent = name;
-        row.appendChild(sign);
+        row.appendChild(makeStreetSign(name));
       }
       nodes.push(row);
     }
