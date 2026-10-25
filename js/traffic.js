@@ -40,6 +40,7 @@ const NUM_PEDS = 340;
 const CAR_DRIVER = { a: 2.0, b: 3.0, T: 1.2, s0: 2.0, aLat: 3.5 };
 const BUS_DRIVER = { a: 1.1, b: 2.5, T: 1.5, s0: 2.5, aLat: 2.0 };
 const LOOKAHEAD = 70; // metres a driver looks ahead for vehicles, stop lines and signals
+const PULL_OVER = 2.3; // metres a car moves right, to the curb, for an ambulance on lights and siren behind it
 
 // Retire distant actors even when looking their way: keeping them indefinitely starves upcoming streets.
 // Replacements may enter the far view, but nearby visible roads and sidewalks are protected from pop-in.
@@ -608,7 +609,7 @@ function createTrafficSystem(scene, sidewalks, obstacles) {
   // let it by. { active, heading }
   const yieldTo = { active: false, heading: 0 };
   function yieldsToSiren(v) {
-    if (!yieldTo.active || !player.active || v.pAhead > -3 || v.pAhead < -45) return false;
+    if (!yieldTo.active || !player.active || v.pAhead > -1 || v.pAhead < -60) return false;
     if (Math.abs(v.pRight) > 6) return false;
     return Math.cos(yieldTo.heading - v.yaw) > 0.5;
   }
@@ -1041,7 +1042,8 @@ function createTrafficSystem(scene, sidewalks, obstacles) {
         v.leaderSpeed = v.pSpeed;
       }
     }
-    if (yieldsToSiren(v)) worst = Math.min(worst, stopAt(v, Math.max(0.5, v.speed * 0.8)));
+    v.pull = yieldsToSiren(v);
+    if (v.pull) worst = Math.min(worst, stopAt(v, Math.max(1, v.speed * 1.6)));
     for (let k = 0; k < blockers.length; k++) {
       const o = blockers[k];
       const bg = blockerGap(v, o);
@@ -1112,9 +1114,11 @@ function createTrafficSystem(scene, sidewalks, obstacles) {
     // ease sideways onto the lane centre (after lane changes and knocks), steering the front bumper towards it so the
     // nose doesn't swing on into the next lane, and no faster than the wheels can steer it, though even stopped half
     // way into a lane change a driver edges over
-    const maxLat = Math.min(1.7, 0.3 + (v.bus ? 0.1 : 0.22) * v.speed);
-    const rate = Math.min(1.8, Math.max(v.speed, 1.5) / (v.axle + v.half));
-    const target = clamp(-rate * v.dl, -maxLat, maxLat);
+    // pulled over for the siren: towards PULL_OVER metres right of the lane centre (the curb side), even while slowing
+    const toward = v.pull ? PULL_OVER : 0;
+    const maxLat = Math.min(1.7, (v.pull ? 0.9 : 0.3) + (v.bus ? 0.1 : 0.22) * v.speed);
+    const rate = Math.min(1.8, Math.max(v.speed, v.pull ? 2.5 : 1.5) / (v.axle + v.half));
+    const target = clamp(-rate * (v.dl - toward), -maxLat, maxLat);
     v.dlv += clamp(target - v.dlv, -2.5 * dt, 2.5 * dt);
     v.dl += v.dlv * dt;
   }

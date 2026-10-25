@@ -862,7 +862,7 @@ async function initApp() {
     // Update 3rd-person controllers, camera, signals, traffic & vehicle collisions, building LODs, and dynamic shadow focus
     gamepadControls.update(dt);
     controllerManager.update(dt, elapsed);
-    // the cab keeps to the street's speed limit (OpenStreetMap maxspeed, else the urban default)
+    // the cab keeps to the street's speed limit (OpenStreetMap maxspeed, else the urban default), unless boosting
     if (controllerManager.activeMode === 'car') {
       const car = controllerManager.getActiveEntity();
       limitTimer -= dt;
@@ -872,7 +872,7 @@ async function initApp() {
         if (l) speedLimit = l;
       }
       const cap = (ambulance.siren ? Math.min(90, speedLimit + 30) : speedLimit) / 3.6; // on lights: +30 km/h
-      if (car.speed > cap) car.speed = cap;
+      if (car.speed > cap && !controllerManager.keys.boost) car.speed = cap; // Shift (boost) ignores the limit
     }
     cameraSystem.update(dt, elapsed);
     streetDetails.signalClock.value = elapsed;
