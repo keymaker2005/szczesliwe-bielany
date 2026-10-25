@@ -1,7 +1,9 @@
 import * as THREE from 'three/webgpu';
+import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { CROSSWALK } from './road-network.js';
 import { createRoadPaintMaterial } from './tsl-materials.js';
 import { drapeGeometry } from './terrain.js';
+import { deckY } from './bridges.js';
 
 // js/road-paint.js
 // Road markings generated from the drivable road network (js/road-network.js), so the paint matches where traffic
@@ -14,11 +16,10 @@ const GREEN = new THREE.Color(0x2a8a4e);
 const HEIGHT = 0.012; // above the asphalt
 
 function buildRoadPaint(scene, network) {
-  const position = [];
-  const side = [];
-  const paint = [];
-  const colors = [];
-  const index = [];
+  // two sets of strips: on the ground, and on the bridge decks (js/bridges.js) at their heights
+  const onGround = { position: [], side: [], paint: [], colors: [], index: [] };
+  const onDeck = { position: [], side: [], paint: [], colors: [], index: [] };
+  let deck = false; // the strips being made belong to a bridge edge
   const lines = [];
   const bends = new Map();
 
@@ -26,12 +27,22 @@ function buildRoadPaint(scene, network) {
   function strip(ax, az, bx, bz, w, col, period = 1, duty = 1, phase = 0, flow = 1) {
     const len = Math.hypot(bx - ax, bz - az);
     if (len < 0.05) return;
+    // on a deck in pieces of at most 4 m, each end at the deck's height there
+    if (deck && len > 4) {
+      const n = Math.ceil(len / 4);
+      for (let k = 0; k < n; k++) {
+        const t0 = k / n, t1 = (k + 1) / n;
+        strip(ax + (bx - ax) * t0, az + (bz - az) * t0, ax + (bx - ax) * t1, az + (bz - az) * t1, w, col, period, duty, phase + len * flow * t0, flow);
+      }
+      return;
+    }
+    const { position, side, paint, colors, index } = deck ? onDeck : onGround;
     const sx = ((az - bz) / len) * w * 0.5;
     const sz = ((bx - ax) / len) * w * 0.5;
     const i = position.length / 3;
     const end = phase + len * flow;
     for (const [x, z, s, u] of [[ax, az, -1, phase], [ax, az, 1, phase], [bx, bz, 1, end], [bx, bz, -1, end]]) {
-      position.push(x + sx * s, HEIGHT, z + sz * s);
+      position.push(x + sx * s, HEIGHT + (deck ? deckY(x + sx * s, z + sz * s) ?? 0 : 0), z + sz * s);
       side.push(sx * s, sz * s);
       paint.push(u, period, duty);
       colors.push(col.r, col.g, col.b);
@@ -46,7 +57,11 @@ function buildRoadPaint(scene, network) {
     const ends = [at(e, e.from.shape ? -start : 0.9, o), at(e, e.to.shape ? e.span - start : e.len - 0.9, o)];
     lines.push({ e, o, w, col, period, duty, ends, joins: [] });
   };
-  const across = (e, s, o0, o1, w, col, period, duty) => strip(...at(e, s, o0), ...at(e, s, o1), w, col, period, duty);
+  const across = (e, s, o0, o1, w, col, period, duty) => {
+    deck = !!e.bridge;
+    strip(...at(e, s, o0), ...at(e, s, o1), w, col, period, duty);
+    deck = false;
+  };
   const clearCentre = (e, o) => {
     if (!network.isRoadClear) return false;
     const steps = Math.max(1, Math.ceil((e.len - 1.8) / 2.5));
@@ -181,23 +196,29 @@ function buildRoadPaint(scene, network) {
         next.phase = ((next.phase % next.period) + next.period) % next.period;
         stack.push(next);
       }
+      deck = !!line.e.bridge;
       strip(...line.ends[0], ...line.ends[1], line.w, line.col, line.period, line.duty, line.phase, line.flow);
+      deck = false;
     }
   }
 
-  const normal = new Float32Array(position.length);
-  for (let i = 1; i < normal.length; i += 3) normal[i] = 1;
+  const geometryOf = ({ position, side, paint, colors, index }) => {
+    const normal = new Float32Array(position.length);
+    for (let i = 1; i < normal.length; i += 3) normal[i] = 1;
+    const geometry = new THREE.BufferGeometry();
+    geometry.setAttribute('position', new THREE.Float32BufferAttribute(position, 3));
+    geometry.setAttribute('normal', new THREE.BufferAttribute(normal, 3));
+    geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+    geometry.setAttribute('side', new THREE.Float32BufferAttribute(side, 2));
+    geometry.setAttribute('paint', new THREE.Float32BufferAttribute(paint, 3));
+    geometry.setIndex(index);
+    return geometry;
+  };
 
-  const geometry = new THREE.BufferGeometry();
-  geometry.setAttribute('position', new THREE.Float32BufferAttribute(position, 3));
-  geometry.setAttribute('normal', new THREE.BufferAttribute(normal, 3));
-  geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
-  geometry.setAttribute('side', new THREE.Float32BufferAttribute(side, 2));
-  geometry.setAttribute('paint', new THREE.Float32BufferAttribute(paint, 3));
-  geometry.setIndex(index);
-
-  // on the escarpment & in the valley the strips lie on the asphalt (js/terrain.js)
-  const mesh = new THREE.Mesh(drapeGeometry(geometry), createRoadPaintMaterial());
+  // on the escarpment & in the valley the strips lie on the asphalt (js/terrain.js), on the bridges on their decks
+  const parts = [drapeGeometry(geometryOf(onGround))];
+  if (onDeck.index.length) parts.push(geometryOf(onDeck));
+  const mesh = new THREE.Mesh(parts.length > 1 ? mergeGeometries(parts, false) : parts[0], createRoadPaintMaterial());
   mesh.name = 'RoadMarkings';
   mesh.receiveShadow = true;
   mesh.renderOrder = -1; // under the other see-through ground effects (contact shadows, headlight beams)

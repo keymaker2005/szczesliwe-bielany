@@ -14,7 +14,7 @@ const seeded = (seed) => () => {
 const memory = () => { const m = new Map(); return { getItem: (k) => m.get(k) ?? null, setItem: (k, v) => m.set(k, v) }; };
 
 test('courier: pick-ups by the M1 stations, three offers to real addresses 0.5-2 km away', () => {
-  assert.deepEqual(PICKUPS.map((p) => p.id).sort(), ['Marymont', 'Młociny', 'Stare Bielany', 'Słodowiec', 'Wawrzyszew']);
+  assert.deepEqual(PICKUPS.map((p) => p.id).sort(), ['Marymont', 'Młociny', 'Plac Wilsona', 'Stare Bielany', 'Słodowiec', 'Wawrzyszew']);
   const c = new Courier(new MissionEngine(), { random: seeded(7), storage: memory() });
   const jobs = c.jobs();
   assert.equal(jobs.length, 3);

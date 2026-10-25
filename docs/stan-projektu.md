@@ -6,7 +6,11 @@
 - Faza 2 (większy obszar, wydajność, tramwaje, taksówkarz, ratownik, Aparat, liście) zrobiona i opublikowana; bramka
   (60 fps na laptopie z Windows) czeka na test według docs/test-1.8b.md.
 - Faza 3 (gałąź faza-3, plan docs/plan-fazy-3.md zaakceptowany 2026-10-25): 3.1 dane terenu i 3.2a teren w świecie
-  i 3.2b Las Bielański zrobione (lokalnie, bez deployu); następny 3.3 Wisła i most (poszerzenie mapy).
+  i 3.2b Las Bielański, 3.3 Wisła i most zrobione (lokalnie, bez deployu); dalej praca równoległa według
+  docs/praca-rownolegla.md (ta sesja koordynuje, 3.4 dyspozytornia, potem sesje służb; tabliczki ulic w osobnej sesji).
+- Drzewa GUGiK: strumień paczki 8,6 GB urwał się przy 355 z 484 arkuszy; data/bielany_trees_2023.json to stary wycinek
+  (bbox z kroku 2.1) + nowy pas (kompletny). Panel przeglądarki w aplikacji bywa bez GPU: sprawdzać w Chrome (Claude in
+  Chrome, za zgodą użytkownika) albo prosić użytkownika o Edge.
 - Uwaga: filtr (blur) na dużym płótnie 2D wysypuje proces GPU przeglądarki razem z WebGPU gry (3.2b); po takiej awarii
   panel przeglądarki w aplikacji nie ma grafiki do restartu aplikacji. Nie używać ctx.filter w teksturach.
 - Teren: js/terrain.js (groundY, drapeGeometry, groundPose), dane js/bielany-terrain.bin z tools/terrain-bielany.mjs;

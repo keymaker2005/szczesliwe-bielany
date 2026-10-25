@@ -37,7 +37,8 @@ function keyboardHarness(nyc = {}) {
       './pedestrians.js': {},
       './vehicle-lights.js': {},
       './landmarks.js': {},
-      './terrain.js': { groundY: () => 0, groundPose: (x, z, s, c, l, w, out = {}) => Object.assign(out, { y: 0, pitch: 0, roll: 0 }) }
+      './terrain.js': { groundY: () => 0, groundPose: (x, z, s, c, l, w, out = {}) => Object.assign(out, { y: 0, pitch: 0, roll: 0 }) },
+      './bridges.js': { surfaceY: () => 0, deckPose: (x, z, s, c, l, w, out = {}) => Object.assign(out, { y: 0, pitch: 0, roll: 0 }) }
     }
   });
   // Exercise the production event handlers without constructing the scene's 3D models.

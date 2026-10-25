@@ -22,6 +22,8 @@ import { CityAudioSystem } from './audio-system.js';
 import { GEO } from './bielany-geodata.js';
 import { loadTerrain, groundY } from './terrain.js';
 import { buildForest } from './forest.js';
+import { buildWater } from './water.js';
+import { buildBridges } from './bridges.js';
 import { MissionEngine, ARRIVE_RADIUS } from './missions.js';
 import { createMissionMarker } from './mission-marker.js';
 import { findRoute, limitAt } from './gps-route.js';
@@ -96,12 +98,14 @@ async function initApp() {
   if (!new URLSearchParams(location.search).has('plaski')) await loadTerrain(new URL('./bielany-terrain.bin', import.meta.url));
   markInit('terrain');
   const cityGrid = buildCityGrid(scene);
+  buildWater(scene); // the Vistula, the ponds, the beaches
+  const bridges = buildBridges(scene); // the Skłodowska-Curie bridge and the viaducts
   markInit('cityGrid');
   const cityBlocks = buildCityBlocks(scene, { skip: landmarkBuildingIds() });
   markInit('buildings');
   const landmarks = buildLandmarks(scene);
   markInit('landmarks');
-  const allColliders = [...cityBlocks.colliders, ...landmarks.colliders, ...(cityGrid.colliders || [])];
+  const allColliders = [...cityBlocks.colliders, ...landmarks.colliders, ...(cityGrid.colliders || []), ...bridges.colliders];
 
   const streetDetails = buildStreetDetails(scene);
   const forest = buildForest(scene); // the undergrowth of the woods

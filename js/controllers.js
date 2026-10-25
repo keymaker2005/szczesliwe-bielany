@@ -23,6 +23,7 @@ import { PersonCrowd, PersonRig } from './pedestrians.js';
 import { HEADLIGHTS, createVehicleHeadlight, placeVehicleHeadlight } from './vehicle-lights.js';
 import { bryantParkLawn } from './landmarks.js';
 import { groundY, groundPose } from './terrain.js';
+import { deckPose, surfaceY } from './bridges.js';
 
 // js/controllers.js
 // Sculpted, non-blocky GTA 6-style 3D models, animations, and physics controllers
@@ -66,7 +67,7 @@ function driveSpeed(speed, throttle, boost, dt, drive) {
 }
 
 // Walking surface for the player's pedestrian (its rig samples it around its feet)
-const personGround = (controllers, x, z) => controllers.getGroundHeight(x, z, 'person');
+const personGround = (controllers, x, z) => controllers.getGroundHeight(x, z, 'person', controllers.entities?.person?.position.y);
 
 function collisionBody(mode, radius, heading, margin = 0) {
   const car = mode === 'car';
@@ -834,7 +835,8 @@ class ThirdPersonControllerManager {
     return !!b && !(b.park > 0.6 && !b.median);
   }
 
-  getGroundHeight(x, z, mode = 'person') {
+  // fromY: the height the body comes from (on a bridge's deck it stays up there, under the bridge on the ground)
+  getGroundHeight(x, z, mode = 'person', fromY = -Infinity) {
     // Inside Central Park (5th Ave to Central Park West, 59th St to 110th St)
     const cp = CENTRAL_PARK_BOUNDS;
     if (x > cp.minX && x < cp.maxX && z > cp.minZ && z < cp.maxZ) {
@@ -845,8 +847,8 @@ class ThirdPersonControllerManager {
     if (lawn && x > lawn.minX && x < lawn.maxX && z > lawn.minZ && z < lawn.maxZ) {
       return lawn.top;
     }
-    // the plateau is at 0, the escarpment & the Vistula valley below it (js/terrain.js)
-    const ground = groundY(x, z);
+    // the plateau is at 0, the escarpment & the Vistula valley below it (js/terrain.js); the bridges (js/bridges.js)
+    const ground = surfaceY(x, z, fromY);
     if (mode === 'person') {
       return ground + (this.isPointOnSidewalk(x, z) ? ISLAND_BOUNDS.sidewalkHeight : 0.0);
     }
@@ -985,7 +987,7 @@ class ThirdPersonControllerManager {
   // pedals, helmet on its head
   poseCharacters(dt) {
     const p = this.entities.person;
-    const air = p.position.y - this.getGroundHeight(p.position.x, p.position.z, 'person');
+    const air = p.position.y - this.getGroundHeight(p.position.x, p.position.z, 'person', p.position.y);
     p.rig.update(dt, p.position.x, p.position.z, p.heading, personGround, this, air > 0.02 ? air : 0);
     p.crowd.begin();
     p.crowd.add(p.rig, 0);
@@ -1032,7 +1034,8 @@ class ThirdPersonControllerManager {
       e.mesh.rotation.y = e.heading;
       // the car & the bike lie along the slope of the ground under their wheels (the person and the helicopter stay upright)
       if (e.type === 'car' || e.type === 'cyclist') {
-        const pose = groundPose(e.position.x, e.position.z, Math.sin(e.heading), Math.cos(e.heading), e.type === 'car' ? 1.4 : 0.55, e.type === 'car' ? 0.8 : 0.05, this._pose || (this._pose = {}));
+        const onDeck = e.position.y - groundY(e.position.x, e.position.z) > 0.3; // up on a bridge
+        const pose = (onDeck ? deckPose : groundPose)(e.position.x, e.position.z, Math.sin(e.heading), Math.cos(e.heading), e.type === 'car' ? 1.4 : 0.55, e.type === 'car' ? 0.8 : 0.05, this._pose || (this._pose = {}));
         e.mesh.rotation.order = 'YXZ';
         e.mesh.rotation.x = pose.pitch;
         e.mesh.rotation.z = e.type === 'car' ? pose.roll : e.mesh.rotation.z;
@@ -1076,7 +1079,7 @@ class ThirdPersonControllerManager {
     p.position.z += Math.cos(p.heading) * p.speed * dt;
     this.resolveHorizontalCollision(p.position, 0.48);
 
-    const groundY = this.getGroundHeight(p.position.x, p.position.z, 'person');
+    const groundY = this.getGroundHeight(p.position.x, p.position.z, 'person', p.position.y);
     if (this.keys.up && p.position.y <= groundY + 0.02) {
       p.verticalVel = 5.2;
     }
@@ -1126,7 +1129,7 @@ class ThirdPersonControllerManager {
     c.vz *= tireGripDamp;
 
     this.resolveHorizontalCollision(c.position, 1.35, c);
-    c.position.y = this.getGroundHeight(c.position.x, c.position.z, 'car');
+    c.position.y = this.getGroundHeight(c.position.x, c.position.z, 'car', c.position.y);
 
     // 3-DOF Spring-Damper Chassis Suspension (Pitch, Roll & Vertical Heave)
     const targetPitch = -Math.max(-1, Math.min(1, acceleration / CAR_DRIVE.acceleration)) * 0.026;
@@ -1179,7 +1182,7 @@ class ThirdPersonControllerManager {
     b.position.x += Math.sin(b.heading) * b.speed * dt;
     b.position.z += Math.cos(b.heading) * b.speed * dt;
     this.resolveHorizontalCollision(b.position, 0.65, null, b);
-    b.position.y = this.getGroundHeight(b.position.x, b.position.z, 'cyclist');
+    b.position.y = this.getGroundHeight(b.position.x, b.position.z, 'cyclist', b.position.y);
 
     const targetLean = -turnInput * Math.min(1.0, Math.abs(b.speed) / 9.0) * 0.34;
     b.leanAngle += (targetLean - b.leanAngle) * Math.min(1, dt * 9);
@@ -1233,7 +1236,7 @@ class ThirdPersonControllerManager {
     h.position.z += Math.cos(h.heading) * h.speed * dt;
     h.position.y += h.verticalSpeed * dt;
 
-    const floor = groundY(h.position.x, h.position.z) + 0.25;
+    const floor = surfaceY(h.position.x, h.position.z, h.position.y) + 0.25;
     if (h.position.y < floor) {
       this.reportCollision(h, groundCollider, 'ground', h.position.x, floor, h.position.z, 0, 1, 0, -h.verticalSpeed);
     }

@@ -125,11 +125,11 @@ function buildRoadNetwork(sidewalks, obstacles) {
       return total;
     };
     const links = [];
-    for (const [a, b, ni, w, lanes, dir, inner, cls, ring] of RG.links) {
+    for (const [a, b, ni, w, lanes, dir, inner, cls, ring, , bridge] of RG.links) {
       const pts = [pos[a]];
       for (let k = 0; k < inner.length; k += 2) pts.push({ x: inner[k], z: inner[k + 1] });
       pts.push(pos[b]);
-      links.push({ a, b, name: RG.names[ni], w, lanes, dir, cls, ring: !!ring, pts, len: lengthOf(pts) });
+      links.push({ a, b, name: RG.names[ni], w, lanes, dir, cls, ring: !!ring, bridge: !!bridge, pts, len: lengthOf(pts) });
     }
     // Junctions a few metres apart (divided roads, offset corners) are one: collapse links under 10 m (a longer reach
     // would move the merged junction off the streets, onto the blocks), but not round a roundabout (it would become one
@@ -201,7 +201,7 @@ function buildRoadNetwork(sidewalks, obstacles) {
       }
       stations.push(B);
       const lanes = lanesOf(l);
-      for (let k = 0; k + 1 < stations.length; k++) runs.push({ from: stations[k], to: stations[k + 1], ...lanes });
+      for (let k = 0; k + 1 < stations.length; k++) runs.push({ from: stations[k], to: stations[k + 1], ...lanes, bridge: l.bridge });
     }
     console.info(`[roads] streets: ${links.length} links, ${runs.length} straight runs`);
     return runs;
@@ -218,7 +218,7 @@ function buildRoadNetwork(sidewalks, obstacles) {
     }
     return true;
   };
-  function addEdgeGeneral(from, to, axis, lanes, half, divided) {
+  function addEdgeGeneral(from, to, axis, lanes, half, divided, bridge = false) {
     const x0 = from.x;
     const z0 = from.z;
     const span = Math.hypot(to.x - x0, to.z - z0);
@@ -227,7 +227,7 @@ function buildRoadNetwork(sidewalks, obstacles) {
     const dz = (to.z - z0) / span;
     const open = lanes.filter((o) => laneOpen(x0, z0, dx, dz, span, o));
     if (!open.length) return;
-    edges.push({ from, to, axis, x0, z0, dx, dz, rx: -dz, rz: dx, span, half, lanes: open.sort((p, q) => p - q), moves: [], general: true, cand: lanes, divided: !!divided });
+    edges.push({ from, to, axis, x0, z0, dx, dz, rx: -dz, rz: dx, span, half, lanes: open.sort((p, q) => p - q), moves: [], general: true, cand: lanes, divided: !!divided, bridge });
   }
   // A divided road drawn as two one-way roadways between the same two junctions (al. Reymonta, Wólczyńska) runs both ways
   // along one centreline here: each way keeps to the right of it, as on a two-way street, and the road is as wide as
@@ -256,8 +256,8 @@ function buildRoadNetwork(sidewalks, obstacles) {
     if (r.half >= 7.25) r.axis = o.axis = 'ave'; // as wide as a major road (see lanesOf)
   }
   for (const r of genRuns) {
-    if (r.fwd.length) addEdgeGeneral(r.from, r.to, r.axis, r.fwd, r.half, r.divided);
-    if (r.back.length) addEdgeGeneral(r.to, r.from, r.axis, r.back, r.half, r.divided);
+    if (r.fwd.length) addEdgeGeneral(r.from, r.to, r.axis, r.fwd, r.half, r.divided, !!r.bridge);
+    if (r.back.length) addEdgeGeneral(r.to, r.from, r.axis, r.back, r.half, r.divided, !!r.bridge);
   }
   // Two edges from one node to the same next one (a service road whose ends were drawn onto its main road's junctions)
   // would drive through each other: keep the one with the most lanes
@@ -493,8 +493,8 @@ function buildRoadNetwork(sidewalks, obstacles) {
   // Paint describes the physical streets, including dead ends and roads AI traffic cannot circulate through.
   // Snapshot their geometry before routing moves stop lines, drops edges and renumbers the surviving junctions.
   const paintNodes = new Map(nodes.map((n, id) => [n, { id, x: n.x, z: n.z, shape: n.shape }]));
-  const paintEdges = edges.map(({ from, to, axis, x0, z0, sx, sz, dx, dz, rx, rz, span, len, half, lanes }) => ({
-    from: paintNodes.get(from), to: paintNodes.get(to), axis, x0, z0, sx, sz, dx, dz, rx, rz, span, len, half, lanes
+  const paintEdges = edges.map(({ from, to, axis, x0, z0, sx, sz, dx, dz, rx, rz, span, len, half, lanes, bridge }) => ({
+    from: paintNodes.get(from), to: paintNodes.get(to), axis, x0, z0, sx, sz, dx, dz, rx, rz, span, len, half, lanes, bridge
   }));
 
   // 4. Movements at each intersection (no U-turns) and the lane each lane leads to, along obstacle-free curves:

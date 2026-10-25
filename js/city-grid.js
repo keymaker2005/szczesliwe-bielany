@@ -19,8 +19,8 @@ const HORIZON = 20000; // m the outermost ground reaches further out, flat at it
 const CURB = ISLAND_BOUNDS.sidewalkHeight; // block top above the roadway
 const SIDEWALK_LIFT = 0.006; // sidewalk paving just above the lawn on the block top
 
-// Fallen-leaf density over the MVP area (1.5 m per texel): a soft disc under each surveyed crown, a little wider
-const LEAF_TEXEL = 1.5;
+// Fallen-leaf density over the MVP area (2 m per texel since the step 3.3 area): a soft disc under each surveyed crown, a little wider
+const LEAF_TEXEL = 2;
 function leafDensityTexture() {
   const b = ISLAND_BOUNDS;
   const W = Math.ceil((b.maxX - b.minX) / LEAF_TEXEL), H = Math.ceil((b.maxZ - b.minZ) / LEAF_TEXEL);

@@ -21,6 +21,7 @@ import {
 } from './actor-models.js';
 import { PersonCrowd, PersonRig, PersonRagdoll } from './pedestrians.js';
 import { groundY, groundPose } from './terrain.js';
+import { deckY, deckPose, surfaceY } from './bridges.js';
 
 // js/traffic.js
 // Manhattan traffic and pedestrians on the road graph road-network.js derives from the city as built:
@@ -1709,18 +1710,19 @@ function createTrafficSystem(scene, sidewalks, obstacles) {
     const sinY = Math.sin(rotY);
     const cosY = Math.cos(rotY);
     const scale = radius / baseRadius;
+    const under = v._onDeck ? (x, z) => deckY(x, z) ?? groundY(x, z) : groundY;
     dummy.scale.set(scale, scale, scale);
     for (let w = 0; w < 2; w++) {
       const wz = w === 0 ? halfBase : -halfBase;
       dummy.rotation.set(v.wheelSpin + w * 0.55, rotY + (w === 0 ? v.steer : 0), roll, 'YXZ');
       let x = v.x - halfTrack * cosY + wz * sinY, z = v.z + halfTrack * sinY + wz * cosY;
-      dummy.position.set(x, radius + groundY(x, z), z);
+      dummy.position.set(x, radius + under(x, z), z);
       dummy.updateMatrix();
       leftInst.setMatrixAt(i * 2 + w, dummy.matrix);
 
       x = v.x + halfTrack * cosY + wz * sinY;
       z = v.z - halfTrack * sinY + wz * cosY;
-      dummy.position.set(x, radius + groundY(x, z), z);
+      dummy.position.set(x, radius + under(x, z), z);
       dummy.updateMatrix();
       rightInst.setMatrixAt(i * 2 + w, dummy.matrix);
     }
@@ -1749,8 +1751,10 @@ function createTrafficSystem(scene, sidewalks, obstacles) {
     const bodyInst = near ? bodies[c.bodyType].near : bodies[c.bodyType].far;
     const slot = bodyInst.count++;
 
-    // on the escarpment & in the valley the car lies along the slope (js/terrain.js; flat on the plateau)
-    groundPose(c.x, c.z, sinY, cosY, spec.wheelZ, spec.wheelX, ground);
+    // on the escarpment & in the valley the car lies along the slope (js/terrain.js; flat on the plateau), on a bridge
+    // edge along its deck (js/bridges.js)
+    c._onDeck = !!(c.edge?.bridge || c.move?.to?.bridge);
+    (c._onDeck ? deckPose : groundPose)(c.x, c.z, sinY, cosY, spec.wheelZ, spec.wheelX, ground);
     c._groundY = ground.y;
     c._slopePitch = ground.pitch;
     c._slopeRoll = ground.roll;
@@ -1825,7 +1829,8 @@ function createTrafficSystem(scene, sidewalks, obstacles) {
     if (hasView && !visible(b.x, b.z, 22)) return;
 
     const i = visibleBuses++;
-    groundPose(b.x, b.z, sinY, cosY, 5.2, 1.2, ground);
+    b._onDeck = !!(b.edge?.bridge || b.move?.to?.bridge);
+    (b._onDeck ? deckPose : groundPose)(b.x, b.z, sinY, cosY, 5.2, 1.2, ground);
     b._groundY = ground.y;
     b._slopePitch = ground.pitch;
     b._slopeRoll = ground.roll;
@@ -1948,9 +1953,10 @@ function createTrafficSystem(scene, sidewalks, obstacles) {
   const SIDEWALK_Y = ISLAND_BOUNDS.sidewalkHeight;
   const CROSSWALK_Y = 0.012;
   function pedGround(p, x, z) {
-    if (!p.node) return groundY(x, z) + SIDEWALK_Y;
+    // the ground, or a bridge's deck over the river (js/bridges.js: the sidewalks along a bridge lie in the water)
+    if (!p.node) return surfaceY(x, z) + SIDEWALK_Y;
     const t = (x - p.ax) * p.ux + (z - p.az) * p.uz;
-    return groundY(x, z) + (t > 2 && t < p.len - 2 ? CROSSWALK_Y : SIDEWALK_Y);
+    return surfaceY(x, z) + (t > 2 && t < p.len - 2 ? CROSSWALK_Y : SIDEWALK_Y);
   }
 
   // Every rig's gait advances every frame; only those the camera may see (or whose shadow it may see) solve their

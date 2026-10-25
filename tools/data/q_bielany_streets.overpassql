@@ -1,3 +1,3 @@
 [out:json][timeout:180];
-way["highway"](52.262,20.900,52.300,20.980);
+way["highway"](52.262,20.900,52.311,20.995);
 out geom tags;

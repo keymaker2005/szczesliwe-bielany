@@ -8,7 +8,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from extract_bielany_trees import to_wgs84  # noqa: E402  (EPSG:2180 -> WGS84 bez pyproj, dokładność < 1 mm)
 
 ZIP, OUT = sys.argv[1], sys.argv[2]
-E0, N0, E1, N1 = 629517, 490141, 635086, 494513  # bbox 52.262,20.900 - 52.300,20.980 (Faza 2)
+E0, N0, E1, N1 = 629485, 490141, 636110, 495764  # bbox 52.262,20.900 - 52.311,20.995 (Faza 3, krok 3.3)
 G = '{http://www.opengis.net/gml}'
 B = '{http://www.opengis.net/citygml/building/2.0}'
 GEN = '{http://www.opengis.net/citygml/generics/2.0}'

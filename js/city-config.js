@@ -175,7 +175,8 @@ const TELEPORT_LOCATIONS = {
   marymont: { x: 1548.7, z: 1121.3, heading: 1.218 }, // Słowackiego at the Marymont station
   piaski: { x: -319.5, z: 1452.3, heading: 1.185 }, // Kochanowskiego, Piaski
   kaskada: { x: 1196.4, z: 284.8, heading: 0.769 }, // Gdańska, Marymont-Kaskada
-  kameduly: { x: 597.1, z: -1583.6, heading: -0.503 } // Dewajtis by the Camaldolese church
+  kameduly: { x: 597.1, z: -1583.6, heading: -0.503 }, // Dewajtis by the Camaldolese church
+  mostPolnocny: { x: -95.0, z: -2570.0, heading: 2.25 } // the west end of the Skłodowska-Curie bridge, towards the Vistula
 };
 
 /**

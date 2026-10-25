@@ -51,7 +51,9 @@ function roadOf(tags) {
   const tagLimit = parseInt(tags.maxspeed, 10);
   const limit = tagLimit >= 5 && tagLimit <= 140 ? tagLimit : tags.maxspeed === 'PL:living_street' ? 20 : tags.maxspeed === 'PL:zone30' ? 30
     : ({ trunk: 70, living: 20, service: 30 })[code] ?? 50;
-  return { name: tags.name || '', code, dir, lanes, w: q(w), ring, limit, drivable: code !== 'pedestrian' };
+  // bridges (decks over the Vistula, the valley roads and the expressways): js/bridges.js raises them above the ground
+  const bridge = !!tags.bridge && tags.bridge !== 'no' && !(parseInt(tags.layer, 10) < 0);
+  return { name: tags.name || '', code, dir, lanes, w: q(w), ring, limit, drivable: code !== 'pedestrian', bridge };
 }
 
 // =====================================================================================================================
@@ -158,7 +160,7 @@ function buildRoadGraph() {
       start = i;
       if (a === b && run.length < 3) continue;
       const inner = rdp(run.map((pt) => pt.p), 0.4).slice(1, -1);
-      links.push([a, b, nameId(r.name), r.w, r.lanes, r.dir, flat(inner), r.code, r.ring ? 1 : 0, r.limit]);
+      links.push([a, b, nameId(r.name), r.w, r.lanes, r.dir, flat(inner), r.code, r.ring ? 1 : 0, r.limit, r.bridge ? 1 : 0]);
     }
   }
   return { nodes, links, names };
@@ -488,7 +490,8 @@ function buildBuildings() {
     return c;
   };
   const onLod = (p) => (grid.get(`${Math.floor(p[0] / CELL)},${Math.floor(p[1] / CELL)}`) || []).some((i) => pointIn(p, lod[i]));
-  const SKIP = new Set(['construction', 'roof', 'carport', 'ruins', 'no']);
+  // chimneys (the 200 m one of the Żerań power station across the Vistula) are no buildings with storeys
+  const SKIP = new Set(['construction', 'roof', 'carport', 'ruins', 'no', 'chimney']);
   const LOW = new Set(['garage', 'garages', 'shed', 'service', 'outbuilding', 'kiosk', 'farm_auxiliary']);
   let added = 0;
   for (const e of osm('buildings')) {
@@ -909,6 +912,57 @@ function buildWoods() {
 }
 
 // =====================================================================================================================
+// 9c. WATER: the Vistula, the ponds & canals (OSM natural=water) and the beaches & sandbanks (natural=beach, sand),
+//     rings cut to the area (a margin of 20 m) and simplified to 0.5 m
+// =====================================================================================================================
+// A ring cut to the box [x0, x1] x [z0, z1] (Sutherland-Hodgman: the box is convex, the ring need not be)
+function clipRing(ring, x0, z0, x1, z1) {
+  let pts = ring;
+  for (const [axis, v, keep] of [[0, x0, 1], [0, x1, -1], [1, z0, 1], [1, z1, -1]]) {
+    const out = [];
+    for (let k = 0; k < pts.length; k++) {
+      const a = pts[k], b = pts[(k + 1) % pts.length];
+      const ia = (a[axis] - v) * keep >= 0, ib = (b[axis] - v) * keep >= 0;
+      if (ia) out.push(a);
+      if (ia !== ib) out.push(lerp(a, b, (v - a[axis]) / (b[axis] - a[axis])));
+    }
+    pts = out;
+    if (pts.length < 3) return [];
+  }
+  return pts;
+}
+
+function buildWater() {
+  const M = 20;
+  const out = [];
+  for (const e of osm('water')) {
+    const t = e.tags || {};
+    const kind = t.natural === 'water' || t.waterway === 'riverbank' ? 0 : t.natural === 'beach' || t.natural === 'sand' ? 1 : -1;
+    if (kind < 0) continue;
+    const open = (r) => (r.length > 1 && r[0][0] === r[r.length - 1][0] && r[0][1] === r[r.length - 1][1] ? r.slice(0, -1) : r);
+    let outers, holes;
+    if (e.type === 'way' && e.geometry?.length > 3) {
+      outers = [e.geometry.map((g) => toWorld(g.lon, g.lat))];
+      holes = [];
+    } else if (e.type === 'relation') {
+      outers = memberRings(e, 'outer');
+      holes = memberRings(e, 'inner');
+    } else continue;
+    holes = holes.map((h) => rdpRing(clipRing(open(h), X0 - M, Z0 - M, X1 + M, Z1 + M), 0.5)).filter((h) => h.length >= 3);
+    for (const ring of outers.map(open)) {
+      const cut = rdpRing(clipRing(ring, X0 - M, Z0 - M, X1 + M, Z1 + M), 0.5);
+      if (cut.length < 3) continue;
+      let x0 = Infinity, z0 = Infinity, x1 = -Infinity, z1 = -Infinity;
+      for (const [x, z] of cut) { x0 = Math.min(x0, x); z0 = Math.min(z0, z); x1 = Math.max(x1, x); z1 = Math.max(z1, z); }
+      const own = holes.filter((h) => h.every(([x, z]) => x >= x0 && x <= x1 && z >= z0 && z <= z1));
+      out.push([kind, flat(cut), own.map(flat)]);
+    }
+  }
+  log(`water: ${out.filter((w) => w[0] === 0).length} water rings, ${out.filter((w) => w[0] === 1).length} beaches & sandbanks`);
+  return out;
+}
+
+// =====================================================================================================================
 // 10. OUTPUT
 // =====================================================================================================================
 const roadGraph = buildRoadGraph();
@@ -916,6 +970,16 @@ const { blocks, sidewalks, isWalk } = buildBlocks(roadGraph);
 const addresses = buildAddresses(roadGraph, isWalk, sidewalks);
 const trams = buildTrams();
 const { woods, paths } = buildWoods();
+const water = buildWater();
+// Bridges: the drivable pieces on bridges as they are (kind 0), and the tram tracks on bridges (kind 1, 7 m wide: the
+// tramway across the Skłodowska-Curie bridge); js/bridges.js joins each kind into decks by their shared ends
+const bridges = pieces.filter((r) => r.drivable && r.bridge).map((r) => [r.w, flat(r.pts.map((pt) => pt.p)), 0]);
+for (const w of osm('rail')) {
+  if (w.type !== 'way' || w.tags?.railway !== 'tram' || !w.tags.bridge || w.tags.bridge === 'no' || !w.geometry) continue;
+  const pts = w.geometry.map((g) => ({ p: toWorld(g.lon, g.lat), key: keyOf(g) }));
+  for (const pc of clipLine(pts)) bridges.push([7, flat(pc.map((pt) => pt.p)), 1]);
+}
+log(`bridges: ${bridges.length} pieces`);
 
 const GEO = {
   version: 1,
@@ -928,7 +992,7 @@ const GEO = {
   roads: mergeRoads(),
   // Drivable street graph: nodes [x, z, ...], links [node a, node b, name index, curb-to-curb width, travel lanes,
   // direction (1: a -> b, -1: b -> a, 0: both), inner shape points [x, z, ...], class, 1 on a roundabout, speed limit
-  // km/h]
+  // km/h, 1 on a bridge]
   roadGraph,
   // Blocks (curb islands between the roadways): [outer ring [x, z, ...], holes [[x, z, ...], ...], area m²]
   blocks,
@@ -954,6 +1018,11 @@ const GEO = {
   // [width m, flat points]
   woods,
   paths,
+  // Water (OpenStreetMap natural=water: the Vistula, ponds, canals; natural=beach, sand: kind 1), cut to the area:
+  // [kind, outer ring, holes]
+  water,
+  // Bridges (OpenStreetMap bridge=yes): [width, flat points, kind (0: a road, 1: a tram track)] per piece
+  bridges,
 };
 
 const json = JSON.stringify(GEO);

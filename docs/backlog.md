@@ -48,3 +48,5 @@ Pomysł z 2026-10-25, do decyzji i osobnego planu.
   jeśli test na Windows pokaże spadek fps, przebudować dachy kwartałów w dolinie na siatkę zamiast cięcia.
 - Krok 3.3: kominy EC Żerań (200 m czerwono-biały i 90 m szary, OSM man_made=chimney) widoczne zza Wisły; dziś pominięte
   w budynkach z OSM (dostałyby fasadę z oknami). Do zrobienia jako landmark.
+- Krok 3.3: na Moście Północnym nie jeździ ruch AI (most wychodzi poza mapę na Tarchomin, krawędzie odpadają z głównej
+  sieci ruchu); most stoi wyżej niż w rzeczywistości (ok. 23 m nad wodą: zachodni przyczółek na krawędzi skarpy).

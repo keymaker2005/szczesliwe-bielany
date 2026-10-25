@@ -87,7 +87,10 @@ napisy słowne na pojazdach służb bez insygniów, najpierw teren). Gałąź fa
 - [x] 3.2b Las Bielański (2026-10-25): granice lasów i 384 leśne ścieżki z OSM (GEO.woods, GEO.paths), ściółka z mchem
   i wydeptane ścieżki na trawnikach w lasach (maska w js/forest.js), ok. 64 tys. krzewów rysowanych do 170 m od kamery
   jedną siatką. Sprawdzone w Edge: 60 fps. Sprawdzam: las wygląda jak las.
-- [ ] 3.3 Wisła, nabrzeże i most Marii Skłodowskiej-Curie (poszerzona mapa). Sprawdzam: dojazd Wisłostradą na most, spacer nabrzeżem.
+- [x] 3.3 Wisła, nabrzeże i most (2026-10-25): mapa do 52.311,20.995 (9201 budynków, 114 tys. drzew, Plac Wilsona),
+  Wisła, stawy i plaże z OSM (js/water.js, własny materiał wody), pomosty mostów i wiaduktów z OSM z ruchem, pieszymi,
+  barierkami, filarami i tramwajem na Moście Północnym (js/bridges.js), teleport „Most Północny”. 60 fps w Chrome na M4.
+  Sprawdzam: przejazd przez most, Wisła pod mostem, plaża.
 - [ ] 3.4 Wspólna dyspozytornia służb w telefonie. Sprawdzam: ratownik bez zmian, nowa zakładka „Służby”.
 - [ ] 3.5 Strażnik Miejski. Sprawdzam: 3 zgłoszenia (trawnik, śmieci, hałas), wybór pouczenie lub mandat zmienia ocenę.
 - [ ] 3.6 Strażak. Sprawdzam: pożar, zalana piwnica i kot na drzewie do ukończenia.

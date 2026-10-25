@@ -1,5 +1,6 @@
 import { signalPhase, walkSignal } from './city-config.js';
 import { groundY } from './terrain.js';
+import { deckY } from './bridges.js';
 
 const MOTOR_RANGE = 180;
 const SIREN_RANGE = 220;
@@ -148,7 +149,7 @@ class CityAudioSources {
     for (let i = 0; i < vehicles.length; i++) {
       const v = vehicles[i];
       if (!v.edge) continue;
-      const y = groundY(v.x, v.z) + 0.7;
+      const y = (v._onDeck ? deckY(v.x, v.z) ?? groundY(v.x, v.z) : groundY(v.x, v.z)) + 0.7; // on a bridge's deck
       const d2 = this.distanceSq(v.x, y, v.z);
       const range = v.isPolice ? SIREN_RANGE : MOTOR_RANGE;
       if (!Number.isFinite(d2) || d2 > range * range) continue;

@@ -25,8 +25,8 @@ test('Bielany geodata: frame at Stare Bielany, real streets with Polish names, a
     assert.ok(m.x < -1000 && m.z < -800, `Młociny lies north-west: ${m.x}, ${m.z}`);
     assert.ok(Math.abs(Math.hypot(m.x, m.z) - 1660) < 100);
     const b = GEO.frame.bounds;
-    assert.ok(b.maxX - b.minX > 5350 && b.maxX - b.minX < 5550, 'about 5.5 km east to west (step 2.1)');
-    assert.ok(b.maxZ - b.minZ > 4150 && b.maxZ - b.minZ < 4300, 'about 4.2 km north to south');
+    assert.ok(b.maxX - b.minX > 6400 && b.maxX - b.minX < 6600, 'about 6.5 km east to west (step 3.3, to the Vistula)');
+    assert.ok(b.maxZ - b.minZ > 5350 && b.maxZ - b.minZ < 5550, 'about 5.45 km north to south (step 3.3, to the bridge)');
 
     // Streets: the main roads of the strip, names with Polish letters, every point inside the area
     const names = new Set(GEO.roads.map((r) => r[0]));
@@ -73,7 +73,7 @@ test('Bielany geodata: frame at Stare Bielany, real streets with Polish names, a
     assert.ok(onCurb < links.length * 0.01, `${onCurb} of ${links.length} street centrelines fall on a block`);
     assert.ok(!onBlock(station('Stare Bielany').x + 9.4, station('Stare Bielany').z - 12.4), 'the spawn on Kasprowicza is roadway');
     // Buildings: every LoD1 footprint, plus a few newer ones from OpenStreetMap, at plausible heights
-    assert.equal(GEO.buildings.filter((bd) => bd[3] !== 1).length, 6016);
+    assert.equal(GEO.buildings.filter((bd) => bd[3] !== 1).length, 9025); // LoD1 in the step 3.3 area
     const osmCount = GEO.buildings.filter((bd) => bd[3] === 1).length;
     assert.ok(osmCount > 30 && osmCount < 250, `${osmCount} OpenStreetMap buildings`);
     for (const [outer, , h] of GEO.buildings) assert.ok(outer.length >= 6 && h >= 2 && h < 80);

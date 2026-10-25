@@ -10,6 +10,7 @@ import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { GEO } from './bielany-geodata.js';
 import { groundPose, drapeGeometry } from './terrain.js';
 import { blockAt, ISLAND_BOUNDS } from './city-config.js';
+import { deckY, deckPose } from './bridges.js';
 
 const SECTION = 10.2; // m, one body section
 const GAP = 0.5; // m between sections (the bellows)
@@ -85,7 +86,7 @@ function sectionGeometry(front) {
 // The rails of every track: two steel strips GAUGE apart, slightly above the road; on a tramway of its own (a curb
 // island) they stand on sleepers in a ballast bed laid on the lawn
 function trackGeometry() {
-  const rails = [], bed = [];
+  const rails = [], bed = [], high = []; // high: the rails on the tram bridges' decks, at their heights
   const strip = (out, ax, az, bx, bz, nx, nz, o0, o1, ya, yb) => {
     const p = [ax + nx * o0, az + nz * o0, ax + nx * o1, az + nz * o1, bx + nx * o1, bz + nz * o1, bx + nx * o0, bz + nz * o0];
     out.push(p[0], ya, p[1], p[2], ya, p[3], p[4], yb, p[5], p[0], ya, p[1], p[4], yb, p[5], p[6], yb, p[7]);
@@ -100,6 +101,11 @@ function trackGeometry() {
       for (let s = 0; s < n; s++) {
         const x0 = ax + ((bx - ax) * s) / n, z0 = az + ((bz - az) * s) / n;
         const x1 = ax + ((bx - ax) * (s + 1)) / n, z1 = az + ((bz - az) * (s + 1)) / n;
+        const d0 = deckY(x0, z0, 1), d1 = deckY(x1, z1, 1);
+        if (d0 !== null && d1 !== null) {
+          for (const side of [-1, 1]) strip(high, x0, z0, x1, z1, nx, nz, (side * GAUGE) / 2 - 0.04, (side * GAUGE) / 2 + 0.04, d0 + 0.035, d1 + 0.035);
+          continue;
+        }
         const l0 = trackLift(x0, z0), l1 = trackLift(x1, z1);
         if (trackLift((x0 + x1) / 2, (z0 + z1) / 2)) strip(bed, x0, z0, x1, z1, nx, nz, -BED_W / 2, BED_W / 2, l0 + 0.03, l1 + 0.03);
         for (const side of [-1, 1]) {
@@ -118,7 +124,7 @@ function trackGeometry() {
     g.setAttribute('normal', new THREE.BufferAttribute(n, 3));
     return g;
   };
-  return { rails: geometry(rails), bed: geometry(bed) };
+  return { rails: geometry(rails), bed: geometry(bed), high: geometry(high) };
 }
 
 function createTrams(scene, { blockers = [] } = {}) {
@@ -128,13 +134,16 @@ function createTrams(scene, { blockers = [] } = {}) {
   const bounds = GEO.frame.bounds;
 
   const track = trackGeometry();
-  const rails = new THREE.Mesh(drapeGeometry(track.rails), new THREE.MeshStandardNodeMaterial({ color: 0x8e9196, roughness: 0.35, metalness: 0.8, side: THREE.DoubleSide }));
+  const railMat = new THREE.MeshStandardNodeMaterial({ color: 0x8e9196, roughness: 0.35, metalness: 0.8, side: THREE.DoubleSide });
+  const rails = new THREE.Mesh(drapeGeometry(track.rails), railMat);
+  const bridgeRails = new THREE.Mesh(track.high, railMat);
+  bridgeRails.name = 'TramBridgeRails';
   rails.name = 'TramRails';
   rails.receiveShadow = true;
   const bed = new THREE.Mesh(drapeGeometry(track.bed), new THREE.MeshStandardNodeMaterial({ color: 0x6e675e, roughness: 1, side: THREE.DoubleSide }));
   bed.name = 'TramBed';
   bed.receiveShadow = true;
-  group.add(bed, rails);
+  group.add(bed, rails, bridgeRails);
 
   // trams: spaced along each route; the routes come in pairs (there, back)
   const trams = [];
@@ -176,10 +185,11 @@ function createTrams(scene, { blockers = [] } = {}) {
         const idx = mesh === fronts ? fi++ : mi++;
         if (!t.visible) { mesh.setMatrixAt(idx, zero); continue; }
         // each section on the ground under it, along the slope (js/terrain.js)
-        groundPose(p.x, p.z, Math.sin(p.yaw), Math.cos(p.yaw), SECTION / 2, HALF_W, pose);
+        const onDeck = deckY(p.x, p.z, 1) !== null; // across the Skłodowska-Curie bridge
+        (onDeck ? deckPose : groundPose)(p.x, p.z, Math.sin(p.yaw), Math.cos(p.yaw), SECTION / 2, HALF_W, pose, 1);
         q.setFromEuler(tilt.set(pose.pitch, p.yaw, pose.roll, 'YXZ'));
         if (k === SECTIONS - 1) q.multiply(flip); // the rear section's nose faces backwards
-        const lift = trackLift(p.x, p.z);
+        const lift = onDeck ? 0 : trackLift(p.x, p.z);
         m4.compose(v3.set(p.x, pose.y + (lift ? lift + 0.09 : 0), p.z), q, one);
         mesh.setMatrixAt(idx, m4);
       }
