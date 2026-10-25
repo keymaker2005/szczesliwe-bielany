@@ -20,6 +20,18 @@ Bramka: wersja 1.0 z patronatem.
   - lista pytań kontrolnych przetestowana przed publikacją;
   - logo dzielnicy po formalnej decyzji o patronacie.
 
+## Faza 5 (pomysł, po Fazie 4): gra dla wielu osób
+Pomysł z 2026-10-25, do decyzji i osobnego planu.
+- Gracze widzą się nawzajem na mapie: postacie, auta, rowery i helikoptery z imionami (losowymi, bez kont).
+- Technika: Cloudflare Workers + Durable Objects + WebSocket, pokój na dzielnicę; gra wysyła pozycję, kierunek i tryb
+  kilka–kilkanaście razy na sekundę, inni gracze płynnie przesuwani.
+- Interakcje na start: klakson, gesty i gotowe zwroty (bez wolnego czatu), taksówka z prawdziwym pasażerem (jeden gracz
+  wzywa, drugi wiezie), wspólne zlecenia służb, zderzenia aut graczy.
+- Ryzyka: moderacja (bez wolnego czatu z obcymi, wersja dla urzędu), koszty (sprawdzić aktualne limity darmowego planu
+  Cloudflare / plan ok. 5 USD/mies.), prywatność (bez kont i zapisu danych graczy), wydajność (limit rysowanych graczy
+  przy tłoku).
+- Konto Cloudflare już podpięte (wrangler), pakiet nie jest potrzebny.
+
 ## Pomysły luźne
 (tu dopisuj nowe pomysły w trakcie pracy)
 - Faza 1.5: tabliczki z nazwami ulic w stylu warszawskim (niebiesko-białe) zamiast nowojorskich zielonych (main.js renderLocation, css/style.css .street-sign).
@@ -34,4 +46,5 @@ Bramka: wersja 1.0 z patronatem.
 - Wersja dla urzędu: wyłączyć kontakt z pieszymi i ragdolla (PEDESTRIAN_CONTACT = false w js/city-config.js), decyzja z 2026-10-26.
 - Teren (3.2a): trawniki w dolinie to ok. 0,9 mln trójkątów (długie trójkąty z podziału wielokątów kwartałów cięte siatką 8 m);
   jeśli test na Windows pokaże spadek fps, przebudować dachy kwartałów w dolinie na siatkę zamiast cięcia.
-
+- Krok 3.3: kominy EC Żerań (200 m czerwono-biały i 90 m szary, OSM man_made=chimney) widoczne zza Wisły; dziś pominięte
+  w budynkach z OSM (dostałyby fasadę z oknami). Do zrobienia jako landmark.
