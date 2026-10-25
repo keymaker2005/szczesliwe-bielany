@@ -551,7 +551,7 @@ function hutnikFrame() {
 }
 // The pitch with its mown stripes and white lines, 10 px per metre
 function pitchTexture() {
-  const L = 105, W = 68, M = 4, px = 10;
+  const L = 105, W = 68, M = 4, px = 16;
   const c = document.createElement('canvas');
   c.width = (L + 2 * M) * px; c.height = (W + 2 * M) * px;
   const g = c.getContext('2d');
@@ -560,7 +560,7 @@ function pitchTexture() {
     g.fillRect((M + i * 7) * px, 0, 7 * px, c.height);
   }
   g.fillStyle = '#69973f'; g.fillRect(0, 0, M * px, c.height); g.fillRect((M + L) * px, 0, M * px, c.height);
-  g.strokeStyle = '#f4f4ee'; g.fillStyle = '#f4f4ee'; g.lineWidth = 1.2;
+  g.strokeStyle = '#f4f4ee'; g.fillStyle = '#f4f4ee'; g.lineWidth = 3.2;
   const X = (u) => (M + u) * px, Y = (v) => (M + v) * px;
   g.strokeRect(X(0), Y(0), L * px, W * px);
   g.beginPath(); g.moveTo(X(L / 2), Y(0)); g.lineTo(X(L / 2), Y(W)); g.stroke();
@@ -575,7 +575,7 @@ function pitchTexture() {
   }
   const t = new THREE.CanvasTexture(c);
   t.colorSpace = THREE.SRGBColorSpace;
-  t.anisotropy = 4;
+  t.anisotropy = 16;
   return { map: t, w: L + 2 * M, h: W + 2 * M };
 }
 function hutnik(b, colliders) {
@@ -585,21 +585,21 @@ function hutnik(b, colliders) {
   const white = mat({ color: 0xf1f0ea, rough: 0.6 }), steel = LOOK.steel, lamp = mat({ color: 0xf6f1d0, rough: 0.3 });
   const L = 105, W = 68;
   // the apron and the pitch
-  b.box(f, 0, 0, 130, 124, 0.1, 0, paving);
+  b.box(f, 0, 0, 130, 124, 0.17, 0, paving); // block tops of the city grid reach 0.15 m
   const pt = pitchTexture();
   const turf = b.mesh(new THREE.PlaneGeometry(pt.w, pt.h), mat({ map: pt.map, rough: 0.95 }));
   turf.rotation.x = -Math.PI / 2;
   turf.rotation.order = 'YXZ';
   turf.rotation.y = f.yaw;
   const c0 = f.at(0, 0);
-  turf.position.set(c0.x, 0.13, c0.z);
+  turf.position.set(c0.x, 0.2, c0.z);
   turf.castShadow = false;
   // goals
   for (const s of [-1, 1]) {
     const gu = s * L / 2;
-    for (const t of [-1, 1]) b.box(f, gu, t * 3.66, 0.12, 0.12, 2.44, 0.1, white);
-    b.box(f, gu, 0, 0.12, 7.44, 0.12, 2.5, white);
-    b.box(f, gu + s * 1.5, 0, 0.04, 7.2, 2.2, 0.1, mat({ color: 0xdadada, rough: 0.9, opacity: 0.35 }));
+    for (const t of [-1, 1]) b.box(f, gu, t * 3.66, 0.12, 0.12, 2.44, 0.2, white);
+    b.box(f, gu, 0, 0.12, 7.44, 0.12, 2.64, white);
+    b.box(f, gu + s * 1.5, 0, 0.04, 7.2, 2.2, 0.2, mat({ color: 0xdadada, rough: 0.9, opacity: 0.35 }));
   }
   // boards round the pitch
   b.box(f, 0, W / 2 + 3.5, L + 8, 0.2, 1, 0.1, board);
@@ -638,8 +638,8 @@ function hutnik(b, colliders) {
   const artificial = mat({ color: 0x3f7f3b, rough: 0.95 });
   for (const ring of HUTNIK_TRAINING) {
     const r = toPts(ring);
-    b.prism(r, 0, 0.12, artificial, artificial);
-    b.prism(r, 0.12, 3.0, mat({ color: 0x2b2f33, rough: 0.7, opacity: 0.25, double: true }));
+    b.prism(r, 0, 0.19, artificial, artificial);
+    b.prism(r, 0.19, 3.0, mat({ color: 0x2b2f33, rough: 0.7, opacity: 0.25, double: true }));
   }
   // the dugouts at the west stand
   for (const u of [-9, 9]) {
