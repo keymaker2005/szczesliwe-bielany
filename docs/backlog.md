@@ -49,3 +49,6 @@ Pomysł z 2026-10-25, do decyzji i osobnego planu.
   w budynkach z OSM (dostałyby fasadę z oknami). Do zrobienia jako landmark.
 - Krok 3.3: na Moście Północnym nie jeździ ruch AI (most wychodzi poza mapę na Tarchomin, krawędzie odpadają z głównej
   sieci ruchu); most stoi wyżej niż w rzeczywistości (ok. 23 m nad wodą: zachodni przyczółek na krawędzi skarpy).
+
+## Przewodnik jako lista landmarków w telefonie (prośba z 2026-10-25, przy Stadionie Hutnika)
+- Nowa aplikacja „Przewodnik” w telefonie (js/phone.js): lista wszystkich landmarków (SITES z js/guide.js, wraz ze stadionem), odhaczanie odwiedzonych (stan „seen” z localStorage), „Nawiguj” wyznacza trasę GPS do landmarku (js/gps-route.js, jak przy zleceniach), „Czytaj więcej” otwiera tekst z guide-texts.js. Do zrobienia osobnym krokiem, nie w zadaniu Stadion Hutnika.

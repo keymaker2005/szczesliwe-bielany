@@ -179,6 +179,11 @@ Wspólne dla trzech stacji: stacje płytkie, podziemne (otwarte 2008), na powier
   - https://en.wikipedia.org/wiki/Camaldolese_Church,_Warsaw
   - https://pl.wikipedia.org/wiki/Zesp%C3%B3%C5%82_klasztorny_kameduł%C3%B3w_na_Bielanach
 
+## 9. Stadion Hutnika Warszawa (ul. Marymoncka 42)
+- Pozycja z OSM (tools/data/osm_hutnik_stadium.json, zapytanie q_hutnik_stadium.overpassql): leisure=stadium way 1218325012, trybuny (building=grandstand) way 1239190581 i 1239190582; środek murawy ok. 52.2999 N, 20.9438 E (świat: -374,5; -2020,8), ok. 1,4 km na północny zachód od AWF wzdłuż Marymonckiej. Oś trybun ok. 60° od osi x, trybuny po obu stronach, 68 × 11,5 m, w LoD1 bloki 6 m (zastąpione modelem).
+- Wygląd (opis w StadiumDB i Aktywnej Warszawie, odbudowa 2019–2021, otwarcie 25.08.2021): murawa naturalna z podgrzewaniem, dwie zadaszone trybuny (ok. 1330–1390 miejsc), zachodnia w pomarańczowym betonie z czarnym dachem, wschodnia w czarnym betonie z pomarańczowym dachem (barwy klubu), ławki rezerwowych przy trybunie zachodniej, cztery maszty oświetleniowe po bokach trybun, bez bieżni (nasypy rozebrane). Herbu klubu nie odwzorowujemy, napis „HUTNIK WARSZAWA” zwykłą czcionką.
+- Źródła: https://stadiumdb.com/stadiums/pol/osrodek_hutnik_warszawa ; https://en.wikipedia.org/wiki/Hutnik_Warsaw ; https://pik.warszawa.pl/miejsca/osrodek-hutnik/ ; zdjęcia: kategoria Stadion Hutnika Warszawa na Wikimedia Commons (do porównania przez użytkownika, kolory dachów i trybun niezweryfikowane na zdjęciu).
+
 ---
 
 ## Otwarte kwestie (do weryfikacji)

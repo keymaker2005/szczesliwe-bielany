@@ -26,6 +26,7 @@ const SITES = {
   'galeria-mlociny': { x: -1287, z: -1454, r: 120 },
   'sw-zygmunt': { x: -200, z: 283, r: 60 },
   'maria-magdalena': { x: -1387, z: 120, r: 50 },
+  hutnik: { x: -374.5, z: -2020.8, r: 90 },
 };
 
 class Guide {

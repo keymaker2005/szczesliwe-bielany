@@ -161,7 +161,8 @@ function buildingAt(x, z) {
 // ---------------------------------------------------------------------------------------------------------------------
 const LANDMARKS = [
   ...GEO.stations.map((s) => ({ id: s.name, name: `Metro ${s.name}`, short: s.name, x: s.x, z: s.z, district: 'Bielany' })),
-  { id: 'AWF', name: 'Akademia Wychowania Fizycznego', short: 'AWF', x: 330, z: -760, district: 'Las Bielański' }
+  { id: 'AWF', name: 'Akademia Wychowania Fizycznego', short: 'AWF', x: 330, z: -760, district: 'Las Bielański' },
+  { id: 'Hutnik', name: 'Stadion Hutnika', short: 'Hutnik', x: -374.5, z: -2020.8, district: 'Bielany' }
 ];
 // Street-level arrivals shared by every travel mode, in the direction of travel. Heading 0 faces south (+z), PI north.
 const TELEPORT_LOCATIONS = {
@@ -176,6 +177,7 @@ const TELEPORT_LOCATIONS = {
   piaski: { x: -319.5, z: 1452.3, heading: 1.185 }, // Kochanowskiego, Piaski
   kaskada: { x: 1196.4, z: 284.8, heading: 0.769 }, // Gdańska, Marymont-Kaskada
   kameduly: { x: 597.1, z: -1583.6, heading: -0.503 }, // Dewajtis by the Camaldolese church
+  hutnik: { x: -555.9, z: -1953.8, heading: 0.545 }, // Marymoncka, a short walk from Stadion Hutnika
   mostPolnocny: { x: -95.0, z: -2570.0, heading: 2.25 } // the west end of the Skłodowska-Curie bridge, towards the Vistula
 };
 
