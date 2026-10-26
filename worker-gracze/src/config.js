@@ -8,6 +8,7 @@ export const LIMITS = {
   silentMs: 10 * 1000, // a player with no message for this long is gone
   sweepMs: 2 * 1000, // how often the silent players are looked for (only when messages arrive)
   messageBytes: 512,
+  helloBytes: 3072, // the first message carries the Turnstile token (up to 2048 characters)
   ratePerSecond: 12, // token bucket: refill per second...
   rateBurst: 24, // ...and size
   droppedPerMinute: 200, // dropped messages that end a connection ("abuse")

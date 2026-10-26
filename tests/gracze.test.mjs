@@ -118,6 +118,16 @@ test('states go to the others, never back to the sender, and not to players befo
   assert.equal(r.last(a, 's'), undefined);
 });
 
+test('a real Turnstile token (about 2000 characters) fits in the first message only', async () => {
+  const r = makeRoom();
+  const ws = r.socket();
+  await r.say(ws, { t: 'hej', turnstile: 'x'.repeat(2048) });
+  assert.equal(r.last(ws, 'witaj').id, 1);
+  const before = ws.att.drops.length;
+  await r.say(ws, { t: 'czat', txt: 'y'.repeat(600) });
+  assert.equal(ws.att.drops.length, before + 1); // later messages keep the small limit
+});
+
 test('a failed Turnstile check ends the connection', async () => {
   const r = makeRoom({ human: false });
   const ws = r.socket();

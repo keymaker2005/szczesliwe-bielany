@@ -19,6 +19,8 @@ Plan: docs/plan-fazy-5.md (zaakceptowany ze wszystkimi decyzjami).
   prawdziwy pokój (tests/shared-calls.test.mjs), bot --strazak.
 - 5.6b Rozmowy graczy: filter.js, talk.js (zgłoszenia, wyciszanie), multiplayer-net.js, multiplayer.js, phone.js;
   tests/filter.test.mjs, rozmowy w tests/gracze.test.mjs i tests/multiplayer.test.mjs, bot --rozmowy.
+- 5.7 Publikacja 1.1 (974f857), Worker bielany-gracze; poprawki po wdrożeniu: limit połączeń z adresu zniesiony w pokoju
+  testowym, pierwsza wiadomość do 3072 znaków (token Turnstile). Test 20 botów × 10 min na serwerze.
 
 ## Faza 4: Czaty LLM i patronat (gałąź faza-4, 2026-10-26)
 

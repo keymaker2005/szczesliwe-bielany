@@ -104,7 +104,7 @@ export class RoomCore {
     att.last = now; // any message, even a dropped one, shows the player is still there
     this.sweep();
     let msg = null;
-    if (typeof raw === 'string' && raw.length <= LIMITS.messageBytes) {
+    if (typeof raw === 'string' && raw.length <= (att.stage === 'new' ? LIMITS.helloBytes : LIMITS.messageBytes)) {
       try { msg = JSON.parse(raw); } catch { msg = null; }
     }
     const ok = msg && typeof msg === 'object' && typeof msg.t === 'string' && this.take(att, now);

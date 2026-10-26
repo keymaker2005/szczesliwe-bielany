@@ -7,6 +7,21 @@ Wewnętrzna historia prac (kroki, gałęzie, decyzje): docs/changelog-wewnetrzny
 
 Dane: © współtwórcy OpenStreetMap (ODbL); GUGiK, geoportal.gov.pl. Na podstawie mrdoob/slop-newyork.
 
+## 1.1 — 2026-10-26, ok. 15:27 · wersja 974f857 · Faza 5: gra z innymi
+
+**Gra z innymi** (bez kont, nic nie zapisujemy; z `?solo` i w wersji dla urzędu gra jest samotna jak dotąd)
+- Inni gracze na Bielanach: pieszo, autem w swoim kolorze, rowerem i helikopterem, z losowym imieniem nad głową
+  (np. „Rudy Dzik 27”). Na minimapie kolorowe kropki, dalecy gracze przy jej krawędzi; na mapie (M) z imionami.
+- Telefon → Gracze: kto jest w pokoju i jak daleko, „Nawiguj” do gracza, nowe imię i kolor, wyłącznik gry z innymi.
+- Klakson słyszą gracze w pobliżu. Pod klawiszem T sześć gotowych zwrotów („Cześć!”, „Jedziemy?”…) w dymku nad głową.
+- Taksówka z prawdziwym pasażerem: pieszo zamawiasz kurs w telefonie, kierowca-gracz przyjmuje go w Zleceniach,
+  podjeżdża i wiezie Cię do celu (jedziesz w jego aucie). Gdy nikt nie przyjmie: szybki przejazd taksówką komputerową.
+- Wspólne akcje straży: pożar, zalaną piwnicę albo kota na drzewie można gasić razem; praca wszystkich się sumuje,
+  każdy dostaje swoją wypłatę.
+- Telefon → Rozmowy: czat z graczami w pokoju, z zasadami, filtrem wulgaryzmów i danych (linki, numery), „Wycisz”
+  i „Zgłoś”; rozmowy nie są zapisywane.
+- Gdy serwer graczy odpoczywa (dzienny limit) albo jest wyłączony, gra działa sama.
+
 ## 1.0.1 — 2026-10-26, ok. 13:25 · wersja b9fdeb8 · Porządki
 
 **Pod spodem**

@@ -27,7 +27,13 @@
   multiplayer-net.js (talkLog, mute, report), dymki w multiplayer.js, aplikacja Rozmowy w phone.js. Boty: --rozmowy.
   Następny: 5.7 publikacja 1.1 (wdrożenie Workera bielany-gracze i strony tylko na polecenie autora; autor wpisuje
   sekret TURNSTILE_SECRET dla bielany-gracze).
-- Testy: 238 zielonych.
+- 5.6b zaakceptowany. 5.7 zrobiony: 1.1 opublikowana (strona 974f857), Worker bielany-gracze na Cloudflare (sekrety:
+  TURNSTILE_SECRET wpisany przez autora, BOTS_KEY z pliku worker-gracze/.bots-key, ignorowanego przez git). Wdrożenie
+  Workera: `npx --yes wrangler@3.114.15 deploy --config <repo>/worker-gracze/wrangler.toml` z katalogu scratchpad,
+  tylko na polecenie autora. Wyłącznik: GRACZE_OFF (docs/api-gracze.md). Boty na serwerze:
+  `node tools/boty.mjs 20 --adres wss://bielany.zbigniew.ai/api/gracze --klucz worker-gracze/.bots-key` (pokój testowy).
+  Następny: 5.8 Test 1.1 na Windows z drugą osobą i bramka Fazy 5 (docs/test-1.8b.md trzeba dopisać o grę z innymi).
+- Testy: 239 zielonych.
 
 ## Faza 4 (gałąź faza-4, plan docs/plan-fazy-4.md) — dla nowej sesji
 - Zrobione i sprawdzone: 4.1 Worker z bezpiecznikami, 4.2 aplikacja Czat, 4.3 baza przewodnika, 4.4 przewodnik na
@@ -70,7 +76,7 @@
   razem z dodatkami: tabliczki MSI, zwierzęta w lasach, Stadion Hutnika, aplikacja Przewodnik. Bramka czeka na test na
   Windows; otwarte przed bramką: 52-56 fps pieszo przy Kamedułach (Chrome, M4), 30 fps zgłoszone w Edge (docs/backlog.md).
 - Faza 4: patrz sekcja na górze.
-- Historia: CHANGELOG.md (publiczne wersje 0.1-1.0.1 według publikacji na Cloudflare), docs/changelog-wewnetrzny.md
+- Historia: CHANGELOG.md (publiczne wersje 0.1-1.1 według publikacji na Cloudflare), docs/changelog-wewnetrzny.md
   (kroki i commity). Praca równoległa: docs/praca-rownolegla.md (koordynator + osobne sesje na gałęziach, modele:
   Haiku proste, Sonnet powtarzalne, Opus myślenie; scalanie do gałęzi fazy tylko na polecenie użytkownika).
 - Drzewa GUGiK: strumień paczki 8,6 GB urwał się przy 355 z 484 arkuszy; data/bielany_trees_2023.json to stary wycinek
@@ -80,7 +86,7 @@
 - Teren: js/terrain.js (groundY, drapeGeometry, groundPose), dane js/bielany-terrain.bin z tools/terrain-bielany.mjs
   (po zmianie dróg w geodanych uruchomić ponownie: wygładza teren pod głównymi drogami). Mosty: js/bridges.js
   (deckY, surfaceY, deckPose). Każdy nowy obiekt na ziemi bierze wysokość z groundY / surfaceY. ?plaski = płaska mapa.
-- Testy: 238 zielonych, w tym test składni wszystkich modułów (po scaleniach sprawdzić też start gry w przeglądarce).
+- Testy: 239 zielonych, w tym test składni wszystkich modułów (po scaleniach sprawdzić też start gry w przeglądarce).
 - Gałęzie: faza-0, faza-1, faza-1.5, faza-2, faza-3, faza-4 (bieżąca). main = wersja 1.0 (od 2026-10-26; oryginał mrdooba:
   tag nyc-original i jego historia w main). Kolejne fazy scalamy do main po bramkach.
 
@@ -95,7 +101,7 @@
 - Node: ~/.local/node/bin (dopisać do PATH). gh: ~/.local/bin/gh (zalogowany jako keymaker2005).
 - Serwer: `node tools/serve.mjs 8080`, podgląd w panelu przeglądarki (.claude/launch.json, nazwa „bielany”).
   Ukryty panel daje ~1 fps — pomiary fps tylko przy widocznym panelu.
-- Testy: `node --test tests/*.test.mjs tests/*.test.cjs` (238 zielonych).
+- Testy: `node --test tests/*.test.mjs tests/*.test.cjs` (239 zielonych).
 - Dane: `node tools/geo-bielany.mjs` generuje js/bielany-geodata.js; Overpass: tools/overpass.sh; budynki:
   data/extract_bielany_lod1.py (bez pyproj); drzewa: data/extract_bielany_trees.py (strumień 8,6 GB, ~40 min);
   teksty: tools/guide-texts.mjs.
