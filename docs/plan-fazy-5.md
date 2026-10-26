@@ -2,7 +2,7 @@
 
 Bramka: dwie osoby na różnych komputerach jeżdżą razem po Bielanach płynnie, w 60 fps, a gra działa dalej, gdy
 serwer graczy jest wyłączony (kryteria na końcu). Gałąź faza-5 (z main po 1.0.1). Publikacja jako 1.1.
-Do akceptacji (krok 5.0).
+Zaakceptowany 2026-10-26 ze wszystkimi propozycjami decyzji.
 
 ## Co mamy na wejściu
 - Gracz ma cztery tryby (controllers.js, moduł przenośny): pieszo, auto, rower, helikopter. Pozycja, kierunek i tryb

@@ -1,6 +1,6 @@
 # Fazy: bieżący zakres
 
-Status: FAZA 5 (gra dla wielu osób), gałąź faza-5, krok 5.0 (plan do akceptacji). Wersja 1.0.1 opublikowana 2026-10-26; Fazy 0, 1.5, 2, 3 i 4 zaliczone, Faza 1 zrobiona (bramka czeka na pakiet dla urzędu). main = wersja 1.0.1; faza-5 scalamy do main po bramce.
+Status: FAZA 5 (gra dla wielu osób), gałąź faza-5, krok 5.1 (serwer graczy). Wersja 1.0.1 opublikowana 2026-10-26; Fazy 0, 1.5, 2, 3 i 4 zaliczone, Faza 1 zrobiona (bramka czeka na pakiet dla urzędu). main = wersja 1.0.1; faza-5 scalamy do main po bramce.
 
 ## Faza 0: Rozpoznanie
 Bramka: dane się wczytują, plan Fazy 1 zaakceptowany.
@@ -158,9 +158,9 @@ potrącania pieszych, bez zapisu rozmów; SMS-y od „Burmistrz Bielan” bez na
 - [x] Bramka Fazy 4: „1.0 bez patronatu” (decyzja 8), kryteria w docs/plan-fazy-4.md; ten sam test zamyka bramki Faz 2 i 3. Zaliczona 2026-10-26: Test 1.0 na Windows (docs/test-1.8b.md) według autora przechodzi.
 
 ## Faza 5: Gra dla wielu osób
-Bramka: dwie osoby na różnych komputerach jeżdżą razem płynnie w 60 fps, gra działa bez serwera graczy. Plan: docs/plan-fazy-5.md (do akceptacji). Publikacja jako 1.1.
+Bramka: dwie osoby na różnych komputerach jeżdżą razem płynnie w 60 fps, gra działa bez serwera graczy. Plan: docs/plan-fazy-5.md (zaakceptowany 2026-10-26 ze wszystkimi propozycjami decyzji). Publikacja jako 1.1.
 
-- [ ] 5.0 Plan Fazy 5 (serwer, pokoje, koszty, prywatność, kroki, 7 decyzji). Sprawdzam: akceptuję plan i odpowiadam na decyzje.
+- [x] 5.0 Plan Fazy 5 (serwer, pokoje, koszty, prywatność, kroki, 7 decyzji). Sprawdzam: akceptuję plan i odpowiadam na decyzje.
 - [ ] 5.1 Serwer graczy: Worker bielany-gracze, pokój (Durable Object), protokół, bezpieczniki, boty testowe.
 - [ ] 5.2 Inni gracze w grze: js/multiplayer.js, wygładzanie ruchu, modele w kolorach, imiona, mapa.
 - [ ] 5.3 Telefon: aplikacja „Gracze”, przełącznik i tryb solo.
