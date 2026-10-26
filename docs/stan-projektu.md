@@ -1,4 +1,8 @@
-# Stan projektu (przekazanie sesji, 2026-10-26 po publikacji 1.0)
+# Stan projektu (przekazanie sesji, 2026-10-26 po publikacji 1.0.1)
+
+## Faza 5 (gałąź faza-5 z main, plan docs/plan-fazy-5.md)
+- Krok 5.0: plan napisany 2026-10-26, czeka na akceptację i 7 decyzji. Ceny Cloudflare Durable Objects sprawdzone
+  (strona z 18.10.2026). Porządki z backlogu (NYC, błąd GPU) zrobione i opublikowane jako 1.0.1.
 
 ## Faza 4 (gałąź faza-4, plan docs/plan-fazy-4.md) — dla nowej sesji
 - Zrobione i sprawdzone: 4.1 Worker z bezpiecznikami, 4.2 aplikacja Czat, 4.3 baza przewodnika, 4.4 przewodnik na

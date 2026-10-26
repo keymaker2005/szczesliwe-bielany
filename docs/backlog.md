@@ -20,17 +20,8 @@ Bramka: wersja 1.0 z patronatem.
   - lista pytań kontrolnych przetestowana przed publikacją;
   - logo dzielnicy po formalnej decyzji o patronacie.
 
-## Faza 5 (pomysł, po Fazie 4): gra dla wielu osób
-Pomysł z 2026-10-25, do decyzji i osobnego planu.
-- Gracze widzą się nawzajem na mapie: postacie, auta, rowery i helikoptery z imionami (losowymi, bez kont).
-- Technika: Cloudflare Workers + Durable Objects + WebSocket, pokój na dzielnicę; gra wysyła pozycję, kierunek i tryb
-  kilka–kilkanaście razy na sekundę, inni gracze płynnie przesuwani.
-- Interakcje na start: klakson, gesty i gotowe zwroty (bez wolnego czatu), taksówka z prawdziwym pasażerem (jeden gracz
-  wzywa, drugi wiezie), wspólne zlecenia służb, zderzenia aut graczy.
-- Ryzyka: moderacja (bez wolnego czatu z obcymi, wersja dla urzędu), koszty (sprawdzić aktualne limity darmowego planu
-  Cloudflare / plan ok. 5 USD/mies.), prywatność (bez kont i zapisu danych graczy), wydajność (limit rysowanych graczy
-  przy tłoku).
-- Konto Cloudflare już podpięte (wrangler), pakiet nie jest potrzebny.
+## Faza 5: gra dla wielu osób
+Przeniesiona do docs/fazy.md (bieżąca faza), plan: docs/plan-fazy-5.md.
 
 ## Pomysły luźne
 (tu dopisuj nowe pomysły w trakcie pracy)

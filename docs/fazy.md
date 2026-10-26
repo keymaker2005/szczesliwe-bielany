@@ -1,6 +1,6 @@
 # Fazy: bieżący zakres
 
-Status: wersja 1.0 opublikowana 2026-10-26, gałąź faza-4. Fazy 0, 1.5, 2, 3 i 4 zaliczone (bramki Faz 2–4 zamknął Test 1.0 na Windows, docs/test-1.8b.md, 2026-10-26). Faza 1 zrobiona, jej bramka czeka na pakiet dla urzędu. Pakiet dla urzędu i pismo (1.9c, 4.6) odłożone. faza-4 scalona do main 2026-10-26 decyzją autora (bez kodu nowszych zmian mrdooba).
+Status: FAZA 5 (gra dla wielu osób), gałąź faza-5, krok 5.0 (plan do akceptacji). Wersja 1.0.1 opublikowana 2026-10-26; Fazy 0, 1.5, 2, 3 i 4 zaliczone, Faza 1 zrobiona (bramka czeka na pakiet dla urzędu). main = wersja 1.0.1; faza-5 scalamy do main po bramce.
 
 ## Faza 0: Rozpoznanie
 Bramka: dane się wczytują, plan Fazy 1 zaakceptowany.
@@ -156,3 +156,16 @@ potrącania pieszych, bez zapisu rozmów; SMS-y od „Burmistrz Bielan” bez na
   Sprawdzam: pełna pętla na bielany.zbigniew.ai w Edge na Windows, czat działa, z ?czat=off gra działa dalej.
   Test przeszedł 2026-10-26 (według autora); opublikowane jako 1.0.
 - [x] Bramka Fazy 4: „1.0 bez patronatu” (decyzja 8), kryteria w docs/plan-fazy-4.md; ten sam test zamyka bramki Faz 2 i 3. Zaliczona 2026-10-26: Test 1.0 na Windows (docs/test-1.8b.md) według autora przechodzi.
+
+## Faza 5: Gra dla wielu osób
+Bramka: dwie osoby na różnych komputerach jeżdżą razem płynnie w 60 fps, gra działa bez serwera graczy. Plan: docs/plan-fazy-5.md (do akceptacji). Publikacja jako 1.1.
+
+- [ ] 5.0 Plan Fazy 5 (serwer, pokoje, koszty, prywatność, kroki, 7 decyzji). Sprawdzam: akceptuję plan i odpowiadam na decyzje.
+- [ ] 5.1 Serwer graczy: Worker bielany-gracze, pokój (Durable Object), protokół, bezpieczniki, boty testowe.
+- [ ] 5.2 Inni gracze w grze: js/multiplayer.js, wygładzanie ruchu, modele w kolorach, imiona, mapa.
+- [ ] 5.3 Telefon: aplikacja „Gracze”, przełącznik i tryb solo.
+- [ ] 5.4 Klakson, gesty i gotowe zwroty.
+- [ ] 5.5 Taksówka z prawdziwym pasażerem.
+- [ ] 5.6 Wspólne zlecenia służb (opcjonalnie, decyzja 6).
+- [ ] 5.7 Publikacja 1.1 (Worker i strona na polecenie autora).
+- [ ] 5.8 Test 1.1 na Windows i bramka.
