@@ -125,3 +125,11 @@ potrącania pieszych, bez zapisu rozmów; SMS-y od „Burmistrz Bielan” bez na
   1000 pytań dziennie, 30 USD miesięcznie, Turnstile + sesja na 1 h, tylko adresy gry, wyłącznik CHAT_OFF, liczniki bez
   treści i bez adresów IP (skrót z solą). Lokalnie: sh tools/czat-dev.sh, strona tools/czat-test.html.
   Sprawdzam: na localhost pytanie dostaje odpowiedź testową, 21. pytanie w 10 minut dostaje „zwolnij” (sprawdzone 2026-10-26).
+- [x] 4.2 Aplikacja „Czat” w telefonie i tryb bez czatu (js/chat.js, ?czat=off, CHAT_MAYOR = false, atrapa tools/fake-czat.mjs).
+  Sprawdzam: rozmowa z odpowiedziami testowymi, „zwolnij”, tryb bez czatu (sprawdzone 2026-10-26).
+- [x] 4.3 Baza wiedzy przewodnika (docs/wiedza-przewodnika.md, tools/wiedza-przewodnika.mjs → worker/src/wiedza-przewodnika.js)
+  i 30 pytań kontrolnych (docs/pytania-kontrolne-przewodnik.md). Sprawdzam: baza i lista pytań (zaakceptowane 2026-10-26).
+- [ ] 4.6 Pismo do urzędu (docs/pismo-urzad-czat.md, pakiet): szkic na gałęzi faza-4-krok-4.6-pismo, czeka na adresata
+  i dane do podpisu.
+- [x] 4.9 Wersja dla urzędu: ?urzad wyłącza kontakt z pieszymi (URZAD, PEDESTRIAN_CONTACT w js/city-config.js), znaczek
+  „wersja dla urzędu”. Sprawdzam: pieszych nie da się potrącić, znaczek widoczny (sprawdzone 2026-10-26).

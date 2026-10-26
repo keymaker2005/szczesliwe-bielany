@@ -13,6 +13,12 @@ Plan: docs/plan-fazy-4.md (zaakceptowany ze wszystkimi decyzjami). Praca równol
 - `3a62dee` 4.1 umowa API czatu (docs/api-czat.md) przed startem sesji równoległych.
 - 4.1 Worker bez modelu (worker/: limity, Turnstile, sesja, wyłącznik CHAT_OFF, Durable Object z licznikami),
   tests/worker.test.mjs, tools/czat-dev.sh, tools/czat-test.html (`a43f59f`). Sprawdzony 2026-10-26.
+- `8adbe7b` 4.2 aplikacja Czat w telefonie — sesja czat-telefon (gałąź claude/peaceful-tharp-f7a4f7), scalone `3c75dd9`.
+- `976adde` 4.3 baza wiedzy przewodnika i 30 pytań kontrolnych — sesja wiedza-przewodnika (claude/wiedza-przewodnika-4-3),
+  scalone `a988841`.
+- `e07334f` 4.9 wersja dla urzędu ?urzad — sesja urzad-wersja (claude/intelligent-stonebraker-07792c), scalone `0d93482`.
+- Uwaga z scaleń: sesje w ponownie użytych folderach worktree zacommitowały kopie macOS „plik 2.js” (`git add -A`);
+  usunięte przed scaleniem. Przy kolejnych sesjach sprawdzać `git diff --stat faza-4...<gałąź>` przed scaleniem.
 
 ## Faza 3: Służby i teren (gałąź faza-3, 2026-10-25)
 
