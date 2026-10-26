@@ -11,11 +11,19 @@ export const LIMITS = {
   monthBudgetUsd: 30, // estimated model cost per calendar month; hard limit also set in the Anthropic console
   sessionMs: 60 * 60 * 1000,
   answerWords: 120,
+  answerTokens: 600, // ~120 Polish words plus room; a longer answer is cut
 };
 
-// Model per conversation and prices in USD per 1M tokens (checked 2026-10-06; check again before 4.4 and 4.11)
+// Model per conversation (the Worker variable GUIDE_MODEL switches the guide to another one without a code change)
 export const MODELS = {
-  przewodnik: { id: 'claude-haiku-5-5', input: 0.10, output: 0.50, cacheRead: 0.01 },
+  przewodnik: 'claude-haiku-5-5',
+};
+
+// Prices in USD per 1M tokens (Anthropic price list cached 2026-10-06, checked again 2026-10-26; Haiku up to 100k input
+// tokens); cache writes cost 1.25x input, reads cacheRead. Check again before 4.11.
+export const PRICES = {
+  'claude-haiku-5-5': { input: 0.10, output: 0.50, cacheRead: 0.01 },
+  'claude-sonnet-5-5': { input: 2, output: 10, cacheRead: 0.20 },
 };
 
 export const CHATS = Object.keys(MODELS);

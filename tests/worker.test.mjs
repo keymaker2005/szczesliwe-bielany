@@ -4,6 +4,8 @@ import { readFileSync, readdirSync } from 'node:fs';
 import { handle, parseQuestion, allowedOrigin } from '../worker/src/index.js';
 import { Counters, warsawDay } from '../worker/src/counters.js';
 import { LIMITS } from '../worker/src/config.js';
+import { API_VERSION, SITE_IDS, askModel, splitAnswer } from '../worker/src/model.js';
+import { GUIDE_SYSTEM } from '../worker/src/wiedza-przewodnika.js';
 
 // In-memory Durable Object storage with the calls Counters uses
 function fakeStorage() {
@@ -37,8 +39,17 @@ function makeEnv(extra = {}) {
   return { env, storage, counters, advance: (ms) => { now += ms; } };
 }
 
-// Turnstile siteverify stand-in: only the token "human" passes
+// Turnstile siteverify stand-in: only the token "human" passes; the Messages API stand-in answers with a marker
+const apiCalls = [];
 const turnstileFetch = async (url, init) => {
+  if (url === 'https://api.anthropic.com/v1/messages') {
+    apiCalls.push({ headers: init.headers, body: JSON.parse(init.body) });
+    return Response.json({
+      content: [{ type: 'text', text: 'Klasztor Kamedułów stoi w Lesie Bielańskim. [[nawiguj:kameduly]]' }],
+      stop_reason: 'end_turn',
+      usage: { input_tokens: 40, cache_read_input_tokens: 9000, cache_creation_input_tokens: 0, output_tokens: 60 },
+    });
+  }
   assert.equal(url, 'https://challenges.cloudflare.com/turnstile/v0/siteverify');
   return Response.json({ success: init.body.get('response') === 'human' && init.body.get('secret') === 'test-secret' });
 };
@@ -176,6 +187,49 @@ test('no API key or secret appears in answers, and the worker source holds no ke
   for (const f of readdirSync(new URL('../worker/src/', import.meta.url))) {
     assert.doesNotMatch(readFileSync(new URL(`../worker/src/${f}`, import.meta.url), 'utf8'), /sk-ant-[\w-]{10,}/, f);
   }
+});
+
+test('with a key the guide asks the model: cached system prompt, alternating history, navigate, cost counted', async () => {
+  const { env, storage, counters } = makeEnv({ ANTHROPIC_API_KEY: 'sk-ant-test-123' });
+  apiCalls.length = 0;
+  const r = await ask(env, first({ history: [{ role: 'assistant', text: 'Cześć!' }, { role: 'user', text: 'Hej' }, { role: 'assistant', text: 'Witaj' }] }));
+  const d = await r.json();
+  assert.equal(d.answer, 'Klasztor Kamedułów stoi w Lesie Bielańskim.');
+  assert.equal(d.navigate, 'kameduly');
+  const call = apiCalls[0];
+  assert.equal(call.headers['x-api-key'], 'sk-ant-test-123');
+  assert.equal(call.headers['anthropic-version'], API_VERSION);
+  assert.equal(call.body.model, 'claude-haiku-5-5');
+  assert.deepEqual(call.body.system[0].cache_control, { type: 'ephemeral' });
+  assert.equal(call.body.system[0].text, GUIDE_SYSTEM);
+  assert.deepEqual(call.body.messages.map((m) => m.role), ['user', 'assistant', 'user']);
+  assert.equal(call.body.temperature, undefined);
+  const cost = await storage.get(`cost:${warsawDay(counters.now()).slice(0, 7)}`);
+  assert.ok(Math.abs(cost - (40 * 0.10 + 9000 * 0.01 + 60 * 0.50) / 1e6) < 1e-12);
+});
+
+test('model errors give "error", refusals a fixed answer, unknown navigate ids are dropped, GUIDE_MODEL switches', async () => {
+  const fail = async (url) => (url.includes('siteverify') ? Response.json({ success: true }) : new Response('x', { status: 529 }));
+  const { env } = makeEnv({ ANTHROPIC_API_KEY: 'k' });
+  const r = await handle(new Request('https://x/api/czat', { method: 'POST', headers: { Origin: ORIGIN }, body: JSON.stringify(first()) }), env, fail);
+  assert.equal(r.status, 502);
+  assert.equal((await r.json()).reason, 'error');
+  const refusal = async (url) => (url.includes('siteverify') ? Response.json({ success: true }) : Response.json({ content: [], stop_reason: 'refusal', usage: { input_tokens: 1, output_tokens: 0 } }));
+  const d = await (await handle(new Request('https://x/api/czat', { method: 'POST', headers: { Origin: ORIGIN }, body: JSON.stringify(first()) }), env, refusal)).json();
+  assert.match(d.answer, /Zapytaj mnie o Bielany/);
+  assert.deepEqual(splitAnswer('Tak. [[nawiguj:times-square]]'), { text: 'Tak.', navigate: '' });
+  apiCalls.length = 0;
+  await askModel({ chat: 'przewodnik', question: 'a', history: [] }, { ANTHROPIC_API_KEY: 'k', GUIDE_MODEL: 'claude-sonnet-5-5' }, turnstileFetch);
+  assert.equal(apiCalls[0].body.model, 'claude-sonnet-5-5');
+  assert.deepEqual(apiCalls[0].body.thinking, { type: 'between_tools' });
+  await assert.rejects(askModel({ chat: 'przewodnik', question: 'a', history: [] }, { ANTHROPIC_API_KEY: 'k', GUIDE_MODEL: 'nieznany' }, turnstileFetch));
+});
+
+test('the navigate ids are the landmarks of js/guide.js', () => {
+  const src = readFileSync(new URL('../js/guide.js', import.meta.url), 'utf8');
+  const block = src.slice(src.indexOf('const SITES = {'), src.indexOf('};', src.indexOf('const SITES = {')));
+  const ids = [...block.matchAll(/^\s+'?([\w-]+)'?: \{/gm)].map((m) => m[1]);
+  assert.deepEqual(ids, SITE_IDS);
 });
 
 test('days are counted in Warsaw time', () => {

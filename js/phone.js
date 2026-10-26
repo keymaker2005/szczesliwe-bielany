@@ -31,7 +31,7 @@ class Phone {
   constructor({ root, button, missions, jobs, services, onOpenMap, onCamera, postcards, landmarks, onNavigate, status, time = '12:40', chat = null, chats = [{ id: 'przewodnik', name: 'Przewodnik' }] }) {
     this.chat = chat; // ChatClient (js/chat.js) or null: no chat app content
     this.chats = chats; // the conversations shown in the Czat app (the mayor's one only when city-config CHAT_MAYOR)
-    this.chatLog = []; // { who: 'me' | 'ai' | 'note', text, guide }, in this tab's memory only
+    this.chatLog = []; // { who: 'me' | 'ai' | 'note', text, guide, navigate }, in this tab's memory only
     this.chatBusy = false;
     this.chatDraft = '';
     this.chatEl = null;
@@ -171,11 +171,19 @@ class Phone {
     const log = this.chatEl.querySelector('.chat-log');
     log.innerHTML = (lines.length ? '' : '<p class="phone-empty">Zapytaj mnie o Bielany: klasztor, las, metro, osiedla.</p>') + lines.map((l) => (l.who === 'note'
       ? `<div class="chat-note">${esc(l.text)}${l.guide ? '<button type="button" class="phone-btn is-quiet" data-act="app" data-id="guide">Otwórz Przewodnika</button>' : ''}</div>`
-      : `<div class="chat-msg is-${l.who}">${esc(l.text)}</div>`)).join('') + (this.chatBusy ? '<div class="chat-msg is-ai is-typing">pisze…</div>' : '');
+      : `<div class="chat-msg is-${l.who}">${esc(l.text)}</div>${this.chatNavigate(l.navigate)}`)).join('') + (this.chatBusy ? '<div class="chat-msg is-ai is-typing">pisze…</div>' : '');
     const off = Boolean(this.chat && !this.chat.available) || !this.chat;
     this.chatInputEl.disabled = off;
     this.chatEl.querySelector('.chat-send').disabled = off || this.chatBusy;
     log.scrollTop = log.scrollHeight;
+  }
+
+  // "Nawiguj" under a guide's answer about a landmark (the Worker's navigate field, step 4.4)
+  chatNavigate(id) {
+    const site = id && this.landmarks().find((l) => l.id === id);
+    if (!site) return '';
+    const label = this.navigating === site.id ? 'Trasa wyznaczona na mapie' : `Nawiguj: ${site.name}`;
+    return `<button type="button" class="phone-btn is-quiet chat-nav" data-act="navigate" data-id="${esc(site.id)}">${esc(label)}</button>`;
   }
 
   async chatSend() {
@@ -189,7 +197,7 @@ class Phone {
     this.chatLines();
     const r = await this.chat.ask(q);
     this.chatBusy = false;
-    this.chatLog.push(r.ok ? { who: 'ai', text: r.text } : { who: 'note', text: r.text, guide: r.guide });
+    this.chatLog.push(r.ok ? { who: 'ai', text: r.text, navigate: r.navigate } : { who: 'note', text: r.text, guide: r.guide });
     this.chatLines();
     if (r.ok && this.chatInputEl?.isConnected) this.chatInputEl.focus();
   }

@@ -1,9 +1,10 @@
-// Cloudflare Worker for the in-game chat (step 4.1: safety limits, fixed test answer; the model comes in 4.4).
+// Cloudflare Worker for the in-game chat: safety limits (step 4.1) and the guide's model (step 4.4, worker/src/model.js).
 // Contract with the game: docs/api-czat.md. Secrets (never in the repo): TURNSTILE_SECRET, later ANTHROPIC_API_KEY.
 // Kill switch without a code deploy: `wrangler secret put CHAT_OFF` (any value) turns the chat off, `wrangler secret
 // delete CHAT_OFF` turns it back on.
 import { CHATS, LIMITS, MESSAGES, PRODUCTION_ORIGINS, TURNSTILE_TEST_SITE_KEY } from './config.js';
 import { Counters } from './counters.js';
+import { askModel } from './model.js';
 
 export { Counters };
 
@@ -77,9 +78,10 @@ function counters(env) {
     .then((r) => r.json()).then((d) => d.result);
 }
 
-// Step 4.1: fixed answer; 4.4 replaces this with the model call (and reports the estimated cost)
-async function answer(req) {
-  return { text: `To odpowiedź testowa czatu (krok 4.1). Twoje pytanie miało ${[...req.question].length} znaków. Prawdziwy przewodnik odpowie od kroku 4.4.`, costUsd: 0 };
+// The model answers when the Worker has a key; without one (local runs, tests) a fixed test answer
+async function answer(req, env, fetchImpl) {
+  if (env.ANTHROPIC_API_KEY) return askModel(req, env, fetchImpl);
+  return { text: `To odpowiedź testowa czatu (bez klucza API). Twoje pytanie miało ${[...req.question].length} znaków.`, navigate: '', costUsd: 0 };
 }
 
 async function readBody(request) {
@@ -146,7 +148,9 @@ export async function handle(request, env, fetchImpl = fetch) {
     return fail('error', origin, env);
   }
   await call('addCost', result.costUsd);
-  return reply({ ok: true, answer: result.text, session }, 200, origin, env);
+  const body = { ok: true, answer: result.text, session };
+  if (result.navigate) body.navigate = result.navigate;
+  return reply(body, 200, origin, env);
 }
 
 export default {
