@@ -65,3 +65,15 @@ w konsoli poza jednym `console.info`.
 - Klucz API modelu tylko jako sekret Workera (`ANTHROPIC_API_KEY`); nigdy w odpowiedziach ani w kodzie gry.
 - Worker niczego nie zapisuje poza licznikami (adres IP jako skrót SHA-256 z solą, czas życia 10 minut; licznik dnia
   i miesiąca).
+
+## Klucze i wdrożenie (krok 4.5)
+- Lokalnie klucz API w `worker/.dev.vars` (ignorowany przez git), wpisuje go autor:
+  `cd ~/Documents/szczesliwe-bielany && printf 'Wklej klucz i Enter: ' && read -s K && echo && { grep -v '^ANTHROPIC_API_KEY=' worker/.dev.vars; echo "ANTHROPIC_API_KEY=$K"; } > worker/.dev.vars.tmp && mv worker/.dev.vars.tmp worker/.dev.vars && unset K && echo OK`
+- Na Cloudflare sekrety Workera `bielany-czat` wpisuje autor (wklejenie po zapytaniu, niewidoczne):
+  `cd /tmp && npx --yes wrangler@3.114.15 secret put ANTHROPIC_API_KEY --name bielany-czat` oraz to samo dla
+  `TURNSTILE_SECRET` (sekret widżetu Turnstile „bielany-czat” z panelu Cloudflare). Klucz strony Turnstile (jawny)
+  jest w `worker/wrangler.toml` (`TURNSTILE_SITE_KEY`).
+- Wdrożenie Workera (na polecenie autora): z katalogu poza repozytorium
+  `npx --yes wrangler@3.114.15 deploy --config <repo>/worker/wrangler.toml`.
+- Wyłącznik awaryjny: `echo 1 | npx --yes wrangler@3.114.15 secret put CHAT_OFF --name bielany-czat`; włączenie:
+  `npx --yes wrangler@3.114.15 secret delete CHAT_OFF --name bielany-czat`.

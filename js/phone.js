@@ -7,6 +7,10 @@
 
 import { MAX_QUESTION } from './chat.js';
 
+// Shown above every AI conversation, before the first question (step 4.5)
+const CHAT_INFO = 'Odpowiedzi tworzy model AI (Claude, Anthropic) na podstawie bazy wiedzy o Bielanach i mogą zawierać błędy. '
+  + 'Rozmowy nie są zapisywane; pytanie trafia do dostawcy modelu tylko po to, by na nie odpowiedzieć. Nie podawaj danych osobowych.';
+
 const APPS = [
   { id: 'jobs', name: 'Zlecenia', glyph: '📦' },
   { id: 'services', name: 'Służby', glyph: '🚨' },
@@ -169,7 +173,8 @@ class Phone {
       if (!lines.some((l) => l.guide)) lines.push({ who: 'note', off: true, guide: true, text: 'Czat odpoczywa. Zajrzyj do aplikacji Przewodnik: są tam gotowe teksty o Bielanach.' });
     }
     const log = this.chatEl.querySelector('.chat-log');
-    log.innerHTML = (lines.length ? '' : '<p class="phone-empty">Zapytaj mnie o Bielany: klasztor, las, metro, osiedla.</p>') + lines.map((l) => (l.who === 'note'
+    log.innerHTML = `<div class="chat-note chat-info">${esc(CHAT_INFO)}</div>`
+      + (lines.length ? '' : '<p class="phone-empty">Zapytaj mnie o Bielany: klasztor, las, metro, osiedla.</p>') + lines.map((l) => (l.who === 'note'
       ? `<div class="chat-note">${esc(l.text)}${l.guide ? '<button type="button" class="phone-btn is-quiet" data-act="app" data-id="guide">Otwórz Przewodnika</button>' : ''}</div>`
       : `<div class="chat-msg is-${l.who}">${esc(l.text)}</div>${this.chatNavigate(l.navigate)}`)).join('') + (this.chatBusy ? '<div class="chat-msg is-ai is-typing">pisze…</div>' : '');
     const off = Boolean(this.chat && !this.chat.available) || !this.chat;
