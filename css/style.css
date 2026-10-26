@@ -568,6 +568,25 @@ body.photo-mode .hud, body.photo-mode .phone, body.photo-mode .phone-toast, body
   text-decoration: underline;
 }
 
+/* Version for the district office (?urzad): a small label in the top-left corner */
+.urzad-badge {
+  display: none;
+  position: fixed;
+  z-index: 11;
+  top: max(8px, env(safe-area-inset-top));
+  left: 8px;
+  padding: 3px 8px;
+  font-size: 11px;
+  line-height: 1.2;
+  color: rgba(255, 255, 255, 0.9);
+  background: rgba(0, 0, 0, 0.45);
+  border-radius: 4px;
+  pointer-events: none;
+}
+body.urzad .urzad-badge {
+  display: block;
+}
+
 /* Clean view [H]: everything but the toggle itself steps out of the way */
 body.hud-minimized::before,
 body.hud-minimized::after {

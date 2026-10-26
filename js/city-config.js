@@ -206,9 +206,15 @@ function isTypingInField(e) {
 // walker to get across the widest road.
 const SIGNAL_TIMING = { cycle: 60, avenueAmber: 26, avenueRed: 30, streetAmber: 56, walk: 7 };
 
+// Version for the district office: the address carries ?urzad (decision of 2026-10-26). Read from the URL so one build
+// serves both versions; outside a browser (tests, Node) there is no location and the game runs as usual.
+const urzadMode = (search) => new URLSearchParams(search).has('urzad');
+const URZAD = urzadMode(typeof location !== 'undefined' ? location.search : '');
+if (URZAD && typeof document !== 'undefined') document.body.classList.add('urzad'); // shows the label (style.css)
+
 // Pedestrians are solid: the player bumps into them, and a car or bike hitting one fast enough knocks them down
-// (ragdoll, js/pedestrians.js). Off for the district office's version (decision of 2026-10-26): one switch.
-const PEDESTRIAN_CONTACT = true;
+// (ragdoll, js/pedestrians.js). Off in the district office's version (URZAD): one switch.
+const PEDESTRIAN_CONTACT = !URZAD;
 
 // 'green', 'amber' or 'red' for main-road (isAvenue) or crossing-road traffic at a given time
 function signalPhase(time, isAvenue) {
@@ -226,6 +232,8 @@ function walkSignal(time, isAvenue) {
 }
 
 export {
+  URZAD,
+  urzadMode,
   PEDESTRIAN_CONTACT,
   ISLAND_BOUNDS,
   CENTRAL_PARK_BOUNDS,
