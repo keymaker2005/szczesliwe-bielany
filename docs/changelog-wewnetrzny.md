@@ -33,6 +33,8 @@ Plan: docs/plan-fazy-4.md (zaakceptowany ze wszystkimi decyzjami). Praca równol
   3 i 4 zaliczone, publikacja 1.0.
 - Scalenie faza-4 do main 2026-10-26 (decyzja autora): origin/main miał 6 nowych commitów mrdooba (NYC, 2026-10-25),
   konflikty w 5 plikach; włączone do historii strategią ours, kod main = faza-4 (wersja 1.0).
+- `b9fdeb8` Porządki (gałąź porzadki, scalona do main 2026-10-26): martwe materiały NYC z tsl-materials.js, nyc-map.js →
+  city-map.js, błąd GPU z backlogu nie występuje. Publikacja 1.0.1.
 - Uwaga z scaleń: sesje w ponownie użytych folderach worktree zacommitowały kopie macOS „plik 2.js” (`git add -A`);
   usunięte przed scaleniem. Przy kolejnych sesjach sprawdzać `git diff --stat faza-4...<gałąź>` przed scaleniem.
 

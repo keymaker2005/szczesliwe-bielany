@@ -7,6 +7,13 @@ Wewnętrzna historia prac (kroki, gałęzie, decyzje): docs/changelog-wewnetrzny
 
 Dane: © współtwórcy OpenStreetMap (ODbL); GUGiK, geoportal.gov.pl. Na podstawie mrdoob/slop-newyork.
 
+## 1.0.1 — 2026-10-26, ok. 13:25 · wersja b9fdeb8 · Porządki
+
+**Pod spodem**
+- Usunięte nieużywane resztki Nowego Jorku z kodu (fasady wieżowców, reklamy Times Square, woda portu, para
+  z kanałów). Strona jest trochę lżejsza (9,3 MB zamiast 9,5 MB), gra wygląda i działa tak samo.
+- Wewnętrzne nazwy plików i opisy w kodzie mówią już o Bielanach, nie o Manhattanie.
+
 ## 1.0 — 2026-10-26, ok. 13:10 · wersja 700762a · Faza 4 zamknięta
 
 **Wersja 1.0**

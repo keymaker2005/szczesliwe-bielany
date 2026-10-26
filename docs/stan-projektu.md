@@ -41,7 +41,7 @@
   razem z dodatkami: tabliczki MSI, zwierzęta w lasach, Stadion Hutnika, aplikacja Przewodnik. Bramka czeka na test na
   Windows; otwarte przed bramką: 52-56 fps pieszo przy Kamedułach (Chrome, M4), 30 fps zgłoszone w Edge (docs/backlog.md).
 - Faza 4: patrz sekcja na górze.
-- Historia: CHANGELOG.md (publiczne wersje 0.1-1.0 według publikacji na Cloudflare), docs/changelog-wewnetrzny.md
+- Historia: CHANGELOG.md (publiczne wersje 0.1-1.0.1 według publikacji na Cloudflare), docs/changelog-wewnetrzny.md
   (kroki i commity). Praca równoległa: docs/praca-rownolegla.md (koordynator + osobne sesje na gałęziach, modele:
   Haiku proste, Sonnet powtarzalne, Opus myślenie; scalanie do gałęzi fazy tylko na polecenie użytkownika).
 - Drzewa GUGiK: strumień paczki 8,6 GB urwał się przy 355 z 484 arkuszy; data/bielany_trees_2023.json to stary wycinek
