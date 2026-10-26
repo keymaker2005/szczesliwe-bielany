@@ -3,7 +3,7 @@ import { pass, mrt, output, normalView, positionView, metalness, roughness, vec2
 import { ssr } from 'three/addons/tsl/display/SSRNode.js';
 import { createPostProcessing } from './post-processing.js';
 import { ClusteredLighting } from 'three/addons/lighting/ClusteredLighting.js';
-import { getLocationLabel, isTypingInField, ROADS, LANDMARKS, TELEPORT_LOCATIONS } from './city-config.js';
+import { CHAT_MAYOR, getLocationLabel, isTypingInField, ROADS, LANDMARKS, TELEPORT_LOCATIONS } from './city-config.js';
 import { buildCityGrid } from './city-grid.js';
 import { buildCityBlocks } from './buildings.js';
 import { buildLandmarks, landmarkBuildingIds } from './landmarks.js';
@@ -29,6 +29,7 @@ import { MissionEngine, ARRIVE_RADIUS } from './missions.js';
 import { createMissionMarker } from './mission-marker.js';
 import { findRoute, limitAt } from './gps-route.js';
 import { Phone } from './phone.js';
+import { ChatClient } from './chat.js';
 import { Courier, COMPANY } from './courier.js';
 import { Guide } from './guide.js';
 import { Taxi, BRAND as TAXI_BRAND } from './taxi.js';
@@ -736,6 +737,8 @@ async function initApp() {
   let dispatch = null; // the emergency services' dispatch (js/dispatch.js), right after the phone
   const phone = new Phone({
     onCamera: () => photo.enter(),
+    chat: new ChatClient(),
+    chats: [{ id: 'przewodnik', name: 'Przewodnik' }, ...(CHAT_MAYOR ? [{ id: 'burmistrz', name: 'Burmistrz Bielan' }] : [])],
     postcards,
     root: document.getElementById('phone'),
     button: document.getElementById('btn-phone'),
