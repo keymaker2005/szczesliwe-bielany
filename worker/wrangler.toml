@@ -7,8 +7,8 @@ workers_dev = false
 routes = [{ pattern = "bielany.zbigniew.ai/api/*", zone_name = "zbigniew.ai" }]
 
 [vars]
-# Production Turnstile site key goes here in step 4.5 (the secret: wrangler secret put TURNSTILE_SECRET)
-TURNSTILE_SITE_KEY = "1x00000000000000000000AA"
+# Turnstile widget "bielany-czat" (public site key; the secret: wrangler secret put TURNSTILE_SECRET)
+TURNSTILE_SITE_KEY = "0x4AAAAAAFmaqMRSjxBhpkPy"
 
 [[durable_objects.bindings]]
 name = "COUNTERS"
