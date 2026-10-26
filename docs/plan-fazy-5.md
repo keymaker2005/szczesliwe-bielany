@@ -131,7 +131,8 @@ Scalanie do faza-5 tylko po Twoim „OK”.
   nie przeszedł do backlogu, decyzja 6).
 - Gra działa sama, gdy serwer graczy jest wyłączony, gdy limit się skończył i z ?solo; czat bez zmian.
 - Bez kont i zapisu danych graczy; wersja dla urzędu bez gry z innymi.
-- 60 fps z 20 graczami w pobliżu (test na Windows według docs/test-1.8b.md, „Test 1.1”); koszty w planie darmowym.
+- 60 fps z 20 graczami w pobliżu (Test 1.1 na Windows z drugą osobą: docs/test-1.1.md); koszty w planie darmowym.
+- Rozmowy graczy działają z filtrem, wyciszaniem i zgłaszaniem (5.6b, decyzja 8).
 
 ## Poza zakresem
 Konta i rankingi, czat głosowy, czat bez moderacji, własne imiona, zderzenia między graczami (decyzja 5), wyścigi

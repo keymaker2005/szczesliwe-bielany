@@ -32,7 +32,8 @@
   Workera: `npx --yes wrangler@3.114.15 deploy --config <repo>/worker-gracze/wrangler.toml` z katalogu scratchpad,
   tylko na polecenie autora. Wyłącznik: GRACZE_OFF (docs/api-gracze.md). Boty na serwerze:
   `node tools/boty.mjs 20 --adres wss://bielany.zbigniew.ai/api/gracze --klucz worker-gracze/.bots-key` (pokój testowy).
-  Następny: 5.8 Test 1.1 na Windows z drugą osobą i bramka Fazy 5 (docs/test-1.8b.md trzeba dopisać o grę z innymi).
+  Trwa 5.8: Test 1.1 (docs/test-1.1.md) robi autor z drugą osobą; na sygnał „boty” puścić 20 botów w pokoju testowym
+  na serwerze (komenda wyżej, z --blisko 400). Po zaliczeniu: bramka Fazy 5, scalenie faza-5 do main.
 - Testy: 239 zielonych.
 
 ## Faza 4 (gałąź faza-4, plan docs/plan-fazy-4.md) — dla nowej sesji
