@@ -2,7 +2,7 @@ import { GEO } from './bielany-geodata.js';
 import { LANDMARKS, getLocationLabel, isTypingInField } from './city-config.js';
 import { findRoute } from './gps-route.js';
 
-// js/nyc-map.js
+// js/city-map.js
 // GTA 6-Style Live Radar Minimap + Full-Screen Interactive Cartographic Atlas of Bielany (Warsaw).
 // Synchronized 1:1 with the 3D world (1 unit = 1 m; x = east, z = south, origin at the Stare Bielany metro station,
 // true north up). They draw the geography of js/bielany-geodata.js (OpenStreetMap): the MVP area, every street at its
@@ -377,7 +377,7 @@ function drawWaypoint(ctx, x, y, r) {
 
 const overlaps = (boxes, b) => boxes.some((o) => b[0] < o[2] && b[2] > o[0] && b[1] < o[3] && b[3] > o[1]);
 
-class NYCMapSystem {
+class CityMapSystem {
   constructor({ controllerManager, cameraSystem, trafficSystem, allBlocks = [], onTeleport, onToggle }) {
     this.controllerManager = controllerManager;
     this.cameraSystem = cameraSystem;
@@ -1089,7 +1089,7 @@ class NYCMapSystem {
     ctx.fillStyle = MAP.water;
     ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
-    // 2. The ground: boroughs, islands, Manhattan's blocks, parks, footprints, highways & bridges
+    // 2. The ground: the district area, parks, building footprints, streets & bridges
     this.drawWorld(ctx, v, false);
 
     v.screen(ctx);
@@ -1204,4 +1204,4 @@ class NYCMapSystem {
   }
 }
 
-export { NYCMapSystem };
+export { CityMapSystem };

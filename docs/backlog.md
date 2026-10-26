@@ -34,9 +34,9 @@ Pomysł z 2026-10-25, do decyzji i osobnego planu.
 
 ## Pomysły luźne
 (tu dopisuj nowe pomysły w trakcie pracy)
-- Porządki: w tsl-materials.js zostały nieużywane materiały Nowego Jorku (reklamy Times Square, korona Chryslera, schody TKTS, odbicia wody portu); do usunięcia.
-- Porządki: wewnętrzne nazwy plików i komentarzy z Nowego Jorku (nyc-map.js, NYCMapSystem, „Manhattan” w komentarzach controllers.js i helikoptera); niewidoczne dla gracza.
-- Błąd w konsoli przy starcie (lokalnie, przy powtórnym wczytaniu tej samej strony): „GPUValidationError: Binding size for [Buffer] is zero” (storage buffer w shaderze fragmentów, ok. 200 razy w trakcie rozgrzewki, potem cisza). Widoczne od co najmniej 1.5.2 na localhost:8080; na świeżym originie (localhost:8081, bielany.zbigniew.ai) brak. Podejrzenie: wyścig między szybką kompilacją z pamięci podręcznej a pierwszą klatką (ClusteredLighting lub instancje z zerową liczbą). Sprawdzić przed testem 1.8b.
+- [zrobione 2026-10-26, gałąź porzadki] Nieużywane materiały Nowego Jorku usunięte z tsl-materials.js (3041 → ok. 720 linii) razem z dwoma testami martwego kodu.
+- [zrobione 2026-10-26, gałąź porzadki] nyc-map.js → city-map.js (CityMapSystem), komentarze o Manhattanie poprawione. Zostały: controllers.js, audio-*, scene-culling.js (moduły przenośne, bez zmian bez zgody) i nazwy w city-config.js (CENTRAL_PARK_BOUNDS, ISLAND_BOUNDS), których używa controllers.js.
+- [nie występuje, sprawdzone 2026-10-26] Błąd „GPUValidationError: Binding size for [Buffer] is zero” przy powtórnym wczytaniu localhost:8080: 4 wczytania w Chrome na M4 bez błędu (wyłapywanie błędów WebGPU sprawdzone celowym błędem), w teście 1.0 na Windows konsola bez czerwonych błędów. Przyczyny nie ustalono; prawdopodobnie zniknął przy wcześniejszych zmianach. Wraca → zapisać, przy jakim kroku.
 - Landmarki (1.5.6): do potwierdzenia ze zdjęciami wysokości wież Kamedułów i dzwonnicy św. Zygmunta, funkcja rotundy AWF, napis nad wejściem do Szpitala Bielańskiego (otwarte kwestie w docs/landmarki-referencje.md). Las Bielański i Kameduły leżą na wschodnim skraju obszaru (poza wycinkiem LoD1 i drzewami): uzupełnić w Fazie 3 razem ze skarpą.
 - Znak metra: w grze uproszczone białe „M” na granatowym kwadracie zamiast oficjalnego znaku Metra Warszawskiego; do decyzji, czy użyć oryginału (zgoda operatora).
 - SMS-y burmistrza (docs/teksty-przewodnika.md, wersja robocza): działają tylko na localhost, na publicznej stronie po akceptacji burmistrza lub urzędu (wtedy usunąć --public w tools/build-dist.mjs).

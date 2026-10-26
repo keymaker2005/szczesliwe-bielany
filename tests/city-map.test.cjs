@@ -4,16 +4,16 @@ const { join } = require('node:path');
 const test = require('node:test');
 const { loadModule } = require('./helpers/module.cjs');
 
-const source = readFileSync(join(__dirname, '../js/nyc-map.js'), 'utf8');
+const source = readFileSync(join(__dirname, '../js/city-map.js'), 'utf8');
 
 for (const [width, height, dpr] of [[500, 300, 1], [320, 180, 1.5], [1920, 1080, 2]]) {
   test(`map clicks match rendered world positions at ${width}x${height}, DPR ${dpr}`, () => {
     const window = { innerWidth: width, innerHeight: height, devicePixelRatio: dpr };
-    const { NYCMapSystem } = loadModule(source, {
+    const { CityMapSystem } = loadModule(source, {
       globals: { window, performance: { now: () => 0 } },
       imports: { './bielany-geodata.js': { GEO: {} }, './city-config.js': { LANDMARKS: [], getLocationLabel: () => '', isTypingInField: () => false }, './gps-route.js': { findRoute: () => null } }
     });
-    const map = Object.create(NYCMapSystem.prototype);
+    const map = Object.create(CityMapSystem.prototype);
     // Capture the production render viewport; drawing primitives are irrelevant to coordinate conversion.
     const context = new Proxy({}, { get: () => () => {} });
     let view;
@@ -99,12 +99,12 @@ function mapHarness() {
     roads: [['Aleja Zjednoczenia', 10, 0, 2, 0, [900, 2000, 1100, 2000], 'secondary']],
     stations: []
   };
-  const { NYCMapSystem } = loadModule(source, {
+  const { CityMapSystem } = loadModule(source, {
     globals: { window, document },
     imports: { './bielany-geodata.js': { GEO: geo }, './city-config.js': { LANDMARKS: [], getLocationLabel: (x, z) => `${x}, ${z}`, isTypingInField: () => false }, './gps-route.js': { findRoute: () => null } }
   });
   const teleports = [], toggles = [];
-  const map = new NYCMapSystem({
+  const map = new CityMapSystem({
     controllerManager: { getActiveEntity: () => ({ position: { x: 1000, z: 2000 } }) },
     onTeleport: (x, z) => teleports.push([x, z]),
     onToggle: (open) => toggles.push(open)

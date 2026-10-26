@@ -810,7 +810,7 @@ function buildTreeGeometries(speciesIndex, variant, tileMeters) {
 // =====================================================================================================================
 const TREE_CELL_SIZE = 200;
 // Bielany has ~27 000 surveyed trees, thick woods among them (Las Bielański), several times Midtown's density: the
-// levels switch nearer than for Manhattan's street trees
+// levels switch nearer than for the original's street trees
 const LOD_NEAR = 60; // full detail within (m)
 const LOD_MID = 180; // coarse cards & branches within; whole-crown cards beyond
 const LOD_HYSTERESIS = 6;

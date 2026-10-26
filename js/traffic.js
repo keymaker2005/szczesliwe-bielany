@@ -24,7 +24,7 @@ import { groundY, groundPose } from './terrain.js';
 import { deckY, deckPose, surfaceY } from './bridges.js';
 
 // js/traffic.js
-// Manhattan traffic and pedestrians on the road graph road-network.js derives from the city as built:
+// Bielany traffic and pedestrians on the road graph road-network.js derives from the city as built:
 // - 200 cars (taxis, sedans, SUVs) and 12 city buses keep to their lanes and follow the vehicle
 //   ahead (Intelligent Driver Model), change lanes to overtake or to reach a turn lane, turn into other streets,
 //   stop for the signals street-details.js shows, give way to oncoming traffic when turning left, to the avenue at
