@@ -1,7 +1,7 @@
 # Stan projektu (przekazanie sesji, 2026-10-26)
 
-- Faza 4 w toku na gałęzi faza-4; koordynator: sesja „Faza 4 koordynator”. Krok 4.1 (Worker bez modelu) zrobiony,
-  czeka na sprawdzenie; 4.2, 4.3, 4.6, 4.9 jako karty sesji do uruchomienia przez użytkownika. Worker lokalnie:
+- Faza 4 w toku na gałęzi faza-4; koordynator: sesja „Faza 4 koordynator”. Krok 4.1 (Worker bez modelu) zrobiony i sprawdzony;
+  4.2, 4.3, 4.6, 4.9 w osobnych sesjach (uruchomione 2026-10-26). Worker lokalnie:
   sh tools/czat-dev.sh (port 8787), umowa docs/api-czat.md. Worker nieopublikowany (deploy w 4.5).
 
 ## Gdzie jesteśmy

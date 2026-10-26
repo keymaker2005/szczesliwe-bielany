@@ -12,7 +12,7 @@ Plan: docs/plan-fazy-4.md (zaakceptowany ze wszystkimi decyzjami). Praca równol
 - `6d9426b` 4.0 plan Fazy 4.
 - `3a62dee` 4.1 umowa API czatu (docs/api-czat.md) przed startem sesji równoległych.
 - 4.1 Worker bez modelu (worker/: limity, Turnstile, sesja, wyłącznik CHAT_OFF, Durable Object z licznikami),
-  tests/worker.test.mjs, tools/czat-dev.sh, tools/czat-test.html. Czeka na sprawdzenie.
+  tests/worker.test.mjs, tools/czat-dev.sh, tools/czat-test.html (`a43f59f`). Sprawdzony 2026-10-26.
 
 ## Faza 3: Służby i teren (gałąź faza-3, 2026-10-25)
 
