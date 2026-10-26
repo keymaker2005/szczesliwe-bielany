@@ -95,6 +95,8 @@ test('a player says hej, gets the others and is announced to them', async () => 
   assert.equal(hello.id, 2);
   assert.equal(hello.name, 'Rudy Dzik 27');
   assert.equal(hello.color, 5);
+  assert.deepEqual(hello.nameId, { a: 0, b: 0, n: 27 });
+  assert.equal(hello.colors.length, 12);
   assert.deepEqual(hello.rate, { move: 5, idle: 1 });
   assert.deepEqual(hello.players, [{ id: 1, name: 'Bielańska Wiewiórka 50', color: 6, x: 9.4, y: 0, z: -12.4, h: -2.2, m: 'car', v: 10 }]);
   assert.deepEqual(r.last(first, 'nowy').p, { id: 2, name: 'Rudy Dzik 27', color: 5 });

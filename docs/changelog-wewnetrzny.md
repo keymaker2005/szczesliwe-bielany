@@ -8,6 +8,8 @@ docs/fazy.md, otwarte sprawy: docs/backlog.md, przekazanie sesji: docs/stan-proj
 Plan: docs/plan-fazy-5.md (zaakceptowany ze wszystkimi decyzjami).
 - 5.1 Serwer graczy: worker-gracze/ (lobby, pokoje z uśpieniem, Turnstile w wiadomości „hej”, limity, dzienny budżet
   80 000 zapytań), docs/api-gracze.md, tools/gracze-dev.sh, tools/boty.mjs, tests/gracze.test.mjs (20 testów).
+- 5.2 Inni gracze w grze: js/multiplayer-net.js, js/multiplayer.js, kropki na mapie (city-map.js), main.js, #player-names
+  (index.html, style.css); 19 botów, 60 fps w Chrome na M4.
 
 ## Faza 4: Czaty LLM i patronat (gałąź faza-4, 2026-10-26)
 

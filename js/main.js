@@ -3,7 +3,7 @@ import { pass, mrt, output, normalView, positionView, metalness, roughness, vec2
 import { ssr } from 'three/addons/tsl/display/SSRNode.js';
 import { createPostProcessing } from './post-processing.js';
 import { ClusteredLighting } from 'three/addons/lighting/ClusteredLighting.js';
-import { CHAT_MAYOR, getLocationLabel, isTypingInField, ROADS, LANDMARKS, TELEPORT_LOCATIONS } from './city-config.js';
+import { CHAT_MAYOR, getLocationLabel, isTypingInField, ROADS, LANDMARKS, TELEPORT_LOCATIONS, URZAD } from './city-config.js';
 import { buildCityGrid } from './city-grid.js';
 import { buildCityBlocks } from './buildings.js';
 import { buildLandmarks, landmarkBuildingIds } from './landmarks.js';
@@ -47,6 +47,8 @@ import { PhotoMode } from './photo-mode.js';
 import { Postcards } from './postcards.js';
 import { createFallingLeaves } from './falling-leaves.js';
 import { nearestOnStreet } from './gps-route.js';
+import { MultiplayerClient } from './multiplayer-net.js';
+import { RemotePlayers } from './multiplayer.js';
 
 // js/main.js
 // Main entry point for Szczęśliwe Bielany (Warsaw, along the M1 metro line) in Three.js WebGPURenderer & TSL (three.js dev @ fae8734, pinned in index.html)
@@ -145,6 +147,9 @@ async function initApp() {
   // Saved players (Bielany frame; the New York saves under 'nyc-player-state' are left alone)
   const PLAYER_STATE_KEY = 'bielany-player-state';
   const controllerManager = new ThirdPersonControllerManager(scene, allColliders);
+  // Playing with others (Faza 5): the other players, drawn from the traffic's models; connects after the first frame
+  const multiplayer = new MultiplayerClient({ urzad: URZAD });
+  const remotePlayers = new RemotePlayers(scene, { overlay: document.getElementById('player-names') });
   // Reuse teleport placement so saved players return at rest, close to their last positions.
   try {
     const saved = JSON.parse(localStorage.getItem(PLAYER_STATE_KEY));
@@ -540,7 +545,8 @@ async function initApp() {
         mapHint.textContent = 'Stuknij, by się teleportować · przeciągnij, by przesunąć · + / − przybliża';
       }
     },
-    onTeleport: teleportTo
+    onTeleport: teleportTo,
+    getOthers: () => remotePlayers.dots(multiplayer, performance.now())
   });
 
   teleportButtons.forEach((btn) => {
@@ -873,7 +879,7 @@ async function initApp() {
     }
   });
 
-  globalThis.bielany = { missions, testDelivery, abandon: () => missions.abandon(), teleport: (x, z, heading) => teleportTo(x, z, heading), marker: missionMarker, phone, courier, guide, scene, renderer, lightingSystem, trams, taxi, medic, ambulance, dispatch, controllerManager, photo, postcards, fallingLeaves, trafficSystem };
+  globalThis.bielany = { missions, testDelivery, abandon: () => missions.abandon(), teleport: (x, z, heading) => teleportTo(x, z, heading), marker: missionMarker, phone, courier, guide, scene, renderer, lightingSystem, trams, taxi, medic, ambulance, dispatch, controllerManager, photo, postcards, fallingLeaves, trafficSystem, multiplayer, remotePlayers };
 
   // Initialize the UI and chase camera around the restored player, or the default taxi on a first visit.
   selectMode(controllerManager.activeMode);
@@ -1004,6 +1010,11 @@ async function initApp() {
       if (car.speed > cap && !controllerManager.keys.boost) car.speed = cap; // Shift (boost) ignores the limit
     }
     if (!photo.active) cameraSystem.update(dt, elapsed);
+    if (warmedUp) {
+      const me = controllerManager.getActiveEntity();
+      multiplayer.update({ x: me.position.x, y: me.position.y, z: me.position.z, h: me.heading, m: controllerManager.activeMode, v: me.speed });
+      remotePlayers.update(dt, multiplayer, cameraSystem.camera, now);
+    }
     photo.update(dt);
     fallingLeaves.update(dt, elapsed, cameraSystem.camera.position);
     streetDetails.signalClock.value = elapsed;
@@ -1077,6 +1088,7 @@ async function initApp() {
         if (loadingOverlay) loadingOverlay.classList.add('hidden');
         audioSystem.ready = true;
         setLoadingProgress(1);
+        multiplayer.start();
       });
     }
 

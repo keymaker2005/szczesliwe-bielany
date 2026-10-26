@@ -25,6 +25,7 @@ Przeniesiona do docs/fazy.md (bieżąca faza), plan: docs/plan-fazy-5.md.
 
 ## Pomysły luźne
 (tu dopisuj nowe pomysły w trakcie pracy)
+- Gra z innymi (5.2): inni gracze lekko przezroczyści, gdy przez nich przejeżdżamy (decyzja 5 Fazy 5); teraz przenikanie bez przezroczystości. Imiona dalekich graczy mogą na siebie nachodzić (bliższe są na wierzchu).
 - [zrobione 2026-10-26, gałąź porzadki] Nieużywane materiały Nowego Jorku usunięte z tsl-materials.js (3041 → ok. 720 linii) razem z dwoma testami martwego kodu.
 - [zrobione 2026-10-26, gałąź porzadki] nyc-map.js → city-map.js (CityMapSystem), komentarze o Manhattanie poprawione. Zostały: controllers.js, audio-*, scene-culling.js (moduły przenośne, bez zmian bez zgody) i nazwy w city-config.js (CENTRAL_PARK_BOUNDS, ISLAND_BOUNDS), których używa controllers.js.
 - [nie występuje, sprawdzone 2026-10-26] Błąd „GPUValidationError: Binding size for [Buffer] is zero” przy powtórnym wczytaniu localhost:8080: 4 wczytania w Chrome na M4 bez błędu (wyłapywanie błędów WebGPU sprawdzone celowym błędem), w teście 1.0 na Windows konsola bez czerwonych błędów. Przyczyny nie ustalono; prawdopodobnie zniknął przy wcześniejszych zmianach. Wraca → zapisać, przy jakim kroku.

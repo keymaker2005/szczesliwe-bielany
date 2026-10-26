@@ -153,7 +153,7 @@ export class RoomCore {
     Object.assign(att, { stage: 'in', id, name: picked.name, text: picked.text, color: picked.color });
     this.io.persist(ws, att);
     this.io.send(ws, {
-      t: 'witaj', id, name: att.text, color: att.color, colors: COLORS, room: this.room,
+      t: 'witaj', id, name: att.text, nameId: att.name, color: att.color, colors: COLORS, room: this.room,
       players: ins.map(publicPlayer), rate: RATE,
     });
     this.broadcast(ws, { t: 'nowy', p: publicPlayer(att) });

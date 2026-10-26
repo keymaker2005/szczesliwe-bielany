@@ -42,7 +42,7 @@ Wiadomości to JSON, krótkie pola. Pozycje w metrach układu świata (x wschód
 ### Serwer → gra
 | Wiadomość | Treść |
 | --- | --- |
-| `witaj` | `{ "t": "witaj", "id": 4, "name": "Rudy Dzik 27", "color": 5, "room": "1", "players": [ { "id": 2, "name": "…", "color": 1, "x": …, "y": …, "z": …, "h": …, "m": "person", "v": 0 } ], "rate": { "move": 5, "idle": 1 } }` |
+| `witaj` | `{ "t": "witaj", "id": 4, "name": "Rudy Dzik 27", "nameId": { "a": 0, "b": 0, "n": 27 }, "color": 5, "colors": ["#e63946", …], "room": "1", "players": [ { "id": 2, "name": "…", "color": 1, "x": …, "y": …, "z": …, "h": …, "m": "person", "v": 0 } ], "rate": { "move": 5, "idle": 1 } }` |
 | `nowy` | `{ "t": "nowy", "p": { "id": 7, "name": "…", "color": 3, "x": …, … } }` (pozycja może być pusta do pierwszego stanu) |
 | `s` / `tp` | `{ "t": "s", "id": 7, "x": …, "y": …, "z": …, "h": …, "m": "car", "v": 12.5 }` (pozycje z dokładnością 1 cm) |
 | `g` | `{ "t": "g", "id": 7, "g": "czesc" }` |

@@ -1,6 +1,7 @@
 // Test bots for playing with others (step 5.1, docs/api-gracze.md): N bots drive along Bielany streets and talk to
 // the server like the game would.
-//   node tools/boty.mjs [N] [--pokoj test|1] [--adres ws://localhost:8788/api/gracze] [--czas sekundy]
+//   node tools/boty.mjs [N] [--pokoj test|1] [--adres ws://localhost:8788/api/gracze] [--czas sekundy] [--blisko metry]
+// --blisko 400: only streets within 400 m of the Stare Bielany station (where the game starts), to watch them.
 // Defaults: 5 bots, the test room, the local server (sh tools/gracze-dev.sh), until Ctrl+C.
 // Every 5 s a line: bots in the room, players each bot sees, messages received per second, refusals.
 import { GEO } from '../js/bielany-geodata.js';
@@ -15,7 +16,9 @@ const url = room === 'test' ? `${base}?pokoj=test` : base;
 const ORIGIN = 'http://localhost:8080';
 
 // Drivable streets as polylines [x0, z0, x1, z1, ...]
-const roads = GEO.roads.filter((r) => r[6] !== 'pedestrian' && r[5].length >= 4).map((r) => r[5]);
+const near = Number(opt('blisko', 0));
+const roads = GEO.roads.filter((r) => r[6] !== 'pedestrian' && r[5].length >= 4).map((r) => r[5])
+  .filter((c) => !near || Math.hypot(c[0], c[1]) < near);
 const MODES = [['car', 13], ['car', 13], ['car', 13], ['cyclist', 6], ['person', 1.6], ['helicopter', 30]];
 const GESTURES = ['czesc', 'dzieki', 'jedziemy', 'brawo', 'uwaga', 'pa'];
 const rand = (n) => Math.floor(Math.random() * n);

@@ -76,6 +76,8 @@
   <link rel="modulepreload" href="./js/audio-sources.js" />
   <link rel="modulepreload" href="./js/audio-acoustics.js" />
   <link rel="modulepreload" href="./js/audio-system.js" />
+  <link rel="modulepreload" href="./js/multiplayer-net.js" />
+  <link rel="modulepreload" href="./js/multiplayer.js" />
   <link rel="modulepreload" href="./js/main.js" />
   <script type="module" src="./js/main.js"></script>
   <!-- Inter (UI) & Overpass (street-name signs: modelled on Highway Gothic, the US road sign typeface) -->
@@ -129,6 +131,8 @@
 
   <!-- 3D WebGPU Viewport Container -->
   <main id="canvas-container" aria-label="Widok 3D Bielan"></main>
+  <!-- Names over the other players' heads (js/multiplayer.js) -->
+  <div id="player-names" aria-hidden="true"></div>
 
   <!-- Top-Left: Brand & Renderer Telemetry -->
   <header class="hud hud-top-left">

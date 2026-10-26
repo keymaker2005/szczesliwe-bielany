@@ -328,6 +328,17 @@ class MapView {
 }
 
 // Player heading arrow at the (already rotated) origin: white, on a dark halo
+function drawOtherPlayer(ctx, x, y, color, r) {
+  ctx.fillStyle = 'rgba(10, 14, 20, 0.8)';
+  ctx.beginPath();
+  ctx.arc(x, y, r + 1.6, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = color;
+  ctx.beginPath();
+  ctx.arc(x, y, r, 0, Math.PI * 2);
+  ctx.fill();
+}
+
 function drawPlayerArrow(ctx, tipY, halfWidth, tailY) {
   ctx.beginPath();
   ctx.moveTo(0, tipY);
@@ -378,8 +389,9 @@ function drawWaypoint(ctx, x, y, r) {
 const overlaps = (boxes, b) => boxes.some((o) => b[0] < o[2] && b[2] > o[0] && b[1] < o[3] && b[3] > o[1]);
 
 class CityMapSystem {
-  constructor({ controllerManager, cameraSystem, trafficSystem, allBlocks = [], onTeleport, onToggle }) {
+  constructor({ controllerManager, cameraSystem, trafficSystem, allBlocks = [], onTeleport, onToggle, getOthers = null }) {
     this.controllerManager = controllerManager;
+    this.getOthers = getOthers; // other players' dots: () => [{ x, z, color, name }] (js/multiplayer.js)
     this.cameraSystem = cameraSystem;
     this.trafficSystem = trafficSystem;
     this.allBlocks = allBlocks;
@@ -984,6 +996,13 @@ class CityMapSystem {
       }
     }
 
+    // Other players (playing with others): a dot in their colour
+    for (const o of this.getOthers?.() || []) {
+      const ox = toX(o.x);
+      const oy = toY(o.z);
+      if (Math.abs(ox) < w * 0.48 && Math.abs(oy) < h * 0.48) drawOtherPlayer(ctx, ox, oy, o.color, 3.6);
+    }
+
     // Camera FOV Cone & Player Arrow at center (0, 0)
     const camDir = this.cameraSystem.currentLookAt.clone().sub(this.cameraSystem.currentPos);
     const camAngle = Math.atan2(camDir.x, camDir.z);
@@ -1057,6 +1076,21 @@ class CityMapSystem {
       const wy = toY(this.waypoint.z);
       drawRoute(ctx, this.routePts, toX, toY, 4);
       drawWaypoint(ctx, wx, wy, 7);
+    }
+
+    // Other players with their names
+    ctx.font = `600 11px ${FONT}`;
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    for (const o of this.getOthers?.() || []) {
+      const ox = toX(o.x);
+      const oy = toY(o.z);
+      drawOtherPlayer(ctx, ox, oy, o.color, 5.5);
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = 'rgba(10, 14, 20, 0.85)';
+      ctx.strokeText(o.name, ox + 9, oy);
+      ctx.fillStyle = '#ffffff';
+      ctx.fillText(o.name, ox + 9, oy);
     }
 
     // Live Player Blip & Heading Arrow, with a slow pulse to find it at a glance
