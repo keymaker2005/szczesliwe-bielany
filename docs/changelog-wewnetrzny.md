@@ -24,7 +24,7 @@ Plan: docs/plan-fazy-4.md (zaakceptowany ze wszystkimi decyzjami). Praca równol
   (ochrona trybu auto odrzuciła próbę bez niego).
 - 4.7–4.8 czat z postacią „Burmistrz Bielan” (decyzja 8: bez zgody urzędu, bez nazwiska i patronatu): baza z publicznych
   stron (pomocnik Sonnet), Sonnet 5.5, drugi bezpiecznik, osobne rozmowy w telefonie; 50 pytań kontrolnych 0,35 USD,
-  bezpiecznik nie zadziałał ani razu. Czeka na przegląd.
+  bezpiecznik nie zadziałał ani razu (`e2c8ab9`). Zaakceptowane i opublikowane 2026-10-26 (wersja 0.8).
 - Uwaga z scaleń: sesje w ponownie użytych folderach worktree zacommitowały kopie macOS „plik 2.js” (`git add -A`);
   usunięte przed scaleniem. Przy kolejnych sesjach sprawdzać `git diff --stat faza-4...<gałąź>` przed scaleniem.
 

@@ -7,6 +7,16 @@ Wewnętrzna historia prac (kroki, gałęzie, decyzje): docs/changelog-wewnetrzny
 
 Dane: © współtwórcy OpenStreetMap (ODbL); GUGiK, geoportal.gov.pl. Na podstawie mrdoob/slop-newyork.
 
+## 0.8 — 2026-10-26 · wersja e2c8ab9 · Faza 4: czat z Burmistrzem Bielan
+
+**Czat w telefonie**
+- Druga rozmowa w aplikacji „Czat”: „Burmistrz Bielan”, postać AI w grze (bez imienia i nazwiska, nie prawdziwy
+  burmistrz ani urząd). Pod każdą odpowiedzią stopka „Odpowiedź AI w grze, nie oficjalne stanowisko Urzędu Dzielnicy
+  Bielany”.
+- Odpowiada o dzielnicy na podstawie publicznych stron urzędu i miasta (kontakt i godziny urzędu, Warszawa 19115,
+  budżet obywatelski, instytucje, remonty ulic) i o miejscach z bazy przewodnika; sprawy urzędowe odsyła do urzędu.
+- Nie rozmawia o polityce ani wyborach, niczego nie obiecuje, nie przyjmuje zgłoszeń.
+
 ## 0.7 — 2026-10-26 · wersja 6d6dadd · Faza 4: czat z przewodnikiem
 
 **Czat w telefonie**

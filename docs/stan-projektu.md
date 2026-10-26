@@ -2,7 +2,9 @@
 
 - Faza 4 w toku na gałęzi faza-4; koordynator: sesja „Faza 4 koordynator”. Krok 4.1 (Worker bez modelu) zrobiony i sprawdzony;
   4.2, 4.3, 4.4, 4.9 zrobione; 4.5 opublikowany 2026-10-26 (wersja 0.7, strona 6d6dadd, Worker bielany-czat),
-  sprawdzony w Edge, tydzień podglądu kosztów w toku; 4.6 (pismo) czeka na adresata i podpis. Worker lokalnie:
+  sprawdzony w Edge, tydzień podglądu kosztów w toku. 4.7–4.8 czat z postacią „Burmistrz Bielan” bez zgody urzędu
+  (decyzja 8) opublikowany jako 0.8 (e2c8ab9); wyłącznik samego burmistrza: secret MAYOR_OFF. 4.6 (pismo) odłożone,
+  4.10 (patronat) pominięty. Do bramki: 4.11 (wersja 1.0, test na Windows). Worker lokalnie:
   sh tools/czat-dev.sh (port 8787), umowa docs/api-czat.md. Worker nieopublikowany (deploy w 4.5).
 
 ## Gdzie jesteśmy

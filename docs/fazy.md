@@ -138,12 +138,13 @@ potrącania pieszych, bez zapisu rozmów; SMS-y od „Burmistrz Bielan” bez na
   o AI nad rozmową. Sprawdzone w Chrome: odpowiedź z bazy, bez błędów w konsoli. Przez tydzień codzienny podgląd
   kosztów w konsoli Anthropic.
   Sprawdzam: czat działa na bielany.zbigniew.ai w Edge (sprawdzone 2026-10-26), koszty dnia w zakładanym limicie.
-- [ ] 4.7–4.8 Czat z postacią „Burmistrz Bielan” bez zgody urzędu (decyzja 8 w docs/plan-fazy-4.md): bez imienia
+- [x] 4.7–4.8 Czat z postacią „Burmistrz Bielan” bez zgody urzędu (decyzja 8 w docs/plan-fazy-4.md): bez imienia
   i nazwiska, bez patronatu; baza z publicznych stron (docs/wiedza-burmistrza.md, 28 haseł ze źródłami) + baza
   przewodnika, instrukcje worker/prompts/burmistrz.md, Claude Sonnet 5.5, drugi bezpiecznik w Workerze (polityka,
   obietnice, nazwiska), wyłącznik MAYOR_OFF, stopka „Odpowiedź AI w grze, nie oficjalne stanowisko Urzędu Dzielnicy
   Bielany” pod każdą odpowiedzią. 50 pytań kontrolnych: docs/odpowiedzi-kontrolne-burmistrz.md (0,35 USD).
-  Sprawdzam: rozmowa w grze na localhost; przegląd 50 odpowiedzi (OK albo uwaga); potem decyzja o publikacji.
+  Sprawdzam: rozmowa w grze na localhost; przegląd 50 odpowiedzi (OK albo uwaga) (zaakceptowane 2026-10-26).
+  Opublikowane 2026-10-26 (wersja 0.8, strona e2c8ab9).
 - [ ] 4.6 Pismo do urzędu (docs/pismo-urzad-czat.md, pakiet): szkic na gałęzi faza-4-krok-4.6-pismo, czeka na adresata
   i dane do podpisu.
 - [x] 4.9 Wersja dla urzędu: ?urzad wyłącza kontakt z pieszymi (URZAD, PEDESTRIAN_CONTACT w js/city-config.js), znaczek
