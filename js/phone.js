@@ -1,9 +1,11 @@
 // js/phone.js
-// The player's smartphone: an HTML overlay (P or the phone button) with seven apps: Zlecenia (offered and active
+// The player's smartphone: an HTML overlay (P or the phone button) with eight apps: Zlecenia (offered and active
 // errands, from js/missions.js), Służby (the emergency services and their calls, js/dispatch.js), Mapa (the full map),
-// Przewodnik (the landmarks: visited, navigate, read more), SMS (messages from the guide, the mayor, the dispatchers),
+// Przewodnik (the landmarks: visited, navigate, read more), Czat (AI conversations, js/chat.js), SMS (messages from the guide, the mayor, the dispatchers),
 // Pocztówki (the photos, js/postcards.js) and Aparat (photo mode, js/photo-mode.js). A fictional handset: no maker's
 // name or logo. The game keeps running under it; keys still drive the player, the phone only takes clicks.
+
+import { MAX_QUESTION } from './chat.js';
 
 const APPS = [
   { id: 'jobs', name: 'Zlecenia', glyph: '📦' },
@@ -11,6 +13,7 @@ const APPS = [
   { id: 'map', name: 'Mapa', glyph: '🗺️' },
   { id: 'guide', name: 'Przewodnik', glyph: '🧭' },
   { id: 'sms', name: 'SMS', glyph: '💬' },
+  { id: 'chat', name: 'Czat', glyph: '🤖' },
   { id: 'cards', name: 'Pocztówki', glyph: '🖼️' },
   { id: 'camera', name: 'Aparat', glyph: '📷' },
 ];
@@ -25,7 +28,13 @@ class Phone {
    * distance, par, reward, vehicles }] offered now, services: () => [{ role, name, glyph, status, jobs }] (the
    * dispatch), onOpenMap(), status: () => line under the clock, time: '12:40' }
    */
-  constructor({ root, button, missions, jobs, services, onOpenMap, onCamera, postcards, landmarks, onNavigate, status, time = '12:40' }) {
+  constructor({ root, button, missions, jobs, services, onOpenMap, onCamera, postcards, landmarks, onNavigate, status, time = '12:40', chat = null, chats = [{ id: 'przewodnik', name: 'Przewodnik' }] }) {
+    this.chat = chat; // ChatClient (js/chat.js) or null: no chat app content
+    this.chats = chats; // the conversations shown in the Czat app (the mayor's one only when city-config CHAT_MAYOR)
+    this.chatLog = []; // { who: 'me' | 'ai' | 'note', text, guide }, in this tab's memory only
+    this.chatBusy = false;
+    this.chatDraft = '';
+    this.chatEl = null;
     this.services = services || (() => []);
     this.onCamera = onCamera;
     this.landmarks = landmarks || (() => []); // [{ id, name, seen, x, z, sms, more }]
@@ -54,6 +63,15 @@ class Phone {
         <button class="phone-home" type="button" aria-label="Ekran główny"></button>
       </div>`;
     this.screen = root.querySelector('.phone-screen');
+    this.screen.addEventListener('input', (e) => { if (e.target.classList?.contains('chat-input')) this.chatInput(e.target); });
+    this.screen.addEventListener('keydown', (e) => {
+      // typing stays in the field: no other key handler (drive, map, camera) may see it
+      if (e.target.classList?.contains('chat-input')) {
+        e.stopPropagation();
+        if (e.code === 'Enter' && !e.isComposing) { e.preventDefault(); this.chatSend(); }
+        else if (e.code === 'Escape') e.target.blur();
+      }
+    });
     this.toast = document.createElement('div');
     this.toast.className = 'phone-toast hidden';
     this.toast.setAttribute('role', 'status');
@@ -103,7 +121,77 @@ class Phone {
       return;
     }
     this.openCard = null;
+    this.chatEl = null;
+    this.chatId = null;
     this.render();
+  }
+
+
+  // The Czat app. The screen is built once per conversation and then updated in place, so the text field keeps what
+  // is typed while missions re-render the phone. The conversation lives in this tab's memory only.
+  renderChat(head) {
+    if (this.chats.length === 1) this.chatId = this.chats[0].id;
+    const conv = this.chats.find((c) => c.id === this.chatId);
+    if (!conv) {
+      this.screen.innerHTML = `${head('Czat')}<div class="phone-list">${this.chats.map((c) => `
+        <button type="button" class="phone-sms" data-act="chat-open" data-id="${esc(c.id)}"><b>${esc(c.name)}</b><span>Rozmowa z AI</span></button>`).join('')}</div>`;
+      return;
+    }
+    if (this.chatEl && this.chatEl.isConnected) return;
+    this.screen.innerHTML = `
+      <div class="phone-head"><button type="button" class="phone-back" data-act="back" aria-label="Wstecz">‹</button><h2>${esc(conv.name)}</h2><span class="chat-ai" title="Odpowiedzi tworzy sztuczna inteligencja">AI</span></div>
+      <div class="chat">
+        <div class="chat-log" aria-live="polite"></div>
+        <div class="chat-count"></div>
+        <form class="chat-form" action="javascript:void(0)">
+          <input class="chat-input" type="text" maxlength="${MAX_QUESTION}" placeholder="Zapytaj o Bielany…" autocomplete="off" autocapitalize="sentences" aria-label="Twoje pytanie">
+          <button type="button" class="phone-btn chat-send" data-act="chat-send">Wyślij</button>
+        </form>
+      </div>`;
+    this.chatEl = this.screen.querySelector('.chat');
+    this.chatInputEl = this.chatEl.querySelector('.chat-input');
+    this.chatInputEl.value = this.chatDraft;
+    this.chatInput(this.chatInputEl);
+    this.chatLines();
+    if (this.chat && this.chat.state === 'unknown') this.chat.init().then(() => this.chatLines());
+  }
+
+  chatInput(input) {
+    this.chatDraft = input.value;
+    const count = this.chatEl?.querySelector('.chat-count');
+    if (count) count.textContent = `${[...input.value].length} / ${MAX_QUESTION}`;
+  }
+
+  chatLines() {
+    if (!this.chatEl || !this.chatEl.isConnected) return;
+    const lines = [...this.chatLog];
+    if (!this.chat || !this.chat.available) {
+      if (!lines.some((l) => l.guide)) lines.push({ who: 'note', off: true, guide: true, text: 'Czat odpoczywa. Zajrzyj do aplikacji Przewodnik: są tam gotowe teksty o Bielanach.' });
+    }
+    const log = this.chatEl.querySelector('.chat-log');
+    log.innerHTML = (lines.length ? '' : '<p class="phone-empty">Zapytaj mnie o Bielany: klasztor, las, metro, osiedla.</p>') + lines.map((l) => (l.who === 'note'
+      ? `<div class="chat-note">${esc(l.text)}${l.guide ? '<button type="button" class="phone-btn is-quiet" data-act="app" data-id="guide">Otwórz Przewodnika</button>' : ''}</div>`
+      : `<div class="chat-msg is-${l.who}">${esc(l.text)}</div>`)).join('') + (this.chatBusy ? '<div class="chat-msg is-ai is-typing">pisze…</div>' : '');
+    const off = Boolean(this.chat && !this.chat.available) || !this.chat;
+    this.chatInputEl.disabled = off;
+    this.chatEl.querySelector('.chat-send').disabled = off || this.chatBusy;
+    log.scrollTop = log.scrollHeight;
+  }
+
+  async chatSend() {
+    const input = this.chatInputEl;
+    const q = (input?.value || '').trim();
+    if (!q || this.chatBusy || !this.chat || !this.chat.available) return;
+    this.chatLog.push({ who: 'me', text: q });
+    input.value = '';
+    this.chatInput(input);
+    this.chatBusy = true;
+    this.chatLines();
+    const r = await this.chat.ask(q);
+    this.chatBusy = false;
+    this.chatLog.push(r.ok ? { who: 'ai', text: r.text } : { who: 'note', text: r.text, guide: r.guide });
+    this.chatLines();
+    if (r.ok && this.chatInputEl?.isConnected) this.chatInputEl.focus();
   }
 
   // A text message; it rings in as a toast while the phone is closed
@@ -159,6 +247,12 @@ class Phone {
         this.navigating = site.id;
       }
       this.render();
+    } else if (act === 'chat-open') {
+      this.chatId = id;
+      this.chatEl = null;
+      this.render();
+    } else if (act === 'chat-send') {
+      this.chatSend();
     } else if (act === 'card') {
       this.openCard = id;
       this.render();
@@ -174,6 +268,7 @@ class Phone {
       if (this.openCard) this.openCard = null;
       else if (this.openSite) this.openSite = null;
       else if (this.openSms) this.openSms = null;
+      else if (this.app === 'chat' && this.chatId && this.chats.length > 1) { this.chatId = null; this.chatEl = null; }
       else this.app = 'home';
       this.render();
     }
@@ -266,6 +361,10 @@ class Phone {
         <div class="phone-card-line is-dim">Odwiedzone: ${seen} z ${list.length}</div>${list.map((l) => `
         <button type="button" class="phone-sms${l.seen ? '' : ' is-unread'}" data-act="site" data-id="${esc(l.id)}">
           <b>${l.seen ? '✓' : '○'} ${esc(l.name)}</b></button>`).join('') || '<p class="phone-empty">Brak miejsc.</p>'}</div>`;
+      return;
+    }
+    if (this.app === 'chat') {
+      this.renderChat(head);
       return;
     }
     if (this.app === 'cards') {

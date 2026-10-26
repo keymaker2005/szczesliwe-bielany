@@ -210,6 +210,10 @@ const SIGNAL_TIMING = { cycle: 60, avenueAmber: 26, avenueRed: 30, streetAmber: 
 // (ragdoll, js/pedestrians.js). Off for the district office's version (decision of 2026-10-26): one switch.
 const PEDESTRIAN_CONTACT = true;
 
+// The phone's Czat app (js/chat.js): the "Burmistrz Bielan" conversation stays hidden until the mayor's written consent
+// and the office's knowledge base (Faza 4, steps 4.6-4.7). No name or surname of the mayor either way.
+const CHAT_MAYOR = false;
+
 // 'green', 'amber' or 'red' for main-road (isAvenue) or crossing-road traffic at a given time
 function signalPhase(time, isAvenue) {
   const { cycle, avenueAmber, avenueRed, streetAmber } = SIGNAL_TIMING;
@@ -227,6 +231,7 @@ function walkSignal(time, isAvenue) {
 
 export {
   PEDESTRIAN_CONTACT,
+  CHAT_MAYOR,
   ISLAND_BOUNDS,
   CENTRAL_PARK_BOUNDS,
   NJ_SHORELINE_POLYGON,
