@@ -21,11 +21,11 @@ export const MODELS = {
   burmistrz: 'claude-sonnet-5-5',
 };
 
-// Prices in USD per 1M tokens (Anthropic price list cached 2026-10-06, checked again 2026-10-26; Haiku up to 100k input
-// tokens); cache writes cost 1.25x input, reads cacheRead. Check again before 4.11.
+// Prices in USD per 1M tokens (Anthropic price list cached 2026-10-06, checked again 2026-10-26 for 4.11: Sonnet 5.5 cache
+// reads cut to 0.05x input; Haiku up to 100k input tokens); cache writes cost 1.25x input, reads cacheRead.
 export const PRICES = {
   'claude-haiku-5-5': { input: 0.10, output: 0.50, cacheRead: 0.01 },
-  'claude-sonnet-5-5': { input: 2, output: 10, cacheRead: 0.20 },
+  'claude-sonnet-5-5': { input: 2, output: 10, cacheRead: 0.10 },
 };
 
 export const CHATS = Object.keys(MODELS);

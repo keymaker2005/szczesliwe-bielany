@@ -26,6 +26,9 @@ Plan: docs/plan-fazy-4.md (zaakceptowany ze wszystkimi decyzjami). Praca równol
   stron (pomocnik Sonnet), Sonnet 5.5, drugi bezpiecznik, osobne rozmowy w telefonie; 50 pytań kontrolnych 0,35 USD,
   bezpiecznik nie zadziałał ani razu (`e2c8ab9`). Zaakceptowane i opublikowane 2026-10-26 (wersja 0.8).
 - `a0fb317` 4.6 szkic pisma do urzędu i pakiet — sesja pismo-urzad (faza-4-krok-4.6-pismo), scalone 2026-10-26, nie wysłane.
+- 4.11 (sesja claude/faza-4-krok-4-11-x69wgs): ceny modeli sprawdzone (Sonnet 5.5 odczyt z pamięci 0,20 → 0,10 USD
+  w worker/src/config.js, działa po następnym wdrożeniu Workera), docs/test-1.8b.md jako „Test 1.0” (Fazy 2–4 w jednym
+  teście), fazy.md: status, 4.10, 4.11, bramka; kryteria bramki w planie według decyzji 8.
 - Uwaga z scaleń: sesje w ponownie użytych folderach worktree zacommitowały kopie macOS „plik 2.js” (`git add -A`);
   usunięte przed scaleniem. Przy kolejnych sesjach sprawdzać `git diff --stat faza-4...<gałąź>` przed scaleniem.
 

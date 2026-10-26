@@ -5,8 +5,10 @@
   Haiku 5.5, 4.5 publikacja (0.7), 4.7–4.8 postać „Burmistrz Bielan” na Sonnet 5.5 (decyzja 8: bez zgody urzędu, bez
   imienia i nazwiska, bez patronatu; opublikowana jako 0.8, strona e2c8ab9), 4.9 wersja dla urzędu (?urzad).
 - 4.6 pismo do urzędu: szkic scalony (docs/pismo-urzad-czat.md), niewysłany; autor wróci do niego (adresat, podpis).
-- 4.10 patronat: pominięty decyzją autora. Następny krok: 4.11 (wersja 1.0, test na Windows według docs/test-1.8b.md
-  z otwartym czatem w trakcie jazdy), potem bramka Fazy 4.
+- 4.10 patronat: pominięty decyzją autora. Trwa 4.11: docs/test-1.8b.md przepisany na „Test 1.0” (skarpa, Most
+  Północny, czat w trakcie jazdy, ?czat=off), ceny modeli sprawdzone (Sonnet 5.5: odczyt z pamięci 0,10 USD).
+  Decyzje z 2026-10-26: test robi autor; ten sam test zamyka bramki Faz 2, 3 i 4; publikacja przed testem jako 0.9,
+  numer 1.0 po zaliczonym teście. Do zrobienia: build i deploy strony (na polecenie autora), test autora, bramki.
 - Przez tydzień od 2026-10-26 autor codziennie patrzy na koszty w konsoli Anthropic (Usage). Koszt pytania: przewodnik
   ok. 0,03 centa, burmistrz ok. 0,7 centa; limity: 20 pytań / 10 min z adresu, 1000 dziennie, 30 USD miesięcznie
   (licznik w Workerze) + twardy limit 30 USD w konsoli Anthropic.

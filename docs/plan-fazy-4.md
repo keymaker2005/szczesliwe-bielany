@@ -167,9 +167,10 @@ Scalanie do faza-4 tylko po Twoim „OK”, kolejność: 4.1 → 4.2 → 4.3 →
 - Klucz API tylko w Cloudflare, limity i wyłącznik awaryjny działają, rozmowy nie są zapisywane.
 - Gra działa bez czatu (Worker wyłączony, limit wyczerpany, localhost bez Workera).
 - Wersja dla urzędu gotowa (PEDESTRIAN_CONTACT = false) i opisana w pakiecie.
-- Czat z burmistrzem: tylko z pisemną zgodą, bazą z urzędu i zaakceptowanymi pytaniami kontrolnymi; logo dzielnicy
-  tylko po decyzji o patronacie. Bez zgody bramka to „1.0 bez patronatu”, a burmistrz i logo wracają do backlogu.
-- 60 fps jak w Fazie 3 (test na Windows według docs/test-1.8b.md).
+- Czat z postacią „Burmistrz Bielan” według decyzji 8: bez imienia i nazwiska, baza z publicznych stron, stopka
+  „Odpowiedź AI w grze…”, drugi bezpiecznik, 50 pytań kontrolnych zaakceptowanych przez autora. Logo dzielnicy tylko po
+  decyzji o patronacie; bez niej bramka to „1.0 bez patronatu” (4.10 pominięty).
+- 60 fps jak w Fazie 3, także z otwartym czatem w trakcie jazdy (test na Windows według docs/test-1.8b.md, „Test 1.0”).
 
 ## Poza zakresem
 Gra dla wielu osób (Faza 5, backlog), konta graczy, czat głosowy, czat z pieszymi i służbami, tłumaczenia na inne

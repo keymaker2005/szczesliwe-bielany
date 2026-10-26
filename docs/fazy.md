@@ -1,6 +1,6 @@
 # Fazy: bieżący zakres
 
-Status: FAZA 2 (osiedla, taksówkarz, ratownik), gałąź faza-2. Faza 1.5 zaliczona 2026-10-26. Faza 0 zamknięta 2026-10-24. Faza 1 zrobiona poza bramką: test 1.8b i pakiet dla urzędu odłożone decyzją z 2026-10-25 (wracamy później); do tego czasu main zostaje bez zmian, a faza-1.5 wychodzi z faza-1. Kolejna faza startuje dopiero po przejściu bramki poprzedniej, chyba że zdecyduję inaczej.
+Status: FAZA 4 (czaty LLM), gałąź faza-4, krok 4.11 (wersja 1.0 i test na Windows). Fazy 0 i 1.5 zaliczone; Fazy 1, 2 i 3 zrobione, ich bramki (wydajność na Windows) zamyka ten sam test co bramkę Fazy 4: docs/test-1.8b.md (decyzja z 2026-10-26). Pakiet dla urzędu i pismo (1.9c, 4.6) odłożone. Scalenie do main dopiero po bramkach.
 
 ## Faza 0: Rozpoznanie
 Bramka: dane się wczytują, plan Fazy 1 zaakceptowany.
@@ -149,3 +149,9 @@ potrącania pieszych, bez zapisu rozmów; SMS-y od „Burmistrz Bielan” bez na
   nie wysłany; czeka na adresata i dane do podpisu (autor wróci do niego później).
 - [x] 4.9 Wersja dla urzędu: ?urzad wyłącza kontakt z pieszymi (URZAD, PEDESTRIAN_CONTACT w js/city-config.js), znaczek
   „wersja dla urzędu”. Sprawdzam: pieszych nie da się potrącić, znaczek widoczny (sprawdzone 2026-10-26).
+- [ ] 4.10 Logo dzielnicy i patronat: pominięty decyzją autora z 2026-10-26 (bez decyzji urzędu o patronacie).
+- [ ] 4.11 Wersja 1.0 i bramka: ceny modeli sprawdzone 2026-10-26 (Sonnet 5.5 tańszy odczyt z pamięci podręcznej),
+  test na Windows rozszerzony o skarpę, Most Północny i czat w trakcie jazdy (docs/test-1.8b.md, „Test 1.0”).
+  Publikacja przed testem jako 0.9, numer 1.0 po zaliczonym teście. Test robi autor.
+  Sprawdzam: pełna pętla na bielany.zbigniew.ai w Edge na Windows, czat działa, z ?czat=off gra działa dalej.
+- [ ] Bramka Fazy 4: „1.0 bez patronatu” (decyzja 8), kryteria w docs/plan-fazy-4.md; ten sam test zamyka bramki Faz 2 i 3.
