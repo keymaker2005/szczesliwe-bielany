@@ -7,6 +7,14 @@ Wewnętrzna historia prac (kroki, gałęzie, decyzje): docs/changelog-wewnetrzny
 
 Dane: © współtwórcy OpenStreetMap (ODbL); GUGiK, geoportal.gov.pl. Na podstawie mrdoob/slop-newyork.
 
+## 1.0 — 2026-10-26, ok. 13:10 · wersja 700762a · Faza 4 zamknięta
+
+**Wersja 1.0**
+- Gra i czaty bez zmian względem 0.9. Test 1.0 na Windows w Edge przeszedł: płynna jazda, chodzenie i lot nad
+  całą dzielnicą (skarpa, Kameduły, Most Północny), czat z przewodnikiem i Burmistrzem Bielan w trakcie jazdy,
+  gra działa też z wyłączonym czatem (?czat=off).
+- Zamyka Fazy 2, 3 i 4. Wersja bez patronatu urzędu dzielnicy.
+
 ## 0.9 — 2026-10-26, ok. 12:55 · wersja b672de0 · Faza 4: wersja do testu 1.0
 
 **Wersja testowa**
