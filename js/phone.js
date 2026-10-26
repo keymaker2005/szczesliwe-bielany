@@ -2,7 +2,8 @@
 // The player's smartphone: an HTML overlay (P or the phone button) with eight apps: Zlecenia (offered and active
 // errands, from js/missions.js), Służby (the emergency services and their calls, js/dispatch.js), Mapa (the full map),
 // Przewodnik (the landmarks: visited, navigate, read more), Czat (AI conversations, js/chat.js), SMS (messages from the guide, the mayor, the dispatchers),
-// Pocztówki (the photos, js/postcards.js) and Aparat (photo mode, js/photo-mode.js). A fictional handset: no maker's
+// Pocztówki (the photos, js/postcards.js), Aparat (photo mode, js/photo-mode.js) and Gracze (playing with others,
+// js/multiplayer-net.js: who is in the room, navigate to them, my name, the switch). A fictional handset: no maker's
 // name or logo. The game keeps running under it; keys still drive the player, the phone only takes clicks.
 
 import { MAX_QUESTION } from './chat.js';
@@ -23,7 +24,11 @@ const APPS = [
   { id: 'chat', name: 'Czat', glyph: '🤖' },
   { id: 'cards', name: 'Pocztówki', glyph: '🖼️' },
   { id: 'camera', name: 'Aparat', glyph: '📷' },
+  { id: 'players', name: 'Gracze', glyph: '👥' },
 ];
+
+const MODE_NAMES = { person: 'pieszo', car: 'autem', cyclist: 'rowerem', helicopter: 'helikopterem' };
+const PLAYERS_INFO = 'Grasz z innymi: widzą Twoją postać, losowe imię i miejsce w grze. Bez kont, nic nie zapisujemy.';
 
 const esc = (t) => String(t ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
 const clock = (s) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
@@ -35,7 +40,10 @@ class Phone {
    * distance, par, reward, vehicles }] offered now, services: () => [{ role, name, glyph, status, jobs }] (the
    * dispatch), onOpenMap(), status: () => line under the clock, time: '12:40' }
    */
-  constructor({ root, button, missions, jobs, services, onOpenMap, onCamera, postcards, landmarks, onNavigate, status, time = '12:40', chat = null, chats = [{ id: 'przewodnik', name: 'Przewodnik' }] }) {
+  constructor({ root, button, missions, jobs, services, onOpenMap, onCamera, postcards, landmarks, onNavigate, status, time = '12:40', chat = null, chats = [{ id: 'przewodnik', name: 'Przewodnik' }], players = null }) {
+    // players: { status(), available(), enabled(), setEnabled(on), me() -> { name, color }, rename(),
+    //   list() -> [{ id, name, color, mode, distance }], navigate(id), navigating() -> id } (main.js), or null
+    this.players = players;
     this.chat = chat; // ChatClient (js/chat.js), { [conversation id]: ChatClient }, or null: no chat app content
     this.chats = chats; // the conversations shown in the Czat app (the mayor's one only when city-config CHAT_MAYOR)
     this.chatLogs = {}; // per conversation: [{ who: 'me' | 'ai' | 'note', text, guide, navigate }], in this tab's memory only
@@ -97,7 +105,7 @@ class Phone {
       else if (e.code === 'Escape' && this.isOpen) this.toggle(false);
     });
     // the lists change while the phone is open (offers, the active clock)
-    setInterval(() => { if (this.isOpen && (this.app === 'jobs' || this.app === 'services')) this.render(); }, 500);
+    setInterval(() => { if (this.isOpen && (this.app === 'jobs' || this.app === 'services' || this.app === 'players')) this.render(); }, 500);
     if (this.postcards) this.postcards.onChange(() => { if (this.isOpen && this.app === 'cards') this.render(); });
     missions.on('state', () => { if (this.isOpen) this.render(); this.renderBadge(); });
     this.render();
@@ -133,6 +141,34 @@ class Phone {
     this.render();
   }
 
+
+  // The Gracze app: the switch, my name (new one at random), the others nearest first with "Nawiguj"
+  renderPlayers(head) {
+    const pl = this.players;
+    if (!pl) { this.screen.innerHTML = `${head('Gracze')}<p class="phone-empty">Gra z innymi jest niedostępna.</p>`; return; }
+    const dot = (css) => `<span class="player-dot" style="background:${esc(css)}"></span>`;
+    const on = pl.enabled();
+    const me = pl.me();
+    const list = on ? pl.list() : [];
+    const nav = pl.navigating();
+    const toggle = pl.available()
+      ? `<button type="button" class="phone-btn${on ? ' is-quiet' : ''}" data-act="players-toggle">${on ? 'Wyłącz grę z innymi' : 'Włącz grę z innymi'}</button>` : '';
+    const mine = on && me ? `
+      <div class="phone-card">
+        <div class="phone-card-title">${dot(me.color)} ${esc(me.name)}<span>to Ty</span></div>
+        <button type="button" class="phone-btn is-quiet" data-act="players-rename">Losuj nowe imię i kolor</button>
+      </div>` : '';
+    const rows = list.map((p) => `
+      <div class="phone-card">
+        <div class="phone-card-title">${dot(p.color)} ${esc(p.name)}<span>${p.distance == null ? '' : dist(p.distance)}</span></div>
+        <div class="phone-card-line is-dim">${esc(MODE_NAMES[p.mode] || 'w drodze')}</div>
+        <button type="button" class="phone-btn is-quiet" data-act="players-nav" data-id="${p.id}">${nav === p.id ? 'Prowadzę do gracza (mapa)' : 'Nawiguj'}</button>
+      </div>`).join('');
+    this.screen.innerHTML = `${head('Gracze')}<div class="phone-list">
+      <div class="phone-card-line is-dim">${esc(pl.status())}</div>
+      ${on ? `<div class="phone-card-line is-dim">${esc(PLAYERS_INFO)}</div>` : ''}
+      ${mine}${rows}${toggle}</div>`;
+  }
 
   // The Czat app. The screen is built once per conversation and then updated in place, so the text field keeps what
   // is typed while missions re-render the phone. The conversation lives in this tab's memory only.
@@ -280,6 +316,14 @@ class Phone {
       }
       this.render();
       this.chatLines(); // the Czat screen keeps its element across render(): repaint the button label
+    } else if (act === 'players-toggle') {
+      this.players?.setEnabled(!this.players.enabled());
+      this.render();
+    } else if (act === 'players-rename') {
+      this.players?.rename();
+    } else if (act === 'players-nav') {
+      this.players?.navigate(Number(id));
+      this.render();
     } else if (act === 'chat-open') {
       this.chatId = id;
       this.chatEl = null;
@@ -398,6 +442,10 @@ class Phone {
     }
     if (this.app === 'chat') {
       this.renderChat(head);
+      return;
+    }
+    if (this.app === 'players') {
+      this.renderPlayers(head);
       return;
     }
     if (this.app === 'cards') {

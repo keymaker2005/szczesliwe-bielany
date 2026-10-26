@@ -346,3 +346,21 @@ test('worker: over the day budget nobody gets in', async () => {
   assert.equal((await res.json()).reason, 'resting');
   assert.equal((await handle(upgrade('/api/gracze?pokoj=test'), env)).status, 503);
 });
+
+test('a new random name for everyone to see, once in two seconds', async () => {
+  const r = makeRoom();
+  const a = await joined(r, 'a');
+  const b = await joined(r, 'b');
+  let k = 0;
+  r.core.random = () => [0.01, 0.01, 0.001, 0.99][k++ % 4];
+  await r.say(a, { t: 'imie' });
+  const mine = r.last(a, 'imie');
+  assert.deepEqual(mine, { t: 'imie', id: 1, name: 'Rudy Dzik 1', nameId: { a: 0, b: 0, n: 1 }, color: 11 });
+  assert.deepEqual(r.last(b, 'imie'), { t: 'imie', id: 1, name: 'Rudy Dzik 1', color: 11 });
+  await r.say(a, { t: 'imie' });
+  assert.equal(a.inbox.filter((m) => m.t === 'imie').length, 1);
+  r.advance(LIMITS.renameMs);
+  await r.say(a, { t: 'imie' });
+  assert.equal(a.inbox.filter((m) => m.t === 'imie').length, 2);
+});
+

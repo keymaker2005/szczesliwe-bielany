@@ -13,6 +13,7 @@ export const LIMITS = {
   droppedPerMinute: 200, // dropped messages that end a connection ("abuse")
   teleportMs: 1000, // one teleport per second
   gestureMs: 2000, // one gesture per two seconds
+  renameMs: 2000, // one new name per two seconds
   reportEvery: 2000, // messages between usage reports to the lobby
   messagesPerRequest: 20, // Cloudflare bills incoming WebSocket messages 20:1
   requestsPerConnect: 4, // lobby pick + room fetch + join and leave reports

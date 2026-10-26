@@ -5,13 +5,16 @@
   (strona z 18.10.2026). Porządki z backlogu (NYC, błąd GPU) zrobione i opublikowane jako 1.0.1.
 - Plan zaakceptowany ze wszystkimi decyzjami. 5.1 zrobiony (do sprawdzenia): worker-gracze/ (index.js Worker, lobby.js,
   room.js + room-core.js pokój z uśpieniem WebSocketów, names.js imiona, config.js limity), umowa docs/api-gracze.md,
-  lokalnie `sh tools/gracze-dev.sh` (port 8788), boty `node tools/boty.mjs N [--pokoj 1]`. Worker nie jest wdrożony
+  lokalnie `sh tools/gracze-dev.sh` (port 8789), boty `node tools/boty.mjs N [--pokoj 1]`. Worker nie jest wdrożony
   (wdrożenie w 5.7, na polecenie autora; sekret TURNSTILE_SECRET dla bielany-gracze wpisze autor).
 - 5.1 zaakceptowany. 5.2 zrobiony (do sprawdzenia): js/multiplayer-net.js (klient, Track, SendPolicy; testy
   tests/multiplayer.test.mjs), js/multiplayer.js (RemotePlayers: modele z ruchu ulicznego, imiona w #player-names),
   kropki w city-map.js (opcja getOthers), podpięcie w main.js (start po pierwszej klatce, update po kamerze).
   Lokalnie: serwer `sh tools/gracze-dev.sh`, boty `node tools/boty.mjs 19 --blisko 400`, gra http://localhost:8080/?pokoj=test.
-- Testy: 213 zielonych.
+- 5.2 zaakceptowany. 5.3 zrobiony (do sprawdzenia): aplikacja Gracze w js/phone.js (opcja players z main.js),
+  „Nawiguj” za graczem (followWaypoint w main.js), wiadomość „imie” (serwer i klient), przełącznik w localStorage
+  (bielany-gracze-on). Serwer graczy lokalnie na porcie 8789 (8788 zajmuje tools/fake-czat.mjs dla czatu).
+- Testy: 215 zielonych.
 
 ## Faza 4 (gałąź faza-4, plan docs/plan-fazy-4.md) — dla nowej sesji
 - Zrobione i sprawdzone: 4.1 Worker z bezpiecznikami, 4.2 aplikacja Czat, 4.3 baza przewodnika, 4.4 przewodnik na
@@ -64,7 +67,7 @@
 - Teren: js/terrain.js (groundY, drapeGeometry, groundPose), dane js/bielany-terrain.bin z tools/terrain-bielany.mjs
   (po zmianie dróg w geodanych uruchomić ponownie: wygładza teren pod głównymi drogami). Mosty: js/bridges.js
   (deckY, surfaceY, deckPose). Każdy nowy obiekt na ziemi bierze wysokość z groundY / surfaceY. ?plaski = płaska mapa.
-- Testy: 213 zielonych, w tym test składni wszystkich modułów (po scaleniach sprawdzić też start gry w przeglądarce).
+- Testy: 215 zielonych, w tym test składni wszystkich modułów (po scaleniach sprawdzić też start gry w przeglądarce).
 - Gałęzie: faza-0, faza-1, faza-1.5, faza-2, faza-3, faza-4 (bieżąca). main = wersja 1.0 (od 2026-10-26; oryginał mrdooba:
   tag nyc-original i jego historia w main). Kolejne fazy scalamy do main po bramkach.
 
@@ -79,7 +82,7 @@
 - Node: ~/.local/node/bin (dopisać do PATH). gh: ~/.local/bin/gh (zalogowany jako keymaker2005).
 - Serwer: `node tools/serve.mjs 8080`, podgląd w panelu przeglądarki (.claude/launch.json, nazwa „bielany”).
   Ukryty panel daje ~1 fps — pomiary fps tylko przy widocznym panelu.
-- Testy: `node --test tests/*.test.mjs tests/*.test.cjs` (213 zielonych).
+- Testy: `node --test tests/*.test.mjs tests/*.test.cjs` (215 zielonych).
 - Dane: `node tools/geo-bielany.mjs` generuje js/bielany-geodata.js; Overpass: tools/overpass.sh; budynki:
   data/extract_bielany_lod1.py (bez pyproj); drzewa: data/extract_bielany_trees.py (strumień 8,6 GB, ~40 min);
   teksty: tools/guide-texts.mjs.

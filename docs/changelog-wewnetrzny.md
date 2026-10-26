@@ -10,6 +10,8 @@ Plan: docs/plan-fazy-5.md (zaakceptowany ze wszystkimi decyzjami).
   80 000 zapytań), docs/api-gracze.md, tools/gracze-dev.sh, tools/boty.mjs, tests/gracze.test.mjs (20 testów).
 - 5.2 Inni gracze w grze: js/multiplayer-net.js, js/multiplayer.js, kropki na mapie (city-map.js), main.js, #player-names
   (index.html, style.css); 19 botów, 60 fps w Chrome na M4.
+- 5.3 Aplikacja Gracze: phone.js, main.js, multiplayer-net.js (imie, przełącznik, describeStatus), room-core.js (imie);
+  błąd: clearTimeout wywoływany jako metoda (Illegal invocation); serwer graczy lokalnie 8788 → 8789.
 
 ## Faza 4: Czaty LLM i patronat (gałąź faza-4, 2026-10-26)
 

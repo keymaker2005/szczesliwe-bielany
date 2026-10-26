@@ -7,6 +7,7 @@ import { turnstileProvider } from './chat.js';
 
 const LOCAL_HOSTS = new Set(['localhost', '127.0.0.1', '[::1]', '::1']);
 const STORAGE_KEY = 'bielany-gracz-v1';
+const ON_KEY = 'bielany-gracze-on'; // '0' when the player switched playing with others off in the phone
 const DELAY_MS = 200; // others are drawn this far in the past, between two received states
 const EXTRAPOLATE_MS = 500; // after the last state, keep moving this long at the last speed, then stop
 const RETRY_MS = [5000, 15000, 60000];
@@ -15,7 +16,7 @@ const MOVE_EPS = 0.05; // metres / radians that count as moving
 // Local server on localhost, the same host elsewhere; ?pokoj=test joins the test room (bots)
 function playersEndpoint(location = globalThis.location) {
   const test = new URLSearchParams(location?.search || '').get('pokoj') === 'test' ? '?pokoj=test' : '';
-  if (LOCAL_HOSTS.has(location?.hostname)) return { ws: `ws://localhost:8788/api/gracze${test}`, stan: 'http://localhost:8788/api/gracze/stan' };
+  if (LOCAL_HOSTS.has(location?.hostname)) return { ws: `ws://localhost:8789/api/gracze${test}`, stan: 'http://localhost:8789/api/gracze/stan' };
   return { ws: `wss://${location.host}/api/gracze${test}`, stan: '/api/gracze/stan' };
 }
 
@@ -108,6 +109,31 @@ class SendPolicy {
   }
 }
 
+function readOn(storage) {
+  try { return storage?.getItem(ON_KEY) !== '0'; } catch { return true; }
+}
+
+// One line for the phone's Gracze app
+function describeStatus(client) {
+  if (client.solo) return 'Ta wersja gry jest bez gry z innymi (?solo albo wersja dla urzędu).';
+  switch (client.status) {
+    case 'online': {
+      const n = client.players.size;
+      const room = client.me?.room === 'test' ? 'Pokój testowy' : `Pokój ${client.me?.room || ''}`;
+      return n ? `${room} · oprócz Ciebie: ${n} ${n === 1 ? 'gracz' : 'graczy'}.`
+        : `${room} · na razie jesteś sam. Inni pojawią się tu, gdy wejdą do gry.`;
+    }
+    case 'connecting': return 'Łączenie z innymi graczami…';
+    case 'resting': return client.reason === 'off' ? 'Gra z innymi jest chwilowo wyłączona. Grasz sam.'
+      : 'Gra z innymi odpoczywa do 2:00 w nocy (dzienny limit). Grasz sam.';
+    case 'down': return client.reason === 'full' ? 'Wszystkie pokoje są pełne. Grasz sam; spróbujemy za chwilę.'
+      : client.reason === 'turnstile' ? 'Nie udało się potwierdzić, że jesteś człowiekiem. Wyłącz i włącz grę z innymi.'
+        : client.reason === 'abuse' || client.reason === 'too_many' ? 'Serwer zakończył połączenie. Wyłącz i włącz grę z innymi.'
+          : 'Brak połączenia z serwerem graczy. Grasz sam; spróbujemy ponownie.';
+    default: return 'Grasz sam. Włącz grę z innymi, by widzieć innych graczy.';
+  }
+}
+
 function loadIdentity(storage) {
   try {
     const d = JSON.parse(storage?.getItem(STORAGE_KEY) || 'null');
@@ -124,8 +150,10 @@ function saveIdentity(storage, identity) {
 class MultiplayerClient {
   constructor({
     location = globalThis.location, fetchImpl = (...a) => globalThis.fetch(...a), WebSocketImpl = globalThis.WebSocket,
-    getToken = null, storage = globalThis.localStorage, now = () => performance.now(), setTimer = setTimeout,
-    clearTimer = clearTimeout, urzad = false, log = (...a) => console.info(...a), doc = globalThis.document,
+    getToken = null, storage = globalThis.localStorage, now = () => performance.now(),
+    // timers wrapped: a bare clearTimeout called as this.clearTimer(...) throws "Illegal invocation" in browsers
+    setTimer = (fn, ms) => setTimeout(fn, ms), clearTimer = (t) => clearTimeout(t),
+    urzad = false, log = (...a) => console.info(...a), doc = globalThis.document,
   } = {}) {
     this.endpoint = playersEndpoint(location);
     this.solo = soloByUrl(location?.search || '', urzad);
@@ -146,7 +174,7 @@ class MultiplayerClient {
     this.ws = null;
     this.retries = 0;
     this.timer = null;
-    this.enabled = !this.solo;
+    this.enabled = !this.solo && readOn(storage);
     this.onChange = null; // (event, data) for the phone app (5.3) and the renderer
     // A hidden tab stops sending (no frames) and the server lets it go after 10 s; coming back reconnects at once
     doc?.addEventListener?.('visibilitychange', () => {
@@ -216,7 +244,7 @@ class MultiplayerClient {
     const now = this.now();
     switch (msg.t) {
       case 'witaj':
-        this.me = { id: msg.id, name: msg.name, color: msg.color };
+        this.me = { id: msg.id, name: msg.name, color: msg.color, room: msg.room };
         this.colors = Array.isArray(msg.colors) ? msg.colors : [];
         if (msg.rate) this.policy.rate = msg.rate;
         if (msg.nameId) saveIdentity(this.storage, { name: msg.nameId, color: msg.color });
@@ -240,6 +268,16 @@ class MultiplayerClient {
         if (p) { p.gesture = { g: msg.g, t: now }; this.emit('gesture', p); }
         break;
       }
+      case 'imie':
+        if (msg.id === this.me?.id) {
+          Object.assign(this.me, { name: msg.name, color: msg.color });
+          if (msg.nameId) saveIdentity(this.storage, { name: msg.nameId, color: msg.color });
+          this.emit('rename', this.me);
+        } else {
+          const p = this.players.get(msg.id);
+          if (p) { p.name = String(msg.name || ''); p.color = msg.color; this.emit('rename', p); }
+        }
+        break;
       case 'wyszedl':
         if (this.players.delete(msg.id)) this.emit('leave', msg.id);
         break;
@@ -298,6 +336,11 @@ class MultiplayerClient {
     }
   }
 
+  // "Losuj" in the phone: the server picks a new name and colour
+  rename() {
+    if (this.status === 'online' && this.ws?.readyState === 1) this.ws.send(JSON.stringify({ t: 'imie' }));
+  }
+
   gesture(g) {
     if (this.status === 'online' && this.ws?.readyState === 1) this.ws.send(JSON.stringify({ t: 'g', g }));
   }
@@ -306,6 +349,7 @@ class MultiplayerClient {
   setEnabled(on) {
     if (this.solo) return;
     this.enabled = on;
+    try { this.storage?.setItem(ON_KEY, on ? '1' : '0'); } catch { /* storage is optional */ }
     if (on) { this.retries = 0; this.start(); return; }
     this.clearTimer(this.timer);
     const ws = this.ws;
@@ -318,4 +362,4 @@ class MultiplayerClient {
   }
 }
 
-export { MultiplayerClient, Track, SendPolicy, playersEndpoint, soloByUrl, wrapAngle, DELAY_MS, EXTRAPOLATE_MS, RETRY_MS, STORAGE_KEY };
+export { MultiplayerClient, Track, SendPolicy, playersEndpoint, soloByUrl, describeStatus, wrapAngle, DELAY_MS, EXTRAPOLATE_MS, RETRY_MS, STORAGE_KEY, ON_KEY };

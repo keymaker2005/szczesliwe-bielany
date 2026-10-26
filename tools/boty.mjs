@@ -1,6 +1,6 @@
 // Test bots for playing with others (step 5.1, docs/api-gracze.md): N bots drive along Bielany streets and talk to
 // the server like the game would.
-//   node tools/boty.mjs [N] [--pokoj test|1] [--adres ws://localhost:8788/api/gracze] [--czas sekundy] [--blisko metry]
+//   node tools/boty.mjs [N] [--pokoj test|1] [--adres ws://localhost:8789/api/gracze] [--czas sekundy] [--blisko metry]
 // --blisko 400: only streets within 400 m of the Stare Bielany station (where the game starts), to watch them.
 // Defaults: 5 bots, the test room, the local server (sh tools/gracze-dev.sh), until Ctrl+C. A room holds 30: leave
 // space for people (at most ~20 bots).
@@ -11,7 +11,7 @@ const args = process.argv.slice(2);
 const opt = (name, def) => { const i = args.indexOf(`--${name}`); return i >= 0 ? args[i + 1] : def; };
 const count = Number(args.find((a) => /^\d+$/.test(a)) || 5);
 const room = opt('pokoj', 'test');
-const base = opt('adres', 'ws://localhost:8788/api/gracze');
+const base = opt('adres', 'ws://localhost:8789/api/gracze');
 const seconds = Number(opt('czas', 0));
 const url = room === 'test' ? `${base}?pokoj=test` : base;
 const ORIGIN = 'http://localhost:8080';
@@ -25,6 +25,7 @@ const GESTURES = ['czesc', 'dzieki', 'jedziemy', 'brawo', 'uwaga', 'pa'];
 const rand = (n) => Math.floor(Math.random() * n);
 
 const stats = { received: 0, refused: 0, ended: {} };
+let stopping = false;
 
 class Bot {
   constructor(i) {
@@ -63,7 +64,12 @@ class Bot {
     this.ws.onopen = () => this.send({ t: 'hej', turnstile: 'bot', name: { a: this.i % 12, b: this.i % 20, n: 1 + (this.i % 99) }, color: this.i % 12 });
     this.ws.onmessage = (e) => this.receive(JSON.parse(e.data));
     this.ws.onerror = () => { stats.refused++; };
-    this.ws.onclose = () => { clearInterval(this.timer); this.closed = true; };
+    this.ws.onclose = () => {
+      clearInterval(this.timer);
+      this.closed = true;
+      this.id = null;
+      if (!stopping) setTimeout(() => { this.closed = false; this.seen.clear(); this.connect(); }, 3000); // server restarted
+    };
   }
 
   send(obj) {
@@ -108,6 +114,7 @@ const report = setInterval(() => {
 }, 5000);
 
 const stop = () => {
+  stopping = true;
   clearInterval(report);
   for (const b of bots) { b.send({ t: 'pa' }); clearInterval(b.timer); }
   setTimeout(() => process.exit(0), 300);

@@ -137,6 +137,16 @@ export class RoomCore {
         att.tg = now;
         this.broadcast(ws, { t: 'g', id: att.id, g: msg.g });
       }
+    } else if (msg.t === 'imie') {
+      // A new random name and colour (the phone's "Losuj"), for everybody to see
+      if (now - (att.tn || 0) >= LIMITS.renameMs) {
+        att.tn = now;
+        const taken = new Set([...this.players.values()].filter((a) => a.stage === 'in' && a !== att).map((a) => a.text));
+        const picked = pickName(null, -1, taken, this.random);
+        Object.assign(att, { name: picked.name, text: picked.text, color: picked.color });
+        this.io.send(ws, { t: 'imie', id: att.id, name: att.text, nameId: att.name, color: att.color });
+        this.broadcast(ws, { t: 'imie', id: att.id, name: att.text, color: att.color });
+      }
     } else if (msg.t === 'pa') {
       return this.leave(ws, null);
     }

@@ -1,12 +1,12 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { MultiplayerClient, Track, SendPolicy, playersEndpoint, soloByUrl, DELAY_MS, STORAGE_KEY } from '../js/multiplayer-net.js';
+import { MultiplayerClient, Track, SendPolicy, playersEndpoint, soloByUrl, describeStatus, DELAY_MS, STORAGE_KEY, ON_KEY } from '../js/multiplayer-net.js';
 
 const close = (a, b, eps = 1e-6) => assert.ok(Math.abs(a - b) < eps, `${a} ≈ ${b}`);
 
 test('address: local server on localhost, same host elsewhere, test room on request', () => {
   assert.deepEqual(playersEndpoint({ hostname: 'localhost', host: 'localhost:8080', search: '' }),
-    { ws: 'ws://localhost:8788/api/gracze', stan: 'http://localhost:8788/api/gracze/stan' });
+    { ws: 'ws://localhost:8789/api/gracze', stan: 'http://localhost:8789/api/gracze/stan' });
   assert.deepEqual(playersEndpoint({ hostname: 'bielany.zbigniew.ai', host: 'bielany.zbigniew.ai', search: '?pokoj=test' }),
     { ws: 'wss://bielany.zbigniew.ai/api/gracze?pokoj=test', stan: '/api/gracze/stan' });
   assert.equal(soloByUrl('?solo'), true);
@@ -83,7 +83,7 @@ test('client: hej with Turnstile and the saved name, welcome, others join, move 
   await client.start();
   await tick();
   const ws = FakeSocket.last;
-  assert.equal(ws.url, 'ws://localhost:8788/api/gracze');
+  assert.equal(ws.url, 'ws://localhost:8789/api/gracze');
   assert.deepEqual(ws.sent[0], { t: 'hej', turnstile: 'tok', name: { a: 1, b: 2, n: 3 }, color: 4 });
   ws.answer({ t: 'witaj', id: 2, name: 'Szybki Jeż 3', nameId: { a: 1, b: 2, n: 3 }, color: 4, colors: ['#000', '#111', '#222', '#333', '#444'],
     room: '1', players: [{ id: 1, name: 'Rudy Dzik 1', color: 0, x: 5, y: 0, z: 5, h: 0, m: 'person', v: 0 }], rate: { move: 5, idle: 1 } });
@@ -168,5 +168,31 @@ test('client: a tab coming back to the front reconnects at once', async () => {
   doc.hidden = false;
   listeners.visibilitychange();
   assert.equal(started, 1);
+});
+
+test('client: new names for me and the others, the switch remembered, one status line', async () => {
+  const { client, store } = makeClient();
+  await client.start();
+  await tick();
+  const ws = FakeSocket.last;
+  ws.answer({ t: 'witaj', id: 1, name: 'Rudy Dzik 1', color: 0, colors: ['#a', '#b', '#c'], room: '1', players: [{ id: 2, name: 'Cicha Sowa 3', color: 1 }] });
+  assert.equal(describeStatus(client), 'Pokój 1 · oprócz Ciebie: 1 gracz.');
+  client.rename();
+  assert.deepEqual(ws.sent.at(-1), { t: 'imie' });
+  ws.answer({ t: 'imie', id: 1, name: 'Złoty Kos 8', nameId: { a: 4, b: 6, n: 8 }, color: 2 });
+  assert.equal(client.me.name, 'Złoty Kos 8');
+  assert.deepEqual(JSON.parse(store.get(STORAGE_KEY)), { name: { a: 4, b: 6, n: 8 }, color: 2 });
+  ws.answer({ t: 'imie', id: 2, name: 'Leśna Mewa 5', color: 0 });
+  assert.equal(client.players.get(2).name, 'Leśna Mewa 5');
+  client.setEnabled(false);
+  assert.equal(store.get(ON_KEY), '0');
+  assert.equal(describeStatus(client), 'Grasz sam. Włącz grę z innymi, by widzieć innych graczy.');
+  const again = makeClient({ storage: store });
+  assert.equal(again.client.enabled, false);
+  await again.client.start();
+  assert.equal(again.client.status, 'off');
+  assert.match(describeStatus({ solo: true }), /bez gry z innymi/);
+  assert.match(describeStatus({ status: 'resting', reason: 'resting', players: new Map() }), /2:00/);
+  assert.match(describeStatus({ status: 'online', me: { room: 'test' }, players: new Map() }), /^Pokój testowy · na razie jesteś sam/);
 });
 

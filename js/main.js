@@ -47,7 +47,7 @@ import { PhotoMode } from './photo-mode.js';
 import { Postcards } from './postcards.js';
 import { createFallingLeaves } from './falling-leaves.js';
 import { nearestOnStreet } from './gps-route.js';
-import { MultiplayerClient } from './multiplayer-net.js';
+import { MultiplayerClient, describeStatus } from './multiplayer-net.js';
 import { RemotePlayers } from './multiplayer.js';
 
 // js/main.js
@@ -150,6 +150,9 @@ async function initApp() {
   // Playing with others (Faza 5): the other players, drawn from the traffic's models; connects after the first frame
   const multiplayer = new MultiplayerClient({ urzad: URZAD });
   const remotePlayers = new RemotePlayers(scene, { overlay: document.getElementById('player-names') });
+  // "Nawiguj" to a player (the phone's Gracze app): the waypoint follows them while they move
+  const followWaypoint = { x: 0, z: 0, name: '' };
+  let followPlayer = null;
   // Reuse teleport placement so saved players return at rest, close to their last positions.
   try {
     const saved = JSON.parse(localStorage.getItem(PLAYER_STATE_KEY));
@@ -754,6 +757,30 @@ async function initApp() {
     onOpenMap: () => mapSystem.toggleFullMap(true),
     landmarks: () => guide.landmarks(),
     onNavigate: (l) => { mapSystem.waypoint = { x: l.x, z: l.z, name: l.name }; },
+    players: {
+      status: () => describeStatus(multiplayer),
+      available: () => !multiplayer.solo,
+      enabled: () => multiplayer.enabled,
+      setEnabled: (on) => multiplayer.setEnabled(on),
+      me: () => (multiplayer.status === 'online' && multiplayer.me ? { name: multiplayer.me.name, color: multiplayer.colorOf(multiplayer.me) } : null),
+      rename: () => multiplayer.rename(),
+      list: () => {
+        const me = controllerManager.getActiveEntity().position;
+        const now = performance.now();
+        return [...multiplayer.players.values()].map((p) => {
+          const at = p.track.sample(now);
+          return { id: p.id, name: p.name, color: multiplayer.colorOf(p), mode: at?.m, distance: at ? Math.hypot(at.x - me.x, at.z - me.z) : null };
+        }).sort((a, b) => (a.distance ?? Infinity) - (b.distance ?? Infinity));
+      },
+      navigate: (id) => {
+        const at = multiplayer.players.get(id)?.track.sample(performance.now());
+        if (!at) return;
+        followPlayer = id;
+        Object.assign(followWaypoint, { x: at.x, z: at.z, name: multiplayer.players.get(id).name });
+        mapSystem.waypoint = followWaypoint;
+      },
+      navigating: () => (mapSystem.waypoint === followWaypoint ? followPlayer : null),
+    },
     status: () => (missions.active ? `W drodze: ${missions.goal().name}` : controllerManager.activeMode === 'car' ? taxi.statusLine() : courier.statusLine()),
   });
   phone.addSms({
@@ -1014,6 +1041,10 @@ async function initApp() {
       const me = controllerManager.getActiveEntity();
       multiplayer.update({ x: me.position.x, y: me.position.y, z: me.position.z, h: me.heading, m: controllerManager.activeMode, v: me.speed });
       remotePlayers.update(dt, multiplayer, cameraSystem.camera, now);
+      if (followPlayer !== null && mapSystem.waypoint === followWaypoint) {
+        const at = multiplayer.players.get(followPlayer)?.track.sample(now);
+        if (at) { followWaypoint.x = at.x; followWaypoint.z = at.z; }
+      }
     }
     photo.update(dt);
     fallingLeaves.update(dt, elapsed, cameraSystem.camera.position);
