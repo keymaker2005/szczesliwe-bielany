@@ -996,11 +996,24 @@ class CityMapSystem {
       }
     }
 
-    // Other players (playing with others): a dot in their colour
+    // Other players (playing with others): a dot in their colour; the ones beyond the radar sit on its edge, in their
+    // direction, so you always see where everybody is
     for (const o of this.getOthers?.() || []) {
-      const ox = toX(o.x);
-      const oy = toY(o.z);
-      if (Math.abs(ox) < w * 0.48 && Math.abs(oy) < h * 0.48) drawOtherPlayer(ctx, ox, oy, o.color, 3.6);
+      let ox = toX(o.x);
+      let oy = toY(o.z);
+      const ex = w * 0.44, ey = h * 0.44;
+      const out = Math.max(Math.abs(ox) / ex, Math.abs(oy) / ey);
+      if (out <= 1) drawOtherPlayer(ctx, ox, oy, o.color, 3.6);
+      else {
+        ox /= out;
+        oy /= out;
+        drawOtherPlayer(ctx, ox, oy, o.color, 2.8);
+        ctx.strokeStyle = o.color;
+        ctx.lineWidth = 1.2;
+        ctx.beginPath();
+        ctx.arc(ox, oy, 5.6, 0, Math.PI * 2);
+        ctx.stroke();
+      }
     }
 
     // Camera FOV Cone & Player Arrow at center (0, 0)

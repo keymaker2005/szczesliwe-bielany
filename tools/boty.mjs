@@ -2,7 +2,8 @@
 // the server like the game would.
 //   node tools/boty.mjs [N] [--pokoj test|1] [--adres ws://localhost:8788/api/gracze] [--czas sekundy] [--blisko metry]
 // --blisko 400: only streets within 400 m of the Stare Bielany station (where the game starts), to watch them.
-// Defaults: 5 bots, the test room, the local server (sh tools/gracze-dev.sh), until Ctrl+C.
+// Defaults: 5 bots, the test room, the local server (sh tools/gracze-dev.sh), until Ctrl+C. A room holds 30: leave
+// space for people (at most ~20 bots).
 // Every 5 s a line: bots in the room, players each bot sees, messages received per second, refusals.
 import { GEO } from '../js/bielany-geodata.js';
 
