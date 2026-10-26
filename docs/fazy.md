@@ -145,7 +145,7 @@ potrącania pieszych, bez zapisu rozmów; SMS-y od „Burmistrz Bielan” bez na
   Bielany” pod każdą odpowiedzią. 50 pytań kontrolnych: docs/odpowiedzi-kontrolne-burmistrz.md (0,35 USD).
   Sprawdzam: rozmowa w grze na localhost; przegląd 50 odpowiedzi (OK albo uwaga) (zaakceptowane 2026-10-26).
   Opublikowane 2026-10-26 (wersja 0.8, strona e2c8ab9).
-- [ ] 4.6 Pismo do urzędu (docs/pismo-urzad-czat.md, pakiet): szkic na gałęzi faza-4-krok-4.6-pismo, czeka na adresata
-  i dane do podpisu.
+- [ ] 4.6 Pismo do urzędu (docs/pismo-urzad-czat.md, pakiet docs/pakiet-urzad.md): szkic scalony do faza-4 2026-10-26,
+  nie wysłany; czeka na adresata i dane do podpisu (autor wróci do niego później).
 - [x] 4.9 Wersja dla urzędu: ?urzad wyłącza kontakt z pieszymi (URZAD, PEDESTRIAN_CONTACT w js/city-config.js), znaczek
   „wersja dla urzędu”. Sprawdzam: pieszych nie da się potrącić, znaczek widoczny (sprawdzone 2026-10-26).
