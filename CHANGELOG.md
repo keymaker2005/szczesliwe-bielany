@@ -7,6 +7,13 @@ Wewnętrzna historia prac (kroki, gałęzie, decyzje): docs/changelog-wewnetrzny
 
 Dane: © współtwórcy OpenStreetMap (ODbL); GUGiK, geoportal.gov.pl. Na podstawie mrdoob/slop-newyork.
 
+## 0.9 — 2026-10-26, ok. 12:55 · wersja b672de0 · Faza 4: wersja do testu 1.0
+
+**Wersja testowa**
+- Gra i czaty bez zmian względem 0.8. Ta publikacja to wersja kandydująca do 1.0: na niej autor robi test na
+  Windows (cała pętla Faz 2–4, skarpa, Most Północny, czat w trakcie jazdy, gra z ?czat=off).
+- Numer 1.0 dostanie po zaliczonym teście.
+
 ## 0.8 — 2026-10-26 · wersja e2c8ab9 · Faza 4: czat z Burmistrzem Bielan
 
 **Czat w telefonie**

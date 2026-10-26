@@ -8,7 +8,8 @@
 - 4.10 patronat: pominięty decyzją autora. Trwa 4.11: docs/test-1.8b.md przepisany na „Test 1.0” (skarpa, Most
   Północny, czat w trakcie jazdy, ?czat=off), ceny modeli sprawdzone (Sonnet 5.5: odczyt z pamięci 0,10 USD).
   Decyzje z 2026-10-26: test robi autor; ten sam test zamyka bramki Faz 2, 3 i 4; publikacja przed testem jako 0.9,
-  numer 1.0 po zaliczonym teście. Do zrobienia: build i deploy strony (na polecenie autora), test autora, bramki.
+  numer 1.0 po zaliczonym teście. Opublikowane jako 0.9 (strona b672de0, gra bez zmian względem 0.8).
+  Do zrobienia: test autora, bramki. Zmiana cen w worker/src/config.js działa dopiero po wdrożeniu Workera.
 - Przez tydzień od 2026-10-26 autor codziennie patrzy na koszty w konsoli Anthropic (Usage). Koszt pytania: przewodnik
   ok. 0,03 centa, burmistrz ok. 0,7 centa; limity: 20 pytań / 10 min z adresu, 1000 dziennie, 30 USD miesięcznie
   (licznik w Workerze) + twardy limit 30 USD w konsoli Anthropic.
@@ -37,7 +38,7 @@
   razem z dodatkami: tabliczki MSI, zwierzęta w lasach, Stadion Hutnika, aplikacja Przewodnik. Bramka czeka na test na
   Windows; otwarte przed bramką: 52-56 fps pieszo przy Kamedułach (Chrome, M4), 30 fps zgłoszone w Edge (docs/backlog.md).
 - Faza 4: patrz sekcja na górze.
-- Historia: CHANGELOG.md (publiczne wersje 0.1-0.8 według publikacji na Cloudflare), docs/changelog-wewnetrzny.md
+- Historia: CHANGELOG.md (publiczne wersje 0.1-0.9 według publikacji na Cloudflare), docs/changelog-wewnetrzny.md
   (kroki i commity). Praca równoległa: docs/praca-rownolegla.md (koordynator + osobne sesje na gałęziach, modele:
   Haiku proste, Sonnet powtarzalne, Opus myślenie; scalanie do gałęzi fazy tylko na polecenie użytkownika).
 - Drzewa GUGiK: strumień paczki 8,6 GB urwał się przy 355 z 484 arkuszy; data/bielany_trees_2023.json to stary wycinek
