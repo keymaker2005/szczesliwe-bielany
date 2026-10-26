@@ -31,6 +31,8 @@ Plan: docs/plan-fazy-4.md (zaakceptowany ze wszystkimi decyzjami). Praca równol
   teście), fazy.md: status, 4.10, 4.11, bramka; kryteria bramki w planie według decyzji 8.
 - 4.11 scalone 2026-10-26, publikacja 0.9 (b672de0). Test 1.0 na Windows przeszedł (zgłoszenie autora): bramki Faz 2,
   3 i 4 zaliczone, publikacja 1.0.
+- Scalenie faza-4 do main 2026-10-26 (decyzja autora): origin/main miał 6 nowych commitów mrdooba (NYC, 2026-10-25),
+  konflikty w 5 plikach; włączone do historii strategią ours, kod main = faza-4 (wersja 1.0).
 - Uwaga z scaleń: sesje w ponownie użytych folderach worktree zacommitowały kopie macOS „plik 2.js” (`git add -A`);
   usunięte przed scaleniem. Przy kolejnych sesjach sprawdzać `git diff --stat faza-4...<gałąź>` przed scaleniem.
 

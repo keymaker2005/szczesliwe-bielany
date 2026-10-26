@@ -1,6 +1,6 @@
 # Fazy: bieżący zakres
 
-Status: wersja 1.0 opublikowana 2026-10-26, gałąź faza-4. Fazy 0, 1.5, 2, 3 i 4 zaliczone (bramki Faz 2–4 zamknął Test 1.0 na Windows, docs/test-1.8b.md, 2026-10-26). Faza 1 zrobiona, jej bramka czeka na pakiet dla urzędu. Pakiet dla urzędu i pismo (1.9c, 4.6) odłożone. Scalenie do main dopiero po bramkach.
+Status: wersja 1.0 opublikowana 2026-10-26, gałąź faza-4. Fazy 0, 1.5, 2, 3 i 4 zaliczone (bramki Faz 2–4 zamknął Test 1.0 na Windows, docs/test-1.8b.md, 2026-10-26). Faza 1 zrobiona, jej bramka czeka na pakiet dla urzędu. Pakiet dla urzędu i pismo (1.9c, 4.6) odłożone. faza-4 scalona do main 2026-10-26 decyzją autora (bez kodu nowszych zmian mrdooba).
 
 ## Faza 0: Rozpoznanie
 Bramka: dane się wczytują, plan Fazy 1 zaakceptowany.

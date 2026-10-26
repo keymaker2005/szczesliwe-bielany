@@ -11,7 +11,8 @@
   numer 1.0 po zaliczonym teście. Opublikowane jako 0.9 (strona b672de0, gra bez zmian względem 0.8).
   Worker z nową ceną Sonneta wdrożony 2026-10-26 (wersja b882fe32). Test 1.0 przeszedł 2026-10-26 (według autora,
   bez przesłanych liczb fps): bramki Faz 2, 3 i 4 zaliczone, strona opublikowana jako 1.0.
-  Otwarte: scalenie do main (bramka Fazy 1 czeka na pakiet dla urzędu, 1.9c), pismo 4.6.
+  2026-10-26 faza-4 scalona do main decyzją autora (mimo otwartej bramki Fazy 1); 6 nowszych commitów mrdooba z
+  origin/main włączone do historii bez ich kodu (merge -s ours). Otwarte: pakiet dla urzędu (1.9c), pismo 4.6.
 - Przez tydzień od 2026-10-26 autor codziennie patrzy na koszty w konsoli Anthropic (Usage). Koszt pytania: przewodnik
   ok. 0,03 centa, burmistrz ok. 0,7 centa; limity: 20 pytań / 10 min z adresu, 1000 dziennie, 30 USD miesięcznie
   (licznik w Workerze) + twardy limit 30 USD w konsoli Anthropic.
@@ -51,8 +52,8 @@
   (po zmianie dróg w geodanych uruchomić ponownie: wygładza teren pod głównymi drogami). Mosty: js/bridges.js
   (deckY, surfaceY, deckPose). Każdy nowy obiekt na ziemi bierze wysokość z groundY / surfaceY. ?plaski = płaska mapa.
 - Testy: 193 zielone, w tym test składni wszystkich modułów (po scaleniach sprawdzić też start gry w przeglądarce).
-- Gałęzie: faza-0, faza-1, faza-1.5, faza-2, faza-3, faza-4 (bieżąca). main = oryginał mrdooba (tag nyc-original); scalenie do main
-  dopiero po bramkach.
+- Gałęzie: faza-0, faza-1, faza-1.5, faza-2, faza-3, faza-4 (bieżąca). main = wersja 1.0 (od 2026-10-26; oryginał mrdooba:
+  tag nyc-original i jego historia w main). Kolejne fazy scalamy do main po bramkach.
 
 ## Publikacja
 - https://bielany.zbigniew.ai (Cloudflare Pages, projekt szczesliwe-bielany, konto keymaker2005@gmail.com).
