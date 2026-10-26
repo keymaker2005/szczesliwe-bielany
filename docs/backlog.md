@@ -25,7 +25,7 @@ Przeniesiona do docs/fazy.md (bieżąca faza), plan: docs/plan-fazy-5.md.
 
 ## Pomysły luźne
 (tu dopisuj nowe pomysły w trakcie pracy)
-- [pomysł autora 2026-10-26, do decyzji] Czat tekstowy z innymi graczami w telefonie, gdy są na serwerze. Zmienia decyzję „bez wolnego czatu” z planu Fazy 5 (zakres gry: tylko gotowe zwroty). Do rozważenia: moderacja (filtr wulgaryzmów, zgłaszanie, wyciszanie gracza), dzieci w grze, wersja dla urzędu bez czatu, limity wiadomości, nic niezapisywane. Możliwy jako osobny krok po 5.6 albo w Fazie 6.
+- [przeniesione 2026-10-26] Czat tekstowy z innymi graczami: krok 5.6b w docs/plan-fazy-5.md (decyzja 8).
 - Gra z innymi (5.2): inni gracze lekko przezroczyści, gdy przez nich przejeżdżamy (decyzja 5 Fazy 5); teraz przenikanie bez przezroczystości. Imiona dalekich graczy mogą na siebie nachodzić (bliższe są na wierzchu).
 - [zrobione 2026-10-26, gałąź porzadki] Nieużywane materiały Nowego Jorku usunięte z tsl-materials.js (3041 → ok. 720 linii) razem z dwoma testami martwego kodu.
 - [zrobione 2026-10-26, gałąź porzadki] nyc-map.js → city-map.js (CityMapSystem), komentarze o Manhattanie poprawione. Zostały: controllers.js, audio-*, scene-culling.js (moduły przenośne, bez zmian bez zgody) i nazwy w city-config.js (CENTRAL_PARK_BOUNDS, ISLAND_BOUNDS), których używa controllers.js.

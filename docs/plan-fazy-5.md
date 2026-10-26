@@ -25,7 +25,7 @@ Zaakceptowany 2026-10-26 ze wszystkimi propozycjami decyzji.
   a gra płynnie przesuwa ich postacie i auta (wygładzanie z opóźnieniem ok. 0,2 s).
 - Bez kont: każdy dostaje losowe imię (np. „Rudy Dzik 27”) i kolor. Nic nie zapisujemy: pozycje żyją tylko
   w pamięci pokoju, a po wyjściu gracza znikają.
-- Bez wolnego czatu z obcymi. Na start: widzimy się nawzajem, klakson słyszą inni, gotowe gesty i zwroty
+- Na start bez wolnego czatu (czat z moderacją dochodzi w 5.6b, decyzja 8): widzimy się nawzajem, klakson słyszą inni, gotowe gesty i zwroty
   („Cześć!”, „Dzięki!”, „Jedziemy?”) jako dymek nad głową.
 - Gdy serwer nie odpowiada, jest wyłączony albo skończył się dzienny limit: gra działa jak dziś, sama.
 
@@ -60,6 +60,11 @@ Zaakceptowany 2026-10-26 ze wszystkimi propozycjami decyzji.
 - 5.6 Wspólne zlecenia służb (decyzja 6). Pożar albo wypadek z dyspozytorni (dispatch.js) widoczny dla wszystkich
   w pokoju; kto pierwszy dojedzie, gasi albo ratuje, pozostali widzą efekt (zgaszony ogień, odjeżdżająca karetka).
   Sprawdzam: w dwóch kartach ten sam pożar, gaszą obaj, punkty dla obu.
+- 5.6b Czat z innymi graczami w telefonie (decyzja 8). Rozmowa tekstowa z graczami w pokoju, z moderacją: filtr
+  wulgaryzmów i obraźliwych słów (lista po stronie serwera), „Wycisz gracza” i „Zgłoś” (zgłoszenie bez treści
+  rozmów: tylko licznik, kilka zgłoszeń wycisza gracza w pokoju), limit wiadomości (np. 1 na 3 s, 140 znaków),
+  wiadomości tylko w pamięci (nic nie zapisujemy), wersja dla urzędu i ?solo bez czatu, informacja o zasadach przy
+  pierwszym otwarciu. Sprawdzam: w dwóch kartach rozmowa działa, wulgaryzm jest zakryty, wyciszony gracz znika z czatu.
 - 5.7 Publikacja 1.1. Wdrożenie Workera `bielany-gracze` i strony (tylko na Twoje polecenie), wpis w CHANGELOG.md,
   informacja przy pierwszym wejściu: „Grasz z innymi: widzą Twoją postać i losowe imię, nic nie zapisujemy”.
   Test obciążenia na żywo: 20 botów przez 10 minut, sprawdzenie liczników Cloudflare.
@@ -89,6 +94,9 @@ Zaakceptowany 2026-10-26 ze wszystkimi propozycjami decyzji.
 7. Imiona. Proponuję losowe dwuczłonowe imiona z bielańskim akcentem (przymiotnik + zwierzę albo miejsce z gry:
    „Rudy Dzik 27”, „Szybka Wiewiórka 4”), bez wpisywania własnych (nie trzeba moderować), z przyciskiem „losuj
    ponownie”. Imię i kolor pamięta tylko przeglądarka gracza.
+
+8. Czat z innymi graczami (decyzja autora z 2026-10-26, zmienia „bez wolnego czatu”): osobny krok 5.6b po wspólnych
+   służbach, z moderacją (filtr, wyciszanie, zgłaszanie, limity), bez zapisu rozmów, bez czatu w wersji dla urzędu.
 
 ## Praca równoległa (wg docs/praca-rownolegla.md)
 | Zadanie | Gałąź | Model | Kiedy |
@@ -126,6 +134,6 @@ Scalanie do faza-5 tylko po Twoim „OK”.
 - 60 fps z 20 graczami w pobliżu (test na Windows według docs/test-1.8b.md, „Test 1.1”); koszty w planie darmowym.
 
 ## Poza zakresem
-Konta i rankingi, wolny czat tekstowy i głosowy, własne imiona, zderzenia między graczami (decyzja 5), wyścigi
+Konta i rankingi, czat głosowy, czat bez moderacji, własne imiona, zderzenia między graczami (decyzja 5), wyścigi
 i tryby rywalizacji, prywatne pokoje dla znajomych, gra na telefonie przez sieć komórkową z oszczędzaniem danych,
 noc i pogoda.
