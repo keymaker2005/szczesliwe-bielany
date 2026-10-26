@@ -65,6 +65,17 @@ Kurs żyje na serwerze przy pasażerze (`r` = id pasażera); serwer pilnuje jedn
 | `{ "t": "taxi-no", "r" }` | pasażer albo kierowca | obaj: `{ "t": "taxi-no", "r", "by" }` (`by`: kto przerwał, 0: nikt nie przyjął w 90 s); przy wyjściu jednej strony to samo |
 `witaj` ma też `rides`: kursy czekające na kierowcę (`[{ "r", "name", "x", "z", "to" }]`).
 
+### Wspólne akcje straży (krok 5.6)
+Zdarzenie to numer adresu (`a`, GEO.addresses.list) i piętro (`f`); każda gra odtwarza z nich ten sam pożar
+(js/firefighter.js `offerAt`). Pokój trzyma tylko liczby, w pamięci (najwyżej 20 naraz, 15 minut).
+| Wiadomość | Kto → serwer | Serwer → kto |
+| --- | --- | --- |
+| `{ "t": "zd", "k": "fire" \| "flood" \| "cat", "a", "f" }` | gracz, który przyjął wezwanie (1 na 5 s) | wszyscy: `{ "t": "zd", "e", "k", "a", "f", "by", "name", "p", "n", "mine" }` (`mine`: to Twoje) |
+| `{ "t": "zd-dol", "e" }` | dołączający | on: `{ "t": "zd-stan", "e", "p", "n" }`; uczestnicy: `{ "t": "zd-dol", "e", "id", "name", "n" }`; zamknięte: `zd-x` |
+| `{ "t": "zd-p", "e", "d" }` | uczestnik: jego część pracy (ułamek całości, do 0,2 na wiadomość) | uczestnicy co 2%: `{ "t": "zd-stan", "e", "p", "n" }`; na końcu `{ "t": "zd-koniec", "e", "n" }`, reszta `zd-x` |
+| `{ "t": "zd-x", "e" }` | uczestnik wychodzi (przerwał albo skończył) | gdy wyszedł ostatni: wszyscy `{ "t": "zd-x", "e" }` |
+`witaj` ma też `events`: otwarte akcje (`[{ "e", "k", "a", "f", "by", "name", "p", "n" }]`).
+
 ## Zasady serwera (bezpieczniki)
 - Tylko połączenia ze strony gry (nagłówek Origin), Turnstile w wiadomości `hej` (bez niej po 10 s `koniec`).
 - Najwyżej 30 graczy w pokoju; kolejni trafiają do pokoju 2, 3… (lobby pilnuje obsady). Najwyżej 2 połączenia

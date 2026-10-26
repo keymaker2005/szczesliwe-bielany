@@ -266,6 +266,7 @@ class MultiplayerClient {
         this.setStatus('online');
         this.emit('welcome', this.me);
         for (const r of msg.rides || []) this.emit('taxi', { t: 'taxi', ...r });
+        for (const e of msg.events || []) this.emit('call', { t: 'zd', ...e });
         break;
       case 'nowy':
         this.add(msg.p, now);
@@ -301,6 +302,9 @@ class MultiplayerClient {
         break;
       case 'taxi': case 'taxi-ok': case 'taxi-x': case 'taxi-in': case 'taxi-end': case 'taxi-no':
         this.emit('taxi', msg); // taxi rides between players: js/shared-taxi.js
+        break;
+      case 'zd': case 'zd-dol': case 'zd-stan': case 'zd-koniec': case 'zd-x':
+        this.emit('call', msg); // shared emergency calls: js/shared-calls.js
         break;
       case 'koniec':
         this.end(msg.reason);

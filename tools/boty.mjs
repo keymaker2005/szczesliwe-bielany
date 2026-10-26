@@ -6,7 +6,8 @@
 // space for people (at most ~20 bots).
 // --taksowkarz K: the first K bots are cab drivers that take taxi calls from players (step 5.5), drive straight to
 // the passenger and on to the destination; --pasazer K: the next K bots stand near the Stare Bielany station and call a
-// cab to an M1 station every ~30 s (to test driving a real passenger).
+// cab to an M1 station every ~30 s (to test driving a real passenger); --strazak K: the next K bots join every shared
+// fire-service call (step 5.6) after 5 s and work on it (a share of 2% a second) until it is done.
 // Every 5 s a line: bots in the room, players each bot sees, messages received per second, refusals.
 import { GEO } from '../js/bielany-geodata.js';
 
@@ -28,6 +29,7 @@ const GESTURES = ['czesc', 'dzieki', 'jedziemy', 'brawo', 'uwaga', 'pa'];
 const rand = (n) => Math.floor(Math.random() * n);
 const drivers = Number(opt('taksowkarz', 0));
 const callers = Number(opt('pasazer', 0));
+const firemen = Number(opt('strazak', 0));
 const STATIONS = GEO.stations;
 
 const stats = { received: 0, refused: 0, ended: {} };
@@ -37,7 +39,7 @@ class Bot {
   constructor(i) {
     this.i = i;
     [this.mode, this.speed] = MODES[i % MODES.length];
-    this.role = i < drivers ? 'driver' : i < drivers + callers ? 'caller' : null;
+    this.role = i < drivers ? 'driver' : i < drivers + callers ? 'caller' : i < drivers + callers + firemen ? 'fireman' : null;
     if (this.role === 'driver') [this.mode, this.speed] = ['car', 13];
     if (this.role === 'caller') { this.mode = 'person'; this.speed = 0; this.spot = { x: 20 + (i % 5) * 6, z: -25 }; this.nextCall = Date.now() + 8000; }
     this.pos = new Map(); // other players' last positions
@@ -100,6 +102,7 @@ class Bot {
     else if (msg.t === 'wyszedl') this.seen.delete(msg.id);
     else if (msg.t === 's' || msg.t === 'tp') this.pos.set(msg.id, { x: msg.x, z: msg.z, h: msg.h });
     else if (msg.t.startsWith('taxi')) this.taxi(msg);
+    else if (msg.t.startsWith('zd') && this.role === 'fireman') this.fire(msg);
     else if (msg.t === 'koniec') {
       stats.ended[msg.reason] = (stats.ended[msg.reason] || 0) + 1;
       console.log(`bot ${this.i}: koniec (${msg.reason})`);
@@ -120,6 +123,21 @@ class Bot {
         console.log(`bot ${this.i}: ${msg.t === 'taxi-end' ? `dojechałem: ${msg.to}` : `kurs przerwany (przez ${msg.by})`}`);
         this.job = null; this.teleport = true; this.nextCall = Date.now() + 30000;
       }
+    }
+  }
+
+  fire(msg) {
+    if (msg.t === 'zd' && !msg.mine && !this.call) {
+      this.call = msg.e;
+      setTimeout(() => {
+        this.send({ t: 'zd-dol', e: msg.e });
+        console.log(`bot ${this.i}: dołączam do akcji ${msg.e} (${msg.k})`);
+        this.work = setInterval(() => this.send({ t: 'zd-p', e: msg.e, d: 0.01 }), 500);
+      }, 5000);
+    } else if ((msg.t === 'zd-koniec' || msg.t === 'zd-x') && msg.e === this.call) {
+      console.log(`bot ${this.i}: akcja ${msg.e} ${msg.t === 'zd-koniec' ? 'zakończona' : 'odwołana'}`);
+      clearInterval(this.work);
+      this.call = null;
     }
   }
 

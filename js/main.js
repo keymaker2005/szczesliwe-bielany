@@ -51,6 +51,7 @@ import { MultiplayerClient, describeStatus } from './multiplayer-net.js';
 import { RemotePlayers } from './multiplayer.js';
 import { GestureWheel } from './gestures.js';
 import { SharedTaxi } from './shared-taxi.js';
+import { SharedCalls } from './shared-calls.js';
 
 // js/main.js
 // Main entry point for Szczęśliwe Bielany (Warsaw, along the M1 metro line) in Three.js WebGPURenderer & TSL (three.js dev @ fae8734, pinned in index.html)
@@ -156,6 +157,7 @@ async function initApp() {
   const followWaypoint = { x: 0, z: 0, name: '' };
   let followPlayer = null;
   let sharedTaxi = null; // made with the phone (it needs the missions), see below
+  let sharedCalls = null; // shared fire-service calls (step 5.6), made with the firefighter, see below
   // Reuse teleport placement so saved players return at rest, close to their last positions.
   try {
     const saved = JSON.parse(localStorage.getItem(PLAYER_STATE_KEY));
@@ -850,9 +852,20 @@ async function initApp() {
     window.addEventListener('keydown', holdG(true));
     window.addEventListener('keyup', holdG(false));
     window.addEventListener('blur', () => firefighter.hold(false));
+    // Shared calls with the other players (Faza 5, step 5.6): announced, joined, the work adds up in the room
+    sharedCalls = new SharedCalls({
+      client: multiplayer, firefighter, missions, from: FIRE_DISPATCH,
+      sms: (m) => phone.addSms(m),
+      player: () => { const e = controllerManager.getActiveEntity(); return { x: e.position.x, z: e.position.z, mode: controllerManager.activeMode }; },
+    });
     const STEPS = { fire: 'Na miejscu: stań do 45 m od ognia i trzymaj G (działko wodne).', flood: 'Na miejscu: stań przy budynku i naciśnij G (pompa).', cat: 'Na miejscu: stań przy drzewie i trzymaj G (drabina).' };
     dispatch.register({
-      role: 'firefighter', name: FIRE_SERVICE, dispatcher: FIRE_DISPATCH, glyph: '🚒', mode: 'car', livery: fireEngine, siren: true, provider: firefighter,
+      role: 'firefighter', name: FIRE_SERVICE, dispatcher: FIRE_DISPATCH, glyph: '🚒', mode: 'car', livery: fireEngine, siren: true,
+      provider: {
+        jobs: () => [...sharedCalls.jobs(), ...firefighter.jobs()],
+        statusLine: () => firefighter.statusLine(),
+        update: (dt) => { firefighter.update(dt); sharedCalls.update(); },
+      },
       messages: {
         call: (m) => `${FIRE_NAMES[m.kind]}: ${m.start.name.replace(/^[^,]*, /, '')} — ${m.reason}. Jedź na sygnale (K: syrena).`,
         picked: (m) => `Dojazd w ${clock(m.responseTime || 0)}. ${STEPS[m.kind]}`,
@@ -932,10 +945,11 @@ async function initApp() {
   multiplayer.onChange = (event, data) => {
     if (event === 'horn') remotePlayers.honk(data, audioSystem);
     else if (event === 'taxi') sharedTaxi.onMessage(data);
-    else if (event === 'clear' || (event === 'status' && data.status !== 'online')) sharedTaxi.reset();
+    else if (event === 'call') sharedCalls?.onMessage(data);
+    else if (event === 'clear' || (event === 'status' && data.status !== 'online')) { sharedTaxi.reset(); sharedCalls?.reset(); }
   };
   const gestureWheel = new GestureWheel(multiplayer, { blocked: () => mapSystem.isFullMapOpen || photo.active });
-  globalThis.bielany = { missions, testDelivery, abandon: () => missions.abandon(), teleport: (x, z, heading) => teleportTo(x, z, heading), marker: missionMarker, phone, courier, guide, scene, renderer, lightingSystem, trams, taxi, medic, ambulance, dispatch, controllerManager, photo, postcards, fallingLeaves, trafficSystem, multiplayer, remotePlayers, gestureWheel, sharedTaxi };
+  globalThis.bielany = { missions, testDelivery, abandon: () => missions.abandon(), teleport: (x, z, heading) => teleportTo(x, z, heading), marker: missionMarker, phone, courier, guide, scene, renderer, lightingSystem, trams, taxi, medic, ambulance, dispatch, controllerManager, photo, postcards, fallingLeaves, trafficSystem, multiplayer, remotePlayers, gestureWheel, sharedTaxi, sharedCalls };
 
   // Initialize the UI and chase camera around the restored player, or the default taxi on a first visit.
   selectMode(controllerManager.activeMode);

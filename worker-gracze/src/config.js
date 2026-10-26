@@ -20,6 +20,10 @@ export const LIMITS = {
   rideWaitMs: 90 * 1000, // a call nobody takes lapses (the game gives up at 60 s)
   pickupRange: 25, // metres between driver and passenger for the pick-up (positions lag a little)
   dropRange: 40, // metres from the destination for the drop-off
+  callMs: 5000, // one shared call announced per 5 s
+  maxEvents: 20, // shared calls open in a room at once
+  workStep: 0.2, // most of a job one work message may add (the game sends its share twice a second)
+  eventMs: 15 * 60 * 1000, // a shared call nobody finished in 15 minutes goes
   reportEvery: 2000, // messages between usage reports to the lobby
   messagesPerRequest: 20, // Cloudflare bills incoming WebSocket messages 20:1
   requestsPerConnect: 4, // lobby pick + room fetch + join and leave reports

@@ -458,3 +458,50 @@ test('taxi: only on foot, cancel by either side, a leaving driver ends the ride,
   assert.deepEqual(r.last(pas, 'taxi-no'), { t: 'taxi-no', r: 1, by: 0 });
 });
 
+test('shared calls: announce, join, the room adds up the work, done for everyone on it', async () => {
+  const r = makeRoom();
+  const a = await joined(r, 'a');
+  const b = await joined(r, 'b');
+  const c = await joined(r, 'c');
+  await r.say(a, { t: 'zd', k: 'fire', a: 1234, f: 2 });
+  const call = r.last(b, 'zd');
+  assert.deepEqual(call, { t: 'zd', e: 1, k: 'fire', a: 1234, f: 2, by: 1, name: a.att.text, p: 0, n: 1, mine: false });
+  assert.equal(r.last(a, 'zd').mine, true);
+  await r.say(b, { t: 'zd-dol', e: 1 });
+  assert.deepEqual(r.last(b, 'zd-stan'), { t: 'zd-stan', e: 1, p: 0, n: 2 });
+  assert.equal(r.last(a, 'zd-dol').n, 2);
+  // a newcomer sees the open call
+  const d = r.socket('d');
+  await r.say(d, { t: 'hej', turnstile: 'x' });
+  assert.equal(r.last(d, 'witaj').events[0].n, 2);
+  for (let i = 0; i < 3; i++) { r.advance(200); await r.say(a, { t: 'zd-p', e: 1, d: 0.2 }); }
+  assert.equal(r.last(b, 'zd-stan').p, 0.6);
+  await r.say(c, { t: 'zd-p', e: 1, d: 0.2 }); // not on the call: ignored
+  r.advance(200);
+  await r.say(b, { t: 'zd-p', e: 1, d: 5 }); // capped at one step
+  r.advance(200);
+  await r.say(b, { t: 'zd-p', e: 1, d: 0.2 });
+  assert.deepEqual(r.last(a, 'zd-koniec'), { t: 'zd-koniec', e: 1, n: 2 });
+  assert.deepEqual(r.last(b, 'zd-koniec'), { t: 'zd-koniec', e: 1, n: 2 });
+  assert.deepEqual(r.last(c, 'zd-x'), { t: 'zd-x', e: 1 });
+  assert.equal(r.core.events.size, 0);
+});
+
+test('shared calls: the last one out ends it, a leaving player is out, bad calls are ignored', async () => {
+  const r = makeRoom();
+  const a = await joined(r, 'a');
+  const b = await joined(r, 'b');
+  await r.say(a, { t: 'zd', k: 'volcano', a: 1, f: 0 });
+  await r.say(a, { t: 'zd', k: 'cat', a: -1, f: 0 });
+  assert.equal(r.last(b, 'zd'), undefined);
+  await r.say(a, { t: 'zd', k: 'cat', a: 77, f: 0 });
+  await r.say(b, { t: 'zd-dol', e: 1 });
+  await r.core.closed(b);
+  assert.equal(r.core.events.get(1).parts.size, 1);
+  await r.say(a, { t: 'zd-x', e: 1 });
+  assert.equal(r.core.events.size, 0);
+  const c = await joined(r, 'c');
+  await r.say(c, { t: 'zd-dol', e: 1 });
+  assert.deepEqual(r.last(c, 'zd-x'), { t: 'zd-x', e: 1 });
+});
+

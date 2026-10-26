@@ -15,6 +15,8 @@ Plan: docs/plan-fazy-5.md (zaakceptowany ze wszystkimi decyzjami).
 - 5.4 Klakson i gesty: gestures.js (T), multiplayer.js (dymki, klakson), room-core.js (k do 200 m), phone.js (zwroty).
 - 5.5 Taksówka z graczem: shared-taxi.js, rides.js, phone.js (Taksówka w Gracze), main.js, boty z rolami; testy
   tests/shared-taxi.test.mjs i kursy w tests/gracze.test.mjs.
+- 5.6 Wspólne akcje straży: shared-calls.js, events.js, firefighter.js (offerAt), main.js; test dwóch gier przez
+  prawdziwy pokój (tests/shared-calls.test.mjs), bot --strazak.
 
 ## Faza 4: Czaty LLM i patronat (gałąź faza-4, 2026-10-26)
 

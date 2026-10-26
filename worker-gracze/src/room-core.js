@@ -4,6 +4,7 @@
 import { BOUNDS, GESTURES, LIMITS, MODES, MODE_SPEED, RATE } from './config.js';
 import { COLORS, pickName } from './names.js';
 import { dropRides, expireRides, rideMessage, waitingRides } from './rides.js';
+import { dropEvents, eventMessage, openEvents } from './events.js';
 
 const round = (v) => Math.round(v * 100) / 100;
 const finite = (v) => typeof v === 'number' && Number.isFinite(v);
@@ -160,7 +161,7 @@ export class RoomCore {
     } else if (msg.t === 'pa') {
       return this.leave(ws, null);
     } else {
-      rideMessage(this, ws, att, msg, now);
+      if (!rideMessage(this, ws, att, msg, now)) eventMessage(this, ws, att, msg, now);
     }
     this.io.persist(ws, att);
     if (this.unreported >= LIMITS.reportEvery) await this.report();
@@ -176,7 +177,7 @@ export class RoomCore {
     this.io.persist(ws, att);
     this.io.send(ws, {
       t: 'witaj', id, name: att.text, nameId: att.name, color: att.color, colors: COLORS, room: this.room,
-      players: ins.map(publicPlayer), rides: waitingRides(this), rate: RATE,
+      players: ins.map(publicPlayer), rides: waitingRides(this), events: openEvents(this), rate: RATE,
     });
     this.broadcast(ws, { t: 'nowy', p: publicPlayer(att) });
     await this.report();
@@ -187,6 +188,7 @@ export class RoomCore {
     const att = this.players.get(ws);
     if (!att) return;
     dropRides(this, ws, att);
+    dropEvents(this, att, this.now());
     this.players.delete(ws);
     this.io.close(ws, reason);
     if (att.stage === 'in') {
@@ -200,6 +202,7 @@ export class RoomCore {
     const att = this.players.get(ws);
     if (!att) return;
     dropRides(this, ws, att);
+    dropEvents(this, att, this.now());
     this.players.delete(ws);
     if (att.stage === 'in') {
       this.broadcast(ws, { t: 'wyszedl', id: att.id });
@@ -217,6 +220,7 @@ export class RoomCore {
       if (late) this.leave(w, 'timeout');
     }
     expireRides(this, now);
+    dropEvents(this, null, now);
   }
 
   async report() {

@@ -25,6 +25,7 @@ Przeniesiona do docs/fazy.md (bieżąca faza), plan: docs/plan-fazy-5.md.
 
 ## Pomysły luźne
 (tu dopisuj nowe pomysły w trakcie pracy)
+- Wspólne akcje innych służb (5.6 zrobione dla straży): wypadek dla ratownika (odjeżdżająca karetka u innych), pościg policji z kilkoma radiowozami. Wspólny pożar widzą tylko uczestnicy akcji (inni: SMS i oferta w Służbach).
 - [przeniesione 2026-10-26] Czat tekstowy z innymi graczami: krok 5.6b w docs/plan-fazy-5.md (decyzja 8).
 - Gra z innymi (5.2): inni gracze lekko przezroczyści, gdy przez nich przejeżdżamy (decyzja 5 Fazy 5); teraz przenikanie bez przezroczystości. Imiona dalekich graczy mogą na siebie nachodzić (bliższe są na wierzchu).
 - [zrobione 2026-10-26, gałąź porzadki] Nieużywane materiały Nowego Jorku usunięte z tsl-materials.js (3041 → ok. 720 linii) razem z dwoma testami martwego kodu.

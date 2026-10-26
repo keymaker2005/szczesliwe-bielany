@@ -74,7 +74,7 @@ function segDist(px, pz, ax, az, bx, bz, out) {
 }
 
 // Where the fire burns: on the wall facing the street spot (sx, sz), one storey of it; the smoke goes up past the roof
-function fireOn(b, sx, sz, random, groundY = () => 0) {
+function fireOn(b, sx, sz, random, groundY = () => 0, floorAt = null) {
   const r = b.ring;
   let cx = 0, cz = 0;
   for (let k = 0; k < r.length; k += 2) { cx += r[k]; cz += r[k + 1]; }
@@ -93,7 +93,7 @@ function fireOn(b, sx, sz, random, groundY = () => 0) {
   let nx = uz, nz = -ux;
   if ((best.x - cx) * nx + (best.z - cz) * nz < 0) nx = -nx, nz = -nz;
   const floors = Math.max(1, Math.floor(b.h / 3));
-  const floor = Math.floor(random() * Math.min(floors, 6));
+  const floor = floorAt ?? Math.floor(random() * Math.min(floors, 6));
   return {
     building: b.id,
     x: best.x + nx * 0.4, z: best.z + nz * 0.4,
@@ -161,6 +161,7 @@ class Firefighter {
     this.action = null; // the incident being worked on: what js/fire-engine.js draws
     this.response = 0; // s since the call was taken
     this.onFrame = null; // (dt) after each update: the look
+    this.onWork = null; // (delta) our share of the work this frame, for a shared call (js/shared-calls.js)
     this.stats = { calls: 0, earned: 0 };
     try {
       const saved = JSON.parse(storage?.getItem(STORE_KEY) || 'null');
@@ -170,7 +171,7 @@ class Firefighter {
       if (m.role !== 'firefighter') return;
       if (m.state === 'accepted') {
         this.response = 0;
-        this.action = { kind: m.kind, incident: m.incident, phase: 'drive', progress: 0, running: false, spraying: false, done: false, hint: '' };
+        this.action = { kind: m.kind, incident: m.incident, phase: 'drive', progress: 0, running: false, spraying: false, done: false, hint: '', shared: Boolean(m.shared) };
       }
       if (m.state === 'enRoute') {
         m.responseTime = this.response;
@@ -196,35 +197,53 @@ class Firefighter {
   makeOffer(near, kind) {
     if (!near) return null;
     for (let tries = 0; tries < 60; tries++) {
-      const a = ADDRESSES[Math.floor(this.random() * ADDRESSES.length)];
+      const ai = Math.floor(this.random() * ADDRESSES.length);
+      const a = ADDRESSES[ai];
       const d = Math.hypot(a[4] - near.x, a[5] - near.z);
       if (d < CALL_MIN || d > CALL_MAX) continue;
+      const o = this.offerAt(kind, ai, null, near);
+      if (o) return o;
+    }
+    return null;
+  }
+
+  /**
+   * The call of `kind` at address number `ai` (GEO.addresses.list), the fire on storey `floor` (null: at random), as
+   * an offer from `near`; null when the address doesn't suit it. The same address and storey make the same incident
+   * in every game: playing with others shares a call by these two numbers (js/shared-calls.js).
+   */
+  offerAt(kind, ai, floor, near) {
+    const a = ADDRESSES[ai];
+    if (!a || !KINDS.includes(kind) || !near) return null;
+    {
       let incident, par;
       if (kind === 'cat') {
         const tree = treeNear(a[4], a[5], this.ground);
-        if (!tree) continue;
+        if (!tree) return null;
         incident = { kind, x: a[4], z: a[5], tree };
         par = LADDER_TIME + 15;
       } else {
         const b = buildingAt(a[2], a[3], this.skip);
-        if (!b) continue;
+        if (!b) return null;
         if (kind === 'fire') {
-          const fire = fireOn(b, a[4], a[5], this.random, this.ground);
-          if (Math.hypot(fire.x - a[4], fire.z - a[5]) > REACH.fire - 10) continue; // the cannon reaches it from the street
+          const fire = fireOn(b, a[4], a[5], this.random, this.ground, floor);
+          if (Math.hypot(fire.x - a[4], fire.z - a[5]) > REACH.fire - 10) return null; // the cannon reaches it from the street
           incident = { kind, x: a[4], z: a[5], fire, spray: Math.round(14 + Math.min(b.h, 30) * 0.5) };
           par = incident.spray + 15;
         } else {
-          const f = fireOn(b, a[4], a[5], () => 0, this.ground); // the ground floor's wall: where the hose goes in
-          if (Math.hypot(f.x - a[4], f.z - a[5]) > REACH.flood - 6) continue; // the hose reaches it from the street
+          const f = fireOn(b, a[4], a[5], () => 0, this.ground, 0); // the ground floor's wall: where the hose goes in
+          if (Math.hypot(f.x - a[4], f.z - a[5]) > REACH.flood - 6) return null; // the hose reaches it from the street
           incident = { kind, x: a[4], z: a[5], wall: { x: f.x, z: f.z, y: f.y - 1.6, normal: f.normal } };
           par = PUMP_TIME + 15;
         }
       }
       const route = findRoute(near.x, near.z, a[4], a[5]);
-      if (!route) continue;
+      if (!route) return null;
       const self = this;
       const where = addressName(a);
       return {
+        ai,
+        floor: incident.fire?.floor ?? 0,
         id: `fire-${++this.serial}`,
         title: `${NAMES[kind]} · ${SERVICE}`,
         role: 'firefighter',
@@ -245,7 +264,6 @@ class Firefighter {
         onFinish(m) { self.finish(m); },
       };
     }
-    return null;
   }
 
   // One call of each kind waiting (one per refill, the ones not found this time come next time)
@@ -262,10 +280,23 @@ class Firefighter {
   accept(id) {
     const o = this.offers.find((x) => x.id === id);
     if (!o || this.missions.active) return false;
+    return this.take(o);
+  }
+
+  // Takes an offer (one of ours, or a shared call rebuilt by offerAt: shared = { e } of the room's call)
+  take(o, shared = null) {
+    if (this.missions.active) return false;
     const m = this.missions.offer(o);
-    Object.assign(m, { responsePar: o.responsePar, reason: o.reason, kind: o.kind, incident: o.incident }); // before 'accepted'
+    Object.assign(m, { responsePar: o.responsePar, reason: o.reason, kind: o.kind, incident: o.incident, ai: o.ai, floor: o.floor, shared }); // before 'accepted'
     this.offers = [];
     return this.missions.accept(o.id);
+  }
+
+  // Shared calls: the room's total so far (others' work too); never less than ours
+  setSharedProgress(p) {
+    const a = this.action;
+    if (!a || a.done || !(p > a.progress)) return;
+    a.progress = Math.min(1, p);
   }
 
   jobs() {
@@ -308,6 +339,7 @@ class Firefighter {
   // The action on the spot: progress 0..1 and the hint for the HUD
   work(m, dt) {
     const a = this.action;
+    const before = a.progress;
     const p = this.player?.() || { ...(this.near?.() || { x: 0, z: 0 }), speed: 0, mode: 'car' };
     const close = this.reachOf(a, p) <= REACH[a.kind];
     const ready = close && p.mode === 'car' && Math.abs(p.speed) < STOPPED;
@@ -316,7 +348,7 @@ class Firefighter {
       if (ready && this.holding) {
         a.spraying = true;
         a.progress += dt / a.incident.spray;
-      } else if (a.progress > 0) {
+      } else if (a.progress > 0 && !a.shared) { // a shared fire: the others may be spraying it right now
         a.progress = Math.max(0, a.progress - REGROW * dt);
       }
       a.hint = !close ? `Podjedź bliżej ognia (do ${REACH.fire} m)` : !ready ? 'Zatrzymaj wóz' : a.spraying ? `Gaszenie ${Math.round(a.progress * 100)}%` : 'Trzymaj G: woda z działka';
@@ -329,6 +361,7 @@ class Firefighter {
       if (ready && this.holding) a.progress += dt / LADDER_TIME;
       a.hint = !close ? `Podjedź bliżej drzewa (do ${REACH.cat} m)` : !ready ? 'Zatrzymaj wóz' : this.holding ? `Drabina ${Math.round(a.progress * 100)}%` : 'Trzymaj G: drabina do kota';
     }
+    if (a.progress > before) this.onWork?.(a.progress - before);
     if (a.progress >= 1) {
       a.progress = 1;
       a.done = true;
@@ -354,4 +387,4 @@ class Firefighter {
   }
 }
 
-export { Firefighter, SERVICE, DISPATCH, NAMES, PUMP_TIME, LADDER_TIME, REACH, starsOf, buildingAt, treeNear, fireOn };
+export { Firefighter, SERVICE, DISPATCH, NAMES, PUMP_TIME, LADDER_TIME, REACH, starsOf, buildingAt, treeNear, fireOn, addressName, ADDRESSES };
