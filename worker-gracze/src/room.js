@@ -31,7 +31,9 @@ export class Room {
           } catch { /* already closed */ }
         },
         persist: (ws, att) => { try { ws.serializeAttachment(att); } catch { /* closed */ } },
-        verify: (token) => verifyTurnstile(token, '', this.env),
+        // Test bots get into the test room with a key (secret BOTS_KEY) instead of Turnstile; nowhere else
+        verify: (token) => (this.env.BOTS_KEY && this.core.room === 'test' && token === `boty:${this.env.BOTS_KEY}`
+          ? Promise.resolve(true) : verifyTurnstile(token, '', this.env)),
         report: ({ players, requests }) => call('report', this.core.room, players, requests),
       }, { room: room || '1', dev: this.env.DEV === '1' });
       // After hibernation the players are still there, in their sockets' attachments

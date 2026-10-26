@@ -18,7 +18,11 @@ const room = opt('pokoj', 'test');
 const base = opt('adres', 'ws://localhost:8789/api/gracze');
 const seconds = Number(opt('czas', 0));
 const url = room === 'test' ? `${base}?pokoj=test` : base;
-const ORIGIN = 'http://localhost:8080';
+// On the public server the bots come from the game's own address and pass with the bots' key (secret BOTS_KEY of
+// bielany-gracze, test room only): --klucz <file with the key>
+const ORIGIN = base.startsWith('wss://') ? `https://${new URL(base).host}` : 'http://localhost:8080';
+const keyFile = opt('klucz', '');
+const TOKEN = keyFile ? `boty:${(await import('node:fs')).readFileSync(keyFile, 'utf8').trim()}` : 'bot';
 
 // Drivable streets as polylines [x0, z0, x1, z1, ...]
 const near = Number(opt('blisko', 0));
@@ -77,7 +81,7 @@ class Bot {
 
   connect() {
     this.ws = new WebSocket(url, { headers: { Origin: ORIGIN } });
-    this.ws.onopen = () => this.send({ t: 'hej', turnstile: 'bot', name: { a: this.i % 12, b: this.i % 20, n: 1 + (this.i % 99) }, color: this.i % 12 });
+    this.ws.onopen = () => this.send({ t: 'hej', turnstile: TOKEN, name: { a: this.i % 12, b: this.i % 20, n: 1 + (this.i % 99) }, color: this.i % 12 });
     this.ws.onmessage = (e) => this.receive(JSON.parse(e.data));
     this.ws.onerror = () => { stats.refused++; };
     this.ws.onclose = () => {

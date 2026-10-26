@@ -6,3 +6,7 @@ worker/.dev.vars
 worker/.wrangler/
 worker-gracze/.dev.vars
 worker-gracze/.wrangler/
+docs/media/*.webm
+docs/media/podglad/
+docs/media/film-raport.json
+worker-gracze/.bots-key

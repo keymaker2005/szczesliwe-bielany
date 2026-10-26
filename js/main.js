@@ -960,6 +960,17 @@ async function initApp() {
   // Other players' horns (from their cars) and the gesture wheel (T)
   multiplayer.onChange = (event, data) => {
     if (event === 'horn') remotePlayers.honk(data, audioSystem);
+    else if (event === 'welcome') {
+      // The first time in a room: what the others see and where it all is (step 5.7)
+      let told = false;
+      try { told = localStorage.getItem('bielany-gracze-info') === '1'; localStorage.setItem('bielany-gracze-info', '1'); } catch { /* optional */ }
+      if (!told) {
+        phone.addSms({
+          id: 'gracze-info', from: 'Gra z innymi',
+          text: `Grasz z innymi: widzą Twoją postać, losowe imię (${data.name}) i miejsce w grze. Bez kont, nic nie zapisujemy. Telefon: Gracze (lista, taksówka, wyłącznik) i Rozmowy; T: zwroty.`,
+        });
+      }
+    }
     else if (event === 'taxi') sharedTaxi.onMessage(data);
     else if (event === 'call') sharedCalls?.onMessage(data);
     else if (event === 'clear' || (event === 'status' && data.status !== 'online')) { sharedTaxi.reset(); sharedCalls?.reset(); }
