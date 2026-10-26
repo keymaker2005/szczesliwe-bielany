@@ -1,7 +1,7 @@
 // Minimal static file server for local development: node tools/serve.mjs [port]
 import { createServer } from 'node:http';
-import { readFile } from 'node:fs/promises';
-import { extname, join, normalize, resolve } from 'node:path';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { dirname, extname, join, normalize, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = resolve(fileURLToPath(new URL('..', import.meta.url)));
@@ -19,7 +19,25 @@ const types = {
   '.ico': 'image/x-icon',
 };
 
+// The ?film showreel (js/film.js) saves its video, shot list and stills here: PUT /__film/<name> -> docs/media/<name>
+const FILM_FILE = /^\/__film\/((?:podglad\/)?[a-z0-9-]+\.(?:webm|md|jpg|json))$/;
+async function saveFilm(req, res, name) {
+  const parts = [];
+  for await (const chunk of req) parts.push(chunk);
+  const file = join(root, 'docs', 'media', name);
+  await mkdir(dirname(file), { recursive: true });
+  await writeFile(file, Buffer.concat(parts));
+  console.log(`[film] ${name} ${(Buffer.concat(parts).length / 1048576).toFixed(1)} MB`);
+  res.writeHead(204).end();
+}
+
 createServer(async (req, res) => {
+  if (req.method === 'PUT') {
+    const m = FILM_FILE.exec(new URL(req.url, 'http://localhost').pathname);
+    if (!m) { res.writeHead(403).end(); return; }
+    try { await saveFilm(req, res, m[1]); } catch (e) { res.writeHead(500).end(String(e)); }
+    return;
+  }
   const path = normalize(decodeURIComponent(new URL(req.url, 'http://localhost').pathname));
   let file = join(root, path);
   if (!file.startsWith(root)) { res.writeHead(403).end(); return; }

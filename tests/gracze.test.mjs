@@ -505,3 +505,42 @@ test('shared calls: the last one out ends it, a leaving player is out, bad calls
   assert.deepEqual(r.last(c, 'zd-x'), { t: 'zd-x', e: 1 });
 });
 
+test('players chat: to everybody, filtered, one per 3 s, at most 140 characters', async () => {
+  const r = makeRoom();
+  const a = await joined(r, 'a');
+  const b = await joined(r, 'b');
+  await r.say(a, { t: 'czat', txt: '  Cześć,   jedziemy na Kameduły?  ' });
+  assert.deepEqual(r.last(b, 'czat'), { t: 'czat', id: 1, name: a.att.text, color: a.att.color, txt: 'Cześć, jedziemy na Kameduły?' });
+  assert.equal(r.last(a, 'czat').txt, 'Cześć, jedziemy na Kameduły?'); // the sender sees what went out
+  await r.say(a, { t: 'czat', txt: 'znowu' });
+  assert.deepEqual(r.last(a, 'czat-x'), { t: 'czat-x', reason: 'slow' });
+  r.advance(LIMITS.chatMs);
+  await r.say(a, { t: 'czat', txt: 'ty kurwa' });
+  assert.equal(r.last(b, 'czat').txt, 'ty k****');
+  r.advance(LIMITS.chatMs);
+  await r.say(a, { t: 'czat', txt: 'x'.repeat(141) });
+  assert.equal(r.last(b, 'czat').txt, 'ty k****');
+});
+
+test('players chat: three reports silence a player for 30 minutes', async () => {
+  const r = makeRoom();
+  const rude = await joined(r, 'a');
+  const others = [];
+  for (const ip of ['b', 'c', 'd', 'e']) others.push(await joined(r, ip));
+  await r.say(others[0], { t: 'zglos', id: 1 });
+  await r.say(others[0], { t: 'zglos', id: 1 }); // the same reporter twice counts once
+  await r.say(others[1], { t: 'zglos', id: 1 });
+  assert.equal(r.last(others[3], 'czat-cisza'), undefined);
+  await r.say(others[2], { t: 'zglos', id: 1 });
+  assert.deepEqual(r.last(others[3], 'czat-cisza'), { t: 'czat-cisza', id: 1 });
+  assert.equal(r.last(rude, 'czat-x').reason, 'silenced');
+  await r.say(rude, { t: 'czat', txt: 'halo' });
+  assert.equal(r.last(others[3], 'czat'), undefined);
+  for (let t = 0; t <= LIMITS.silenceMs; t += 9000) { // 30 minutes, everybody still playing
+    r.advance(9000);
+    for (const p of [rude, ...others]) await r.say(p, state());
+  }
+  await r.say(rude, { t: 'czat', txt: 'przepraszam' });
+  assert.equal(r.last(others[3], 'czat').txt, 'przepraszam');
+});
+

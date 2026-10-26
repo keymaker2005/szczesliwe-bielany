@@ -217,3 +217,31 @@ test('client: horn out and in, gestures once in two seconds with my own bubble',
   assert.equal(client.gesture('brawo'), true);
 });
 
+test('client: players chat in memory, bubbles, mute and report, notes from the server', async () => {
+  const { client } = makeClient();
+  await client.start();
+  await tick();
+  const ws = FakeSocket.last;
+  ws.answer({ t: 'witaj', id: 1, name: 'Ja 1', color: 0, colors: ['#a', '#b'], players: [{ id: 2, name: 'Ty 2', color: 1 }] });
+  assert.equal(client.talk('  hej   tam '), '');
+  assert.deepEqual(ws.sent.at(-1), { t: 'czat', txt: 'hej tam' });
+  assert.equal(client.talk('x'.repeat(141)), 'Najwyżej 140 znaków.');
+  assert.equal(client.talk('   '), 'Napisz coś.');
+  ws.answer({ t: 'czat', id: 1, name: 'Ja 1', color: 0, txt: 'hej tam' });
+  ws.answer({ t: 'czat', id: 2, name: 'Ty 2', color: 1, txt: 'cześć' });
+  assert.equal(client.talkLog.length, 2);
+  assert.equal(client.talkLog[0].me, true);
+  assert.equal(client.talkUnread, 1);
+  assert.equal(client.players.get(2).said.txt, 'cześć');
+  assert.equal(client.mySaid.txt, 'hej tam');
+  client.report(2);
+  assert.deepEqual(ws.sent.at(-1), { t: 'zglos', id: 2 });
+  assert.equal(client.talkLog.some((m) => m.id === 2), false);
+  ws.answer({ t: 'czat', id: 2, name: 'Ty 2', color: 1, txt: 'znowu' });
+  assert.equal(client.talkLog.some((m) => m.id === 2), false);
+  ws.answer({ t: 'czat-x', reason: 'slow' });
+  assert.match(client.talkLog.at(-1).note, /3 sekundy/);
+  ws.answer({ t: 'czat-x', reason: 'silenced', until: Date.now() + 60000 });
+  assert.match(client.talk('halo'), /nie możesz/);
+});
+

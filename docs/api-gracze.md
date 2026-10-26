@@ -76,6 +76,14 @@ Zdarzenie to numer adresu (`a`, GEO.addresses.list) i piętro (`f`); każda gra 
 | `{ "t": "zd-x", "e" }` | uczestnik wychodzi (przerwał albo skończył) | gdy wyszedł ostatni: wszyscy `{ "t": "zd-x", "e" }` |
 `witaj` ma też `events`: otwarte akcje (`[{ "e", "k", "a", "f", "by", "name", "p", "n" }]`).
 
+### Rozmowy graczy (krok 5.6b)
+| Wiadomość | Kto → serwer | Serwer → kto |
+| --- | --- | --- |
+| `{ "t": "czat", "txt": "…" }` | gracz: 1–140 znaków, 1 na 3 s | wszyscy (z nadawcą): `{ "t": "czat", "id", "name", "color", "txt" }` po filtrze (worker-gracze/src/filter.js) |
+| | za szybko / wyciszony | nadawca: `{ "t": "czat-x", "reason": "slow" \| "silenced", "until"? }` |
+| `{ "t": "zglos", "id" }` | gracz zgłasza innego (raz liczy się jedno zgłoszenie od osoby) | zgłaszający: `{ "t": "zglos-ok", "id" }`; po 3 zgłoszeniach (w małym pokoju 2): zgłoszony `czat-x silenced`, reszta `{ "t": "czat-cisza", "id" }`, 30 minut bez pisania |
+„Wycisz” działa tylko w grze (bez serwera). Rozmowy nie są nigdzie zapisywane.
+
 ## Zasady serwera (bezpieczniki)
 - Tylko połączenia ze strony gry (nagłówek Origin), Turnstile w wiadomości `hej` (bez niej po 10 s `koniec`).
 - Najwyżej 30 graczy w pokoju; kolejni trafiają do pokoju 2, 3… (lobby pilnuje obsady). Najwyżej 2 połączenia

@@ -26,10 +26,19 @@ const APPS = [
   { id: 'cards', name: 'Pocztówki', glyph: '🖼️' },
   { id: 'camera', name: 'Aparat', glyph: '📷' },
   { id: 'players', name: 'Gracze', glyph: '👥' },
+  { id: 'talk', name: 'Rozmowy', glyph: '🗨️' },
 ];
 
 const MODE_NAMES = { person: 'pieszo', car: 'autem', cyclist: 'rowerem', helicopter: 'helikopterem' };
 const PLAYERS_INFO = 'Grasz z innymi: widzą Twoją postać, losowe imię i miejsce w grze. Bez kont, nic nie zapisujemy.';
+// The players' chat (step 5.6b): the rules, shown once before the first message
+const TALK_RULES = [
+  'Piszesz do wszystkich graczy w pokoju. Bądź miły: wulgaryzmy są zakrywane.',
+  'Nie podawaj danych: imienia i nazwiska, adresu, telefonu, szkoły. Linki i numery są ukrywane.',
+  'Ktoś przeszkadza? Kliknij jego wiadomość: „Wycisz” chowa go u Ciebie, „Zgłoś” też. Po kilku zgłoszeniach gracz nie może pisać przez 30 minut.',
+  'Rozmowy nie są zapisywane: znikają po odświeżeniu strony.',
+];
+const TALK_RULES_KEY = 'bielany-rozmowy-zasady';
 
 const esc = (t) => String(t ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
 const clock = (s) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
@@ -44,7 +53,8 @@ class Phone {
   constructor({ root, button, missions, jobs, services, onOpenMap, onCamera, postcards, landmarks, onNavigate, status, time = '12:40', chat = null, chats = [{ id: 'przewodnik', name: 'Przewodnik' }], players = null }) {
     // players: { status(), available(), enabled(), setEnabled(on), me() -> { name, color }, rename(),
     //   list() -> [{ id, name, color, mode, distance }], navigate(id), navigating() -> id, gesture(id), gestureReady() }
-    //   (main.js), or null
+    //   (main.js), talk: { available(), status(), log(), send(text) -> error, mute(id), report(id), unread(), markRead() }
+    //   (the players' chat, step 5.6b), or null
     this.players = players;
     this.chat = chat; // ChatClient (js/chat.js), { [conversation id]: ChatClient }, or null: no chat app content
     this.chats = chats; // the conversations shown in the Czat app (the mayor's one only when city-config CHAT_MAYOR)
@@ -80,12 +90,16 @@ class Phone {
         <button class="phone-home" type="button" aria-label="Ekran główny"></button>
       </div>`;
     this.screen = root.querySelector('.phone-screen');
-    this.screen.addEventListener('input', (e) => { if (e.target.classList?.contains('chat-input')) this.chatInput(e.target); });
+    this.screen.addEventListener('input', (e) => {
+      if (!e.target.classList?.contains('chat-input')) return;
+      if (this.app === 'talk') this.talkInput(e.target);
+      else this.chatInput(e.target);
+    });
     this.screen.addEventListener('keydown', (e) => {
       // typing stays in the field: no other key handler (drive, map, camera) may see it
       if (e.target.classList?.contains('chat-input')) {
         e.stopPropagation();
-        if (e.code === 'Enter' && !e.isComposing) { e.preventDefault(); this.chatSend(); }
+        if (e.code === 'Enter' && !e.isComposing) { e.preventDefault(); if (this.app === 'talk') this.talkSend(); else this.chatSend(); }
         else if (e.code === 'Escape') e.target.blur();
       }
     });
@@ -107,7 +121,14 @@ class Phone {
       else if (e.code === 'Escape' && this.isOpen) this.toggle(false);
     });
     // the lists change while the phone is open (offers, the active clock)
-    setInterval(() => { if (this.isOpen && (this.app === 'jobs' || this.app === 'services' || this.app === 'players')) this.render(); }, 500);
+    setInterval(() => {
+      if (this.isOpen && (this.app === 'jobs' || this.app === 'services' || this.app === 'players')) this.render();
+      else if (this.isOpen && this.app === 'talk') this.talkLines();
+    }, 500);
+    this.talkEl = null;
+    this.talkDraft = '';
+    this.talkPick = null; // the player whose message was clicked: Wycisz / Zgłoś
+    this.talkError = '';
     if (this.postcards) this.postcards.onChange(() => { if (this.isOpen && this.app === 'cards') this.render(); });
     missions.on('state', () => { if (this.isOpen) this.render(); this.renderBadge(); });
     this.render();
@@ -140,6 +161,8 @@ class Phone {
     this.openCard = null;
     this.chatEl = null;
     this.chatId = null;
+    this.talkEl = null;
+    this.talkPick = null;
     this.render();
   }
 
@@ -172,6 +195,79 @@ class Phone {
       <div class="phone-card-line is-dim">${esc(pl.status())}</div>
       ${on ? `<div class="phone-card-line is-dim">${esc(PLAYERS_INFO)}</div>` : ''}
       ${mine}${on ? this.taxiCard() : ''}${rows}${toggle}</div>`;
+  }
+
+  // The Rozmowy app: the players' chat (step 5.6b). Built once, then updated in place (the field keeps its text)
+  renderTalk(head) {
+    const t = this.players?.talk;
+    let seen = false;
+    try { seen = globalThis.localStorage?.getItem(TALK_RULES_KEY) === '1'; } catch { /* optional */ }
+    if (!t || !t.available()) {
+      this.talkEl = null;
+      this.screen.innerHTML = `${head('Rozmowy')}<p class="phone-empty">${esc(t ? t.status() : 'Rozmowy są niedostępne.')}</p>`;
+      return;
+    }
+    if (!seen) {
+      this.talkEl = null;
+      this.screen.innerHTML = `${head('Rozmowy')}<div class="phone-list"><div class="phone-card"><div class="phone-card-title">Zasady rozmów<span></span></div>
+        ${TALK_RULES.map((r) => `<div class="phone-card-line">• ${esc(r)}</div>`).join('')}
+        <button type="button" class="phone-btn" data-act="talk-rules">Rozumiem</button></div></div>`;
+      return;
+    }
+    if (this.talkEl && this.talkEl.isConnected) { this.talkLines(); return; }
+    this.screen.innerHTML = `${head('Rozmowy')}
+      <div class="chat talk">
+        <div class="talk-bar"></div>
+        <div class="chat-log" aria-live="polite"></div>
+        <div class="chat-count"></div>
+        <form class="chat-form" action="javascript:void(0)">
+          <input class="chat-input" type="text" maxlength="140" placeholder="Napisz do graczy…" autocomplete="off" autocapitalize="sentences" aria-label="Wiadomość do graczy">
+          <button type="button" class="phone-btn chat-send" data-act="talk-send">Wyślij</button>
+        </form>
+      </div>`;
+    this.talkEl = this.screen.querySelector('.talk');
+    this.talkInputEl = this.talkEl.querySelector('.chat-input');
+    this.talkInputEl.value = this.talkDraft;
+    this.talkInput(this.talkInputEl);
+    this.talkLines();
+  }
+
+  talkInput(input) {
+    this.talkDraft = input.value;
+    const count = this.talkEl?.querySelector('.chat-count');
+    if (count) count.textContent = this.talkError || `${[...input.value].length} / 140`;
+  }
+
+  talkLines() {
+    if (!this.talkEl || !this.talkEl.isConnected) return;
+    const t = this.players.talk;
+    t.markRead();
+    const log = t.log();
+    const html = log.length ? log.map((m) => (m.note
+      ? `<div class="chat-note">${esc(m.note)}</div>`
+      : `<div class="chat-msg ${m.me ? 'is-me' : 'is-ai talk-msg'}"${m.me ? '' : ` data-act="talk-pick" data-id="${m.id}"`}>${m.me ? '' : `<b class="talk-name"><span class="player-dot" style="background:${esc(m.color)}"></span>${esc(m.name)}</b>`}${esc(m.txt)}</div>`)).join('')
+      : `<div class="chat-note">${esc(t.status())} Napisz pierwszy: wiadomość zobaczą wszyscy w pokoju.</div>`;
+    const el = this.talkEl.querySelector('.chat-log');
+    if (el.dataset.html !== html) {
+      el.dataset.html = html;
+      el.innerHTML = html;
+      el.scrollTop = el.scrollHeight;
+    }
+    const pick = this.talkPick != null && log.find((m) => m.id === this.talkPick);
+    const bar = this.talkEl.querySelector('.talk-bar');
+    const barHtml = pick ? `<span>${esc(pick.name)}:</span>
+      <button type="button" class="phone-btn is-quiet" data-act="talk-mute">Wycisz</button>
+      <button type="button" class="phone-btn is-quiet" data-act="talk-report">Zgłoś</button>` : '';
+    if (bar.dataset.html !== barHtml) { bar.dataset.html = barHtml; bar.innerHTML = barHtml; }
+  }
+
+  talkSend() {
+    const input = this.talkInputEl;
+    const error = this.players?.talk?.send(input?.value || '');
+    this.talkError = error || '';
+    if (!error && input) input.value = '';
+    if (input) this.talkInput(input);
+    this.talkLines();
   }
 
   // Taxi with a real driver (step 5.5): call it on foot, wait, ride, get out
@@ -356,6 +452,20 @@ class Phone {
     } else if (act === 'players-gesture') {
       this.players?.gesture(id);
       this.render();
+    } else if (act === 'talk-rules') {
+      try { globalThis.localStorage?.setItem(TALK_RULES_KEY, '1'); } catch { /* optional */ }
+      this.talkEl = null;
+      this.render();
+    } else if (act === 'talk-send') {
+      this.talkSend();
+    } else if (act === 'talk-pick') {
+      this.talkPick = Number(id) === this.talkPick ? null : Number(id);
+      this.talkLines();
+    } else if (act === 'talk-mute' || act === 'talk-report') {
+      const t = this.players?.talk;
+      if (t && this.talkPick != null) (act === 'talk-mute' ? t.mute : t.report)(this.talkPick);
+      this.talkPick = null;
+      this.talkLines();
     } else if (act === 'taxi-call') {
       this.players?.taxiCall(id);
       this.render();
@@ -402,7 +512,8 @@ class Phone {
       const serviceRoles = new Set(this.services().map((sv) => sv.role));
       const active = this.missions.active;
       const onDuty = Boolean(active && serviceRoles.has(active.role));
-      const badge = (id) => (id === 'sms' && this.unread() ? `<span class="phone-badge">${this.unread()}</span>`
+      const talkNew = this.players?.talk?.unread?.() || 0;
+      const badge = (id) => (id === 'talk' && talkNew ? `<span class="phone-badge">${talkNew}</span>` : id === 'sms' && this.unread() ? `<span class="phone-badge">${this.unread()}</span>`
         : (id === 'jobs' && active && !onDuty) || (id === 'services' && onDuty) ? '<span class="phone-badge">1</span>' : '');
       s.innerHTML = `
         <div class="phone-status">${esc(this.status())}</div>
@@ -490,6 +601,10 @@ class Phone {
     }
     if (this.app === 'players') {
       this.renderPlayers(head);
+      return;
+    }
+    if (this.app === 'talk') {
+      this.renderTalk(head);
       return;
     }
     if (this.app === 'cards') {

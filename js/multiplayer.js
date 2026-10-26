@@ -10,7 +10,7 @@ import {
   buildHelicopterBodyGeometry, buildHelicopterMainRotorGeometry, buildHelicopterTailRotorGeometry, createLoftedHelicopterMaterial
 } from './actor-models.js';
 import { PersonCrowd, PersonRig } from './pedestrians.js';
-import { GESTURES, GESTURE_SHOW_MS } from './multiplayer-net.js';
+import { GESTURES, GESTURE_SHOW_MS, TALK_SHOW_MS } from './multiplayer-net.js';
 
 const MAX_DRAWN = 20;
 const DRAW_DISTANCE = 1200; // metres; farther players are only on the map
@@ -40,7 +40,14 @@ function warmUp(mesh) {
 }
 
 const remoteGround = (owner) => owner.y;
-const gestureText = (g) => { const x = GESTURES.find((e) => e.id === g); return x ? `${x.icon} ${x.text}` : ''; }; // the sender's own height: it already sits on the street, bridge or kerb
+const gestureText = (g) => { const x = GESTURES.find((e) => e.id === g); return x ? `${x.icon} ${x.text}` : ''; };
+// What a player says over their head now: the newer of their gesture and their chat message, while it lasts
+function saying(gesture, said, now) {
+  const g = gesture && now - gesture.t < GESTURE_SHOW_MS ? gesture : null;
+  const s = said && now - said.t < TALK_SHOW_MS ? said : null;
+  if (g && (!s || g.t >= s.t)) return gestureText(g.g);
+  return s ? s.txt : '';
+} // the sender's own height: it already sits on the street, bridge or kerb
 
 export class RemotePlayers {
   constructor(scene, { overlay = null } = {}) {
@@ -303,15 +310,13 @@ export class RemotePlayers {
       this.selfEl.innerHTML = '<span class="bubble"></span>';
       this.overlay.appendChild(this.selfEl);
     }
-    const g = client.myGesture;
-    const fresh = self && g && now - g.t < GESTURE_SHOW_MS && client.status === 'online';
-    if (!fresh) { this.selfEl.style.display = 'none'; return; }
+    const text = self && client.status === 'online' ? saying(client.myGesture, client.mySaid, now) : '';
+    if (!text) { this.selfEl.style.display = 'none'; return; }
     const head = self.m === 'car' ? 2.1 : self.m === 'helicopter' ? 3.6 : 2.25;
     _v.set(self.x, self.y + head, self.z).project(camera);
     if (_v.z > 1 || _v.z < -1) { this.selfEl.style.display = 'none'; return; }
     this.selfEl.style.display = '';
     this.selfEl.style.transform = `translate(${((_v.x + 1) / 2) * this.overlay.clientWidth}px, ${((1 - _v.y) / 2) * this.overlay.clientHeight}px) translate(-50%, -100%)`;
-    const text = gestureText(g.g);
     if (this.selfEl.firstChild.textContent !== text) this.selfEl.firstChild.textContent = text;
   }
 
@@ -343,7 +348,7 @@ export class RemotePlayers {
       const txt = el.children[1];
       if (txt.textContent !== p.name) txt.textContent = p.name;
       const bubble = el.children[2];
-      const said = p.gesture && now - p.gesture.t < GESTURE_SHOW_MS ? gestureText(p.gesture.g) : '';
+      const said = client.muted?.has(p.id) ? '' : saying(p.gesture, p.said, now);
       if (bubble.textContent !== said) { bubble.textContent = said; el.classList.toggle('has-bubble', Boolean(said)); }
       const css = client.colorOf(p);
       if (el.dataset.color !== css) { el.dataset.color = css; el.firstChild.style.background = css; }

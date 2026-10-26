@@ -5,6 +5,7 @@ import { BOUNDS, GESTURES, LIMITS, MODES, MODE_SPEED, RATE } from './config.js';
 import { COLORS, pickName } from './names.js';
 import { dropRides, expireRides, rideMessage, waitingRides } from './rides.js';
 import { dropEvents, eventMessage, openEvents } from './events.js';
+import { talkMessage } from './talk.js';
 
 const round = (v) => Math.round(v * 100) / 100;
 const finite = (v) => typeof v === 'number' && Number.isFinite(v);
@@ -161,7 +162,7 @@ export class RoomCore {
     } else if (msg.t === 'pa') {
       return this.leave(ws, null);
     } else {
-      if (!rideMessage(this, ws, att, msg, now)) eventMessage(this, ws, att, msg, now);
+      if (!rideMessage(this, ws, att, msg, now) && !eventMessage(this, ws, att, msg, now)) talkMessage(this, ws, att, msg, now);
     }
     this.io.persist(ws, att);
     if (this.unreported >= LIMITS.reportEvery) await this.report();

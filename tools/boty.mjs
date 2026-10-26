@@ -26,6 +26,9 @@ const roads = GEO.roads.filter((r) => r[6] !== 'pedestrian' && r[5].length >= 4)
   .filter((c) => !near || Math.hypot(c[0], c[1]) < near);
 const MODES = [['car', 13], ['car', 13], ['car', 13], ['cyclist', 6], ['person', 1.6], ['helicopter', 30]];
 const GESTURES = ['czesc', 'dzieki', 'jedziemy', 'brawo', 'uwaga', 'pa'];
+// The players' chat (step 5.6b): ordinary bots now and then; --rozmowy also sends one rude line a minute (filter test)
+const TALK = ['Cześć wszystkim!', 'Ktoś jedzie na Kameduły?', 'Korek na Marymonckiej', 'Piękna jesień na Bielanach', 'Widzimy się przy AWF', 'Kto gra w Hutnika?'];
+const rude = args.includes('--rozmowy');
 const rand = (n) => Math.floor(Math.random() * n);
 const drivers = Number(opt('taksowkarz', 0));
 const callers = Number(opt('pasazer', 0));
@@ -161,6 +164,8 @@ class Bot {
     this.teleport = false;
     if (Math.random() < 0.01) this.send({ t: 'g', g: GESTURES[rand(GESTURES.length)] });
     if (this.mode === 'car' && Math.random() < 0.004) this.send({ t: 'k' });
+    if (Math.random() < 0.002) this.send({ t: 'czat', txt: TALK[rand(TALK.length)] });
+    if (rude && this.i === 0 && Math.random() < 0.0035) this.send({ t: 'czat', txt: 'ale ku.rwa korek, zadzwoń 600 123 456' });
   }
 
   driverTick(dt) {

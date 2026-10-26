@@ -80,7 +80,10 @@ async function initApp() {
     reversedDepthBuffer: true
   });
   renderer.setPixelRatio(1.0);
-  renderer.setSize(window.innerWidth, window.innerHeight);
+  // ?film on localhost: the game records a showreel by itself at 1920×1080 (js/film.js)
+  const FILM = new URLSearchParams(location.search).has('film') && ['localhost', '127.0.0.1'].includes(location.hostname);
+  if (FILM) renderer.setSize(1920, 1080, false);
+  else renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.shadowMap.enabled = true;
   renderer.lighting = new ClusteredLighting(256, 32, 28, 48);
   container.appendChild(renderer.domElement);
@@ -173,6 +176,7 @@ async function initApp() {
   } catch { /* Missing or unavailable storage does not prevent playing. */ }
 
   function savePlayerState() {
+    if (FILM) return; // the showreel leaves the saved player alone
     try {
       const entities = Object.fromEntries(Object.entries(controllerManager.entities).map(([mode, entity]) => [mode, {
         x: entity.position.x, y: entity.position.y, z: entity.position.z, heading: entity.heading
@@ -182,6 +186,7 @@ async function initApp() {
   }
 
   const cameraSystem = new CameraSystem(renderer.domElement, controllerManager);
+  if (FILM) cameraSystem.onResize(1920, 1080);
   const touchControls = new TouchControls(controllerManager);
   const soundButton = document.getElementById('btn-sound');
   const audioSystem = new CityAudioSystem({ controllerManager, trafficSystem, highwayTraffic, streetDetails }, {
@@ -644,6 +649,7 @@ async function initApp() {
   });
 
   window.addEventListener('resize', () => {
+    if (FILM) return; // the recording keeps its 1920×1080
     cameraSystem.onResize(window.innerWidth, window.innerHeight);
     renderer.setSize(window.innerWidth, window.innerHeight);
     placeModeIndicator();
@@ -804,6 +810,16 @@ async function initApp() {
       taxiCall: (id) => { const l = guide.landmarks().find((x) => x.id === id); if (l) sharedTaxi.request({ x: l.x, z: l.z, name: l.name }); },
       taxiCancel: () => sharedTaxi.cancel(),
       taxiComputer: () => sharedTaxi.computerCab(),
+      talk: {
+        available: () => !multiplayer.solo && multiplayer.status === 'online',
+        status: () => describeStatus(multiplayer),
+        log: () => multiplayer.talkLog,
+        send: (text) => multiplayer.talk(text),
+        mute: (id) => multiplayer.mute(id),
+        report: (id) => multiplayer.report(id),
+        unread: () => multiplayer.talkUnread,
+        markRead: () => { multiplayer.talkUnread = 0; },
+      },
     },
     status: () => (missions.active ? `W drodze: ${missions.goal().name}` : controllerManager.activeMode === 'car' ? taxi.statusLine() : courier.statusLine()),
   });
@@ -949,7 +965,12 @@ async function initApp() {
     else if (event === 'clear' || (event === 'status' && data.status !== 'online')) { sharedTaxi.reset(); sharedCalls?.reset(); }
   };
   const gestureWheel = new GestureWheel(multiplayer, { blocked: () => mapSystem.isFullMapOpen || photo.active });
-  globalThis.bielany = { missions, testDelivery, abandon: () => missions.abandon(), teleport: (x, z, heading) => teleportTo(x, z, heading), marker: missionMarker, phone, courier, guide, scene, renderer, lightingSystem, trams, taxi, medic, ambulance, dispatch, controllerManager, photo, postcards, fallingLeaves, trafficSystem, multiplayer, remotePlayers, gestureWheel, sharedTaxi, sharedCalls };
+  // The showreel's director (?film): its props join the scene before the shader warm-up; it plays alone
+  const film = FILM ? new (await import('./film.js')).Film({
+    renderer, scene, cameraSystem, controllerManager, trafficSystem, trams, dispatch, passenger, fire: globalThis.bielanyFire, search: location.search,
+  }) : null;
+  if (film) { multiplayer.solo = true; multiplayer.enabled = false; }
+  globalThis.bielany = { film, missions, testDelivery, abandon: () => missions.abandon(), teleport: (x, z, heading) => teleportTo(x, z, heading), marker: missionMarker, phone, courier, guide, scene, renderer, lightingSystem, trams, taxi, medic, ambulance, dispatch, controllerManager, photo, postcards, fallingLeaves, trafficSystem, multiplayer, remotePlayers, gestureWheel, sharedTaxi, sharedCalls };
 
   // Initialize the UI and chase camera around the restored player, or the default taxi on a first visit.
   selectMode(controllerManager.activeMode);
@@ -1059,6 +1080,7 @@ async function initApp() {
   let speedLimit = 50, limitTimer = 0; // km/h, the cab's limit where it is
   const elLimit = document.getElementById('hud-limit');
   renderer.setAnimationLoop((now) => {
+    if (film && !film.frameDue(now)) return; // the recording runs at a steady 60 frames a second
     const rawDt = (now - lastTime) * 0.001;
     lastTime = now;
     const dt = Math.min(Math.max(rawDt, 0.001), 0.05);
@@ -1080,7 +1102,8 @@ async function initApp() {
       const cap = (dispatch.siren ? Math.min(90, speedLimit + 30) : speedLimit) / 3.6; // on lights: +30 km/h
       if (car.speed > cap && !controllerManager.keys.boost) car.speed = cap; // Shift (boost) ignores the limit
     }
-    if (!photo.active) cameraSystem.update(dt, elapsed);
+    if (film?.running) film.update(dt); // the showreel moves the player and the camera itself
+    else if (!photo.active) cameraSystem.update(dt, elapsed);
     if (warmedUp) {
       const me = controllerManager.getActiveEntity();
       multiplayer.update({ x: me.position.x, y: me.position.y, z: me.position.z, h: me.heading, m: sharedTaxi.riding ? 'passenger' : controllerManager.activeMode, v: me.speed });
@@ -1150,6 +1173,7 @@ async function initApp() {
     }
     renderPipeline.render();
     photo.afterRender();
+    film?.afterRender(now);
     if (!warmedUp) {
       warmedUp = true;
       markInit('firstFrame');
@@ -1164,6 +1188,7 @@ async function initApp() {
         audioSystem.ready = true;
         setLoadingProgress(1);
         multiplayer.start();
+        film?.start();
       });
     }
 

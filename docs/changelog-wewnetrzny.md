@@ -17,6 +17,8 @@ Plan: docs/plan-fazy-5.md (zaakceptowany ze wszystkimi decyzjami).
   tests/shared-taxi.test.mjs i kursy w tests/gracze.test.mjs.
 - 5.6 Wspólne akcje straży: shared-calls.js, events.js, firefighter.js (offerAt), main.js; test dwóch gier przez
   prawdziwy pokój (tests/shared-calls.test.mjs), bot --strazak.
+- 5.6b Rozmowy graczy: filter.js, talk.js (zgłoszenia, wyciszanie), multiplayer-net.js, multiplayer.js, phone.js;
+  tests/filter.test.mjs, rozmowy w tests/gracze.test.mjs i tests/multiplayer.test.mjs, bot --rozmowy.
 
 ## Faza 4: Czaty LLM i patronat (gałąź faza-4, 2026-10-26)
 

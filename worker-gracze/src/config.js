@@ -24,6 +24,10 @@ export const LIMITS = {
   maxEvents: 20, // shared calls open in a room at once
   workStep: 0.2, // most of a job one work message may add (the game sends its share twice a second)
   eventMs: 15 * 60 * 1000, // a shared call nobody finished in 15 minutes goes
+  chatChars: 140, // one chat message (step 5.6b)
+  chatMs: 3000, // one chat message per 3 s
+  reportsToSilence: 3, // different players reporting the same one silence them...
+  silenceMs: 30 * 60 * 1000, // ...for 30 minutes
   reportEvery: 2000, // messages between usage reports to the lobby
   messagesPerRequest: 20, // Cloudflare bills incoming WebSocket messages 20:1
   requestsPerConnect: 4, // lobby pick + room fetch + join and leave reports

@@ -23,7 +23,11 @@
 - 5.5 zaakceptowany. 5.6 zrobiony (do sprawdzenia): js/shared-calls.js, worker-gracze/src/events.js, firefighter.js
   (offerAt, take, setSharedProgress, onWork; bez odrastania ognia przy wspólnej akcji), dostawca Służb w main.js łączy
   wspólne akcje ze zwykłymi wezwaniami. Bot --strazak. Następny: 5.6b czat graczy z moderacją, potem 5.7 publikacja 1.1.
-- Testy: 227 zielonych.
+- 5.6 zaakceptowany. 5.6b zrobiony (do sprawdzenia): worker-gracze/src/filter.js i talk.js, rozmowy w
+  multiplayer-net.js (talkLog, mute, report), dymki w multiplayer.js, aplikacja Rozmowy w phone.js. Boty: --rozmowy.
+  Następny: 5.7 publikacja 1.1 (wdrożenie Workera bielany-gracze i strony tylko na polecenie autora; autor wpisuje
+  sekret TURNSTILE_SECRET dla bielany-gracze).
+- Testy: 238 zielonych.
 
 ## Faza 4 (gałąź faza-4, plan docs/plan-fazy-4.md) — dla nowej sesji
 - Zrobione i sprawdzone: 4.1 Worker z bezpiecznikami, 4.2 aplikacja Czat, 4.3 baza przewodnika, 4.4 przewodnik na
@@ -76,7 +80,7 @@
 - Teren: js/terrain.js (groundY, drapeGeometry, groundPose), dane js/bielany-terrain.bin z tools/terrain-bielany.mjs
   (po zmianie dróg w geodanych uruchomić ponownie: wygładza teren pod głównymi drogami). Mosty: js/bridges.js
   (deckY, surfaceY, deckPose). Każdy nowy obiekt na ziemi bierze wysokość z groundY / surfaceY. ?plaski = płaska mapa.
-- Testy: 227 zielonych, w tym test składni wszystkich modułów (po scaleniach sprawdzić też start gry w przeglądarce).
+- Testy: 238 zielonych, w tym test składni wszystkich modułów (po scaleniach sprawdzić też start gry w przeglądarce).
 - Gałęzie: faza-0, faza-1, faza-1.5, faza-2, faza-3, faza-4 (bieżąca). main = wersja 1.0 (od 2026-10-26; oryginał mrdooba:
   tag nyc-original i jego historia w main). Kolejne fazy scalamy do main po bramkach.
 
@@ -91,7 +95,7 @@
 - Node: ~/.local/node/bin (dopisać do PATH). gh: ~/.local/bin/gh (zalogowany jako keymaker2005).
 - Serwer: `node tools/serve.mjs 8080`, podgląd w panelu przeglądarki (.claude/launch.json, nazwa „bielany”).
   Ukryty panel daje ~1 fps — pomiary fps tylko przy widocznym panelu.
-- Testy: `node --test tests/*.test.mjs tests/*.test.cjs` (227 zielonych).
+- Testy: `node --test tests/*.test.mjs tests/*.test.cjs` (238 zielonych).
 - Dane: `node tools/geo-bielany.mjs` generuje js/bielany-geodata.js; Overpass: tools/overpass.sh; budynki:
   data/extract_bielany_lod1.py (bez pyproj); drzewa: data/extract_bielany_trees.py (strumień 8,6 GB, ~40 min);
   teksty: tools/guide-texts.mjs.

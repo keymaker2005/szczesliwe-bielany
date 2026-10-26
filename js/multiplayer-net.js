@@ -14,6 +14,9 @@ const RETRY_MS = [5000, 15000, 60000];
 const MOVE_EPS = 0.05; // metres / radians that count as moving
 const GESTURE_MS = 2000; // one gesture per two seconds (the server drops faster ones)
 const GESTURE_SHOW_MS = 4000; // a gesture's bubble stays this long over the head
+const TALK_CHARS = 140; // one chat message (the server's limit, step 5.6b)
+const TALK_KEEP = 60; // messages kept in this tab's memory
+const TALK_SHOW_MS = 6000; // a chat message's bubble over the head
 // Gestures and ready-made phrases (step 5.4): the only words players can say to each other (no free chat)
 const GESTURES = [
   { id: 'czesc', text: 'Cześć!', icon: '👋' },
@@ -181,6 +184,12 @@ class MultiplayerClient {
     this.players = new Map(); // id -> { id, name, color, track, gesture: { g, t } }
     this.me = null; // { id, name, color }
     this.myGesture = null; // { g, t }: my last gesture, for the bubble over my head and the cool-down
+    // The players' chat (step 5.6b): this tab's memory only; muted players are this player's own choice
+    this.talkLog = []; // { id, name, color, txt, t, me } | { note, t }
+    this.muted = new Set();
+    this.mySaid = null; // { txt, t }
+    this.silencedUntil = 0;
+    this.talkUnread = 0;
     this.colors = [];
     this.policy = new SendPolicy();
     this.ws = null;
@@ -306,6 +315,32 @@ class MultiplayerClient {
       case 'zd': case 'zd-dol': case 'zd-stan': case 'zd-koniec': case 'zd-x':
         this.emit('call', msg); // shared emergency calls: js/shared-calls.js
         break;
+      case 'czat': {
+        if (this.muted.has(msg.id)) break;
+        const me = msg.id === this.me?.id;
+        this.pushTalk({ id: msg.id, name: msg.name, color: msg.color, txt: String(msg.txt || ''), t: now, me });
+        if (me) this.mySaid = { txt: msg.txt, t: now };
+        else {
+          const p = this.players.get(msg.id);
+          if (p) p.said = { txt: msg.txt, t: now };
+          this.talkUnread++;
+        }
+        this.emit('talk', msg);
+        break;
+      }
+      case 'czat-x':
+        if (msg.reason === 'silenced') { this.silencedUntil = Date.now() + Math.max(0, msg.until - Date.now()); this.note('Po zgłoszeniach innych graczy nie możesz pisać przez 30 minut.'); }
+        else this.note('Za szybko: jedna wiadomość na 3 sekundy.');
+        break;
+      case 'czat-cisza': {
+        const p = this.players.get(msg.id);
+        this.muted.add(msg.id);
+        this.note(`${p?.name || 'Gracz'} nie może pisać przez 30 minut (zgłoszenia innych graczy).`);
+        break;
+      }
+      case 'zglos-ok':
+        this.note('Zgłoszenie wysłane. Tego gracza już nie widzisz w rozmowie.');
+        break;
       case 'koniec':
         this.end(msg.reason);
         break;
@@ -387,6 +422,39 @@ class MultiplayerClient {
     try { this.ws.send(JSON.stringify(obj)); return true; } catch { return false; }
   }
 
+  pushTalk(entry) {
+    this.talkLog.push(entry);
+    if (this.talkLog.length > TALK_KEEP) this.talkLog.shift();
+  }
+
+  note(text) {
+    this.pushTalk({ note: text, t: this.now() });
+    this.emit('talk', null);
+  }
+
+  // A chat message to the room; returns '' when sent, else why not (for the phone)
+  talk(text) {
+    const txt = String(text || '').replace(/\s+/g, ' ').trim();
+    if (!txt) return 'Napisz coś.';
+    if ([...txt].length > TALK_CHARS) return `Najwyżej ${TALK_CHARS} znaków.`;
+    if (this.silencedUntil > Date.now()) return 'Po zgłoszeniach nie możesz teraz pisać.';
+    return this.send({ t: 'czat', txt }) ? '' : 'Brak połączenia z innymi graczami.';
+  }
+
+  // Mute: their messages and bubbles disappear for me (this tab); report: the room counts it, and I mute them too
+  mute(id) {
+    this.muted.add(id);
+    this.talkLog = this.talkLog.filter((m) => m.id !== id);
+    const p = this.players.get(id);
+    if (p) p.said = null;
+    this.emit('talk', null);
+  }
+
+  report(id) {
+    this.send({ t: 'zglos', id });
+    this.mute(id);
+  }
+
   // The horn in the car (B), for the players nearby
   honk() {
     if (this.status === 'online' && this.ws?.readyState === 1) this.ws.send(JSON.stringify({ t: 'k' }));
@@ -409,4 +477,4 @@ class MultiplayerClient {
   }
 }
 
-export { MultiplayerClient, Track, SendPolicy, playersEndpoint, soloByUrl, describeStatus, wrapAngle, GESTURES, GESTURE_MS, GESTURE_SHOW_MS, DELAY_MS, EXTRAPOLATE_MS, RETRY_MS, STORAGE_KEY, ON_KEY };
+export { MultiplayerClient, Track, SendPolicy, playersEndpoint, soloByUrl, describeStatus, wrapAngle, GESTURES, GESTURE_MS, GESTURE_SHOW_MS, TALK_CHARS, TALK_SHOW_MS, DELAY_MS, EXTRAPOLATE_MS, RETRY_MS, STORAGE_KEY, ON_KEY };
