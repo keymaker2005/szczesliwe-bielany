@@ -3,6 +3,11 @@
 ## Faza 5 (gałąź faza-5 z main, plan docs/plan-fazy-5.md)
 - Krok 5.0: plan napisany 2026-10-26, czeka na akceptację i 7 decyzji. Ceny Cloudflare Durable Objects sprawdzone
   (strona z 18.10.2026). Porządki z backlogu (NYC, błąd GPU) zrobione i opublikowane jako 1.0.1.
+- Plan zaakceptowany ze wszystkimi decyzjami. 5.1 zrobiony (do sprawdzenia): worker-gracze/ (index.js Worker, lobby.js,
+  room.js + room-core.js pokój z uśpieniem WebSocketów, names.js imiona, config.js limity), umowa docs/api-gracze.md,
+  lokalnie `sh tools/gracze-dev.sh` (port 8788), boty `node tools/boty.mjs N [--pokoj 1]`. Worker nie jest wdrożony
+  (wdrożenie w 5.7, na polecenie autora; sekret TURNSTILE_SECRET dla bielany-gracze wpisze autor).
+- Testy: 206 zielonych (tests/gracze.test.mjs).
 
 ## Faza 4 (gałąź faza-4, plan docs/plan-fazy-4.md) — dla nowej sesji
 - Zrobione i sprawdzone: 4.1 Worker z bezpiecznikami, 4.2 aplikacja Czat, 4.3 baza przewodnika, 4.4 przewodnik na
@@ -55,7 +60,7 @@
 - Teren: js/terrain.js (groundY, drapeGeometry, groundPose), dane js/bielany-terrain.bin z tools/terrain-bielany.mjs
   (po zmianie dróg w geodanych uruchomić ponownie: wygładza teren pod głównymi drogami). Mosty: js/bridges.js
   (deckY, surfaceY, deckPose). Każdy nowy obiekt na ziemi bierze wysokość z groundY / surfaceY. ?plaski = płaska mapa.
-- Testy: 186 zielonych (2026-10-26 usunięte testy martwego kodu NYC), w tym test składni wszystkich modułów (po scaleniach sprawdzić też start gry w przeglądarce).
+- Testy: 206 zielonych (186 + 20 serwera graczy), w tym test składni wszystkich modułów (po scaleniach sprawdzić też start gry w przeglądarce).
 - Gałęzie: faza-0, faza-1, faza-1.5, faza-2, faza-3, faza-4 (bieżąca). main = wersja 1.0 (od 2026-10-26; oryginał mrdooba:
   tag nyc-original i jego historia w main). Kolejne fazy scalamy do main po bramkach.
 
@@ -70,7 +75,7 @@
 - Node: ~/.local/node/bin (dopisać do PATH). gh: ~/.local/bin/gh (zalogowany jako keymaker2005).
 - Serwer: `node tools/serve.mjs 8080`, podgląd w panelu przeglądarki (.claude/launch.json, nazwa „bielany”).
   Ukryty panel daje ~1 fps — pomiary fps tylko przy widocznym panelu.
-- Testy: `node --test tests/*.test.mjs tests/*.test.cjs` (186 zielonych).
+- Testy: `node --test tests/*.test.mjs tests/*.test.cjs` (206 zielonych).
 - Dane: `node tools/geo-bielany.mjs` generuje js/bielany-geodata.js; Overpass: tools/overpass.sh; budynki:
   data/extract_bielany_lod1.py (bez pyproj); drzewa: data/extract_bielany_trees.py (strumień 8,6 GB, ~40 min);
   teksty: tools/guide-texts.mjs.

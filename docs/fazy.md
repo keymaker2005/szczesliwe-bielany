@@ -161,7 +161,7 @@ potrącania pieszych, bez zapisu rozmów; SMS-y od „Burmistrz Bielan” bez na
 Bramka: dwie osoby na różnych komputerach jeżdżą razem płynnie w 60 fps, gra działa bez serwera graczy. Plan: docs/plan-fazy-5.md (zaakceptowany 2026-10-26 ze wszystkimi propozycjami decyzji). Publikacja jako 1.1.
 
 - [x] 5.0 Plan Fazy 5 (serwer, pokoje, koszty, prywatność, kroki, 7 decyzji). Sprawdzam: akceptuję plan i odpowiadam na decyzje.
-- [ ] 5.1 Serwer graczy: Worker bielany-gracze, pokój (Durable Object), protokół, bezpieczniki, boty testowe.
+- [ ] 5.1 Serwer graczy: Worker bielany-gracze (worker-gracze/), lobby i pokoje (Durable Objects z uśpieniem), umowa docs/api-gracze.md, bezpieczniki, boty testowe (tools/boty.mjs). Zrobione 2026-10-26: 20 testów, lokalnie 2 boty widzą się, 30 wiadomości naraz → 24 przechodzą (12/s, zapas 24), 33 graczy → pokoje 1 (30) i 2 (3), 20 botów ok. 1850 wiadomości/s bez błędów. Sprawdzam: http://localhost:8788/api/gracze/stan pokazuje stan, w terminalu boty widzą się nawzajem.
 - [ ] 5.2 Inni gracze w grze: js/multiplayer.js, wygładzanie ruchu, modele w kolorach, imiona, mapa.
 - [ ] 5.3 Telefon: aplikacja „Gracze”, przełącznik i tryb solo.
 - [ ] 5.4 Klakson, gesty i gotowe zwroty.

@@ -1,0 +1,25 @@
+# Cloudflare Worker for playing with others (docs/api-gracze.md, plan docs/plan-fazy-5.md). Deploy only on the author's
+# command (step 5.7), with wrangler 3.114.15 run from outside the repo:
+#   npx --yes wrangler@3.114.15 deploy --config <repo>/worker-gracze/wrangler.toml
+# The route is more specific than the chat Worker's bielany.zbigniew.ai/api/*, so it wins for /api/gracze.
+name = "bielany-gracze"
+main = "src/index.js"
+compatibility_date = "2025-07-18"
+workers_dev = false
+routes = [{ pattern = "bielany.zbigniew.ai/api/gracze*", zone_name = "zbigniew.ai" }]
+
+[vars]
+# Same Turnstile widget as the chat (public site key; the secret: wrangler secret put TURNSTILE_SECRET --name bielany-gracze)
+TURNSTILE_SITE_KEY = "0x4AAAAAAFmaqMRSjxBhpkPy"
+
+[[durable_objects.bindings]]
+name = "LOBBY"
+class_name = "Lobby"
+
+[[durable_objects.bindings]]
+name = "ROOMS"
+class_name = "Room"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["Lobby", "Room"]

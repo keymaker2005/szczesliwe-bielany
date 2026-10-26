@@ -4,3 +4,5 @@ data/raw/
 dist/
 worker/.dev.vars
 worker/.wrangler/
+worker-gracze/.dev.vars
+worker-gracze/.wrangler/

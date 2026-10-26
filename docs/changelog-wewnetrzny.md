@@ -4,6 +4,11 @@ Historia prac nad projektem: fazy, kroki, gałęzie, ważne decyzje i poprawki, 
 Publiczne wersje (to, co było na bielany.zbigniew.ai): CHANGELOG.md. Plany faz: docs/plan-fazy-*.md, lista kroków:
 docs/fazy.md, otwarte sprawy: docs/backlog.md, przekazanie sesji: docs/stan-projektu.md.
 
+## Faza 5: Gra dla wielu osób (gałąź faza-5, 2026-10-26)
+Plan: docs/plan-fazy-5.md (zaakceptowany ze wszystkimi decyzjami).
+- 5.1 Serwer graczy: worker-gracze/ (lobby, pokoje z uśpieniem, Turnstile w wiadomości „hej”, limity, dzienny budżet
+  80 000 zapytań), docs/api-gracze.md, tools/gracze-dev.sh, tools/boty.mjs, tests/gracze.test.mjs (20 testów).
+
 ## Faza 4: Czaty LLM i patronat (gałąź faza-4, 2026-10-26)
 
 Plan: docs/plan-fazy-4.md (zaakceptowany ze wszystkimi decyzjami). Praca równoległa jak w Fazie 3: koordynator robi 4.1,
