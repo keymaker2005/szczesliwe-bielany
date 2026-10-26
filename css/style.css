@@ -1813,5 +1813,27 @@ body.touch-enabled .pop-item { min-height: 44px; }
   font: 600 12px/1.3 Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; will-change: transform;
 }
 .player-name .dot { width: 8px; height: 8px; border-radius: 50%; box-shadow: 0 0 0 1.5px rgba(255, 255, 255, 0.8); }
+.player-name .bubble { display: none; }
+.player-name.has-bubble .bubble, .player-name.is-self .bubble {
+  display: block; position: absolute; left: 50%; bottom: calc(100% + 6px); transform: translateX(-50%); white-space: nowrap;
+  padding: 5px 10px; border-radius: 12px; background: #fff; color: #10141a; font: 700 14px/1.2 Inter, sans-serif;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.28);
+}
+.player-name.is-self { background: none; padding: 0; }
+.player-name.is-self .bubble { position: static; transform: none; }
+/* Gesture wheel (T): six phrases around the screen centre */
+#gesture-wheel { position: fixed; left: 50%; top: 50%; width: 0; height: 0; z-index: 25; }
+#gesture-wheel.hidden { display: none; }
+#gesture-wheel button {
+  position: absolute; transform: translate(-50%, -50%); min-width: 118px; padding: 9px 12px; border: 0; border-radius: 999px; white-space: nowrap;
+  background: rgba(12, 16, 22, 0.86); color: #fff; font: 700 14px/1.2 Inter, sans-serif; cursor: pointer;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+}
+#gesture-wheel button:hover, #gesture-wheel button:focus-visible { background: #ffc218; color: #10141a; outline: none; }
+#gesture-wheel button kbd { margin-right: 6px; opacity: 0.6; font: inherit; }
+#gesture-wheel .gw-hint { position: absolute; transform: translate(-50%, -50%); color: #fff; font: 600 12px/1.3 Inter, sans-serif;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.7); white-space: nowrap; }
+.phone-gestures { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+.phone-gestures .phone-btn { margin: 0; padding: 8px 4px; font-size: 12px; }
 body.photo-mode #player-names { display: none; }
 .player-dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 4px; vertical-align: -1px; box-shadow: 0 0 0 1.5px rgba(255, 255, 255, 0.85); }

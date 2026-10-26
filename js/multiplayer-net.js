@@ -12,6 +12,17 @@ const DELAY_MS = 200; // others are drawn this far in the past, between two rece
 const EXTRAPOLATE_MS = 500; // after the last state, keep moving this long at the last speed, then stop
 const RETRY_MS = [5000, 15000, 60000];
 const MOVE_EPS = 0.05; // metres / radians that count as moving
+const GESTURE_MS = 2000; // one gesture per two seconds (the server drops faster ones)
+const GESTURE_SHOW_MS = 4000; // a gesture's bubble stays this long over the head
+// Gestures and ready-made phrases (step 5.4): the only words players can say to each other (no free chat)
+const GESTURES = [
+  { id: 'czesc', text: 'Cześć!', icon: '👋' },
+  { id: 'dzieki', text: 'Dzięki!', icon: '🙏' },
+  { id: 'jedziemy', text: 'Jedziemy?', icon: '🚕' },
+  { id: 'brawo', text: 'Brawo!', icon: '👏' },
+  { id: 'uwaga', text: 'Uwaga!', icon: '⚠️' },
+  { id: 'pa', text: 'Na razie!', icon: '✋' },
+];
 
 // Local server on localhost, the same host elsewhere; ?pokoj=test joins the test room (bots)
 function playersEndpoint(location = globalThis.location) {
@@ -169,6 +180,7 @@ class MultiplayerClient {
     this.reason = '';
     this.players = new Map(); // id -> { id, name, color, track, gesture: { g, t } }
     this.me = null; // { id, name, color }
+    this.myGesture = null; // { g, t }: my last gesture, for the bubble over my head and the cool-down
     this.colors = [];
     this.policy = new SendPolicy();
     this.ws = null;
@@ -268,6 +280,11 @@ class MultiplayerClient {
         if (p) { p.gesture = { g: msg.g, t: now }; this.emit('gesture', p); }
         break;
       }
+      case 'k': {
+        const p = this.players.get(msg.id);
+        if (p) this.emit('horn', p);
+        break;
+      }
       case 'imie':
         if (msg.id === this.me?.id) {
           Object.assign(this.me, { name: msg.name, color: msg.color });
@@ -341,8 +358,24 @@ class MultiplayerClient {
     if (this.status === 'online' && this.ws?.readyState === 1) this.ws.send(JSON.stringify({ t: 'imie' }));
   }
 
+  // A gesture: sent, and shown over my own head; false while the previous one is still cooling down
   gesture(g) {
-    if (this.status === 'online' && this.ws?.readyState === 1) this.ws.send(JSON.stringify({ t: 'g', g }));
+    if (this.status !== 'online' || this.ws?.readyState !== 1 || !GESTURES.some((x) => x.id === g)) return false;
+    const now = this.now();
+    if (this.myGesture && now - this.myGesture.t < GESTURE_MS) return false;
+    this.myGesture = { g, t: now };
+    this.ws.send(JSON.stringify({ t: 'g', g }));
+    this.emit('gesture', null);
+    return true;
+  }
+
+  gestureReady() {
+    return this.status === 'online' && (!this.myGesture || this.now() - this.myGesture.t >= GESTURE_MS);
+  }
+
+  // The horn in the car (B), for the players nearby
+  honk() {
+    if (this.status === 'online' && this.ws?.readyState === 1) this.ws.send(JSON.stringify({ t: 'k' }));
   }
 
   // The switch in the phone (5.3); off says goodbye and stays off until switched on
@@ -362,4 +395,4 @@ class MultiplayerClient {
   }
 }
 
-export { MultiplayerClient, Track, SendPolicy, playersEndpoint, soloByUrl, describeStatus, wrapAngle, DELAY_MS, EXTRAPOLATE_MS, RETRY_MS, STORAGE_KEY, ON_KEY };
+export { MultiplayerClient, Track, SendPolicy, playersEndpoint, soloByUrl, describeStatus, wrapAngle, GESTURES, GESTURE_MS, GESTURE_SHOW_MS, DELAY_MS, EXTRAPOLATE_MS, RETRY_MS, STORAGE_KEY, ON_KEY };

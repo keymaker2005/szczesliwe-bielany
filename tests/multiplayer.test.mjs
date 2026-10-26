@@ -196,3 +196,24 @@ test('client: new names for me and the others, the switch remembered, one status
   assert.match(describeStatus({ status: 'online', me: { room: 'test' }, players: new Map() }), /^Pokój testowy · na razie jesteś sam/);
 });
 
+test('client: horn out and in, gestures once in two seconds with my own bubble', async () => {
+  const { client, events, advance } = makeClient();
+  await client.start();
+  await tick();
+  const ws = FakeSocket.last;
+  ws.answer({ t: 'witaj', id: 1, name: 'x', color: 0, colors: [], players: [{ id: 2, name: 'y', color: 1 }] });
+  client.honk();
+  assert.deepEqual(ws.sent.at(-1), { t: 'k' });
+  ws.answer({ t: 'k', id: 2 });
+  assert.equal(events.at(-1)[0], 'horn');
+  assert.equal(events.at(-1)[1].id, 2);
+  assert.equal(client.gesture('czesc'), true);
+  assert.deepEqual(ws.sent.at(-1), { t: 'g', g: 'czesc' });
+  assert.equal(client.myGesture.g, 'czesc');
+  assert.equal(client.gestureReady(), false);
+  assert.equal(client.gesture('brawo'), false);
+  assert.equal(client.gesture('kup-teraz'), false);
+  advance(2000);
+  assert.equal(client.gesture('brawo'), true);
+});
+

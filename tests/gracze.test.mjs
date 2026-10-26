@@ -364,3 +364,20 @@ test('a new random name for everyone to see, once in two seconds', async () => {
   assert.equal(a.inbox.filter((m) => m.t === 'imie').length, 2);
 });
 
+test('the horn reaches only players within 200 m, once in 0.8 s', async () => {
+  const r = makeRoom();
+  const a = await joined(r, 'a');
+  const near = await joined(r, 'b');
+  const far = await joined(r, 'c');
+  await r.say(a, state({ x: 0, z: 0 }));
+  await r.say(near, state({ x: 150, z: 0 }));
+  await r.say(far, state({ x: 0, z: 900 }));
+  await r.say(a, { t: 'k' });
+  await r.say(a, { t: 'k' });
+  assert.deepEqual(near.inbox.filter((m) => m.t === 'k'), [{ t: 'k', id: 1 }]);
+  assert.equal(far.inbox.filter((m) => m.t === 'k').length, 0);
+  r.advance(LIMITS.hornMs);
+  await r.say(a, { t: 'k' });
+  assert.equal(near.inbox.filter((m) => m.t === 'k').length, 2);
+});
+

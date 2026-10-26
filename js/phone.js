@@ -7,6 +7,7 @@
 // name or logo. The game keeps running under it; keys still drive the player, the phone only takes clicks.
 
 import { MAX_QUESTION } from './chat.js';
+import { GESTURES } from './multiplayer-net.js';
 
 // Shown above every AI conversation, before the first question (step 4.5)
 // The mayor conversation (decision 8 of docs/plan-fazy-4.md): an in-game character, no name, never the office's voice
@@ -42,7 +43,8 @@ class Phone {
    */
   constructor({ root, button, missions, jobs, services, onOpenMap, onCamera, postcards, landmarks, onNavigate, status, time = '12:40', chat = null, chats = [{ id: 'przewodnik', name: 'Przewodnik' }], players = null }) {
     // players: { status(), available(), enabled(), setEnabled(on), me() -> { name, color }, rename(),
-    //   list() -> [{ id, name, color, mode, distance }], navigate(id), navigating() -> id } (main.js), or null
+    //   list() -> [{ id, name, color, mode, distance }], navigate(id), navigating() -> id, gesture(id), gestureReady() }
+    //   (main.js), or null
     this.players = players;
     this.chat = chat; // ChatClient (js/chat.js), { [conversation id]: ChatClient }, or null: no chat app content
     this.chats = chats; // the conversations shown in the Czat app (the mayor's one only when city-config CHAT_MAYOR)
@@ -157,6 +159,8 @@ class Phone {
       <div class="phone-card">
         <div class="phone-card-title">${dot(me.color)} ${esc(me.name)}<span>to Ty</span></div>
         <button type="button" class="phone-btn is-quiet" data-act="players-rename">Losuj nowe imię i kolor</button>
+        <div class="phone-card-line is-dim">Zwroty do graczy w pobliżu (albo klawisz T):</div>
+        <div class="phone-gestures">${GESTURES.map((g) => `<button type="button" class="phone-btn is-quiet" data-act="players-gesture" data-id="${g.id}"${pl.gestureReady() ? '' : ' disabled'}>${g.icon} ${esc(g.text)}</button>`).join('')}</div>
       </div>` : '';
     const rows = list.map((p) => `
       <div class="phone-card">
@@ -321,6 +325,9 @@ class Phone {
       this.render();
     } else if (act === 'players-rename') {
       this.players?.rename();
+    } else if (act === 'players-gesture') {
+      this.players?.gesture(id);
+      this.render();
     } else if (act === 'players-nav') {
       this.players?.navigate(Number(id));
       this.render();

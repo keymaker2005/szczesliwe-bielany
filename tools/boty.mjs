@@ -99,6 +99,7 @@ class Bot {
     this.send({ t: this.teleport ? 'tp' : 's', x: p.x, y, z: p.z, h: p.h, m: this.mode, v: this.speed });
     this.teleport = false;
     if (Math.random() < 0.01) this.send({ t: 'g', g: GESTURES[rand(GESTURES.length)] });
+    if (this.mode === 'car' && Math.random() < 0.004) this.send({ t: 'k' });
   }
 }
 

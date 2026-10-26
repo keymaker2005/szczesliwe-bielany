@@ -31,6 +31,7 @@ Wiadomości to JSON, krótkie pola. Pozycje w metrach układu świata (x wschód
 | `s` (stan) | 5 razy na sekundę w ruchu, raz na sekundę w bezruchu | `{ "t": "s", "x": 9.4, "y": 0, "z": -12.4, "h": -2.2, "m": "car", "v": 13.2 }` |
 | `tp` (teleport) | po teleporcie, zmianie miejsca z mapy itp. | jak `s`, `"t": "tp"`; najwyżej 1 na sekundę |
 | `g` (gest) | gest lub gotowy zwrot (krok 5.4) | `{ "t": "g", "g": "czesc" }`; najwyżej 1 na 2 s |
+| `k` (klakson) | klakson w aucie (B) | `{ "t": "k" }`; najwyżej 1 na 0,8 s, dostają go tylko gracze do 200 m |
 | `imie` | „Losuj” w telefonie: nowe losowe imię i kolor | `{ "t": "imie" }`; najwyżej 1 na 2 s |
 | `pa` | wyjście z gry z innymi | `{ "t": "pa" }`, potem serwer zamyka połączenie |
 
@@ -47,6 +48,7 @@ Wiadomości to JSON, krótkie pola. Pozycje w metrach układu świata (x wschód
 | `nowy` | `{ "t": "nowy", "p": { "id": 7, "name": "…", "color": 3, "x": …, … } }` (pozycja może być pusta do pierwszego stanu) |
 | `s` / `tp` | `{ "t": "s", "id": 7, "x": …, "y": …, "z": …, "h": …, "m": "car", "v": 12.5 }` (pozycje z dokładnością 1 cm) |
 | `g` | `{ "t": "g", "id": 7, "g": "czesc" }` |
+| `k` | `{ "t": "k", "id": 7 }` (klakson gracza w pobliżu; dźwięk z jego auta) |
 | `imie` | `{ "t": "imie", "id": 7, "name": "…", "color": 3 }` (nowe imię gracza; ten, kto losował, dostaje też `nameId`) |
 | `wyszedl` | `{ "t": "wyszedl", "id": 7 }` (wyjście, zamknięcie karty albo 10 s ciszy) |
 | `koniec` | `{ "t": "koniec", "reason": "resting" | "off" | "timeout" | "abuse" | "turnstile" | "full" }`, potem zamknięcie |

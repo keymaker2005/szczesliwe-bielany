@@ -49,6 +49,7 @@ import { createFallingLeaves } from './falling-leaves.js';
 import { nearestOnStreet } from './gps-route.js';
 import { MultiplayerClient, describeStatus } from './multiplayer-net.js';
 import { RemotePlayers } from './multiplayer.js';
+import { GestureWheel } from './gestures.js';
 
 // js/main.js
 // Main entry point for Szczęśliwe Bielany (Warsaw, along the M1 metro line) in Three.js WebGPURenderer & TSL (three.js dev @ fae8734, pinned in index.html)
@@ -292,8 +293,8 @@ async function initApp() {
 
   // Keyboard guide for each mode: [keys, action]
   const controlHints = {
-    person: [[['W', 'S'], 'Idź'], [['A', 'D'], 'Skręt'], [['Shift'], 'Bieg'], [['Space'], 'Skok'], [['Drag'], 'Obrót kamery']],
-    car: [[['W', 'S'], 'Jazda / wstecz'], [['A', 'D'], 'Skręt'], [['Shift'], 'Szybciej'], [['B'], 'Klakson'], [['Drag'], 'Obrót kamery']],
+    person: [[['W', 'S'], 'Idź'], [['A', 'D'], 'Skręt'], [['Shift'], 'Bieg'], [['Space'], 'Skok'], [['T'], 'Gesty'], [['Drag'], 'Obrót kamery']],
+    car: [[['W', 'S'], 'Jazda / wstecz'], [['A', 'D'], 'Skręt'], [['Shift'], 'Szybciej'], [['B'], 'Klakson'], [['T'], 'Gesty'], [['Drag'], 'Obrót kamery']],
     cyclist: [[['W', 'S'], 'Pedałuj / hamuj'], [['A', 'D'], 'Przechył i skręt'], [['Shift'], 'Sprint'], [['Drag'], 'Obrót kamery']],
     helicopter: [[['W', 'S'], 'Pochylenie'], [['A', 'D'], 'Obrót'], [['Space', 'E'], 'W górę'], [['Q', 'C'], 'W dół'], [['Shift'], 'Szybciej']]
   };
@@ -629,7 +630,10 @@ async function initApp() {
         if (!e.repeat && !e.metaKey && !e.ctrlKey && !e.altKey) audioSystem.setEnabled(!audioSystem.enabled);
         break;
       case 'KeyB':
-        if (!e.repeat && !e.metaKey && !e.ctrlKey && !e.altKey && !mapSystem.isFullMapOpen) audioSystem.honk(controllerManager.getActiveEntity());
+        if (!e.repeat && !e.metaKey && !e.ctrlKey && !e.altKey && !mapSystem.isFullMapOpen) {
+          audioSystem.honk(controllerManager.getActiveEntity());
+          if (controllerManager.activeMode === 'car') multiplayer.honk(); // the players nearby hear it too
+        }
         break;
     }
   });
@@ -780,6 +784,8 @@ async function initApp() {
         mapSystem.waypoint = followWaypoint;
       },
       navigating: () => (mapSystem.waypoint === followWaypoint ? followPlayer : null),
+      gesture: (id) => multiplayer.gesture(id),
+      gestureReady: () => multiplayer.gestureReady(),
     },
     status: () => (missions.active ? `W drodze: ${missions.goal().name}` : controllerManager.activeMode === 'car' ? taxi.statusLine() : courier.statusLine()),
   });
@@ -906,7 +912,10 @@ async function initApp() {
     }
   });
 
-  globalThis.bielany = { missions, testDelivery, abandon: () => missions.abandon(), teleport: (x, z, heading) => teleportTo(x, z, heading), marker: missionMarker, phone, courier, guide, scene, renderer, lightingSystem, trams, taxi, medic, ambulance, dispatch, controllerManager, photo, postcards, fallingLeaves, trafficSystem, multiplayer, remotePlayers };
+  // Other players' horns (from their cars) and the gesture wheel (T)
+  multiplayer.onChange = (event, player) => { if (event === 'horn') remotePlayers.honk(player, audioSystem); };
+  const gestureWheel = new GestureWheel(multiplayer, { blocked: () => mapSystem.isFullMapOpen || photo.active });
+  globalThis.bielany = { missions, testDelivery, abandon: () => missions.abandon(), teleport: (x, z, heading) => teleportTo(x, z, heading), marker: missionMarker, phone, courier, guide, scene, renderer, lightingSystem, trams, taxi, medic, ambulance, dispatch, controllerManager, photo, postcards, fallingLeaves, trafficSystem, multiplayer, remotePlayers, gestureWheel };
 
   // Initialize the UI and chase camera around the restored player, or the default taxi on a first visit.
   selectMode(controllerManager.activeMode);
@@ -1040,7 +1049,7 @@ async function initApp() {
     if (warmedUp) {
       const me = controllerManager.getActiveEntity();
       multiplayer.update({ x: me.position.x, y: me.position.y, z: me.position.z, h: me.heading, m: controllerManager.activeMode, v: me.speed });
-      remotePlayers.update(dt, multiplayer, cameraSystem.camera, now);
+      remotePlayers.update(dt, multiplayer, cameraSystem.camera, now, { x: me.position.x, y: me.position.y, z: me.position.z, m: controllerManager.activeMode });
       if (followPlayer !== null && mapSystem.waypoint === followWaypoint) {
         const at = multiplayer.players.get(followPlayer)?.track.sample(now);
         if (at) { followWaypoint.x = at.x; followWaypoint.z = at.z; }

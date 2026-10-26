@@ -10,6 +10,7 @@ import {
   buildHelicopterBodyGeometry, buildHelicopterMainRotorGeometry, buildHelicopterTailRotorGeometry, createLoftedHelicopterMaterial
 } from './actor-models.js';
 import { PersonCrowd, PersonRig } from './pedestrians.js';
+import { GESTURES, GESTURE_SHOW_MS } from './multiplayer-net.js';
 
 const MAX_DRAWN = 20;
 const DRAW_DISTANCE = 1200; // metres; farther players are only on the map
@@ -38,7 +39,8 @@ function warmUp(mesh) {
   mesh.count = 1;
 }
 
-const remoteGround = (owner) => owner.y; // the sender's own height: it already sits on the street, bridge or kerb
+const remoteGround = (owner) => owner.y;
+const gestureText = (g) => { const x = GESTURES.find((e) => e.id === g); return x ? `${x.icon} ${x.text}` : ''; }; // the sender's own height: it already sits on the street, bridge or kerb
 
 export class RemotePlayers {
   constructor(scene, { overlay = null } = {}) {
@@ -154,7 +156,8 @@ export class RemotePlayers {
   view(player) {
     let v = this.views.get(player.id);
     if (!v) {
-      v = { id: player.id, pose: { x: 0, y: 0, z: 0, h: 0, m: 'person', v: 0 }, rig: null, rigPlaced: false, bike: null, heli: null, wheelSpin: 0, lastH: 0, lean: 0 };
+      v = { id: player.id, pose: { x: 0, y: 0, z: 0, h: 0, m: 'person', v: 0 }, rig: null, rigPlaced: false, bike: null, heli: null, wheelSpin: 0, lastH: 0, lean: 0,
+        audio: { type: 'car', position: { x: 0, y: 0, z: 0 }, heading: 0 } }; // the horn's sound source (audio-system.js honk)
       this.views.set(player.id, v);
     }
     return v;
@@ -173,8 +176,9 @@ export class RemotePlayers {
     }
   }
 
-  // client: MultiplayerClient; camera: the game camera; now: performance.now(). Call only after the warm-up frame.
-  update(dt, client, camera, now) {
+  // client: MultiplayerClient; camera: the game camera; now: performance.now(); self: my { x, y, z, m } (my gesture's
+  // bubble). Call only after the warm-up frame.
+  update(dt, client, camera, now, self = null) {
     this.time += dt;
     const players = client.players;
     this.prune(players);
@@ -200,6 +204,7 @@ export class RemotePlayers {
       const speed = v.pose.v;
       const turn = THREE.MathUtils.euclideanModulo(h - v.lastH + Math.PI, Math.PI * 2) - Math.PI;
       v.lastH = h;
+      v.audio.position.x = x; v.audio.position.y = y; v.audio.position.z = z; v.audio.heading = h;
       const css = client.colorOf(p);
       if (m !== 'cyclist' && v.bike) { v.bike.root.visible = v.bike.helmet.visible = false; }
       if (m !== 'helicopter' && v.heli) v.heli.root.visible = false;
@@ -279,11 +284,39 @@ export class RemotePlayers {
       if (v.bike) v.bike.root.visible = v.bike.helmet.visible = false;
       if (v.heli) v.heli.root.visible = false;
     }
-    this.updateNames(client, camera, players);
+    this.updateNames(client, camera, players, now);
+    this.updateSelf(client, camera, now, self);
+  }
+
+  // Another player's horn, from their car (the game's own horn sound, positioned and following the car)
+  honk(player, audio) {
+    const v = this.views.get(player.id);
+    if (v?.visible && v.pose.m === 'car') audio.honk(v.audio);
+  }
+
+  // My own gesture, over my head for a moment
+  updateSelf(client, camera, now, self) {
+    if (!this.overlay) return;
+    if (!this.selfEl) {
+      this.selfEl = document.createElement('div');
+      this.selfEl.className = 'player-name is-self';
+      this.selfEl.innerHTML = '<span class="bubble"></span>';
+      this.overlay.appendChild(this.selfEl);
+    }
+    const g = client.myGesture;
+    const fresh = self && g && now - g.t < GESTURE_SHOW_MS && client.status === 'online';
+    if (!fresh) { this.selfEl.style.display = 'none'; return; }
+    const head = self.m === 'car' ? 2.1 : self.m === 'helicopter' ? 3.6 : 2.25;
+    _v.set(self.x, self.y + head, self.z).project(camera);
+    if (_v.z > 1 || _v.z < -1) { this.selfEl.style.display = 'none'; return; }
+    this.selfEl.style.display = '';
+    this.selfEl.style.transform = `translate(${((_v.x + 1) / 2) * this.overlay.clientWidth}px, ${((1 - _v.y) / 2) * this.overlay.clientHeight}px) translate(-50%, -100%)`;
+    const text = gestureText(g.g);
+    if (this.selfEl.firstChild.textContent !== text) this.selfEl.firstChild.textContent = text;
   }
 
   // One HTML label per player over the head, up to NAME_DISTANCE; projected every frame
-  updateNames(client, camera, players) {
+  updateNames(client, camera, players, now) {
     if (!this.names) return;
     const w = this.overlay.clientWidth, h = this.overlay.clientHeight;
     for (const p of players.values()) {
@@ -294,7 +327,7 @@ export class RemotePlayers {
       if (!el) {
         el = document.createElement('div');
         el.className = 'player-name';
-        el.innerHTML = '<span class="dot"></span><span class="txt"></span>';
+        el.innerHTML = '<span class="dot"></span><span class="txt"></span><span class="bubble"></span>';
         this.overlay.appendChild(el);
         this.names.set(p.id, el);
       }
@@ -307,8 +340,11 @@ export class RemotePlayers {
       el.style.transform = `translate(${((_v.x + 1) / 2) * w}px, ${((1 - _v.y) / 2) * h}px) translate(-50%, -100%) scale(${1 - 0.35 * k})`;
       el.style.opacity = String(1 - 0.6 * k);
       el.style.zIndex = String(1000 - Math.round(v.dist));
-      const txt = el.lastChild;
+      const txt = el.children[1];
       if (txt.textContent !== p.name) txt.textContent = p.name;
+      const bubble = el.children[2];
+      const said = p.gesture && now - p.gesture.t < GESTURE_SHOW_MS ? gestureText(p.gesture.g) : '';
+      if (bubble.textContent !== said) { bubble.textContent = said; el.classList.toggle('has-bubble', Boolean(said)); }
       const css = client.colorOf(p);
       if (el.dataset.color !== css) { el.dataset.color = css; el.firstChild.style.background = css; }
     }

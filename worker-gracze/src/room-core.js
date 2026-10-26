@@ -137,6 +137,15 @@ export class RoomCore {
         att.tg = now;
         this.broadcast(ws, { t: 'g', id: att.id, g: msg.g });
       }
+    } else if (msg.t === 'k') {
+      // The horn, heard only nearby (its sound carries ~140 m in the game)
+      if (now - (att.tk || 0) >= LIMITS.hornMs && att.p) {
+        att.tk = now;
+        for (const [w, a] of this.players) {
+          if (w === ws || a.stage !== 'in' || !a.p) continue;
+          if (Math.hypot(a.p.x - att.p.x, a.p.z - att.p.z) <= LIMITS.hornRange) this.io.send(w, { t: 'k', id: att.id });
+        }
+      }
     } else if (msg.t === 'imie') {
       // A new random name and colour (the phone's "Losuj"), for everybody to see
       if (now - (att.tn || 0) >= LIMITS.renameMs) {

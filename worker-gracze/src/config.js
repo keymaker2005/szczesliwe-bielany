@@ -14,6 +14,8 @@ export const LIMITS = {
   teleportMs: 1000, // one teleport per second
   gestureMs: 2000, // one gesture per two seconds
   renameMs: 2000, // one new name per two seconds
+  hornMs: 800, // one horn per 0.8 s (as the game's own horn)
+  hornRange: 200, // metres: players farther away don't get the horn
   reportEvery: 2000, // messages between usage reports to the lobby
   messagesPerRequest: 20, // Cloudflare bills incoming WebSocket messages 20:1
   requestsPerConnect: 4, // lobby pick + room fetch + join and leave reports

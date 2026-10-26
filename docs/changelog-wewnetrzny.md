@@ -12,6 +12,7 @@ Plan: docs/plan-fazy-5.md (zaakceptowany ze wszystkimi decyzjami).
   (index.html, style.css); 19 botów, 60 fps w Chrome na M4.
 - 5.3 Aplikacja Gracze: phone.js, main.js, multiplayer-net.js (imie, przełącznik, describeStatus), room-core.js (imie);
   błąd: clearTimeout wywoływany jako metoda (Illegal invocation); serwer graczy lokalnie 8788 → 8789.
+- 5.4 Klakson i gesty: gestures.js (T), multiplayer.js (dymki, klakson), room-core.js (k do 200 m), phone.js (zwroty).
 
 ## Faza 4: Czaty LLM i patronat (gałąź faza-4, 2026-10-26)
 
