@@ -737,7 +737,7 @@ async function initApp() {
   let dispatch = null; // the emergency services' dispatch (js/dispatch.js), right after the phone
   const phone = new Phone({
     onCamera: () => photo.enter(),
-    chat: new ChatClient(),
+    chat: { przewodnik: new ChatClient({ chat: 'przewodnik' }), burmistrz: new ChatClient({ chat: 'burmistrz' }) },
     chats: [{ id: 'przewodnik', name: 'Przewodnik' }, ...(CHAT_MAYOR ? [{ id: 'burmistrz', name: 'Burmistrz Bielan' }] : [])],
     postcards,
     root: document.getElementById('phone'),

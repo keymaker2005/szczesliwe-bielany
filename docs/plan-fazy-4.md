@@ -127,6 +127,14 @@ Zaakceptowany 2026-10-25 ze wszystkimi propozycjami decyzji (decyzja 5: SMS-y od
    zobaczymy, o co gracze pytają. Druga możliwość: zapis anonimowych pytań (bez odpowiedzi i adresów) przez 7 dni
    do poprawiania bazy wiedzy, z informacją w czacie. Proponuję pierwszą.
 
+8. Burmistrz bez zgody (decyzja autora z 2026-10-26, zmienia 4.6–4.8 i decyzję 3): czat z postacią „Burmistrz Bielan”
+   powstaje bez pisma i bez zgody urzędu, bez imienia i nazwiska, bez patronatu i bez logo dzielnicy. Baza wiedzy
+   z publicznych stron urzędu i miasta (docs/wiedza-burmistrza.md, każde hasło z adresem i datą), nie z materiałów
+   zatwierdzonych przez urząd. Bez zmian zostają: oznaczenie „AI”, stała stopka „Odpowiedź AI w grze, nie oficjalne
+   stanowisko Urzędu Dzielnicy Bielany”, bez polityki i wyborów, bez obietnic i opinii, sprawy urzędowe odsyłane do
+   urzędu, drugi bezpiecznik w Workerze, ok. 50 pytań kontrolnych. Pytania kontrolne akceptuje autor (nie urząd).
+   Model: Claude Sonnet 5.5. Pismo do urzędu (4.6) czeka; patronat (4.10) pominięty.
+
 ## Praca równoległa (wg docs/praca-rownolegla.md)
 | Zadanie | Gałąź | Model | Kiedy |
 | --- | --- | --- | --- |

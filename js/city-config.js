@@ -216,9 +216,9 @@ if (URZAD && typeof document !== 'undefined') document.body.classList.add('urzad
 // (ragdoll, js/pedestrians.js). Off in the district office's version (URZAD): one switch.
 const PEDESTRIAN_CONTACT = !URZAD;
 
-// The phone's Czat app (js/chat.js): the "Burmistrz Bielan" conversation stays hidden until the mayor's written consent
-// and the office's knowledge base (Faza 4, steps 4.6-4.7). No name or surname of the mayor either way.
-const CHAT_MAYOR = false;
+// The phone's Czat app (js/chat.js): the "Burmistrz Bielan" conversation, an in-game AI character without a name,
+// knowledge from public pages (decision 8 of docs/plan-fazy-4.md, 2026-10-26). false hides it.
+const CHAT_MAYOR = true;
 
 // 'green', 'amber' or 'red' for main-road (isAvenue) or crossing-road traffic at a given time
 function signalPhase(time, isAvenue) {

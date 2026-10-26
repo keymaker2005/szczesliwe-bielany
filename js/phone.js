@@ -8,6 +8,9 @@
 import { MAX_QUESTION } from './chat.js';
 
 // Shown above every AI conversation, before the first question (step 4.5)
+// The mayor conversation (decision 8 of docs/plan-fazy-4.md): an in-game character, no name, never the office's voice
+const MAYOR_INFO = 'Burmistrz Bielan to postać AI w grze, nie prawdziwy burmistrz ani urząd. ';
+const MAYOR_FOOTER = 'Odpowiedź AI w grze, nie oficjalne stanowisko Urzędu Dzielnicy Bielany';
 const CHAT_INFO = 'Odpowiedzi tworzy model AI (Claude, Anthropic) na podstawie bazy wiedzy o Bielanach i mogą zawierać błędy. '
   + 'Rozmowy nie są zapisywane; pytanie trafia do dostawcy modelu tylko po to, by na nie odpowiedzieć. Nie podawaj danych osobowych.';
 
@@ -33,9 +36,9 @@ class Phone {
    * dispatch), onOpenMap(), status: () => line under the clock, time: '12:40' }
    */
   constructor({ root, button, missions, jobs, services, onOpenMap, onCamera, postcards, landmarks, onNavigate, status, time = '12:40', chat = null, chats = [{ id: 'przewodnik', name: 'Przewodnik' }] }) {
-    this.chat = chat; // ChatClient (js/chat.js) or null: no chat app content
+    this.chat = chat; // ChatClient (js/chat.js), { [conversation id]: ChatClient }, or null: no chat app content
     this.chats = chats; // the conversations shown in the Czat app (the mayor's one only when city-config CHAT_MAYOR)
-    this.chatLog = []; // { who: 'me' | 'ai' | 'note', text, guide, navigate }, in this tab's memory only
+    this.chatLogs = {}; // per conversation: [{ who: 'me' | 'ai' | 'note', text, guide, navigate }], in this tab's memory only
     this.chatBusy = false;
     this.chatDraft = '';
     this.chatEl = null;
@@ -157,7 +160,8 @@ class Phone {
     this.chatInputEl.value = this.chatDraft;
     this.chatInput(this.chatInputEl);
     this.chatLines();
-    if (this.chat && this.chat.state === 'unknown') this.chat.init().then(() => this.chatLines());
+    const client = this.chatClient();
+    if (client && client.state === 'unknown') client.init().then(() => this.chatLines());
   }
 
   chatInput(input) {
@@ -168,19 +172,32 @@ class Phone {
 
   chatLines() {
     if (!this.chatEl || !this.chatEl.isConnected) return;
-    const lines = [...this.chatLog];
-    if (!this.chat || !this.chat.available) {
+    const client = this.chatClient();
+    const mayor = this.chatId === 'burmistrz';
+    const lines = [...this.chatLog()];
+    if (!client || !client.available) {
       if (!lines.some((l) => l.guide)) lines.push({ who: 'note', off: true, guide: true, text: 'Czat odpoczywa. Zajrzyj do aplikacji Przewodnik: są tam gotowe teksty o Bielanach.' });
     }
     const log = this.chatEl.querySelector('.chat-log');
-    log.innerHTML = `<div class="chat-note chat-info">${esc(CHAT_INFO)}</div>`
+    log.innerHTML = `<div class="chat-note chat-info">${esc(mayor ? MAYOR_INFO + CHAT_INFO : CHAT_INFO)}</div>`
       + (lines.length ? '' : '<p class="phone-empty">Zapytaj mnie o Bielany: klasztor, las, metro, osiedla.</p>') + lines.map((l) => (l.who === 'note'
       ? `<div class="chat-note">${esc(l.text)}${l.guide ? '<button type="button" class="phone-btn is-quiet" data-act="app" data-id="guide">Otwórz Przewodnika</button>' : ''}</div>`
-      : `<div class="chat-msg is-${l.who}">${esc(l.text)}</div>${this.chatNavigate(l.navigate)}`)).join('') + (this.chatBusy ? '<div class="chat-msg is-ai is-typing">pisze…</div>' : '');
-    const off = Boolean(this.chat && !this.chat.available) || !this.chat;
+      : `<div class="chat-msg is-${l.who}">${esc(l.text)}${mayor && l.who === 'ai' ? `<span class="chat-foot">${esc(MAYOR_FOOTER)}</span>` : ''}</div>${this.chatNavigate(l.navigate)}`)).join('') + (this.chatBusy ? '<div class="chat-msg is-ai is-typing">pisze…</div>' : '');
+    const off = !client || !client.available;
     this.chatInputEl.disabled = off;
     this.chatEl.querySelector('.chat-send').disabled = off || this.chatBusy;
     log.scrollTop = log.scrollHeight;
+  }
+
+  // The open conversation's client and messages (one per conversation: the guide and the mayor character)
+  chatClient() {
+    const c = this.chat;
+    if (!c) return null;
+    return typeof c.ask === 'function' ? c : c[this.chatId] || null;
+  }
+
+  chatLog() {
+    return (this.chatLogs[this.chatId] ||= []);
   }
 
   // "Nawiguj" under a guide's answer about a landmark (the Worker's navigate field, step 4.4)
@@ -194,15 +211,17 @@ class Phone {
   async chatSend() {
     const input = this.chatInputEl;
     const q = (input?.value || '').trim();
-    if (!q || this.chatBusy || !this.chat || !this.chat.available) return;
-    this.chatLog.push({ who: 'me', text: q });
+    const client = this.chatClient();
+    const log = this.chatLog();
+    if (!q || this.chatBusy || !client || !client.available) return;
+    log.push({ who: 'me', text: q });
     input.value = '';
     this.chatInput(input);
     this.chatBusy = true;
     this.chatLines();
-    const r = await this.chat.ask(q);
+    const r = await client.ask(q);
     this.chatBusy = false;
-    this.chatLog.push(r.ok ? { who: 'ai', text: r.text, navigate: r.navigate } : { who: 'note', text: r.text, guide: r.guide });
+    log.push(r.ok ? { who: 'ai', text: r.text, navigate: r.navigate } : { who: 'note', text: r.text, guide: r.guide });
     this.chatLines();
     if (r.ok && this.chatInputEl?.isConnected) this.chatInputEl.focus();
   }

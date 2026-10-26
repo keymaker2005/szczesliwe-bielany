@@ -3,11 +3,13 @@
 // Only text goes to the model; it has no tools. The API key comes from the Worker secret ANTHROPIC_API_KEY.
 import { LIMITS, MODELS, PRICES } from './config.js';
 import { GUIDE_SYSTEM } from './wiedza-przewodnika.js';
+import { MAYOR_SYSTEM } from './wiedza-burmistrza.js';
 
 export const API_URL = 'https://api.anthropic.com/v1/messages';
 export const API_VERSION = '2026-10-21';
 
-const SYSTEMS = { przewodnik: GUIDE_SYSTEM };
+const SYSTEMS = { przewodnik: GUIDE_SYSTEM, burmistrz: MAYOR_SYSTEM };
+const MODEL_VARS = { przewodnik: 'GUIDE_MODEL', burmistrz: 'MAYOR_MODEL' };
 
 // Landmark ids the guide may offer "Nawiguj" for (SITES in js/guide.js; tests check they match)
 export const SITE_IDS = ['kameduly', 'las-bielanski', 'awf', 'uksw', 'stare-bielany', 'wawrzyszew', 'mlociny',
@@ -39,6 +41,22 @@ export function splitAnswer(text) {
   return { text: clean, navigate };
 }
 
+// Second safeguard for the mayor character (step 4.7): an answer that touches politics, elections, promises or a real
+// office holder's name is replaced by a fixed one that points to the office. Deliberately broad: a false alarm only
+// costs one answer.
+const MAYOR_BLOCK = [
+  /\bpartii?\b|partyjn|\bPiS\b|Prawo i Sprawiedliwo|Platform[aąy] Obywatelsk|Koalicj[aąi] Obywatelsk|Konfederacj|\bLewic|\bPSL\b|Polska 2050|Trzecia Droga/i,
+  /kampani[aię] wyborcz|kandydu|kandydat|głosuj(cie|ę|e)|zagłosuj|elektorat|sondaż|referend/i,
+  /obiecuj|obiecuję|zobowiązuj|gwarantuj|zrobimy|naprawimy|wybudujemy|załatwię|załatwimy|dopilnuję/i,
+  /Pietruczuk|Trzaskowsk|Tusk|Kaczyńsk|Nawrock|Morawieck|Hołowni/i,
+];
+export const MAYOR_SAFE = 'Jako postać w grze nie rozmawiam o polityce, wyborach ani zapowiedziach. W sprawach dzielnicy najlepiej '
+  + 'zapytać Urząd Dzielnicy Bielany albo Miejskie Centrum Kontaktu Warszawa 19115. Chętnie opowiem o Bielanach.';
+
+export function mayorAnswerSafe(text) {
+  return !MAYOR_BLOCK.some((re) => re.test(text));
+}
+
 export function costUsd(usage, price) {
   if (!usage) return 0;
   const M = 1e6;
@@ -49,7 +67,7 @@ export function costUsd(usage, price) {
 }
 
 export async function askModel(req, env, fetchImpl = fetch) {
-  const model = (req.chat === 'przewodnik' && env.GUIDE_MODEL) || MODELS[req.chat];
+  const model = env[MODEL_VARS[req.chat]] || MODELS[req.chat];
   if (!env.ANTHROPIC_API_KEY) throw new Error('no key');
   if (!PRICES[model]) throw new Error(`no price for ${model}`); // the budget must know what each answer costs
   const body = {
@@ -73,5 +91,6 @@ export async function askModel(req, env, fetchImpl = fetch) {
   if (data.stop_reason === 'refusal') return { text: FALLBACK, navigate: '', costUsd: cost };
   const raw = (data.content || []).filter((b) => b.type === 'text').map((b) => b.text).join('').trim();
   const { text, navigate } = splitAnswer(raw);
+  if (req.chat === 'burmistrz' && !mayorAnswerSafe(text)) return { text: MAYOR_SAFE, navigate: '', costUsd: cost, usage: data.usage, guarded: true };
   return { text: text || FALLBACK, navigate, costUsd: cost, usage: data.usage };
 }

@@ -1,7 +1,7 @@
 // Cloudflare Worker for the in-game chat: safety limits (step 4.1) and the guide's model (step 4.4, worker/src/model.js).
 // Contract with the game: docs/api-czat.md. Secrets (never in the repo): TURNSTILE_SECRET, later ANTHROPIC_API_KEY.
 // Kill switch without a code deploy: `wrangler secret put CHAT_OFF` (any value) turns the chat off, `wrangler secret
-// delete CHAT_OFF` turns it back on.
+// delete CHAT_OFF` turns it back on. MAYOR_OFF does the same for the mayor character only.
 import { CHATS, LIMITS, MESSAGES, PRODUCTION_ORIGINS, TURNSTILE_TEST_SITE_KEY } from './config.js';
 import { Counters } from './counters.js';
 import { askModel } from './model.js';
@@ -130,6 +130,7 @@ export async function handle(request, env, fetchImpl = fetch) {
   const raw = await readBody(request);
   const req = raw === null ? null : parseQuestion(raw);
   if (!req) return fail('bad_request', origin, env);
+  if (req.chat === 'burmistrz' && env.MAYOR_OFF) return fail('off', origin, env); // the mayor alone: wrangler secret put MAYOR_OFF
 
   const call = counters(env);
   let session = req.session;

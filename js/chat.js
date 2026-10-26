@@ -83,8 +83,9 @@ function turnstileProvider({ doc = globalThis.document, win = globalThis.window 
 }
 
 class ChatClient {
-  /** options: { endpoint, fetchImpl, getToken: (siteKey) => Promise<string>, disabled, timeoutMs } */
-  constructor({ endpoint = chatEndpoint(), fetchImpl = (...a) => globalThis.fetch(...a), getToken, disabled = chatDisabledByUrl(), timeoutMs = TIMEOUT_MS } = {}) {
+  /** options: { chat: 'przewodnik' | 'burmistrz', endpoint, fetchImpl, getToken: (siteKey) => Promise<string>, disabled, timeoutMs } */
+  constructor({ chat = 'przewodnik', endpoint = chatEndpoint(), fetchImpl = (...a) => globalThis.fetch(...a), getToken, disabled = chatDisabledByUrl(), timeoutMs = TIMEOUT_MS } = {}) {
+    this.chat = chat;
     this.endpoint = endpoint;
     this.fetch = fetchImpl;
     this.getToken = getToken || turnstileProvider();
@@ -136,7 +137,7 @@ class ChatClient {
   }
 
   async post(question, turnstile) {
-    const body = { chat: 'przewodnik', question, history: trimHistory(this.history), session: this.session };
+    const body = { chat: this.chat, question, history: trimHistory(this.history), session: this.session };
     if (turnstile) body.turnstile = turnstile;
     return this.request('', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
   }

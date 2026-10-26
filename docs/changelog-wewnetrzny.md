@@ -22,6 +22,9 @@ Plan: docs/plan-fazy-4.md (zaakceptowany ze wszystkimi decyzjami). Praca równol
 - `6923d98`, `6d6dadd` 4.5 informacja o AI, klucz Turnstile; Worker bielany-czat wdrożony (trasa bielany.zbigniew.ai/api/*),
   publikacja strony 6d6dadd (wersja 0.7 w CHANGELOG.md). Wdrożenie Workera wymaga wyraźnego polecenia autora
   (ochrona trybu auto odrzuciła próbę bez niego).
+- 4.7–4.8 czat z postacią „Burmistrz Bielan” (decyzja 8: bez zgody urzędu, bez nazwiska i patronatu): baza z publicznych
+  stron (pomocnik Sonnet), Sonnet 5.5, drugi bezpiecznik, osobne rozmowy w telefonie; 50 pytań kontrolnych 0,35 USD,
+  bezpiecznik nie zadziałał ani razu. Czeka na przegląd.
 - Uwaga z scaleń: sesje w ponownie użytych folderach worktree zacommitowały kopie macOS „plik 2.js” (`git add -A`);
   usunięte przed scaleniem. Przy kolejnych sesjach sprawdzać `git diff --stat faza-4...<gałąź>` przed scaleniem.
 

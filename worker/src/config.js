@@ -14,9 +14,11 @@ export const LIMITS = {
   answerTokens: 600, // ~120 Polish words plus room; a longer answer is cut
 };
 
-// Model per conversation (the Worker variable GUIDE_MODEL switches the guide to another one without a code change)
+// Model per conversation (Worker variables GUIDE_MODEL / MAYOR_MODEL switch to another one without a code change).
+// The mayor character keeps to its rules more carefully on Sonnet (decision 1 of docs/plan-fazy-4.md).
 export const MODELS = {
   przewodnik: 'claude-haiku-5-5',
+  burmistrz: 'claude-sonnet-5-5',
 };
 
 // Prices in USD per 1M tokens (Anthropic price list cached 2026-10-06, checked again 2026-10-26; Haiku up to 100k input
