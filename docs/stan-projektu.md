@@ -1,4 +1,4 @@
-# Stan projektu (przekazanie sesji, 2026-10-26 po publikacji 0.8)
+# Stan projektu (przekazanie sesji, 2026-10-26 po publikacji 1.0)
 
 ## Faza 4 (gałąź faza-4, plan docs/plan-fazy-4.md) — dla nowej sesji
 - Zrobione i sprawdzone: 4.1 Worker z bezpiecznikami, 4.2 aplikacja Czat, 4.3 baza przewodnika, 4.4 przewodnik na
@@ -9,7 +9,9 @@
   Północny, czat w trakcie jazdy, ?czat=off), ceny modeli sprawdzone (Sonnet 5.5: odczyt z pamięci 0,10 USD).
   Decyzje z 2026-10-26: test robi autor; ten sam test zamyka bramki Faz 2, 3 i 4; publikacja przed testem jako 0.9,
   numer 1.0 po zaliczonym teście. Opublikowane jako 0.9 (strona b672de0, gra bez zmian względem 0.8).
-  Do zrobienia: test autora, bramki. Worker z nową ceną Sonneta wdrożony 2026-10-26 (wersja b882fe32).
+  Worker z nową ceną Sonneta wdrożony 2026-10-26 (wersja b882fe32). Test 1.0 przeszedł 2026-10-26 (według autora,
+  bez przesłanych liczb fps): bramki Faz 2, 3 i 4 zaliczone, strona opublikowana jako 1.0.
+  Otwarte: scalenie do main (bramka Fazy 1 czeka na pakiet dla urzędu, 1.9c), pismo 4.6.
 - Przez tydzień od 2026-10-26 autor codziennie patrzy na koszty w konsoli Anthropic (Usage). Koszt pytania: przewodnik
   ok. 0,03 centa, burmistrz ok. 0,7 centa; limity: 20 pytań / 10 min z adresu, 1000 dziennie, 30 USD miesięcznie
   (licznik w Workerze) + twardy limit 30 USD w konsoli Anthropic.
@@ -38,7 +40,7 @@
   razem z dodatkami: tabliczki MSI, zwierzęta w lasach, Stadion Hutnika, aplikacja Przewodnik. Bramka czeka na test na
   Windows; otwarte przed bramką: 52-56 fps pieszo przy Kamedułach (Chrome, M4), 30 fps zgłoszone w Edge (docs/backlog.md).
 - Faza 4: patrz sekcja na górze.
-- Historia: CHANGELOG.md (publiczne wersje 0.1-0.9 według publikacji na Cloudflare), docs/changelog-wewnetrzny.md
+- Historia: CHANGELOG.md (publiczne wersje 0.1-1.0 według publikacji na Cloudflare), docs/changelog-wewnetrzny.md
   (kroki i commity). Praca równoległa: docs/praca-rownolegla.md (koordynator + osobne sesje na gałęziach, modele:
   Haiku proste, Sonnet powtarzalne, Opus myślenie; scalanie do gałęzi fazy tylko na polecenie użytkownika).
 - Drzewa GUGiK: strumień paczki 8,6 GB urwał się przy 355 z 484 arkuszy; data/bielany_trees_2023.json to stary wycinek

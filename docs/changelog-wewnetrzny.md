@@ -29,6 +29,8 @@ Plan: docs/plan-fazy-4.md (zaakceptowany ze wszystkimi decyzjami). Praca równol
 - 4.11 (sesja claude/faza-4-krok-4-11-x69wgs): ceny modeli sprawdzone (Sonnet 5.5 odczyt z pamięci 0,20 → 0,10 USD
   w worker/src/config.js, Worker wdrożony 2026-10-26, wersja b882fe32), docs/test-1.8b.md jako „Test 1.0” (Fazy 2–4 w jednym
   teście), fazy.md: status, 4.10, 4.11, bramka; kryteria bramki w planie według decyzji 8.
+- 4.11 scalone 2026-10-26, publikacja 0.9 (b672de0). Test 1.0 na Windows przeszedł (zgłoszenie autora): bramki Faz 2,
+  3 i 4 zaliczone, publikacja 1.0.
 - Uwaga z scaleń: sesje w ponownie użytych folderach worktree zacommitowały kopie macOS „plik 2.js” (`git add -A`);
   usunięte przed scaleniem. Przy kolejnych sesjach sprawdzać `git diff --stat faza-4...<gałąź>` przed scaleniem.
 

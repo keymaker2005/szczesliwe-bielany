@@ -1,6 +1,6 @@
 # Fazy: bieżący zakres
 
-Status: FAZA 4 (czaty LLM), gałąź faza-4, krok 4.11 (wersja 1.0 i test na Windows). Fazy 0 i 1.5 zaliczone; Fazy 1, 2 i 3 zrobione, ich bramki (wydajność na Windows) zamyka ten sam test co bramkę Fazy 4: docs/test-1.8b.md (decyzja z 2026-10-26). Pakiet dla urzędu i pismo (1.9c, 4.6) odłożone. Scalenie do main dopiero po bramkach.
+Status: wersja 1.0 opublikowana 2026-10-26, gałąź faza-4. Fazy 0, 1.5, 2, 3 i 4 zaliczone (bramki Faz 2–4 zamknął Test 1.0 na Windows, docs/test-1.8b.md, 2026-10-26). Faza 1 zrobiona, jej bramka czeka na pakiet dla urzędu. Pakiet dla urzędu i pismo (1.9c, 4.6) odłożone. Scalenie do main dopiero po bramkach.
 
 ## Faza 0: Rozpoznanie
 Bramka: dane się wczytują, plan Fazy 1 zaakceptowany.
@@ -67,7 +67,7 @@ Bramka: 60 fps na laptopie. Plan: docs/plan-fazy-2.md (zaakceptowany 2026-10-26)
 - [x] 2.5 Ratownik medyczny. Sprawdzam: wezwanie, dojazd na sygnale, przewóz do szpitala.
 - [x] 2.6 Aparat i spadające liście. Sprawdzam: zdjęcie w Pocztówkach, zapis do pliku.
 - [x] 2.7 Deploy na bielany.zbigniew.ai (2026-10-26): wszystkie role (kurier, taksówkarz, ratownik), tramwaje, Aparat, większy obszar. Sprawdzam: 60 fps, pełna pętla wszystkich ról na publicznym linku.
-- [ ] Bramka Fazy 2: 60 fps na zwykłym laptopie z Windows (test według docs/test-1.8b.md, punkty 6a i 6b). Na MacBooku M4: 54–60 fps z helikoptera, 60 na ziemi.
+- [x] Bramka Fazy 2: 60 fps na zwykłym laptopie z Windows (test według docs/test-1.8b.md, punkty 6a i 6b). Zaliczona 2026-10-26: Test 1.0 na Windows (docs/test-1.8b.md) według autora przechodzi. Na MacBooku M4: 54–60 fps z helikoptera, 60 na ziemi.
 
 
 ## Faza 3: Służby i teren
@@ -109,8 +109,8 @@ napisy słowne na pojazdach służb bez insygniów, najpierw teren). Gałąź fa
   traffic.js (command), zderzenia przez addCollisionWatcher obok dźwięku. Sprawdzam: 2 kontrole i 1 pościg bez taranowania.
 - [x] 3.8 Deploy (2026-10-25): wersja b9bfcb1 na bielany.zbigniew.ai (wszystkie role, teren, Wisła, mosty, lasy ze
   zwierzętami, Stadion Hutnika, Przewodnik); w Chrome na M4 60 fps przy Moście Północnym, bez błędów w konsoli.
-- [ ] Bramka Fazy 3: cała dzielnica grywalna, 60 fps na laptopie z Windows (docs/test-1.8b.md, dopisać trasy: skarpa,
-  Wisłostrada, Most Północny, las), zbadać 52-56 fps przy Kamedułach i 30 fps zgłoszone w Edge.
+- [x] Bramka Fazy 3: cała dzielnica grywalna, 60 fps na laptopie z Windows (docs/test-1.8b.md: skarpa, Kameduły,
+  Most Północny, las). Zaliczona 2026-10-26: Test 1.0 na Windows (docs/test-1.8b.md) według autora przechodzi.
 
 ## Faza 4: Czaty LLM i patronat
 Bramka: wersja 1.0 z patronatem (bez zgody urzędu: 1.0 z przewodnikiem, bez burmistrza i logo). Plan: docs/plan-fazy-4.md
@@ -150,8 +150,9 @@ potrącania pieszych, bez zapisu rozmów; SMS-y od „Burmistrz Bielan” bez na
 - [x] 4.9 Wersja dla urzędu: ?urzad wyłącza kontakt z pieszymi (URZAD, PEDESTRIAN_CONTACT w js/city-config.js), znaczek
   „wersja dla urzędu”. Sprawdzam: pieszych nie da się potrącić, znaczek widoczny (sprawdzone 2026-10-26).
 - [ ] 4.10 Logo dzielnicy i patronat: pominięty decyzją autora z 2026-10-26 (bez decyzji urzędu o patronacie).
-- [ ] 4.11 Wersja 1.0 i bramka: ceny modeli sprawdzone 2026-10-26 (Sonnet 5.5 tańszy odczyt z pamięci podręcznej),
+- [x] 4.11 Wersja 1.0 i bramka: ceny modeli sprawdzone 2026-10-26 (Sonnet 5.5 tańszy odczyt z pamięci podręcznej),
   test na Windows rozszerzony o skarpę, Most Północny i czat w trakcie jazdy (docs/test-1.8b.md, „Test 1.0”).
   Publikacja przed testem jako 0.9, numer 1.0 po zaliczonym teście. Test robi autor.
   Sprawdzam: pełna pętla na bielany.zbigniew.ai w Edge na Windows, czat działa, z ?czat=off gra działa dalej.
-- [ ] Bramka Fazy 4: „1.0 bez patronatu” (decyzja 8), kryteria w docs/plan-fazy-4.md; ten sam test zamyka bramki Faz 2 i 3.
+  Test przeszedł 2026-10-26 (według autora); opublikowane jako 1.0.
+- [x] Bramka Fazy 4: „1.0 bez patronatu” (decyzja 8), kryteria w docs/plan-fazy-4.md; ten sam test zamyka bramki Faz 2 i 3. Zaliczona 2026-10-26: Test 1.0 na Windows (docs/test-1.8b.md) według autora przechodzi.
