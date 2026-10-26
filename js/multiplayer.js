@@ -188,7 +188,7 @@ export class RemotePlayers {
     const list = [];
     for (const p of players.values()) {
       const v = this.view(p);
-      if (!p.track.sample(now, v.pose)) { v.visible = false; continue; }
+      if (!p.track.sample(now, v.pose) || v.pose.m === 'passenger') { v.visible = false; continue; } // riding in a cab: not drawn
       v.dist = Math.hypot(v.pose.x - cam.x, v.pose.y - cam.y, v.pose.z - cam.z);
       v.visible = false;
       if (v.dist <= DRAW_DISTANCE) list.push([p, v]);

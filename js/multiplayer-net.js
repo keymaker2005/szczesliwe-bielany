@@ -265,6 +265,7 @@ class MultiplayerClient {
         for (const p of msg.players || []) this.add(p, now);
         this.setStatus('online');
         this.emit('welcome', this.me);
+        for (const r of msg.rides || []) this.emit('taxi', { t: 'taxi', ...r });
         break;
       case 'nowy':
         this.add(msg.p, now);
@@ -297,6 +298,9 @@ class MultiplayerClient {
         break;
       case 'wyszedl':
         if (this.players.delete(msg.id)) this.emit('leave', msg.id);
+        break;
+      case 'taxi': case 'taxi-ok': case 'taxi-x': case 'taxi-in': case 'taxi-end': case 'taxi-no':
+        this.emit('taxi', msg); // taxi rides between players: js/shared-taxi.js
         break;
       case 'koniec':
         this.end(msg.reason);
@@ -371,6 +375,12 @@ class MultiplayerClient {
 
   gestureReady() {
     return this.status === 'online' && (!this.myGesture || this.now() - this.myGesture.t >= GESTURE_MS);
+  }
+
+  // Any message to the server while online (the taxi rides use it); false when it could not go
+  send(obj) {
+    if (this.status !== 'online' || this.ws?.readyState !== 1) return false;
+    try { this.ws.send(JSON.stringify(obj)); return true; } catch { return false; }
   }
 
   // The horn in the car (B), for the players nearby

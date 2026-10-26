@@ -13,6 +13,8 @@ Plan: docs/plan-fazy-5.md (zaakceptowany ze wszystkimi decyzjami).
 - 5.3 Aplikacja Gracze: phone.js, main.js, multiplayer-net.js (imie, przełącznik, describeStatus), room-core.js (imie);
   błąd: clearTimeout wywoływany jako metoda (Illegal invocation); serwer graczy lokalnie 8788 → 8789.
 - 5.4 Klakson i gesty: gestures.js (T), multiplayer.js (dymki, klakson), room-core.js (k do 200 m), phone.js (zwroty).
+- 5.5 Taksówka z graczem: shared-taxi.js, rides.js, phone.js (Taksówka w Gracze), main.js, boty z rolami; testy
+  tests/shared-taxi.test.mjs i kursy w tests/gracze.test.mjs.
 
 ## Faza 4: Czaty LLM i patronat (gałąź faza-4, 2026-10-26)
 

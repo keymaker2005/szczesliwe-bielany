@@ -381,3 +381,80 @@ test('the horn reaches only players within 200 m, once in 0.8 s', async () => {
   assert.equal(near.inbox.filter((m) => m.t === 'k').length, 2);
 });
 
+test('taxi between players: call, the first driver wins, pick-up and drop-off checked by position', async () => {
+  const r = makeRoom();
+  const pas = await joined(r, 'a');
+  const drv = await joined(r, 'b');
+  const other = await joined(r, 'c');
+  await r.say(pas, state({ m: 'person', x: 0, z: 0 }));
+  await r.say(drv, state({ m: 'car', x: 300, z: 0 }));
+  await r.say(other, state({ m: 'car', x: -300, z: 0 }));
+  const to = { x: 1000, z: 0, name: 'Klasztor Kamedułów' };
+  await r.say(pas, { t: 'taxi', to });
+  assert.deepEqual(r.last(drv, 'taxi'), { t: 'taxi', r: 1, name: pas.att.text, x: 0, z: 0, to });
+  // a newcomer sees the waiting call
+  const late = r.socket('d');
+  await r.say(late, { t: 'hej', turnstile: 'x' });
+  assert.equal(r.last(late, 'witaj').rides.length, 1);
+  await r.say(drv, { t: 'taxi-ok', r: 1 });
+  await r.say(other, { t: 'taxi-ok', r: 1 });
+  assert.equal(r.last(pas, 'taxi-ok').d, 2);
+  assert.equal(r.last(drv, 'taxi-ok').d, 2);
+  assert.deepEqual(r.last(other, 'taxi-x'), { t: 'taxi-x', r: 1 });
+  // too far for the pick-up: ignored; close by: in
+  await r.say(drv, { t: 'taxi-in', r: 1 });
+  assert.equal(r.last(pas, 'taxi-in'), undefined);
+  r.advance(8000);
+  await r.say(other, state({ m: 'car', x: -300, z: 0 }));
+  await r.say(drv, state({ m: 'car', x: 10, z: 0 }));
+  await r.say(pas, state({ m: 'person', x: 0, z: 0 }));
+  await r.say(drv, { t: 'taxi-in', r: 1 });
+  assert.deepEqual(r.last(pas, 'taxi-in'), { t: 'taxi-in', r: 1 });
+  // riding: the passenger moves with the car; drop-off only at the destination
+  for (const x of [300, 600, 900]) {
+    r.advance(8000);
+    await r.say(pas, state({ m: 'passenger', x, z: 0 }));
+    await r.say(drv, state({ m: 'car', x, z: 0 }));
+  }
+  await r.say(drv, { t: 'taxi-end', r: 1 });
+  assert.equal(r.last(pas, 'taxi-end'), undefined);
+  r.advance(3000);
+  await r.say(drv, state({ m: 'car', x: 990, z: 5 }));
+  await r.say(drv, { t: 'taxi-end', r: 1 });
+  assert.deepEqual(r.last(pas, 'taxi-end'), { t: 'taxi-end', r: 1, to: 'Klasztor Kamedułów' });
+  assert.equal(pas.att.ride, undefined);
+  assert.equal(drv.att.drive, undefined);
+});
+
+test('taxi: only on foot, cancel by either side, a leaving driver ends the ride, calls lapse', async () => {
+  const r = makeRoom();
+  const pas = await joined(r, 'a');
+  const drv = await joined(r, 'b');
+  const to = { x: 500, z: 0, name: 'AWF' };
+  await r.say(pas, state({ m: 'car' }));
+  await r.say(pas, { t: 'taxi', to });
+  assert.equal(r.last(drv, 'taxi'), undefined); // in a car you don't call a cab
+  r.advance(1000);
+  await r.say(pas, state({ m: 'person' }));
+  await r.say(drv, state({ m: 'car' }));
+  await r.say(pas, { t: 'taxi', to: { x: 'x', z: 0, name: '' } });
+  assert.equal(r.last(drv, 'taxi'), undefined); // bad destination
+  r.advance(6000);
+  await r.say(drv, state({ m: 'car' }));
+  await r.say(pas, { t: 'taxi', to });
+  await r.say(pas, { t: 'taxi-no', r: 1 });
+  assert.deepEqual(r.last(drv, 'taxi-x'), { t: 'taxi-x', r: 1 });
+  r.advance(6000);
+  await r.say(drv, state({ m: 'car' }));
+  await r.say(pas, { t: 'taxi', to });
+  await r.say(drv, { t: 'taxi-ok', r: 1 });
+  await r.core.closed(drv);
+  assert.deepEqual(r.last(pas, 'taxi-no'), { t: 'taxi-no', r: 1, by: 2 });
+  assert.equal(pas.att.ride, undefined);
+  r.advance(6000);
+  await r.say(pas, { t: 'taxi', to });
+  r.advance(LIMITS.rideWaitMs + 1);
+  await r.say(pas, state({ m: 'person' }));
+  assert.deepEqual(r.last(pas, 'taxi-no'), { t: 'taxi-no', r: 1, by: 0 });
+});
+

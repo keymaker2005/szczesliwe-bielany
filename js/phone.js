@@ -171,7 +171,35 @@ class Phone {
     this.screen.innerHTML = `${head('Gracze')}<div class="phone-list">
       <div class="phone-card-line is-dim">${esc(pl.status())}</div>
       ${on ? `<div class="phone-card-line is-dim">${esc(PLAYERS_INFO)}</div>` : ''}
-      ${mine}${rows}${toggle}</div>`;
+      ${mine}${on ? this.taxiCard() : ''}${rows}${toggle}</div>`;
+  }
+
+  // Taxi with a real driver (step 5.5): call it on foot, wait, ride, get out
+  taxiCard() {
+    const pl = this.players;
+    const t = pl.taxi?.();
+    if (!t || t.state === 'offline') return '';
+    const title = '<div class="phone-card-title">🚕 Taksówka z graczem<span></span></div>';
+    const cancel = (label) => `<button type="button" class="phone-btn is-quiet" data-act="taxi-cancel">${label}</button>`;
+    let body = '';
+    if (t.state === 'idle') {
+      body = `<div class="phone-card-line is-dim">Zamów kurs: kierowcy-gracze w pobliżu dostaną go w Zleceniach.${t.rides ? ` Twoje przejazdy: ${t.rides}.` : ''}</div>
+        <div class="phone-gestures">${pl.destinations().map((d) => `<button type="button" class="phone-btn is-quiet" data-act="taxi-call" data-id="${esc(d.id)}">${esc(d.name)}</button>`).join('')}</div>`;
+    } else if (t.state === 'not-on-foot') {
+      body = '<div class="phone-card-line is-dim">Taksówkę zamówisz pieszo (klawisz 1). Autem możesz wozić innych: kursy od graczy są w Zleceniach.</div>';
+    } else if (t.state === 'driving') {
+      body = '<div class="phone-card-line is-dim">Wieziesz gracza (Zlecenia).</div>';
+    } else if (t.state === 'wait') {
+      body = `<div class="phone-card-line">Do: ${esc(t.to)} · czekasz na kierowcę (${t.waitLeft} s)</div>${cancel('Anuluj')}`;
+    } else if (t.state === 'missed') {
+      body = `<div class="phone-card-line">Nikt nie przyjął kursu do: ${esc(t.to)}.</div>
+        <button type="button" class="phone-btn" data-act="taxi-computer">Taksówka komputerowa (szybki przejazd)</button>${cancel('Zamknij')}`;
+    } else if (t.state === 'pickup') {
+      body = `<div class="phone-card-line">${esc(t.driverName)} jedzie po Ciebie. Stój przy ulicy.</div>${cancel('Anuluj kurs')}`;
+    } else if (t.state === 'ride') {
+      body = `<div class="phone-card-line">Jedziesz z ${esc(t.driverName)} do: ${esc(t.to)}.</div>${cancel('Wysiądź')}`;
+    }
+    return `<div class="phone-card">${title}${body}</div>`;
   }
 
   // The Czat app. The screen is built once per conversation and then updated in place, so the text field keeps what
@@ -327,6 +355,15 @@ class Phone {
       this.players?.rename();
     } else if (act === 'players-gesture') {
       this.players?.gesture(id);
+      this.render();
+    } else if (act === 'taxi-call') {
+      this.players?.taxiCall(id);
+      this.render();
+    } else if (act === 'taxi-cancel') {
+      this.players?.taxiCancel();
+      this.render();
+    } else if (act === 'taxi-computer') {
+      this.players?.taxiComputer();
       this.render();
     } else if (act === 'players-nav') {
       this.players?.navigate(Number(id));

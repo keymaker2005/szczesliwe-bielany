@@ -17,7 +17,10 @@
 - 5.3 zaakceptowany. 5.4 zrobiony (do sprawdzenia): js/gestures.js (koło pod T), GESTURES w multiplayer-net.js,
   dymki i klakson innych w multiplayer.js (audioSystem.honk z obiektem pozycji), wiadomość „k” na serwerze.
   Pomysł autora: czat tekstowy między graczami w telefonie (backlog, zmienia decyzję „bez wolnego czatu”, do decyzji).
-- Testy: 217 zielonych.
+- 5.4 zaakceptowany; decyzja 8: czat graczy z moderacją jako krok 5.6b. 5.5 zrobiony (do sprawdzenia): js/shared-taxi.js
+  (oba role), worker-gracze/src/rides.js (sędzia kursów), tryb „passenger” (nie rysowany), Gracze → Taksówka,
+  kursy w Zleceniach (jobs), boty --taksowkarz / --pasazer. Taksówka komputerowa po 60 s = szybki przejazd (teleport).
+- Testy: 223 zielone.
 
 ## Faza 4 (gałąź faza-4, plan docs/plan-fazy-4.md) — dla nowej sesji
 - Zrobione i sprawdzone: 4.1 Worker z bezpiecznikami, 4.2 aplikacja Czat, 4.3 baza przewodnika, 4.4 przewodnik na
@@ -70,7 +73,7 @@
 - Teren: js/terrain.js (groundY, drapeGeometry, groundPose), dane js/bielany-terrain.bin z tools/terrain-bielany.mjs
   (po zmianie dróg w geodanych uruchomić ponownie: wygładza teren pod głównymi drogami). Mosty: js/bridges.js
   (deckY, surfaceY, deckPose). Każdy nowy obiekt na ziemi bierze wysokość z groundY / surfaceY. ?plaski = płaska mapa.
-- Testy: 217 zielonych, w tym test składni wszystkich modułów (po scaleniach sprawdzić też start gry w przeglądarce).
+- Testy: 223 zielone, w tym test składni wszystkich modułów (po scaleniach sprawdzić też start gry w przeglądarce).
 - Gałęzie: faza-0, faza-1, faza-1.5, faza-2, faza-3, faza-4 (bieżąca). main = wersja 1.0 (od 2026-10-26; oryginał mrdooba:
   tag nyc-original i jego historia w main). Kolejne fazy scalamy do main po bramkach.
 
@@ -85,7 +88,7 @@
 - Node: ~/.local/node/bin (dopisać do PATH). gh: ~/.local/bin/gh (zalogowany jako keymaker2005).
 - Serwer: `node tools/serve.mjs 8080`, podgląd w panelu przeglądarki (.claude/launch.json, nazwa „bielany”).
   Ukryty panel daje ~1 fps — pomiary fps tylko przy widocznym panelu.
-- Testy: `node --test tests/*.test.mjs tests/*.test.cjs` (217 zielonych).
+- Testy: `node --test tests/*.test.mjs tests/*.test.cjs` (223 zielone).
 - Dane: `node tools/geo-bielany.mjs` generuje js/bielany-geodata.js; Overpass: tools/overpass.sh; budynki:
   data/extract_bielany_lod1.py (bez pyproj); drzewa: data/extract_bielany_trees.py (strumień 8,6 GB, ~40 min);
   teksty: tools/guide-texts.mjs.

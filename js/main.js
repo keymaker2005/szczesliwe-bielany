@@ -50,6 +50,7 @@ import { nearestOnStreet } from './gps-route.js';
 import { MultiplayerClient, describeStatus } from './multiplayer-net.js';
 import { RemotePlayers } from './multiplayer.js';
 import { GestureWheel } from './gestures.js';
+import { SharedTaxi } from './shared-taxi.js';
 
 // js/main.js
 // Main entry point for Szczęśliwe Bielany (Warsaw, along the M1 metro line) in Three.js WebGPURenderer & TSL (three.js dev @ fae8734, pinned in index.html)
@@ -154,6 +155,7 @@ async function initApp() {
   // "Nawiguj" to a player (the phone's Gracze app): the waypoint follows them while they move
   const followWaypoint = { x: 0, z: 0, name: '' };
   let followPlayer = null;
+  let sharedTaxi = null; // made with the phone (it needs the missions), see below
   // Reuse teleport placement so saved players return at rest, close to their last positions.
   try {
     const saved = JSON.parse(localStorage.getItem(PLAYER_STATE_KEY));
@@ -329,6 +331,7 @@ async function initApp() {
   }
 
   function selectMode(mode) {
+    if (sharedTaxi?.riding) return; // in another player's cab: no getting out by switching modes (Wysiądź in the phone)
     // the new character or vehicle comes to where the player is (out of the cab onto the street, the cab to the
     // walker), at a safe spot nearby (never inside a building)
     const prevMode = controllerManager.activeMode;
@@ -748,6 +751,14 @@ async function initApp() {
     onShot: (blob, meta) => postcards.add(blob, meta).then((p) => phone.addSms({ id: `photo-${p.id}`, from: 'Aparat', text: `Zapisano pocztówkę: ${p.place} (${p.filter}). Zobacz w Pocztówkach.` })),
   });
   let dispatch = null; // the emergency services' dispatch (js/dispatch.js), right after the phone
+  // Taxi rides between players (Faza 5, step 5.5): calls in the phone's Gracze app, rides in Zlecenia
+  sharedTaxi = new SharedTaxi({
+    client: multiplayer, missions, findRoute,
+    sms: (m) => phone.addSms(m),
+    player: () => ({ entity: controllerManager.getActiveEntity(), mode: controllerManager.activeMode, person: controllerManager.entities.person }),
+    waypoint: (x, z, name) => { mapSystem.waypoint = { x, z, name }; missionMarker.show(x, z); },
+    teleport: (x, z, heading) => teleportTo(x, z, heading),
+  });
   const phone = new Phone({
     onCamera: () => photo.enter(),
     chat: { przewodnik: new ChatClient({ chat: 'przewodnik' }), burmistrz: new ChatClient({ chat: 'burmistrz' }) },
@@ -756,7 +767,7 @@ async function initApp() {
     root: document.getElementById('phone'),
     button: document.getElementById('btn-phone'),
     missions,
-    jobs: () => [...taxi.jobs(), ...courier.jobs()],
+    jobs: () => [...sharedTaxi.jobs(), ...taxi.jobs(), ...courier.jobs()],
     services: () => (dispatch ? dispatch.services() : []),
     onOpenMap: () => mapSystem.toggleFullMap(true),
     landmarks: () => guide.landmarks(),
@@ -786,6 +797,11 @@ async function initApp() {
       navigating: () => (mapSystem.waypoint === followWaypoint ? followPlayer : null),
       gesture: (id) => multiplayer.gesture(id),
       gestureReady: () => multiplayer.gestureReady(),
+      taxi: () => sharedTaxi.view(),
+      destinations: () => guide.landmarks().map((l) => ({ id: l.id, name: l.name })),
+      taxiCall: (id) => { const l = guide.landmarks().find((x) => x.id === id); if (l) sharedTaxi.request({ x: l.x, z: l.z, name: l.name }); },
+      taxiCancel: () => sharedTaxi.cancel(),
+      taxiComputer: () => sharedTaxi.computerCab(),
     },
     status: () => (missions.active ? `W drodze: ${missions.goal().name}` : controllerManager.activeMode === 'car' ? taxi.statusLine() : courier.statusLine()),
   });
@@ -913,9 +929,13 @@ async function initApp() {
   });
 
   // Other players' horns (from their cars) and the gesture wheel (T)
-  multiplayer.onChange = (event, player) => { if (event === 'horn') remotePlayers.honk(player, audioSystem); };
+  multiplayer.onChange = (event, data) => {
+    if (event === 'horn') remotePlayers.honk(data, audioSystem);
+    else if (event === 'taxi') sharedTaxi.onMessage(data);
+    else if (event === 'clear' || (event === 'status' && data.status !== 'online')) sharedTaxi.reset();
+  };
   const gestureWheel = new GestureWheel(multiplayer, { blocked: () => mapSystem.isFullMapOpen || photo.active });
-  globalThis.bielany = { missions, testDelivery, abandon: () => missions.abandon(), teleport: (x, z, heading) => teleportTo(x, z, heading), marker: missionMarker, phone, courier, guide, scene, renderer, lightingSystem, trams, taxi, medic, ambulance, dispatch, controllerManager, photo, postcards, fallingLeaves, trafficSystem, multiplayer, remotePlayers, gestureWheel };
+  globalThis.bielany = { missions, testDelivery, abandon: () => missions.abandon(), teleport: (x, z, heading) => teleportTo(x, z, heading), marker: missionMarker, phone, courier, guide, scene, renderer, lightingSystem, trams, taxi, medic, ambulance, dispatch, controllerManager, photo, postcards, fallingLeaves, trafficSystem, multiplayer, remotePlayers, gestureWheel, sharedTaxi };
 
   // Initialize the UI and chase camera around the restored player, or the default taxi on a first visit.
   selectMode(controllerManager.activeMode);
@@ -1033,6 +1053,7 @@ async function initApp() {
     // Update 3rd-person controllers, camera, signals, traffic & vehicle collisions, building LODs, and dynamic shadow focus
     gamepadControls.update(dt);
     if (!photo.active) controllerManager.update(dt, elapsed); // photo mode freezes the player
+    if (warmedUp) sharedTaxi.update(); // in another player's cab the passenger moves with it
     // the cab keeps to the street's speed limit (OpenStreetMap maxspeed, else the urban default), unless boosting
     if (controllerManager.activeMode === 'car') {
       const car = controllerManager.getActiveEntity();
@@ -1048,7 +1069,7 @@ async function initApp() {
     if (!photo.active) cameraSystem.update(dt, elapsed);
     if (warmedUp) {
       const me = controllerManager.getActiveEntity();
-      multiplayer.update({ x: me.position.x, y: me.position.y, z: me.position.z, h: me.heading, m: controllerManager.activeMode, v: me.speed });
+      multiplayer.update({ x: me.position.x, y: me.position.y, z: me.position.z, h: me.heading, m: sharedTaxi.riding ? 'passenger' : controllerManager.activeMode, v: me.speed });
       remotePlayers.update(dt, multiplayer, cameraSystem.camera, now, { x: me.position.x, y: me.position.y, z: me.position.z, m: controllerManager.activeMode });
       if (followPlayer !== null && mapSystem.waypoint === followWaypoint) {
         const at = multiplayer.players.get(followPlayer)?.track.sample(now);

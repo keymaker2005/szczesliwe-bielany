@@ -22,7 +22,8 @@ testowym (dla botów i prób, osobno od publicznych pokoi). Odmowa przed połąc
 `{ "ok": false, "reason": "forbidden" | "off" | "resting" | "full" | "bad_request" }` (403 / 503 / 400).
 
 Wiadomości to JSON, krótkie pola. Pozycje w metrach układu świata (x wschód, z południe, y wysokość),
-`h` kierunek w radianach (jak `heading` w controllers.js), `m` tryb: `person`, `car`, `cyclist`, `helicopter`.
+`h` kierunek w radianach (jak `heading` w controllers.js), `m` tryb: `person`, `car`, `cyclist`, `helicopter`,
+`passenger` (jedzie taksówką innego gracza: gra go nie rysuje, tylko kropka na mapie).
 
 ### Gra → serwer
 | Wiadomość | Kiedy | Treść |
@@ -52,6 +53,17 @@ Wiadomości to JSON, krótkie pola. Pozycje w metrach układu świata (x wschód
 | `imie` | `{ "t": "imie", "id": 7, "name": "…", "color": 3 }` (nowe imię gracza; ten, kto losował, dostaje też `nameId`) |
 | `wyszedl` | `{ "t": "wyszedl", "id": 7 }` (wyjście, zamknięcie karty albo 10 s ciszy) |
 | `koniec` | `{ "t": "koniec", "reason": "resting" | "off" | "timeout" | "abuse" | "turnstile" | "full" }`, potem zamknięcie |
+
+### Taksówka z prawdziwym pasażerem (krok 5.5)
+Kurs żyje na serwerze przy pasażerze (`r` = id pasażera); serwer pilnuje jednego kierowcy i sprawdza miejsca.
+| Wiadomość | Kto → serwer | Serwer → kto |
+| --- | --- | --- |
+| `{ "t": "taxi", "to": { "x", "z", "name" } }` | pasażer (pieszo), najwyżej 1 na 5 s | wszyscy inni: `{ "t": "taxi", "r", "name", "x", "z", "to" }` |
+| `{ "t": "taxi-ok", "r" }` | kierowca w aucie | pasażer i kierowca: `{ "t": "taxi-ok", "r", "d", "name" }` (name: kierowca); reszta: `{ "t": "taxi-x", "r" }`; spóźniony kierowca: `taxi-x` |
+| `{ "t": "taxi-in", "r" }` | kierowca, gdy stanie przy pasażerze (do 25 m) | obaj: `{ "t": "taxi-in", "r" }` |
+| `{ "t": "taxi-end", "r" }` | kierowca, gdy stanie u celu (do 40 m) | obaj: `{ "t": "taxi-end", "r", "to" }` |
+| `{ "t": "taxi-no", "r" }` | pasażer albo kierowca | obaj: `{ "t": "taxi-no", "r", "by" }` (`by`: kto przerwał, 0: nikt nie przyjął w 90 s); przy wyjściu jednej strony to samo |
+`witaj` ma też `rides`: kursy czekające na kierowcę (`[{ "r", "name", "x", "z", "to" }]`).
 
 ## Zasady serwera (bezpieczniki)
 - Tylko połączenia ze strony gry (nagłówek Origin), Turnstile w wiadomości `hej` (bez niej po 10 s `koniec`).

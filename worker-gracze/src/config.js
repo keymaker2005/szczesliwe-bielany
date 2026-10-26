@@ -16,6 +16,10 @@ export const LIMITS = {
   renameMs: 2000, // one new name per two seconds
   hornMs: 800, // one horn per 0.8 s (as the game's own horn)
   hornRange: 200, // metres: players farther away don't get the horn
+  rideCallMs: 5000, // one taxi call per 5 s
+  rideWaitMs: 90 * 1000, // a call nobody takes lapses (the game gives up at 60 s)
+  pickupRange: 25, // metres between driver and passenger for the pick-up (positions lag a little)
+  dropRange: 40, // metres from the destination for the drop-off
   reportEvery: 2000, // messages between usage reports to the lobby
   messagesPerRequest: 20, // Cloudflare bills incoming WebSocket messages 20:1
   requestsPerConnect: 4, // lobby pick + room fetch + join and leave reports
@@ -32,7 +36,7 @@ export const BOUNDS = { minX: -3368, maxX: 3115.4, minZ: -3246.1, maxZ: 2206.3 }
 
 // Fastest plausible speed per mode in m/s (controllers.js: car 36 with boost, bike 19); a jump beyond
 // speed * time * 1.5 + 15 m without "tp" is dropped
-export const MODE_SPEED = { person: 12, cyclist: 25, car: 45, helicopter: 80 };
+export const MODE_SPEED = { person: 12, cyclist: 25, car: 45, helicopter: 80, passenger: 45 }; // passenger: riding in another player's cab
 export const MODES = Object.keys(MODE_SPEED);
 
 export const GESTURES = ['czesc', 'dzieki', 'jedziemy', 'brawo', 'uwaga', 'pa'];
