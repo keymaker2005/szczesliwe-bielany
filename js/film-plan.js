@@ -7,7 +7,7 @@
 // traffic fills the new place, the shaders of what is new compile)
 const SHOTS = [
   { id: 'helikopter', part: '1', name: 'Helikopter nad Kamedułami i skarpą, przelot w stronę Starych Bielan', dur: 6, pre: 4 },
-  { id: 'karetka', part: '2', name: 'Karetka na sygnale, auta zjeżdżają do krawężnika, podjazd pod SOR Szpitala Bielańskiego', dur: 8, pre: 4 },
+  { id: 'karetka', part: '2', name: 'Karetka na sygnale Marymoncką, auta zjeżdżają do krawężnika, dojazd pod Szpital Bielański', dur: 8, pre: 4 },
   { id: 'straz-pozarna', part: '3a', name: 'Strażak gasi pożar (działko wodne z wozu)', dur: 3.3, pre: 3 },
   { id: 'straz-miejska', part: '3b', name: 'Straż Miejska przy aucie na trawniku', dur: 3.3, pre: 3 },
   { id: 'taksowka', part: '3c', name: 'Taksówka podjeżdża po pasażera', dur: 3.4, pre: 3 },
@@ -68,7 +68,7 @@ function frameStats(intervals, fps = 60) {
 const sec = (t) => `${Math.floor(t / 60)}:${(t % 60).toFixed(2).padStart(5, '0')}`;
 
 /** The shot list for the editing session: Markdown with the timestamps, the recording's settings and smoothness */
-function shotList({ shots = timeline(), recorded = null, stats = null, perShot = null, settings = {} } = {}) {
+function shotList({ shots = timeline(), recorded = null, stats = null, perShot = null, render = null, settings = {} } = {}) {
   const lines = [
     '# Film z gry: znaczniki ujęć (surowe nagranie)',
     '',
@@ -91,6 +91,9 @@ function shotList({ shots = timeline(), recorded = null, stats = null, perShot =
   if (stats) {
     lines.push('', '## Płynność nagrania', '',
       `Klatki: ${stats.frames}, średnio ${stats.fps} kl./s, średni odstęp ${stats.mean} ms, 99% klatek do ${stats.p99} ms, najdłuższa przerwa ${stats.max} ms, spóźnione klatki (powtórzona poprzednia): ${stats.late}, brakujące klatki: ${stats.dropped}.`);
+    if (render) {
+      lines.push('', `Nagranie klatka po klatce (WebCodecs): każda klatka to dokładnie 1/${settings.fps || 60} s gry, niezależnie od tego, jak szybko komputer ją narysował. Sama gra rysowała w tym czasie średnio ${render.fps} kl./s (najdłuższa klatka ${render.max} ms).`);
+    }
     if (perShot) {
       lines.push('', '| Nr | kl./s | najdłuższa przerwa | spóźnione |', '|---|---|---|---|',
         ...perShot.map((p, i) => `| ${i + 1} | ${p.fps} | ${p.max} ms | ${p.late} |`));

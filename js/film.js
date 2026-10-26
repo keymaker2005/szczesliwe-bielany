@@ -3,8 +3,12 @@
 // ~40 s showreel by itself and records it, for a video on LinkedIn. The shots are in js/film-plan.js. Each one is set
 // up while the recorder is paused (the traffic fills the new place, what is new compiles its shaders), so the cuts land
 // on a living city. Every frame the 3D canvas, and in the phone shot the phone drawn here, go into a 1920×1080 canvas
-// recorded with captureStream + MediaRecorder (no sound, no captions: the editing comes later). At the end the video
-// and the shot list go to tools/serve.mjs (PUT /__film/...), which writes them to docs/media/.
+// (no sound, no captions: the editing comes later). The recording is frame by frame: each frame simulates exactly
+// 1/60 s (a virtual clock stands in for performance.now(), which three.js animates the trees by) and is encoded with
+// WebCodecs at its exact timestamp into a WebM (js/film-webm.js), so the video is smooth however slowly the game
+// renders at this size (Edge on an M4 Air: ~25-30 frames a second). &tryb=czas records in real time instead, with
+// captureStream + MediaRecorder (smooth only where the game holds 60 fps). At the end the video and the shot list go
+// to tools/serve.mjs (PUT /__film/...), which writes them to docs/media/.
 // ?film=podglad records nothing and saves three stills per shot instead (docs/media/podglad/), to frame the shots.
 // The game's own modules stay as they are: the shots move the player's entities and the camera from outside, after
 // the controllers' update (like a teleport every frame), and use the services' liveries through their interfaces.
@@ -12,14 +16,16 @@
 import * as THREE from 'three/webgpu';
 import { BODY_SPECS, buildCarGeometry, createLoftedCarMaterial } from './actor-models.js';
 import { GEO } from './bielany-geodata.js';
-import { blockAt, TELEPORT_LOCATIONS } from './city-config.js';
+import { blockAt, nearestRoads, TELEPORT_LOCATIONS } from './city-config.js';
 import { findRoute, nearestOnStreet } from './gps-route.js';
 import { GUIDE_TEXTS } from './guide-texts.js';
 import { groundY } from './terrain.js';
 import { at as tramAt } from './trams.js';
 import { SHOTS, PHONE, timeline, stopProfile, smooth, frameStats, shotList } from './film-plan.js';
+import { muxWebm } from './film-webm.js';
 
 const W = 1920, H = 1080, FPS = 60;
+const CODECS = { vp9: ['vp09.00.41.08', 'V_VP9'], vp8: ['vp8', 'V_VP8'] }; // WebCodecs, WebM
 const MIMES = { vp9: 'video/webm;codecs=vp9', vp8: 'video/webm;codecs=vp8', h264: 'video/webm;codecs=h264', av1: 'video/webm;codecs=av01' };
 const KAMEDULY = { x: 720, z: -1575 }; // the church (js/landmarks.js KAMEDULY_RING)
 const TAXI = { yellow: '#ffc21a', ink: '#17140a' };
@@ -89,6 +95,21 @@ function routeTail(pts, len) {
     if (acc >= len) return pts.slice(i - 2);
   }
   return pts.slice();
+}
+
+// The part of a route (flat pairs, cum: the length at each point) from a to b m
+function sliceRoute(pts, cum, a, b) {
+  const out = [];
+  const at = (d) => {
+    let i = 1;
+    while (i < cum.length - 1 && cum[i] < d) i++;
+    const f = (d - cum[i - 1]) / (cum[i] - cum[i - 1] || 1);
+    return [lerp(pts[2 * i - 2], pts[2 * i], f), lerp(pts[2 * i - 1], pts[2 * i + 1], f)];
+  };
+  out.push(...at(a));
+  for (let i = 0; i < cum.length; i++) if (cum[i] > a && cum[i] < b) out.push(pts[2 * i], pts[2 * i + 1]);
+  out.push(...at(b));
+  return out;
 }
 
 // How much a route turns (rad, summed every 5 m)
@@ -374,7 +395,8 @@ class Film {
     const q = new URLSearchParams(o.search || '');
     this.preview = q.get('film') === 'podglad';
     this.only = q.get('ujecie'); // one shot only (its id or number), for framing
-    this.codec = MIMES[q.get('kodek')] ? q.get('kodek') : 'vp9';
+    this.realtime = q.get('tryb') === 'czas'; // MediaRecorder in real time instead of frame by frame
+    this.codec = (this.realtime ? MIMES : CODECS)[q.get('kodek')] ? q.get('kodek') : 'vp9';
     this.bitrate = Number(q.get('mbps')) > 0 ? Number(q.get('mbps')) * 1e6 : 40e6;
     this.camera = o.cameraSystem.camera;
     this.cm = o.controllerManager;
@@ -392,11 +414,52 @@ class Film {
     o.scene.add(this.lawnCar, this.plate.group);
   }
 
-  /** In the animation loop before anything else: false = skip this display refresh (60 frames a second, steady) */
+  /**
+   * In the animation loop before anything else: false = skip this display refresh. In real time: 60 frames a second,
+   * steady; frame by frame: whenever the encoder keeps up, and the virtual clock moves on by exactly one frame
+   */
   frameDue(now) {
+    if (this.virtual !== undefined) {
+      if (this.encoder && this.encoder.encodeQueueSize > 3) return false;
+      this.virtual += 1000 / FPS;
+      return true;
+    }
     if (now - this.lastFrame < 1000 / FPS - 4) return false;
     this.lastFrame = now;
     return true;
+  }
+
+  /** The time the frame stands for: the virtual clock frame by frame, else the display's */
+  clock(now) {
+    return this.virtual ?? now;
+  }
+
+  // Frame by frame: performance.now() (three.js's animation time, the game's timers) follows the virtual clock
+  startVirtualClock() {
+    const real = performance.now.bind(performance);
+    this.realNow = real;
+    this.virtual = real();
+    performance.now = () => this.virtual;
+  }
+
+  async makeEncoder() {
+    const [codec, webmCodec] = CODECS[this.codec];
+    const config = { codec, width: W, height: H, bitrate: this.bitrate, framerate: FPS, latencyMode: 'quality', bitrateMode: 'variable' };
+    const support = await VideoEncoder.isConfigSupported(config);
+    if (!support.supported) throw new Error(`koder ${codec} niedostępny`);
+    this.webmCodec = webmCodec;
+    this.mime = `video/webm;codecs=${this.codec} (WebCodecs, klatka po klatce)`;
+    this.frames = [];
+    this.frameNo = 0;
+    this.encoder = new VideoEncoder({
+      output: (chunk) => {
+        const data = new Uint8Array(chunk.byteLength);
+        chunk.copyTo(data);
+        this.frames.push({ data, timestamp: chunk.timestamp, key: chunk.type === 'key' });
+      },
+      error: (e) => { console.error('[film] koder:', e); this.setStatus(`Film: błąd kodera (${e.message})`); },
+    });
+    this.encoder.configure(config);
   }
 
   async start() {
@@ -434,7 +497,11 @@ class Film {
     this.intervals = [];
     this.shotIntervals = [];
     this.log = { date: new Date().toISOString(), shots: {} };
-    if (!this.preview) this.makeRecorder();
+    if (!this.realtime) this.startVirtualClock();
+    if (!this.preview) {
+      if (this.realtime) this.makeRecorder();
+      else await this.makeEncoder();
+    }
     this.next();
   }
 
@@ -523,23 +590,40 @@ class Film {
     } else if (id === 'karetka') {
       this.setMode('car');
       this.show(['car']);
-      const sor = ADDRESSES.find((a) => STREETS[a[0]] === 'Cegłowska' && a[1] === '80');
-      const goal = sor ? { x: sor[4], z: sor[5] } : { x: 111.8, z: -529.9 };
-      // the straightest approach of the last 170 m among routes from addresses 250-600 m away
+      // the stop: on Cegłowska in front of the hospital (its middle ~111.8, -529.9; the emergency entrance is no. 80)
+      const H0 = { x: 111.8, z: -529.9 };
+      let stopAt = null;
+      for (let dx = -200; dx <= 200; dx += 5) {
+        for (let dz = -200; dz <= 200; dz += 5) {
+          const x = H0.x + dx, z = H0.z + dz;
+          if (nearestRoads(x, z, 3)[0]?.road.name !== 'Cegłowska') continue;
+          const d = Math.hypot(dx, dz);
+          if (!stopAt || d < stopAt.d) stopAt = { x, z, d };
+        }
+      }
+      const goal = nearestOnStreet(stopAt.x, stopAt.z);
+      // the approach: on lights along Marymoncka (the traffic pulls over), then into Cegłowska to the hospital; of
+      // routes from Marymoncka's addresses 250-700 m away, the one whose last 170 m keep to Marymoncka longest
       let best = null;
-      for (let i = 0, tried = 0; i < ADDRESSES.length && tried < 160; i += 7) {
-        const a = ADDRESSES[i];
+      for (const a of ADDRESSES) {
+        if (STREETS[a[0]] !== 'Marymoncka') continue;
         const d = Math.hypot(a[4] - goal.x, a[5] - goal.z);
-        if (d < 250 || d > 600) continue;
-        tried++;
+        if (d < 250 || d > 700) continue;
         const r = findRoute(a[4], a[5], goal.x, goal.z, { oneWay: true });
         if (!r || r.length < 200) continue;
-        const tail = routeTail(r.pts, 170);
-        const score = turning(tail);
+        // where the route leaves Marymoncka: 130 m on it before, 45 m into the hospital after
+        const pts = r.pts.slice(0, -2); // without the step from the street to the goal spot
+        let exit = -1, acc = 0;
+        const cum = [0];
+        for (let k = 2; k < pts.length; k += 2) cum.push(acc += Math.hypot(pts[k] - pts[k - 2], pts[k + 1] - pts[k - 1]));
+        for (let k = 0; k < pts.length; k += 2) if (nearestRoads(pts[k], pts[k + 1], 5)[0]?.road.name === 'Marymoncka') exit = k / 2;
+        if (exit < 0 || cum[exit] < 130) continue;
+        const tail = sliceRoute(pts, cum, cum[exit] - 130, Math.min(cum.at(-1), cum[exit] + 45));
+        const score = turning(tail.slice(0, Math.floor(tail.length * 0.7)));
         if (!best || score < best.score) best = { score, tail, from: `${STREETS[a[0]]} ${a[1]}` };
       }
       st.rail = rail(best.tail, 1.9);
-      st.profile = { sEnd: st.rail.length - 6, v: 13, tStop: 7.3, brake: 2.2 };
+      st.profile = { sEnd: st.rail.length - 2, v: 13, tStop: 7.3, brake: 2.2 };
       this.log.shots.karetka = { from: best.from, turning: best.score, length: st.rail.length };
       this.wear(this.dispatch.byRole('medic').livery);
       const p = stopProfile(-this.shot.pre, st.profile);
@@ -581,17 +665,19 @@ class Film {
           const ang = (k / 48) * Math.PI * 2;
           const x = c0.x + Math.cos(ang) * r, z = c0.z + Math.sin(ang) * r;
           const b = blockAt(x, z);
-          if (!b || !(b.park > 0.6) || b.median) continue;
+          if (!b || b.median) continue;
           const fr = streetFrame(x, z);
-          if (fr.s.d < 7 || fr.s.d > 10) continue;
-          if (cm.nearColliders(x, z, 6).some((c) => x > c.minX - 3 && x < c.maxX + 3 && z > c.minZ - 3 && z < c.maxZ + 3)) continue;
+          const w = nearestRoads(fr.s.x, fr.s.z, 3)[0]?.road.w || 8;
+          if (fr.s.d < w / 2 + 5.5 || fr.s.d > w / 2 + 8) continue; // past the sidewalk, on the grass
+          if (cm.nearColliders(x, z, 8).some((c) => x > c.minX - 5 && x < c.maxX + 5 && z > c.minZ - 5 && z < c.maxZ + 5)) continue;
           spot = { x, z, fr };
         }
       }
       const { fr } = spot;
       st.lawn = { x: spot.x, z: spot.z, heading: Math.atan2(fr.dx, fr.dz) + 0.5 };
       // the patrol car at the curb beside it
-      st.car = { x: fr.s.x + fr.nx * 2.6 + fr.dx * 3, z: fr.s.z + fr.nz * 2.6 + fr.dz * 3, heading: Math.atan2(fr.dx, fr.dz) };
+      const half = (nearestRoads(fr.s.x, fr.s.z, 3)[0]?.road.w || 8) / 2;
+      st.car = { x: fr.s.x + fr.nx * (half - 1.3) + fr.dx * 3, z: fr.s.z + fr.nz * (half - 1.3) + fr.dz * 3, heading: Math.atan2(fr.dx, fr.dz) };
       st.fr = fr;
       this.log.shots.trawnik = { lawn: st.lawn, park: blockAt(spot.x, spot.z)?.parkName || '' };
       this.lawnCar.position.set(st.lawn.x, groundY(st.lawn.x, st.lawn.z) + 0.02, st.lawn.z);
@@ -628,7 +714,18 @@ class Film {
       this.setMode('person');
       this.show(['person']);
       const t = TELEPORT_LOCATIONS.awf;
-      cm.teleportActiveTo(t.x, t.z, t.heading);
+      // the teleport is on the roadway: onto the sidewalk on the tram's side
+      const s0 = nearestOnStreet(t.x, t.z);
+      const half = (nearestRoads(s0.x, s0.z, 3)[0]?.road.w || 8) / 2;
+      const route = this.trams.routes.find((r) => r.name.includes('Marymont')) || this.trams.routes[0];
+      let tramSide = null;
+      for (let s = 0, q = {}; s < route.length; s += 3) {
+        tramAt(route, s, q);
+        const d = Math.hypot(q.x - s0.x, q.z - s0.z);
+        if (!tramSide || d < tramSide.d) tramSide = { d, x: q.x, z: q.z };
+      }
+      const sx = (tramSide.x - s0.x) / (tramSide.d || 1), sz = (tramSide.z - s0.z) / (tramSide.d || 1);
+      cm.teleportActiveTo(s0.x + sx * (half + 2.4), s0.z + sz * (half + 2.4), t.heading);
       const p = cm.entities.person.position;
       const fr = streetFrame(p.x, p.z);
       // walk along the street, in the teleport's sense
@@ -641,8 +738,8 @@ class Film {
       st.look = { x: p.x, y: p.y + 1.3, z: p.z };
       cm.entities.person.heading = st.heading;
       // the plate on its pole at the curb, 15 m ahead, facing the walker
-      const curb = fr.s.d - 1.0;
-      const px = p.x + st.fx * 15 - st.nx * curb * 0.5, pz = p.z + st.fz * 15 - st.nz * curb * 0.5;
+      const toCurb = fr.s.d - half - 0.5; // from the walker to the pole by the curb
+      const px = p.x + st.fx * 15 - st.nx * toCurb, pz = p.z + st.fz * 15 - st.nz * toCurb;
       this.plate.group.position.set(px, groundY(px, pz), pz);
       this.plate.group.rotation.set(0, Math.atan2(-st.fx, -st.fz), 0);
       st.plate = { x: px, z: pz };
@@ -683,18 +780,19 @@ class Film {
     const cm = this.cm;
     if (id === 'helikopter') {
       const h = cm.entities.helicopter;
-      const d = 150 - st.speed * t; // m before the church
+      const d = -20 - st.speed * t; // m before the church (past it: behind the helicopter)
       h.position.set(KAMEDULY.x - st.fx * d, st.y, KAMEDULY.z - st.fz * d);
       h.heading = st.heading;
       h.speed = st.speed;
       h.mesh.position.copy(h.position);
       h.mesh.rotation.y = h.heading;
-      // behind and to the right, drifting in towards the tail, looking ahead past the helicopter at the church
+      // ahead of it on the city side, drifting back slower than it flies: it comes towards the camera, the church,
+      // the forest and the escarpment down to the Vistula behind it
       const k = smooth(t / 6);
       const rx = -st.fz, rz = st.fx;
-      const back = lerp(52, 40, k), side = lerp(30, 14, k), up = lerp(10, 16, k);
-      this.cam(h.position.x - st.fx * back + rx * side, st.y + up, h.position.z - st.fz * back + rz * side,
-        h.position.x + st.fx * 90, st.y - 34, h.position.z + st.fz * 90, 50);
+      const ahead = lerp(36, 24, k), side = lerp(13, 8, k), up = lerp(2, 4.5, k);
+      this.cam(h.position.x + st.fx * ahead + rx * side, st.y + up, h.position.z + st.fz * ahead + rz * side,
+        h.position.x - st.fx * 60, st.y - 22, h.position.z - st.fz * 60, 52);
     } else if (id === 'karetka') {
       const p = stopProfile(t, st.profile);
       const at = railAt(st.rail, p.s);
@@ -738,7 +836,7 @@ class Film {
       const p = cm.entities.person.position, h = st.h, k = smooth((t + 3) / 11);
       const fx = Math.sin(h), fz = Math.cos(h), rx = -fz, rz = fx;
       const cx = p.x - fx * lerp(9, 6.5, k) + rx * 3.2, cz = p.z - fz * lerp(9, 6.5, k) + rz * 3.2;
-      this.cam(cx, p.y + 2.2, cz, KAMEDULY.x - rx * 25, groundY(KAMEDULY.x, KAMEDULY.z) + 11, KAMEDULY.z - rz * 25, 50);
+      this.cam(cx, p.y + 2.2, cz, KAMEDULY.x + rx * 22, groundY(KAMEDULY.x, KAMEDULY.z) + 11, KAMEDULY.z + rz * 22, 50);
     } else if (id === 'marymoncka') {
       const e = cm.entities.person;
       // walking from just before the recording on, straight along the sidewalk
@@ -754,8 +852,8 @@ class Film {
       st.look.y = lerp(st.look.y, p.y + 1.3, k);
       st.look.z = lerp(st.look.z, p.z, k);
       const L = st.look;
-      this.cam(L.x - st.fx * 4.6 + st.nx * 1.4, L.y + 0.55, L.z - st.fz * 4.6 + st.nz * 1.4,
-        L.x + st.fx * 7 - st.nx * 0.8, L.y + 0.1, L.z + st.fz * 7 - st.nz * 0.8, 56);
+      this.cam(L.x - st.fx * 4.6 - st.nx * 1.1, L.y + 0.55, L.z - st.fz * 4.6 - st.nz * 1.1,
+        L.x + st.fx * 7 + st.nx * 0.6, L.y + 0.1, L.z + st.fz * 7 + st.nz * 0.6, 56);
     }
   }
 
@@ -801,15 +899,25 @@ class Film {
       this.setStatus(`Film: ujęcie ${this.index + 1}/${this.shots.length} (${shot.id}), ${this.preview ? 'podgląd' : 'nagrywanie'}`);
     }
     if (this.phase !== 'rec') return;
+    if (this.encoder) {
+      const frame = new VideoFrame(this.out, { timestamp: Math.round((this.frameNo * 1e6) / FPS), duration: Math.round(1e6 / FPS) });
+      this.encoder.encode(frame, { keyFrame: this.frameNo % (FPS * 2) === 0 });
+      frame.close();
+      this.frameNo++;
+    }
+    // frame times: of the video (frame by frame: always 1/60 s) and how long the game took to render each
+    const real = this.realNow ? this.realNow() : now;
     if (this.prevNow !== null) {
       const d = now - this.prevNow;
       this.intervals.push(d);
       this.shotIntervals.at(-1).push(d);
+      if (this.realNow) (this.renderTimes ||= []).push(real - this.prevReal);
     }
     this.prevNow = now;
+    this.prevReal = real;
     if (this.stills.length && this.t >= this.stills[0]) {
       const at = this.stills.shift();
-      const name = `podglad/${String(this.index + 1).padStart(2, '0')}-${shot.id}-${at.toFixed(1)}.jpg`;
+      const name = `podglad/${String(this.index + 1).padStart(2, '0')}-${shot.id}-${String(Math.round(at * 10)).padStart(2, '0')}.jpg`;
       this.out.toBlob((b) => this.save(name, b, 'image/jpeg'), 'image/jpeg', 0.85);
     }
     if (this.t >= shot.dur) {
@@ -859,14 +967,23 @@ class Film {
     this.shot = null;
     const stats = frameStats(this.intervals, FPS);
     const perShot = this.shotIntervals.map((iv) => frameStats(iv, FPS));
+    const render = this.renderTimes ? frameStats(this.renderTimes, FPS) : null; // how fast the game itself ran
     const md = shotList({
-      shots: this.shots, recorded: this.recorded, stats, perShot,
+      shots: this.shots, recorded: this.recorded, stats, perShot, render,
       settings: { date: new Date().toLocaleDateString('pl-PL'), mime: this.mime || 'podgląd', bitrate: this.bitrate, width: W, height: H, fps: FPS },
     });
-    const report = { ...this.log, stats, perShot, recorded: this.recorded, mime: this.mime, bitrate: this.bitrate, ua: navigator.userAgent };
+    const report = { ...this.log, stats, perShot, render, recorded: this.recorded, mime: this.mime, bitrate: this.bitrate, ua: navigator.userAgent };
     console.info('[film]', report);
     const done = async () => {
-      if (this.recorder) {
+      if (this.encoder) {
+        this.setStatus('Film: kończenie kodowania…');
+        await this.encoder.flush();
+        this.encoder.close();
+        const parts = muxWebm({ frames: this.frames, width: W, height: H, fps: FPS, codec: this.webmCodec });
+        this.setStatus('Film: zapisywanie…');
+        await this.save('film-surowy.webm', new Blob(parts, { type: 'video/webm' }), 'video/webm');
+        await this.save('film-ujecia.md', md, 'text/markdown');
+      } else if (this.recorder) {
         this.setStatus('Film: zapisywanie…');
         const blob = new Blob(this.chunks, { type: this.mime });
         await this.save('film-surowy.webm', blob, 'video/webm');

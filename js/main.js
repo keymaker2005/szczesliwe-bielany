@@ -1091,7 +1091,10 @@ async function initApp() {
   let speedLimit = 50, limitTimer = 0; // km/h, the cab's limit where it is
   const elLimit = document.getElementById('hud-limit');
   renderer.setAnimationLoop((now) => {
-    if (film && !film.frameDue(now)) return; // the recording runs at a steady 60 frames a second
+    if (film) {
+      if (!film.frameDue(now)) return; // the recording runs at a steady 60 frames a second
+      now = film.clock(now); // frame by frame: exactly 1/60 s per frame
+    }
     const rawDt = (now - lastTime) * 0.001;
     lastTime = now;
     const dt = Math.min(Math.max(rawDt, 0.001), 0.05);

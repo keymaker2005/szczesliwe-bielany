@@ -19,7 +19,7 @@ for (const item of ['index.html', 'LICENSE', 'css', 'js']) {
   fs.cpSync(path.join(ROOT, item), path.join(OUT, item), { recursive: true });
 }
 // The ?film showreel (js/film.js, js/film-plan.js) records on localhost only: not published
-for (const f of ['film.js', 'film-plan.js']) fs.rmSync(path.join(OUT, 'js', f), { force: true });
+for (const f of ['film.js', 'film-plan.js', 'film-webm.js']) fs.rmSync(path.join(OUT, 'js', f), { force: true });
 // Every module URL carries the build (?v=<commit>): a browser that kept an older module in its cache cannot mix it
 // with a newer page (seen after the 1.5 deploy: the new index.html ran with the old main.js)
 const head = spawnSync('git', ['-C', ROOT, 'rev-parse', '--short', 'HEAD'], { encoding: 'utf8' });

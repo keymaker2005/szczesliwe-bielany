@@ -62,3 +62,41 @@ test('the WebM reader finds every frame and its timestamp', () => {
   assert.equal(s.frames, 3);
   assert.equal(s.late, 1);
 });
+
+test('the WebM writer makes a file the reader reads back frame for frame at 60 fps', async () => {
+  const { muxWebm } = await import('../js/film-webm.js');
+  const frames = Array.from({ length: 300 }, (_, i) => ({ data: new Uint8Array([i & 0xff, 1, 2]), timestamp: Math.round((i * 1e6) / 60), key: i % 120 === 0 }));
+  const file = Buffer.concat(muxWebm({ frames, width: 1920, height: 1080 }));
+  const w = readWebm(file);
+  assert.equal(w.codec, 'V_VP9');
+  assert.equal(w.width, 1920);
+  assert.equal(w.height, 1080);
+  assert.equal(w.frames.length, 300);
+  assert.equal(w.frames.filter((f) => f.key).length, 3);
+  const s = summary(w);
+  assert.equal(s.late, 0);
+  assert.ok(s.max <= 17 && s.fps > 59.9 && s.fps < 60.1);
+});
+
+test('the WebM has a seek head and cues pointing at its clusters', async () => {
+  const { muxWebm } = await import('../js/film-webm.js');
+  const frames = Array.from({ length: 300 }, (_, i) => ({ data: new Uint8Array([7, 7]), timestamp: Math.round((i * 1e6) / 60), key: i % 120 === 0 }));
+  const file = Buffer.concat(muxWebm({ frames, width: 1920, height: 1080 }));
+  const segment = file.indexOf(Buffer.from([0x18, 0x53, 0x80, 0x67])) + 4 + 8; // the segment's body
+  // every cue's cluster position lands on a Cluster id
+  const cues = file.lastIndexOf(Buffer.from([0x1c, 0x53, 0xbb, 0x6b]));
+  let n = 0;
+  for (let i = cues; i < file.length - 9; i++) {
+    if (file[i] === 0xf1 && file[i + 1] === 0x01) {
+      const p = Number(file.readBigUInt64BE(i + 9));
+      assert.deepEqual([...file.subarray(segment + p, segment + p + 4)], [0x1f, 0x43, 0xb6, 0x75]);
+      n++;
+    }
+  }
+  assert.equal(n, 3);
+  // the seek head's last entry points at the cues
+  const sh = file.indexOf(Buffer.from([0x11, 0x4d, 0x9b, 0x74]));
+  const lastPos = file.lastIndexOf(Buffer.from([0x53, 0xac]), cues);
+  assert.ok(lastPos > sh);
+  assert.equal(segment + Number(file.readBigUInt64BE(lastPos + 2 + 8)), cues);
+});

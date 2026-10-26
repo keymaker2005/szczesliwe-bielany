@@ -17,6 +17,7 @@ const types = {
   '.jpg': 'image/jpeg',
   '.svg': 'image/svg+xml',
   '.ico': 'image/x-icon',
+  '.webm': 'video/webm',
 };
 
 // The ?film showreel (js/film.js) saves its video, shot list and stills here: PUT /__film/<name> -> docs/media/<name>
@@ -44,7 +45,18 @@ createServer(async (req, res) => {
   if (path.endsWith('/')) file = join(file, 'index.html');
   try {
     const body = await readFile(file);
-    res.writeHead(200, { 'Content-Type': types[extname(file)] || 'application/octet-stream', 'Cache-Control': 'no-cache' });
+    const type = types[extname(file)] || 'application/octet-stream';
+    // byte ranges: a <video> seeks in a file only when the server can send a part of it
+    const range = /^bytes=(\d*)-(\d*)$/.exec(req.headers.range || '');
+    if (range && (range[1] || range[2])) {
+      const start = range[1] ? Number(range[1]) : Math.max(0, body.length - Number(range[2]));
+      const end = range[1] && range[2] ? Math.min(Number(range[2]), body.length - 1) : body.length - 1;
+      if (start > end || start >= body.length) { res.writeHead(416, { 'Content-Range': `bytes */${body.length}` }).end(); return; }
+      res.writeHead(206, { 'Content-Type': type, 'Content-Range': `bytes ${start}-${end}/${body.length}`, 'Accept-Ranges': 'bytes', 'Content-Length': end - start + 1, 'Cache-Control': 'no-cache' });
+      res.end(body.subarray(start, end + 1));
+      return;
+    }
+    res.writeHead(200, { 'Content-Type': type, 'Accept-Ranges': 'bytes', 'Cache-Control': 'no-cache' });
     res.end(body);
   } catch {
     res.writeHead(404).end('Not found');
