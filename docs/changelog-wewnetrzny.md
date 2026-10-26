@@ -19,6 +19,9 @@ Plan: docs/plan-fazy-4.md (zaakceptowany ze wszystkimi decyzjami). Praca równol
 - `e07334f` 4.9 wersja dla urzędu ?urzad — sesja urzad-wersja (claude/intelligent-stonebraker-07792c), scalone `0d93482`.
 - `48354cb` 4.4 model w Workerze (Haiku 5.5, bez rozumowania, effort low), Nawiguj pod odpowiedzią, skrypt pytań
   kontrolnych; pierwszy przebieg 30 pytań: 0,0086 USD (ok. 0,03 centa za pytanie). Sprawdzony 2026-10-26.
+- `6923d98`, `6d6dadd` 4.5 informacja o AI, klucz Turnstile; Worker bielany-czat wdrożony (trasa bielany.zbigniew.ai/api/*),
+  publikacja strony 6d6dadd (wersja 0.7 w CHANGELOG.md). Wdrożenie Workera wymaga wyraźnego polecenia autora
+  (ochrona trybu auto odrzuciła próbę bez niego).
 - Uwaga z scaleń: sesje w ponownie użytych folderach worktree zacommitowały kopie macOS „plik 2.js” (`git add -A`);
   usunięte przed scaleniem. Przy kolejnych sesjach sprawdzać `git diff --stat faza-4...<gałąź>` przed scaleniem.
 

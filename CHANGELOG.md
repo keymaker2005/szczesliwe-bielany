@@ -7,6 +7,20 @@ Wewnętrzna historia prac (kroki, gałęzie, decyzje): docs/changelog-wewnetrzny
 
 Dane: © współtwórcy OpenStreetMap (ODbL); GUGiK, geoportal.gov.pl. Na podstawie mrdoob/slop-newyork.
 
+## 0.7 — 2026-10-26 · wersja 6d6dadd · Faza 4: czat z przewodnikiem
+
+**Czat w telefonie**
+- Nowa aplikacja „Czat”: rozmowa z Przewodnikiem po Bielanach (AI). Odpowiada krótko, po polsku, tylko o Bielanach
+  i o grze, na podstawie bazy wiedzy ze źródłami; gdy czegoś nie wie, mówi to i odsyła do aplikacji Przewodnik.
+- Przy pytaniu o landmark pod odpowiedzią jest przycisk „Nawiguj”, który wyznacza trasę na mapie.
+- Nad rozmową informacja: odpowiedzi tworzy model AI (Claude, Anthropic) i mogą zawierać błędy, rozmowy nie są
+  zapisywane. Bez kont; historia rozmowy znika po odświeżeniu strony.
+- Gdy czat odpoczywa (limit dzienny, wyłączenie albo brak połączenia), gra działa dalej, a czat podpowiada aplikację
+  Przewodnik.
+
+**Wersja dla urzędu**
+- Adres https://bielany.zbigniew.ai/?urzad: bez potrącania pieszych, ze znaczkiem „wersja dla urzędu”.
+
 ## 0.6 — 2026-10-25, ok. 21:45 · wersja b9bfcb1 · Faza 3: Służby i teren
 
 **Teren**

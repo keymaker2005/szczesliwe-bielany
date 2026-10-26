@@ -133,6 +133,11 @@ potrącania pieszych, bez zapisu rozmów; SMS-y od „Burmistrz Bielan” bez na
   w pamięci podręcznej, koszt do budżetu, GUIDE_MODEL przełącza model), „Nawiguj: <miejsce>” pod odpowiedzią,
   tools/czat-pytania.mjs → docs/odpowiedzi-kontrolne-przewodnik.md (30 pytań, koszt ok. 0,009 USD).
   Sprawdzam: 10 własnych pytań w grze; przegląd odpowiedzi na pytania kontrolne (każda „OK” albo uwaga) (sprawdzone 2026-10-26).
+- [ ] 4.5 Publikacja czatu z przewodnikiem: Worker bielany-czat na bielany.zbigniew.ai/api/* (sekrety ANTHROPIC_API_KEY
+  i TURNSTILE_SECRET wpisane przez autora, widżet Turnstile „bielany-czat”), strona 6d6dadd (wersja 0.7), informacja
+  o AI nad rozmową. Sprawdzone w Chrome: odpowiedź z bazy, bez błędów w konsoli. Przez tydzień codzienny podgląd
+  kosztów w konsoli Anthropic.
+  Sprawdzam: czat działa na bielany.zbigniew.ai w Edge, koszty dnia w zakładanym limicie.
 - [ ] 4.6 Pismo do urzędu (docs/pismo-urzad-czat.md, pakiet): szkic na gałęzi faza-4-krok-4.6-pismo, czeka na adresata
   i dane do podpisu.
 - [x] 4.9 Wersja dla urzędu: ?urzad wyłącza kontakt z pieszymi (URZAD, PEDESTRIAN_CONTACT w js/city-config.js), znaczek
