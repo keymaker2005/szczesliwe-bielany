@@ -129,6 +129,10 @@ potrącania pieszych, bez zapisu rozmów; SMS-y od „Burmistrz Bielan” bez na
   Sprawdzam: rozmowa z odpowiedziami testowymi, „zwolnij”, tryb bez czatu (sprawdzone 2026-10-26).
 - [x] 4.3 Baza wiedzy przewodnika (docs/wiedza-przewodnika.md, tools/wiedza-przewodnika.mjs → worker/src/wiedza-przewodnika.js)
   i 30 pytań kontrolnych (docs/pytania-kontrolne-przewodnik.md). Sprawdzam: baza i lista pytań (zaakceptowane 2026-10-26).
+- [ ] 4.4 Czat z przewodnikiem na żywo (localhost): Worker pyta Claude Haiku 5.5 (worker/src/model.js, baza wiedzy
+  w pamięci podręcznej, koszt do budżetu, GUIDE_MODEL przełącza model), „Nawiguj: <miejsce>” pod odpowiedzią,
+  tools/czat-pytania.mjs → docs/odpowiedzi-kontrolne-przewodnik.md (30 pytań, koszt ok. 0,009 USD).
+  Sprawdzam: 10 własnych pytań w grze; przegląd odpowiedzi na pytania kontrolne (każda „OK” albo uwaga).
 - [ ] 4.6 Pismo do urzędu (docs/pismo-urzad-czat.md, pakiet): szkic na gałęzi faza-4-krok-4.6-pismo, czeka na adresata
   i dane do podpisu.
 - [x] 4.9 Wersja dla urzędu: ?urzad wyłącza kontakt z pieszymi (URZAD, PEDESTRIAN_CONTACT w js/city-config.js), znaczek

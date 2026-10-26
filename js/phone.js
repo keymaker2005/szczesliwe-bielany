@@ -255,6 +255,7 @@ class Phone {
         this.navigating = site.id;
       }
       this.render();
+      this.chatLines(); // the Czat screen keeps its element across render(): repaint the button label
     } else if (act === 'chat-open') {
       this.chatId = id;
       this.chatEl = null;
