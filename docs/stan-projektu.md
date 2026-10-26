@@ -9,7 +9,7 @@
   Północny, czat w trakcie jazdy, ?czat=off), ceny modeli sprawdzone (Sonnet 5.5: odczyt z pamięci 0,10 USD).
   Decyzje z 2026-10-26: test robi autor; ten sam test zamyka bramki Faz 2, 3 i 4; publikacja przed testem jako 0.9,
   numer 1.0 po zaliczonym teście. Opublikowane jako 0.9 (strona b672de0, gra bez zmian względem 0.8).
-  Do zrobienia: test autora, bramki. Zmiana cen w worker/src/config.js działa dopiero po wdrożeniu Workera.
+  Do zrobienia: test autora, bramki. Worker z nową ceną Sonneta wdrożony 2026-10-26 (wersja b882fe32).
 - Przez tydzień od 2026-10-26 autor codziennie patrzy na koszty w konsoli Anthropic (Usage). Koszt pytania: przewodnik
   ok. 0,03 centa, burmistrz ok. 0,7 centa; limity: 20 pytań / 10 min z adresu, 1000 dziennie, 30 USD miesięcznie
   (licznik w Workerze) + twardy limit 30 USD w konsoli Anthropic.
