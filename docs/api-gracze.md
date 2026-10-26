@@ -87,7 +87,8 @@ Zdarzenie to numer adresu (`a`, GEO.addresses.list) i piętro (`f`); każda gra 
 ## Zasady serwera (bezpieczniki)
 - Tylko połączenia ze strony gry (nagłówek Origin), Turnstile w wiadomości `hej` (bez niej po 10 s `koniec`).
 - Najwyżej 30 graczy w pokoju; kolejni trafiają do pokoju 2, 3… (lobby pilnuje obsady). Najwyżej 2 połączenia
-  z jednego adresu w pokoju (lokalnie bez limitu, dla botów).
+  z jednego adresu w pokoju (lokalnie i w pokoju testowym bez limitu, dla botów; boty na serwerze wchodzą do pokoju
+  testowego z kluczem BOTS_KEY zamiast Turnstile: `node tools/boty.mjs 20 --adres wss://bielany.zbigniew.ai/api/gracze --klucz worker-gracze/.bots-key`).
 - Najwyżej 12 wiadomości na sekundę od gracza (krótki zapas do 24); nadmiar jest pomijany, 200 pominiętych
   w minucie kończy połączenie (`abuse`).
 - Stan sprawdzany: liczby skończone, pozycja w granicach mapy z zapasem 200 m, wysokość −50…1500 m, tryb z listy,

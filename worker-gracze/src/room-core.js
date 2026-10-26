@@ -59,7 +59,8 @@ export class RoomCore {
   // Before accepting a socket: null when it may connect, else the refusal reason
   refusal(ipKey) {
     if (this.players.size >= LIMITS.roomSize) return 'full';
-    if (!this.dev && [...this.players.values()].filter((a) => a.ip === ipKey).length >= LIMITS.perAddress) return 'too_many';
+    // (the test room: bots from one machine; still behind Turnstile or the bots' key)
+    if (!this.dev && this.room !== 'test' && [...this.players.values()].filter((a) => a.ip === ipKey).length >= LIMITS.perAddress) return 'too_many';
     return null;
   }
 

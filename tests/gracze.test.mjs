@@ -216,6 +216,8 @@ test('room size and connections per address', async () => {
   assert.equal(r.core.refusal('other'), null);
   for (let i = 0; i < LIMITS.roomSize - 2; i++) r.socket(`ip${i}`);
   assert.equal(r.core.refusal('new'), 'full');
+  r.core.room = 'test';
+  assert.equal(r.core.refusal('same'), 'full'); // the test room: no per-address limit, only the size
   const local = makeRoom({ dev: true });
   for (let i = 0; i < 5; i++) local.socket('127.0.0.1');
   assert.equal(local.core.refusal('127.0.0.1'), null);
