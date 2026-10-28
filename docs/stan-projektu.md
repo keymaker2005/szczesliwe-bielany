@@ -93,6 +93,9 @@
 
 ## Publikacja
 - https://bielany.zbigniew.ai (Cloudflare Pages, projekt szczesliwe-bielany, konto keymaker2005@gmail.com).
+- Cloudflare Web Analytics (bez cookies) włączone 2026-10-28 w projekcie Pages (Metrics → Web Analytics); działa od
+  następnego wdrożenia strony. Odczyt wejść z ostatnich ~3 dni bez panelu: GraphQL Cloudflare z tokenem wranglera
+  (httpRequestsAdaptiveGroups, host bielany.zbigniew.ai, ścieżka /).
 - Deploy: `node tools/build-dist.mjs`, potem z katalogu scratchpad (nie z repo!):
   `npx --yes wrangler@3.114.15 pages deploy <repo>/dist --project-name szczesliwe-bielany --branch main --commit-hash <hash> --commit-dirty=false`.
   wrangler 4.x psuje projekt (autoconfig Workers) — nie używać.
